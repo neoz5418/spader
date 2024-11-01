@@ -1,0 +1,11 @@
+# Test your FastAPI endpoints
+
+POST http://127.0.0.1:8000/apis/user/v1/one_time_password
+Accept: application/json
+
+{
+  "type": "email",
+  "email": "user@example.com"
+}
+
+###

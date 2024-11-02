@@ -4,23 +4,10 @@ import {  useNavigate } from 'react-router-dom'
 import { useState } from "react"
 
 import { AxiosError } from "axios"
-// import {
-//   type Body_login_login_access_token as AccessToken,
-//   type ApiError,
-//   LoginService,
-//   type UserPublic,
-//   type UserRegister,
-//   UsersService,
-// } from "../client"
 import {
   type BodyTokenApisOidcV1TokenPostType as AccessToken,
-  // type ApiError,
-  // LoginService,
   RegisterUserMutationRequestType,
   GetCurrentUserQueryResponseType as UserPublicType,
-  // type UserPublic,
-  // type UserRegister,
-  // UsersService,
 } from "../gen/ts"
 
 import {
@@ -32,12 +19,19 @@ import {
   registerUser,
   token as loginAccessToken,
 } from "../gen/clients"
+import {
+  setAccessToken,
+  removeAccessToken,
+  getRefreshToken,
+  setRefreshToken,
+  removeRefreshToken,
+} from "@/utils/tokens";
 
 
 import useCustomToast from "./use-custom-toast"
 
 const isLoggedIn = () => {
-  return localStorage.getItem("access_token") !== null
+  return getRefreshToken() !== null
 }
 
 const useAuth = () => {
@@ -83,26 +77,29 @@ const useAuth = () => {
       email: data.email,
       password: data.password,
     })
-    localStorage.setItem("access_token", response.access_token)
-    localStorage.setItem('refresh_token', response.refresh_token);
+    setRefreshToken(response.refresh_token)
+    setAccessToken(response.access_token)
   }
 
   const loginMutation = useMutation({
     mutationFn: login,
     onSuccess: () => {
+      showToast("登录成功", "You have been logged in successfully.", "success")
       navigate( "/" )
     },
-    onError: (err: ApiError) => {
-      let errDetail = (err.body as any)?.detail
+    onError: (err: AxiosError) => {
+      let data = err.response?.data
+      let errDetail = (data as any)?.detail
 
       if (err instanceof AxiosError) {
-        errDetail = err.message
+        errDetail = err.response?.data
       }
 
       if (Array.isArray(errDetail)) {
         errDetail = "Something went wrong"
       }
 
+      showToast("登录失败", errDetail, "error")
       setError(errDetail)
     },
   })
@@ -116,16 +113,16 @@ const useAuth = () => {
       grant_type: 'refresh_token',
       refresh_token: refreshToken,
     })
-    localStorage.setItem('access_token', response.access_token);
-    localStorage.setItem('refresh_token', response.refresh_token);
+    setRefreshToken(response.refresh_token)
+    setAccessToken(response.access_token)
     console.log("set new access token: " + response.access_token);
     console.log("set new refresh token: " + response.refresh_token);
     return true;
   }
 
   const logout = () => {
-    localStorage.removeItem("access_token")
-    localStorage.removeItem('refresh_token')
+    removeRefreshToken()
+    removeAccessToken()
     navigate("/sign-in")
   }
 

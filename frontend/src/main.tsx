@@ -4,20 +4,18 @@ import { ThemeProvider } from '@/components/theme-provider'
 import router from '@/router'
 import '@/index.css'
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import useAuth from "@/hooks/use-auth"
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import QueryProvider from '@/components/providers'
 
-const queryClient = new QueryClient() 
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <ThemeProvider defaultTheme='dark' storageKey='vite-ui-theme'>
-      <QueryClientProvider client={queryClient}>
-            <RouterProvider router={router} />
+      <QueryProvider>
+        <RouterProvider router={router} />
         <Toaster />
-      </QueryClientProvider>
+      </QueryProvider>
     </ThemeProvider>
   </React.StrictMode>
 );

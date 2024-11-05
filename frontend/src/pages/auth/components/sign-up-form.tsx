@@ -26,6 +26,7 @@ import { useToast } from "@/components/ui/use-toast";
 import SignUpSuccess from "@/components/signup-success";
 import useInterval from "@/hooks/use-interval";
 import { Card } from "@/components/ui/card";
+import { PhoneInput } from '@/components/phone-input.tsx'
 
 interface SignUpFormProps extends HTMLAttributes<HTMLDivElement> {}
 
@@ -239,7 +240,8 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
                         <FormItem className='space-y-1'>
                           <FormLabel>手机号</FormLabel>
                           <FormControl>
-                            <Input placeholder='输入您的手机号' {...field} />
+                            {/*<Input placeholder='输入您的手机号' {...field} />*/}
+                            <PhoneInput placeholder='输入您的手机号' {...field} countries={["CN"]} defaultCountry={'CN'}/>
                           </FormControl>
                           <FormMessage />
                         </FormItem>

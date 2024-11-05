@@ -119,7 +119,11 @@ async def register_user(
     statement = select(User).where(User.email == register_user_request.email)
     db_user = (await session.exec(statement)).first()
     if db_user is not None:
-        raise HTTPException(status_code=400, detail="user already exists")
+        raise HTTPException(status_code=400, detail="email already exists")
+    statement = select(User).where(User.name == register_user_request.name)
+    db_user = (await session.exec(statement)).first()
+    if db_user is not None:
+        raise HTTPException(status_code=400, detail="username already exists")
 
     cache = get_redis()
     otp =  await cache.get(otp_prefix(register_user_request.email))

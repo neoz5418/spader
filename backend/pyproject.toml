@@ -1,29 +1,25 @@
-[tool.poetry]
-name = "spader-api"
+[project]
+name = "backend"
 version = "0.1.0"
-description = ""
-authors = ["Zhengyi Lai <zheng1@kubesphere.io>"]
+description = "Add your description here"
 readme = "README.md"
-
-[tool.poetry.dependencies]
-python = "^3.10"
-fastapi = "^0.115.0"
-pydantic = "^2.9.2"
-uuid = "^1.30"
-pydantic-extra-types = "^2.9.0"
-phonenumbers = "^8.13.47"
-email-validator = "^2.2.0"
-python-multipart = "^0.0.12"
-pyjwt = "^2.9.0"
-argon2-cffi = "^23.1.0"
-async-lru = "^2.0.4"
-redis = "^5.1.1"
-sqlmodel = "^0.0.22"
-uuid6 = "^2024.7.10"
-aiosqlite = "^0.20.0"
-greenlet = "^3.1.1"
-fakeredis = "=v2.25.1"
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires-python = ">=3.12"
+dependencies = [
+    "aiosqlite>=0.20.0",
+    "argon2-cffi>=23.1.0",
+    "async-lru>=2.0.4",
+    "email-validator>=2.2.0",
+    "fastapi>=0.115.4",
+    "phonenumbers>=8.13.49",
+    "pydantic>=2.9.2",
+    "pydantic-extra-types>=2.10.0",
+    "pyjwt>=2.9.0",
+    "python-multipart>=0.0.17",
+    "redis>=5.2.0",
+    "sqlmodel>=0.0.22",
+    "uuid>=1.30",
+    "uuid6>=2024.7.10",
+    "uvicorn>=0.32.0",
+    "fakeredis>=2.26.1",
+    "greenlet>=3.1.1",
+]

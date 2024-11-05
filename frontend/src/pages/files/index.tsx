@@ -1,14 +1,11 @@
 import { Layout } from '@/components/custom/layout'
 
 
-import { useListInstancesHook as useReadInstancesHook, InstanceType } from '@/gen'
+import { useListFilesInFileStorageHook as useReadFilesInFileStorageHook, InstanceType, InstanceStatusType } from '@/gen'
 import { useMemo, useState } from 'react'
-import { ColumnDef } from "@tanstack/react-table";
-import { DataTable, DataError } from "@/components/custom/data-table";
+import { ColumnDef, getCoreRowModel, useReactTable } from "@tanstack/react-table";
+import { DataTable, DataLoading, DataError } from "@/components/custom/data-table";
 import Loader from '@/components/loader';
-import { Button } from '@/components/custom/button'
-import negateValue from '../../../../frontend-shadcn/node_modules/tailwindcss/src/util/negateValue';
-import { useNavigate, Link } from 'react-router-dom';
 
 
 export const columns: ColumnDef<InstanceType>[] = [
@@ -54,15 +51,22 @@ export const columns: ColumnDef<InstanceType>[] = [
   }
 ]
 
-export default function Instances() {
+export default function FilesInFileStorage() {
   const [pagination, setPagination] = useState({
     pageIndex: 1, //initial page index
     pageSize: 10, //default page size
   });
-  const { data, isLoading, error} = useReadInstancesHook({
-    limit: pagination.pageSize,
-    page: pagination.pageIndex,
-  }); 
+  const { data, isLoading, error} = useReadFilesInFileStorageHook(
+    workspace,
+    zone,
+    name,
+    {
+        limit: pagination.pageSize,
+        page: pagination.pageIndex,
+    }
+);
+
+  
 
   const instances = useMemo(
     () =>

@@ -7,6 +7,7 @@ from config import get_settings
 
 logger = logging.getLogger(__name__)
 
+# TODO: email template
 async def send_email_notification(email: str, subject: str, content: str):
     smtp_host = get_settings().smtp_host
     smtp_port = get_settings().smtp_port

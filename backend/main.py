@@ -1,4 +1,3 @@
-import os
 from contextlib import asynccontextmanager
 from starlette.middleware.cors import CORSMiddleware
 import uvicorn
@@ -8,12 +7,9 @@ from starlette.types import Message
 from fastapi import FastAPI, status, Depends, Request, Response
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import PlainTextResponse
-from fastapi.security import OAuth2PasswordBearer
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.background import BackgroundTask
 from routers import workspaces, users, instances, types, oidc
-from services.security import JWTManager
 from services.logging import setup_logging
 from services.db import get_session, create_db_and_tables, init_admin_user
 import logging

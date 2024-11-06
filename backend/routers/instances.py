@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 from fastapi import APIRouter, HTTPException
 from dependencies import CurrentAdminUserDepAnnotated, CurrentUserDep, CurrentUserDepAnnotated, ListParamsDep, \
     SessionDep
+from services.celery import create_operation
 
 router = APIRouter(
     prefix="/apis/compute/v1",
@@ -66,7 +67,7 @@ async def list_workspace_zones(
     session: SessionDep,
     params: ListParamsDep,
 ) -> ZoneList:
-    return list_zones(session, params)
+    return await list_zones(session, params)
 
 
 @router.get(
@@ -198,7 +199,9 @@ async def create_instance(
         progress=0,
     )
     await Instance.create(session, to_create)
-    return await Operation.create(session, operation_creation)
+    operation = await Operation.create(session, operation_creation)
+    create_operation.delay(operation.uid)
+    return operation
 
 
 @router.post(

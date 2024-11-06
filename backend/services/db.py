@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import (
 )
 from sqlmodel.ext.asyncio.session import AsyncSession
 
+from config import get_settings
 from routers.types import Role, User
 from services.security import get_secret_hash
 
@@ -28,8 +29,6 @@ async def get_session():
         yield session
 
 
-bootstrap_password = os.environ.get("BOOTSTRAP_PASSWORD", "Zhu88jie!")
-
 async def init_admin_user():
     async with AsyncSession(engine) as session:
         statement = select(User).where(User.email == "admin@localhost")
@@ -43,7 +42,7 @@ async def init_admin_user():
             email="admin@localhost",
             role=Role.global_admin,
             display_name="System Default Admin",
-            hashed_password=get_secret_hash(bootstrap_password),
+            hashed_password=get_secret_hash(get_settings().bootstrap_password),
             phone_number="+861234567890",
         )
         session.add(user)

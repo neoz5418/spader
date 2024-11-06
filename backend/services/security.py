@@ -7,6 +7,8 @@ import logging
 from argon2 import PasswordHasher
 import os
 
+from config import get_settings
+
 ph = PasswordHasher()
 
 API_KEY_PREFIX = "spader-api"
@@ -76,4 +78,4 @@ class JWTManager:
     def decode_jwt_token(self, token: str):
         return jwt.decode(token, self.secret_key, algorithms=[self.algorithm])
 
-jwt_manager = JWTManager(os.environ.get("JWT_SECRET_KEY", "spader-api-secret-key"))
+jwt_manager = JWTManager(get_settings().jwt_secret_key)

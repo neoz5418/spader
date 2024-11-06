@@ -102,12 +102,13 @@ class UserPublic(UserBase):
     update_time: Optional[datetime] = None
     delete_time: Optional[datetime] = None
 
-class UserCreate(UserBase):
-    password: str = Field(
+PasswordType = Annotated[str, Field(
         min_length=8,
         max_length=32,
-        description=PASSWORD_DESCRIPTION,
-    )
+        description=PASSWORD_DESCRIPTION)]
+
+class UserCreate(UserBase):
+    password: PasswordType
 
     @classmethod
     @field_validator('password')

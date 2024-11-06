@@ -4,10 +4,8 @@ set -e
 set -x
 
 echo "Generating openapi.json from backend"
-# cd backend
-# python -c "import app.main; import json; print(json.dumps(app.main.app.openapi()))" > ../openapi.json
-cd backend2
-python -c "import main; import json; print(json.dumps(main.app.openapi()))" > ../openapi.json
+cd backend
+uv run python -c "import main; import json; print(json.dumps(main.app.openapi()))" > ../openapi.json
 cd ..
 node frontend/modify-openapi-operationids.js
 

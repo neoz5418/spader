@@ -32,11 +32,11 @@ async def token(
     grant_type: Annotated[GrantType, Form()],
     client_secret: Annotated[str, Form()] = "",
     client_id: Annotated[str, Form()] = "",
-    password: Annotated[str, Form()] = "",
+    password: Annotated[PasswordType, Form()] = "",
     scope: Annotated[str, Form()] = "",
     username: Annotated[str, Form()] = "",
     phone: Annotated[str, Form()] = "",
-    email: Annotated[str, Form()] = "",
+    email: Annotated[EmailStr, Form()] = "",
     refresh_token: Annotated[str, Form()] = "",
 ) -> Token:
     if grant_type == GrantType.password:

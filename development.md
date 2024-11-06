@@ -1,39 +1,5 @@
 # FastAPI Project - Development
 
-## Docker Compose
-
-* Start the local stack with Docker Compose:
-
-```bash
-docker compose watch
-```
-
-* Now you can open your browser and interact with these URLs:
-
-Frontend, built with Docker, with routes handled based on the path: http://localhost:5173
-
-Backend, JSON based web API based on OpenAPI: http://localhost:8000
-
-Automatic interactive documentation with Swagger UI (from the OpenAPI backend): http://localhost:8000/docs
-
-Adminer, database web administration: http://localhost:8080
-
-Traefik UI, to see how the routes are being handled by the proxy: http://localhost:8090
-
-**Note**: The first time you start your stack, it might take a minute for it to be ready. While the backend waits for the database to be ready and configures everything. You can check the logs to monitor it.
-
-To check the logs, run (in another terminal):
-
-```bash
-docker compose logs
-```
-
-To check the logs of a specific service, add the name of the service, e.g.:
-
-```bash
-docker compose logs backend
-```
-
 ## Local Development
 
 The Docker Compose files are configured so that each of the services is available in a different port in `localhost`.
@@ -65,52 +31,53 @@ And then you can run the local development server for the backend:
 
 ```bash
 cd backend
-fastapi dev app/main.py
+uv run main.py
 ```
 
-## Docker Compose in `localhost.tiangolo.com`
+## Generate TypeScript API Client
 
-When you start the Docker Compose stack, it uses `localhost` by default, with different ports for each service (backend, frontend, adminer, etc).
+The project includes an automated process to generate TypeScript API client code from the backend's OpenAPI specification. This is handled by the `generate-client.sh` script in the `scripts` directory.
 
-When you deploy it to production (or staging), it will deploy each service in a different subdomain, like `api.example.com` for the backend and `dashboard.example.com` for the frontend.
+### How it works
 
-In the guide about [deployment](deployment.md) you can read about Traefik, the configured proxy. That's the component in charge of transmitting traffic to each service based on the subdomain.
+The generation process consists of three main steps:
 
-If you want to test that it's all working locally, you can edit the local `.env` file, and change:
+1. **OpenAPI Specification Generation**
+   - Extracts OpenAPI specification from the FastAPI backend
+   - Generates `openapi.json` file
+   - Modifies operation IDs for better TypeScript naming
 
-```dotenv
-DOMAIN=localhost.tiangolo.com
-```
+2. **Client Code Generation**
+   - Uses Kubb to generate TypeScript client code
+   - Creates type definitions, API client, and React Query hooks
+   - Implements Zod schemas for runtime type validation
+   - Formats generated code using Biome
 
-That will be used by the Docker Compose files to configure the base domain for the services.
+3. **Cleanup**
+   - Removes temporary files
 
-Traefik will use this to transmit traffic at `api.localhost.tiangolo.com` to the backend, and traffic at `dashboard.localhost.tiangolo.com` to the frontend.
+### Configuration
 
-The domain `localhost.tiangolo.com` is a special domain that is configured (with all its subdomains) to point to `127.0.0.1`. This way you can use that for your local development.
+The generation is configured through `frontend/kubb.config.ts`, which sets up:
+- TypeScript type generation
+- API client code generation
+- React Query hooks with proper typing
+- Zod validation schemas
+- Custom naming transformations
 
-After you update it, run again:
+### Usage
+
+To generate the API client, run:
 
 ```bash
-docker compose watch
+./scripts/generate-client.sh
 ```
 
-When deploying, for example in production, the main Traefik is configured outside of the Docker Compose files. For local development, there's an included Traefik in `docker-compose.override.yml`, just to let you test that the domains work as expected, for example with `api.localhost.tiangolo.com` and `dashboard.localhost.tiangolo.com`.
-
-## Docker Compose files and env vars
-
-There is a main `docker-compose.yml` file with all the configurations that apply to the whole stack, it is used automatically by `docker compose`.
-
-And there's also a `docker-compose.override.yml` with overrides for development, for example to mount the source code as a volume. It is used automatically by `docker compose` to apply overrides on top of `docker-compose.yml`.
-
-These Docker Compose files use the `.env` file containing configurations to be injected as environment variables in the containers.
-
-They also use some additional configurations taken from environment variables set in the scripts before calling the `docker compose` command.
-
-After changing variables, make sure you restart the stack:
-
-```bash
-docker compose watch
-```
+This ensures that the frontend API client stays in sync with the backend API, providing:
+- Type-safe API interactions
+- Automated code generation
+- Reduced manual maintenance
+- Consistent interface between frontend and backend
 
 ## The .env file
 

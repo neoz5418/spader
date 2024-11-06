@@ -141,8 +141,6 @@
             "required": false,
             "schema": {
               "type": "string",
-              "minLength": 7,
-              "maxLength": 64,
               "format": "phone",
               "title": "Phone Number"
             }
@@ -6650,6 +6648,8 @@
           },
           "password": {
             "type": "string",
+            "maxLength": 32,
+            "minLength": 8,
             "title": "Password",
             "default": ""
           },
@@ -6670,6 +6670,7 @@
           },
           "email": {
             "type": "string",
+            "format": "email",
             "title": "Email",
             "default": ""
           },
@@ -7776,17 +7777,12 @@
           "total_page": {
             "type": "integer",
             "title": "Total Page"
-          },
-          "total_count": {
-            "type": "integer",
-            "title": "Total Count"
           }
         },
         "type": "object",
         "required": [
           "limit",
-          "total_page",
-          "total_count"
+          "total_page"
         ],
         "title": "Pagination"
       },
@@ -7878,8 +7874,6 @@
           },
           "phone_number": {
             "type": "string",
-            "maxLength": 64,
-            "minLength": 7,
             "format": "phone",
             "title": "Phone Number"
           },
@@ -8018,8 +8012,6 @@
             "anyOf": [
               {
                 "type": "string",
-                "maxLength": 64,
-                "minLength": 7,
                 "format": "phone"
               },
               {
@@ -8134,8 +8126,6 @@
           },
           "phone_number": {
             "type": "string",
-            "maxLength": 64,
-            "minLength": 7,
             "format": "phone",
             "title": "Phone Number"
           },

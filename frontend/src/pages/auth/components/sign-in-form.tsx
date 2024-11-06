@@ -29,6 +29,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const { loginMutation, error, resetError } = useAuth()
   const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate()
+
   const form = useForm<BodyLoginLoginAccessTokenSchema>({
     resolver: zodResolver(bodyLoginLoginAccessTokenSchema),
     defaultValues: {
@@ -100,7 +101,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
             <Button className='mt-2' >
               登录
             </Button>
-
+           {error && <FormMessage>{error}</FormMessage>}
             <div className='relative my-2'>
               <div className='absolute inset-0 flex items-center'>
                 <span className='w-full border-t' />

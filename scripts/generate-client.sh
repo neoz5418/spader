@@ -13,8 +13,8 @@ node frontend/modify-openapi-operationids.js
 echo "Generating client for frontend"
 cp openapi.json frontend/
 cd frontend
-npx kubb --config kubb.config.ts    
-npx biome format --write ./src/gen        
+npx kubb --config kubb.config.ts
+npx biome format --write ./src/gen
 cd ..
 
 echo "Cleaning up"

@@ -21,13 +21,13 @@ export function WorkspaceSwitcher() {
     logout()
   }
   const workspaces = [currentUser?.email || ""]
-  
-  
+
+
   return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
-              variant="outline"   
+              variant="outline"
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >

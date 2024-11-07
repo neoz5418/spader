@@ -1,5 +1,5 @@
 "use client"
- 
+
 import {
   ColumnDef,
   flexRender,
@@ -7,11 +7,11 @@ import {
   HeaderGroup,
   PaginationState,
   Row,
-  type Table as TableType, 
+  type Table as TableType,
   Updater,
   useReactTable,
 } from "@tanstack/react-table"
- 
+
 import { Button } from '@/components/custom/button'
 
 import {
@@ -29,7 +29,7 @@ import { Link, useNavigate } from "react-router-dom"
 import { ErrorType } from "@/gen"
 import { DataTableToolbar } from "./data-table-toolbar"
 import getAllConfigs from '../../../../frontend-shadcn/node_modules/tailwindcss/src/util/getAllConfigs';
- 
+
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
@@ -37,7 +37,7 @@ interface DataTableProps<TData, TValue> {
   pagination: PaginationState
   setPagination: (updater: Updater<PaginationState>) => void
 }
- 
+
 export function DataTable<TData, TValue>({
   columns,
   data,
@@ -59,7 +59,7 @@ export function DataTable<TData, TValue>({
       pagination,
     },
   })
- 
+
   return (
     <div className='space-y-4'>
       <div className='flex items-center justify-between'>
@@ -141,7 +141,7 @@ export function DataError(error: ErrorType) {
         <span className='font-medium'>数据获取失败!</span>
         <p className='text-center text-muted-foreground'>
           {error.message}
-        </p>  
+        </p>
         <div className='mt-6 flex gap-4'>
           <Button variant='outline' onClick={() => navigate(-1)}>
             Go Back

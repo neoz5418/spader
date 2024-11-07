@@ -7,6 +7,7 @@ from config import get_settings
 
 logger = logging.getLogger(__name__)
 
+
 # TODO: email template
 async def send_email_notification(email: str, subject: str, content: str):
     smtp_host = get_settings().smtp_host
@@ -33,4 +34,6 @@ async def send_email_notification(email: str, subject: str, content: str):
 
 
 async def send_one_time_password_email(email: str, one_time_password: str):
-    return await send_email_notification(email, "One Time Password", "Your one time password is: " + one_time_password)
+    return await send_email_notification(
+        email, "One Time Password", "Your one time password is: " + one_time_password
+    )

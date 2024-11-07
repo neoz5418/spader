@@ -8,12 +8,13 @@ from fastapi.security import (
 )
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
-from services.security import jwt_manager, JWTManager
+from services.security import jwt_manager
 from routers.types import Role, User
 from services.db import get_session
 
 
 bearer_auth = HTTPBearer(auto_error=False)
+
 
 async def get_current_user(
     request: Request,
@@ -32,11 +33,12 @@ async def get_current_user(
 
 
 async def get_admin_user(
-    current_user: Annotated[User, Depends(get_current_user)]
+    current_user: Annotated[User, Depends(get_current_user)],
 ) -> User:
     if not current_user.role == Role.global_admin:
         raise HTTPException(status_code=403, detail="Forbidden")
     return current_user
+
 
 async def get_user_from_jwt_token(
     session: AsyncSession, access_token: str
@@ -51,7 +53,7 @@ async def get_user_from_jwt_token(
         return None
 
     # check if token is expired
-    if payload['exp'] - time.time() < 0:
+    if payload["exp"] - time.time() < 0:
         # TODO: return to user that token is expired, need to refresh
         return None
 

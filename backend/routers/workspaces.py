@@ -1,9 +1,14 @@
-from typing import cast
-
 from fastapi import APIRouter, status, HTTPException
 from routers.types import *
-from dependencies import CurrentUserDep, ListParamsDep, SessionDep, CurrentUserDepAnnotated
-from sqlmodel import select, and_, select, func
+from dependencies import (
+    CurrentUserDep,
+    ListParamsDep,
+    SessionDep,
+    CurrentUserDepAnnotated,
+)
+from sqlmodel import and_, select
+
+from services.common import Direction, PERMISSION_GLOBAL_ADMIN, PERMISSION_REGULAR_USER
 
 router = APIRouter(
     prefix="/apis/workspace/v1",
@@ -18,26 +23,34 @@ router = APIRouter(
     status_code=status.HTTP_201_CREATED,
 )
 async def create_workspace(
-        session: SessionDep,
-        user: CurrentUserDepAnnotated,
-        username: str,
-        workspace: WorkspaceCreate,
+    session: SessionDep,
+    user: CurrentUserDepAnnotated,
+    username: str,
+    workspace: WorkspaceCreate,
 ) -> Workspace:
     if user.name != username:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Only the user itself can create a workspace",
         )
-    db_workspace = (await session.exec(
-        select(Workspace).where(and_(Workspace.name == workspace.name, Workspace.delete_time == None)))).first()
+    db_workspace = (
+        await session.exec(
+            select(Workspace).where(
+                and_(Workspace.name == workspace.name, Workspace.delete_time == None)
+            )
+        )
+    ).first()
     if db_workspace:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail="workspace already exists",
         )
-    db_workspace = Workspace.model_validate(workspace, update={
-        "owner": user.name,
-    })
+    db_workspace = Workspace.model_validate(
+        workspace,
+        update={
+            "owner": user.name,
+        },
+    )
     session.add(db_workspace)
     await session.commit()
     await session.refresh(db_workspace)
@@ -55,11 +68,11 @@ class ListWorkspacesSortOptions(Enum):
     tags=PERMISSION_REGULAR_USER,
 )
 async def list_user_workspaces(
-        session: SessionDep,
-        user: CurrentUserDepAnnotated,
-        username: str,
-        params: ListParamsDep,
-        search: str = None,
+    session: SessionDep,
+    user: CurrentUserDepAnnotated,
+    username: str,
+    params: ListParamsDep,
+    search: str = None,
 ) -> WorkspaceList:
     if username != "" and user.name != username:
         raise HTTPException(
@@ -84,25 +97,25 @@ async def list_user_workspaces(
 
 @router.get("/workspaces", tags=PERMISSION_GLOBAL_ADMIN)
 async def list_workspaces(
-        session: SessionDep,
-        user: CurrentUserDepAnnotated,
-        params: ListParamsDep,
-        sort: ListWorkspacesSortOptions = ListWorkspacesSortOptions.create_time,
-        direction: Direction = Direction.DESC,
+    session: SessionDep,
+    user: CurrentUserDepAnnotated,
+    params: ListParamsDep,
+    sort: ListWorkspacesSortOptions = ListWorkspacesSortOptions.create_time,
+    direction: Direction = Direction.DESC,
 ) -> WorkspaceList:
     return await list_user_workspaces(session, user, "", params, sort, direction)
 
 
-@router.get(
-    "/workspaces/{workspace}", tags=PERMISSION_REGULAR_USER
-)
+@router.get("/workspaces/{workspace}", tags=PERMISSION_REGULAR_USER)
 def get_workspace(
-        session: SessionDep,
-        user: CurrentUserDepAnnotated,
-        workspace: str,
+    session: SessionDep,
+    user: CurrentUserDepAnnotated,
+    workspace: str,
 ) -> Workspace:
     # TODO: check user permission
-    workspace = session.exec(select(Workspace).where(Workspace.name == workspace)).first()
+    workspace = session.exec(
+        select(Workspace).where(Workspace.name == workspace)
+    ).first()
     if not workspace:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

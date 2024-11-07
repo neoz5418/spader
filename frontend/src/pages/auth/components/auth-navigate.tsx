@@ -4,7 +4,7 @@ import { useNavigate,Outlet } from 'react-router-dom'
 function AuthRouter() {
     console.log('AuthRouter', isLoggedIn())
     const navigate = useNavigate()
-    if (isLoggedIn()) { 
+    if (isLoggedIn()) {
         console.log('navigate', '/')
         navigate('/')
     }

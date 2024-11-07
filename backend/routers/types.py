@@ -5,34 +5,24 @@ from pydantic import (
     field_validator,
 )
 import re
-import math
 from pydantic_extra_types.phone_numbers import PhoneNumber
 from datetime import datetime
 from enum import Enum
 from uuid import UUID
-from fastapi.exceptions import RequestValidationError
-import uuid6
-from typing import Annotated, Optional, Any
-from fastapi import Depends, Query
+from typing import Annotated, Optional
 from sqlalchemy import JSON, Column
-from pydantic.dataclasses import dataclass
 from sqlmodel import SQLModel
 from sqlmodel import Field
-from typing import Generic, TypeVar
 from services.active_record import ActiveRecordMixin
 from services.common import (
-    Direction,
     Name,
     DisplayName,
     UID,
     PaginatedList,
     CursorList,
-    PERMISSION_REGULAR_USER,
-    PERMISSION_GLOBAL_ADMIN,
-    PERMISSION_UNAUTHENTICATED,
-    Error,
     TimestampsMixin,
 )
+
 
 class BaseModelMixin(ActiveRecordMixin, TimestampsMixin):
     pass
@@ -44,7 +34,6 @@ class Workspace(SQLModel, BaseModelMixin, table=True):
     uid: UUID = UID
 
     owner: str
-
 
 
 WorkspaceList = PaginatedList[Workspace]
@@ -74,9 +63,11 @@ class SendOneTimePasswordResponse(BaseModel):
     email: Optional[EmailStr] = None
     phone_number: Optional[PhoneNumber] = None
 
+
 class Role(Enum):
     global_admin = "global_admin"
     user = "user"
+
 
 class UserBase(SQLModel):
     name: Name
@@ -94,7 +85,9 @@ class User(UserBase, BaseModelMixin, table=True):
     update_time: Optional[datetime] = None
     delete_time: Optional[datetime] = None
 
+
 UserList = PaginatedList[User]
+
 
 class UserPublic(UserBase):
     uid: UUID = UID
@@ -102,23 +95,24 @@ class UserPublic(UserBase):
     update_time: Optional[datetime] = None
     delete_time: Optional[datetime] = None
 
-PasswordType = Annotated[str, Field(
-        min_length=8,
-        max_length=32,
-        description=PASSWORD_DESCRIPTION)]
+
+PasswordType = Annotated[
+    str, Field(min_length=8, max_length=32, description=PASSWORD_DESCRIPTION)
+]
+
 
 class UserCreate(UserBase):
     password: PasswordType
 
     @classmethod
-    @field_validator('password')
+    @field_validator("password")
     def validate_password(cls, value):
-        if not re.search(r'[A-Z]', value):
-            raise ValueError('Password must contain at least one uppercase letter')
-        if not re.search(r'[a-z]', value):
-            raise ValueError('Password must contain at least one lowercase letter')
-        if not re.search(r'[0-9]', value):
-            raise ValueError('Password must contain at least one digit')
+        if not re.search(r"[A-Z]", value):
+            raise ValueError("Password must contain at least one uppercase letter")
+        if not re.search(r"[a-z]", value):
+            raise ValueError("Password must contain at least one lowercase letter")
+        if not re.search(r"[0-9]", value):
+            raise ValueError("Password must contain at least one digit")
         return value
 
 
@@ -270,21 +264,27 @@ class GPUType(SQLModel, table=True):
 
 GPUTypeList = PaginatedList[GPUType]
 
+
 class Provider(Enum):
     ecloud = "ecloud"
+
 
 class ZoneBase(SQLModel):
     name: Name
     provider: Provider
 
+
 class Zone(ZoneBase, BaseModelMixin, table=True):
     uid: UUID = UID
     pass
 
+
 ZoneList = PaginatedList[Zone]
+
 
 class ZoneCreate(ZoneBase):
     pass
+
 
 class OperationStatus(Enum):
     pending = "pending"

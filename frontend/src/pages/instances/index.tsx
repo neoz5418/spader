@@ -62,7 +62,7 @@ export default function Instances() {
   const { data, isLoading, error} = useReadInstancesHook({
     limit: pagination.pageSize,
     page: pagination.pageIndex,
-  }); 
+  });
 
   const instances = useMemo(
     () =>
@@ -80,11 +80,11 @@ export default function Instances() {
       })),
     [data]
   );
-  
+
   if (isLoading) {
     return <Loader />
   }
-  
+
 
   if (error) {
     return <DataError {...error} />;
@@ -97,17 +97,16 @@ export default function Instances() {
           <div>
             <h2 className='text-2xl font-bold tracking-tight'>算力容器列表</h2>
             <p className='text-muted-foreground'>
-              
+
             </p>
           </div>
         </div>
         <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
-            <DataTable columns={columns} data={instances} 
-            rowCount={data?.pagination?.total_count ?? 0} 
+            <DataTable columns={columns} data={instances}
+            rowCount={data?.pagination?.total_count ?? 0}
             pagination={pagination} setPagination={setPagination} />
         </div>
       </Layout.Body>
     </Layout>
   )
 }
-

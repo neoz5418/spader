@@ -1,9 +1,15 @@
 from routers.types import *
 from datetime import datetime, timezone
 from fastapi import APIRouter, HTTPException
-from dependencies import CurrentAdminUserDepAnnotated, CurrentUserDep, CurrentUserDepAnnotated, ListParamsDep, \
-    SessionDep
+from dependencies import (
+    CurrentAdminUserDepAnnotated,
+    CurrentUserDep,
+    CurrentUserDepAnnotated,
+    ListParamsDep,
+    SessionDep,
+)
 from services.celery import create_operation
+from services.common import PERMISSION_GLOBAL_ADMIN, PERMISSION_REGULAR_USER
 
 router = APIRouter(
     prefix="/apis/compute/v1",
@@ -19,9 +25,9 @@ router = APIRouter(
     summary="Create a new zone",
 )
 async def create_zone(
-        session: SessionDep,
-        zone_in: ZoneCreate,
-        user: CurrentAdminUserDepAnnotated,
+    session: SessionDep,
+    zone_in: ZoneCreate,
+    user: CurrentAdminUserDepAnnotated,
 ) -> Zone:
     existing = await Zone.one_by_field(session, "name", zone_in.name)
     if existing:
@@ -32,8 +38,8 @@ async def create_zone(
 
 @router.get("/zones", tags=PERMISSION_GLOBAL_ADMIN)
 async def list_zones(
-        session: SessionDep,
-        params: ListParamsDep,
+    session: SessionDep,
+    params: ListParamsDep,
 ) -> ZoneList:
     return await Zone.paginated_by_query(
         session=session,
@@ -42,13 +48,11 @@ async def list_zones(
     )
 
 
-@router.get(
-    "/zones/{zone}/gpu_types", tags=PERMISSION_GLOBAL_ADMIN
-)
+@router.get("/zones/{zone}/gpu_types", tags=PERMISSION_GLOBAL_ADMIN)
 async def list_gpu_types(
-        session: SessionDep,
-        params: ListParamsDep,
-        zone: str,
+    session: SessionDep,
+    params: ListParamsDep,
+    zone: str,
 ) -> GPUTypeList:
     return await GPUType.paginated_by_query(
         session=session,
@@ -75,7 +79,7 @@ async def list_workspace_zones(
     tags=PERMISSION_REGULAR_USER,
 )
 def watch_workspace_zones(
-        workspace: str,
+    workspace: str,
 ) -> WatchEvent:
     return
 
@@ -85,8 +89,8 @@ def watch_workspace_zones(
     tags=PERMISSION_REGULAR_USER,
 )
 def list_workspace_zone_gpu_types(
-        workspace: str,
-        zone: str,
+    workspace: str,
+    zone: str,
 ) -> GPUTypeList:
     return
 
@@ -96,8 +100,8 @@ def list_workspace_zone_gpu_types(
     tags=PERMISSION_REGULAR_USER,
 )
 def get_workspace_zone_quota(
-        workspace: str,
-        zone: str,
+    workspace: str,
+    zone: str,
 ) -> WorkspaceZoneQuota:
     return
 
@@ -112,10 +116,10 @@ class ListInstancesSortOptions(Enum):
     tags=PERMISSION_GLOBAL_ADMIN,
 )
 async def list_instances(
-        session: SessionDep,
-        params: ListParamsDep,
-        zone: str = None,
-        search: str = None,
+    session: SessionDep,
+    params: ListParamsDep,
+    zone: str = None,
+    search: str = None,
 ) -> InstanceList:
     return await list_workspace_instances(
         session=session,
@@ -124,17 +128,19 @@ async def list_instances(
         zone=zone,
         search=search,
     )
+
+
 @router.get(
     "/workspaces/{workspace}/instances",
     tags=PERMISSION_REGULAR_USER,
 )
 async def list_workspace_instances(
-        session: SessionDep,
-        params: ListParamsDep,
-        workspace: str,
-        zone: str = None,
-        search: str = None,
-        status: str = None,
+    session: SessionDep,
+    params: ListParamsDep,
+    workspace: str,
+    zone: str = None,
+    search: str = None,
+    status: str = None,
 ) -> InstanceList:
     fields = {}
     if workspace:
@@ -161,9 +167,9 @@ async def list_workspace_instances(
     tags=PERMISSION_REGULAR_USER,
 )
 def get_instance(
-        workspace: str,
-        zone: str,
-        name: str,
+    workspace: str,
+    zone: str,
+    name: str,
 ) -> Instance:
     return
 
@@ -175,20 +181,23 @@ def get_instance(
     summary="Create and start a new instance",
 )
 async def create_instance(
-        session: SessionDep,
-        workspace: str,
-        zone: str,
-        instance_in: CreateInstanceRequest,
-        user: CurrentUserDepAnnotated,
+    session: SessionDep,
+    workspace: str,
+    zone: str,
+    instance_in: CreateInstanceRequest,
+    user: CurrentUserDepAnnotated,
 ) -> Operation:
     existing = await Instance.one_by_field(session, "name", instance_in.name)
     if existing:
         raise HTTPException(status_code=409, detail="Instance already exists")
-    to_create = Instance.model_validate(instance_in, update={
-        "workspace": workspace,
-        "zone": zone,
-        "status": InstanceStatus.provisioning,
-    })
+    to_create = Instance.model_validate(
+        instance_in,
+        update={
+            "workspace": workspace,
+            "zone": zone,
+            "status": InstanceStatus.provisioning,
+        },
+    )
     operation_creation = Operation(
         workspace=workspace,
         zone=zone,
@@ -209,9 +218,9 @@ async def create_instance(
     tags=PERMISSION_REGULAR_USER,
 )
 def start_instance(
-        workspace: str,
-        zone: str,
-        name: str,
+    workspace: str,
+    zone: str,
+    name: str,
 ) -> Operation:
     return
 
@@ -221,9 +230,9 @@ def start_instance(
     tags=PERMISSION_REGULAR_USER,
 )
 def stop_instance(
-        workspace: str,
-        zone: str,
-        name: str,
+    workspace: str,
+    zone: str,
+    name: str,
 ) -> Operation:
     return
 
@@ -234,10 +243,10 @@ def stop_instance(
     status_code=201,
 )
 def create_instance_port_forward(
-        workspace: str,
-        zone: str,
-        name: str,
-        port_forward: PortForward,
+    workspace: str,
+    zone: str,
+    name: str,
+    port_forward: PortForward,
 ) -> PortForward:
     return
 
@@ -248,10 +257,10 @@ def create_instance_port_forward(
     status_code=204,
 )
 def delete_instance_port_forward(
-        workspace: str,
-        zone: str,
-        name: str,
-        port_forward_name: str,
+    workspace: str,
+    zone: str,
+    name: str,
+    port_forward_name: str,
 ):
     return
 
@@ -261,9 +270,9 @@ def delete_instance_port_forward(
     tags=PERMISSION_REGULAR_USER,
 )
 def list_instance_port_forwards(
-        workspace: str,
-        zone: str,
-        name: str,
+    workspace: str,
+    zone: str,
+    name: str,
 ) -> list[PortForward]:
     return
 
@@ -273,9 +282,9 @@ def list_instance_port_forwards(
     tags=PERMISSION_REGULAR_USER,
 )
 def delete_instance(
-        workspace: str,
-        zone: str,
-        name: str,
+    workspace: str,
+    zone: str,
+    name: str,
 ) -> Operation:
     return
 
@@ -285,9 +294,9 @@ def delete_instance(
     tags=PERMISSION_REGULAR_USER,
 )
 def list_workspace_operations(
-        workspace: str,
-        zone: str,
-        params: ListParamsDep,
+    workspace: str,
+    zone: str,
+    params: ListParamsDep,
 ) -> OperationList:
     return
 
@@ -297,9 +306,9 @@ def list_workspace_operations(
     tags=PERMISSION_REGULAR_USER,
 )
 def get_workspace_operation(
-        workspace: str,
-        zone: str,
-        uid: UUID,
+    workspace: str,
+    zone: str,
+    uid: UUID,
 ) -> OperationList:
     return
 
@@ -309,8 +318,8 @@ def get_workspace_operation(
     tags=PERMISSION_REGULAR_USER,
 )
 def watch_workspace_operations(
-        workspace: str,
-        zone: str,
+    workspace: str,
+    zone: str,
 ) -> WatchEvent:
     return
 
@@ -320,9 +329,9 @@ def watch_workspace_operations(
     tags=PERMISSION_REGULAR_USER,
 )
 def watch_workspace_operation(
-        workspace: str,
-        zone: str,
-        uid: UUID,
+    workspace: str,
+    zone: str,
+    uid: UUID,
 ) -> WatchEvent:
     return
 
@@ -333,9 +342,9 @@ def watch_workspace_operation(
     status_code=201,
 )
 def create_file_storage(
-        workspace: str,
-        zone: str,
-        file_storage: CreateFileStorageRequest,
+    workspace: str,
+    zone: str,
+    file_storage: CreateFileStorageRequest,
 ) -> Operation:
     return
 
@@ -345,9 +354,9 @@ def create_file_storage(
     tags=PERMISSION_REGULAR_USER,
 )
 def list_workspace_file_storages(
-        workspace: str,
-        zone: str,
-        params: ListParamsDep,
+    workspace: str,
+    zone: str,
+    params: ListParamsDep,
 ) -> FileStorageList:
     return
 
@@ -357,9 +366,9 @@ def list_workspace_file_storages(
     tags=PERMISSION_REGULAR_USER,
 )
 def get_file_storage(
-        workspace: str,
-        zone: str,
-        name: str,
+    workspace: str,
+    zone: str,
+    name: str,
 ) -> FileStorage:
     return
 
@@ -370,10 +379,10 @@ def get_file_storage(
     description="Up to 100 files can be listed",
 )
 def list_files_in_file_storage(
-        workspace: str,
-        zone: str,
-        name: str,
-        path: str = "/",
+    workspace: str,
+    zone: str,
+    name: str,
+    path: str = "/",
 ) -> FileList:
     return
 
@@ -383,9 +392,9 @@ def list_files_in_file_storage(
     tags=PERMISSION_REGULAR_USER,
 )
 def delete_file_storage(
-        workspace: str,
-        zone: str,
-        name: str,
+    workspace: str,
+    zone: str,
+    name: str,
 ) -> Operation:
     return
 
@@ -396,8 +405,8 @@ def delete_file_storage(
     status_code=201,
 )
 def create_image(
-        zone: str,
-        image: Image,
+    zone: str,
+    image: Image,
 ) -> Image:
     return
 
@@ -407,8 +416,8 @@ def create_image(
     tags=PERMISSION_GLOBAL_ADMIN,
 )
 def update_image(
-        zone: str,
-        name: str,
+    zone: str,
+    name: str,
 ) -> Image:
     return
 
@@ -418,8 +427,8 @@ def update_image(
     tags=PERMISSION_REGULAR_USER,
 )
 def list_workspace_images(
-        workspace: str,
-        zone: str,
-        params: ListParamsDep,
+    workspace: str,
+    zone: str,
+    params: ListParamsDep,
 ) -> ImageList:
     return

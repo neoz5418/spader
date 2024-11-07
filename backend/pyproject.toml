@@ -26,4 +26,5 @@ dependencies = [
     "pydantic-settings>=2.6.1",
     "aiosmtplib>=3.0.2",
     "celery[redis]>=5.4.0",
+    "pre-commit>=4.0.1",
 ]

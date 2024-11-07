@@ -13,7 +13,7 @@ import { SidebarProvider } from './ui/sidebar'
 
 export default function AppShell() {
   const [isCollapsed, setIsCollapsed] = useIsCollapsed()
-  
+
   return (
     <div className='relative h-full overflow-hidden bg-background'>
       <SkipToMain />
@@ -27,15 +27,15 @@ export default function AppShell() {
           <Layout.Header>
             <div className='ml-auto flex items-center space-x-4'>
               <TopNav links={topNav} />
-              <ThemeSwitch /> 
+              <ThemeSwitch />
               <p className='text-sm font-semibold'>$10.00</p>
               {/* <UserNav /> */}
-              <WorkspaceSwitcher />             
+              <WorkspaceSwitcher />
             </div>
           </Layout.Header>
           <Outlet />
           </Layout>
-        </main>    
+        </main>
     </div>
   )
 }

@@ -5,7 +5,6 @@ from typing import Optional, Union
 import jwt
 import logging
 from argon2 import PasswordHasher
-import os
 
 from config import get_settings
 
@@ -36,7 +35,7 @@ def generate_secure_password(length=12):
     special_characters = "!@#$%^&*_+"
     characters = string.ascii_letters + string.digits + special_characters
     while True:
-        password = ''.join(secrets.choice(characters) for i in range(length))
+        password = "".join(secrets.choice(characters) for i in range(length))
         if (
             any(c.islower() for c in password)
             and any(c.isupper() for c in password)
@@ -44,6 +43,7 @@ def generate_secure_password(length=12):
             and any(c in special_characters for c in password)
         ):
             return password
+
 
 # TODO: split access token and refresh token into two classes for security
 #       Now you can actually use access token to refresh, it's a bug that needs to be fixed!
@@ -60,7 +60,9 @@ class JWTManager:
         self.algorithm = algorithm
         self.expires_delta = expires_delta
 
-    def _create_jwt_token(self, username: str, expires_delta: Optional[timedelta] = None):
+    def _create_jwt_token(
+        self, username: str, expires_delta: Optional[timedelta] = None
+    ):
         if expires_delta is None:
             expires_delta = self.expires_delta
         to_encode = {"sub": username}
@@ -73,9 +75,10 @@ class JWTManager:
         return self._create_jwt_token(username)
 
     def create_refresh_token(self, username: str):
-        return self._create_jwt_token(username, expires_delta=self.expires_delta*24)
+        return self._create_jwt_token(username, expires_delta=self.expires_delta * 24)
 
     def decode_jwt_token(self, token: str):
         return jwt.decode(token, self.secret_key, algorithms=[self.algorithm])
+
 
 jwt_manager = JWTManager(get_settings().jwt_secret_key)

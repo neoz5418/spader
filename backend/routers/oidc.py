@@ -1,13 +1,19 @@
 import time
 import logging
 
-from fastapi import APIRouter, Form, Request, HTTPException
+from fastapi import APIRouter, Form, HTTPException
 from dependencies import SessionDep
 from sqlmodel import select
 from routers.types import *
 
 from jwt import DecodeError, ExpiredSignatureError
-from services.security import jwt_manager, JWTManager, JWT_TOKEN_EXPIRE_MINUTES, verify_hashed_secret
+
+from services.common import PERMISSION_UNAUTHENTICATED
+from services.security import (
+    jwt_manager,
+    JWT_TOKEN_EXPIRE_MINUTES,
+    verify_hashed_secret,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -15,6 +21,7 @@ router = APIRouter(
     prefix="/apis/oidc/v1",
     tags=["oidc"],
 )
+
 
 class GrantType(str, Enum):
     # authorization_code = "authorization_code"
@@ -43,14 +50,23 @@ async def token(
         if not password:
             raise HTTPException(status_code=400, detail="password cannot be empty")
         if not email and not username:
-            raise HTTPException(status_code=400, detail="username or email cannot be empty")
+            raise HTTPException(
+                status_code=400, detail="username or email cannot be empty"
+            )
         if email and username:
-            raise HTTPException(status_code=400, detail="email and username cannot be provided at the same time")
+            raise HTTPException(
+                status_code=400,
+                detail="email and username cannot be provided at the same time",
+            )
         try:
             if email:
-                user = (await session.exec(select(User).where(User.email == email))).first()
+                user = (
+                    await session.exec(select(User).where(User.email == email))
+                ).first()
             else:
-                user = (await session.exec(select(User).where(User.name == username))).first()
+                user = (
+                    await session.exec(select(User).where(User.name == username))
+                ).first()
             logger.info("user: %s, username: %s, email: %s", user, username, email)
         except Exception as e:
             logger.exception(e)
@@ -67,9 +83,9 @@ async def token(
             payload = jwt_manager.decode_jwt_token(refresh_token)
             if not payload:
                 raise HTTPException(status_code=400, detail="refresh_token invalid")
-            if payload['exp'] - time.time() < 0:
+            if payload["exp"] - time.time() < 0:
                 raise HTTPException(status_code=400, detail="refresh_token expired")
-            username = payload['sub']
+            username = payload["sub"]
             if username == "":
                 raise HTTPException(status_code=400, detail="user not found")
         except (ExpiredSignatureError, DecodeError) as e:
@@ -86,5 +102,3 @@ async def token(
         expires_in=JWT_TOKEN_EXPIRE_MINUTES * 24,
     )
     return t
-
-

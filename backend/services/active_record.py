@@ -1,22 +1,19 @@
 from datetime import datetime, timezone
-import importlib
-import json
 import logging
 import math
-from typing import Any, AsyncGenerator, Optional, Type, TypeVar, Union, overload
+from typing import Any, Optional, Type, TypeVar, Union
 
-from fastapi.encoders import jsonable_encoder
 from sqlalchemy import func
 from sqlmodel import SQLModel, and_, col, or_, select
 from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlalchemy.exc import IntegrityError, OperationalError
 from sqlalchemy.orm.exc import FlushError
-from sqlalchemy.ext.asyncio import AsyncEngine
 from services.common import PaginatedList, Pagination
 
 
 logger = logging.getLogger(__name__)
-T = TypeVar('T', bound=SQLModel)
+T = TypeVar("T", bound=SQLModel)
+
 
 class ActiveRecordMixin:
     """ActiveRecordMixin provides a set of methods to interact with the database."""

@@ -10,6 +10,7 @@ from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.background import BackgroundTask
 from routers import workspaces, users, instances, types, oidc
+from services.common import Error
 from services.logging import setup_logging
 from services.db import get_session, create_db_and_tables, init_admin_user
 import logging
@@ -25,37 +26,38 @@ async def lifespan(a: FastAPI):
     await init_admin_user()
     yield
 
+
 app = FastAPI(
     title="spader-api",
     version="1.0.0",
     description="Spader API",
     responses={
         status.HTTP_400_BAD_REQUEST: {
-            "model": types.Error,
+            "model": Error,
             "description": "Request error",
         },
         status.HTTP_422_UNPROCESSABLE_ENTITY: {
-            "model": types.Error,
+            "model": Error,
             "description": "Validation error",
         },
         status.HTTP_429_TOO_MANY_REQUESTS: {
-            "model": types.Error,
+            "model": Error,
             "description": "Rate limit exceeded",
         },
         status.HTTP_503_SERVICE_UNAVAILABLE: {
-            "model": types.Error,
+            "model": Error,
             "description": "Service unavailable",
         },
         status.HTTP_401_UNAUTHORIZED: {
-            "model": types.Error,
+            "model": Error,
             "description": "Unauthorized",
         },
         status.HTTP_404_NOT_FOUND: {
-            "model": types.Error,
+            "model": Error,
             "description": "Not found",
         },
         status.HTTP_500_INTERNAL_SERVER_ERROR: {
-            "model": types.Error,
+            "model": Error,
             "description": "Internal server error",
         },
     },
@@ -71,7 +73,10 @@ async def http_exception_handler(request, exc):
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request, exc):
-    return JSONResponse(jsonable_encoder(types.Error.from_exception(exc)), status_code=400)
+    return JSONResponse(
+        jsonable_encoder(Error.from_exception(exc)), status_code=400
+    )
+
 
 async def set_body(request: Request, body: bytes):
     """Utility function to recreate the body of a request"""
@@ -81,6 +86,7 @@ async def set_body(request: Request, body: bytes):
 
     request._receive = receive
 
+
 @app.middleware("http")
 async def middleware_logger(request: Request, call_next):
     request_body = await request.body()
@@ -88,30 +94,35 @@ async def middleware_logger(request: Request, call_next):
     try:
         response = await call_next(request)
     except Exception as exc:
-        logger.exception({
-            "request_body": request_body.decode("utf-8"),
-            "request_headers": dict(request.headers),
-            "request_query_params": dict(request.query_params),
-            "request_method": request.method,
-            "request_url": str(request.url),
-            "error_message": str(exc),
-        })
+        logger.exception(
+            {
+                "request_body": request_body.decode("utf-8"),
+                "request_headers": dict(request.headers),
+                "request_query_params": dict(request.query_params),
+                "request_method": request.method,
+                "request_url": str(request.url),
+                "error_message": str(exc),
+            }
+        )
         raise exc
 
     response_body = b""
     async for chunk in response.body_iterator:
         response_body += chunk
-    task = BackgroundTask(logger.info,{
-        "request_body": request_body.decode("utf-8"),
-        "request_headers": dict(request.headers),
-        "request_query_params": dict(request.query_params),
-        "request_method": request.method,
-        "request_url": str(request.url),
-        "response_body": response_body.decode("utf-8"),
-        "response_headers": dict(response.headers),
-        "response_media_type": response.media_type,
-        "response_status_code": response.status_code,
-    })
+    task = BackgroundTask(
+        logger.info,
+        {
+            "request_body": request_body.decode("utf-8"),
+            "request_headers": dict(request.headers),
+            "request_query_params": dict(request.query_params),
+            "request_method": request.method,
+            "request_url": str(request.url),
+            "response_body": response_body.decode("utf-8"),
+            "response_headers": dict(response.headers),
+            "response_media_type": response.media_type,
+            "response_status_code": response.status_code,
+        },
+    )
     return Response(
         content=response_body,
         status_code=response.status_code,
@@ -119,6 +130,7 @@ async def middleware_logger(request: Request, call_next):
         media_type=response.media_type,
         background=task,
     )
+
 
 origins = [
     "*",

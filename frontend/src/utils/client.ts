@@ -61,7 +61,7 @@ export const axiosClient = async <TData, TError = unknown, TVariables = unknown>
     commonHeader["Timezone-Val"] =
       Intl.DateTimeFormat().resolvedOptions().timeZone;
   }
-  
+
   const promise = axiosInstance.request<TData, ResponseConfig<TData>>(config).catch((e: AxiosError<TError>) => {
     throw e
   })

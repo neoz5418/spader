@@ -70,7 +70,7 @@ export default function Users() {
     page: pagination.pageIndex,
   });
 
-  
+
 
   const users = useMemo(
     () =>
@@ -84,11 +84,11 @@ export default function Users() {
       })),
     [data]
   );
-  
+
   if (isLoading) {
     return <div className="loading">Loading...</div>
   }
-  
+
 
   if (error) {
     return <div className="error">Error</div>;
@@ -96,7 +96,7 @@ export default function Users() {
 
 
   return (
-    
+
     <Layout>
       {/* ===== Top Heading ===== */}
       <Layout.Header sticky>
@@ -119,8 +119,8 @@ export default function Users() {
         <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
           <div className='space-y-4'>
             <div className='rounded-md border'>
-            <DataTable columns={columns} data={users} 
-            rowCount={data?.pagination?.total_count ?? 0} 
+            <DataTable columns={columns} data={users}
+            rowCount={data?.pagination?.total_count ?? 0}
             pagination={pagination} setPagination={setPagination} />
             </div>
           </div>
@@ -129,4 +129,3 @@ export default function Users() {
     </Layout>
   )
 }
-

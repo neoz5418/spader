@@ -4,6 +4,6 @@ from services.logging import setup_logging
 
 setup_logging()
 
-if __name__ == '__main__':
-    args = ['worker', '--loglevel=INFO']
+if __name__ == "__main__":
+    args = ["worker", "--loglevel=INFO"]
     celery.worker_main(argv=args)

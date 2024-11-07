@@ -127,10 +127,10 @@ const useAuth = () => {
   }
 
   const refreshTokenRetry = async (
-    err: any, 
-    key: string, 
-    config: any, 
-    revalidate: (options: { retryCount: number }) => void, 
+    err: any,
+    key: string,
+    config: any,
+    revalidate: (options: { retryCount: number }) => void,
     { retryCount }: { retryCount: number }
   ) => {
       if (retryCount >= 3) return

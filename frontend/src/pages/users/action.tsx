@@ -36,7 +36,7 @@ const ActionsMenu = ({setOpen}: ActionsMenuProps) => {
         <DropdownMenuItem onSelect={() => {
           console.log("11111111")
           setOpen(true)
-          }} >        
+          }} >
         Edit1
         </DropdownMenuItem>
           <DropdownMenuItem>Make a copy</DropdownMenuItem>

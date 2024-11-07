@@ -25,10 +25,10 @@ import { toast } from '@/components/ui/use-toast'
 import { cn } from '@/lib/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Layout } from '@/components/custom/layout'
-import { 
+import {
   createInstancePathParamsSchema,
 } from '@/gen/zod/createInstanceSchema.gen'
-import { 
+import {
   createInstanceRequestSchema,
   CreateInstanceRequestSchema,
 } from '@/gen/zod/createInstanceRequestSchema.gen'
@@ -55,7 +55,7 @@ export default function DeployForm() {
   console.log(currentUser)
 
   const {mutate: createInstance} = useCreateInstanceHook(currentUser?.email || "", "default")
-  
+
   function onSubmit(data: createInstanceBody) {
     console.log(data)
     const response = createInstance(data)

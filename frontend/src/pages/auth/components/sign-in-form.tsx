@@ -43,7 +43,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   async function onSubmit(data: BodyLoginLoginAccessTokenSchema) {
     console.log("onSubmit",error)
     if (isLoading) return
-    
+
     resetError()
 
     setIsLoading(true)
@@ -54,7 +54,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     } catch {
       // error is handled by useAuth hook
     }
-    
+
     setIsLoading(false)
   }
   const onInvalid = (errors: any) => console.error(errors)

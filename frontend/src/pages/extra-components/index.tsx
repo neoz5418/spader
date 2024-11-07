@@ -94,9 +94,9 @@ export default function ExtraComponents() {
                   {`<PinInput
   className='flex h-10 space-x-4'
   defaultValue=''
-  onComplete={(str) => 
+  onComplete={(str) =>
     console.log('completed', str)
-  }  
+  }
   autoFocus
 >
   <PinInputField component={Input} />
@@ -146,7 +146,7 @@ export default function ExtraComponents() {
       className='flex h-10 space-x-4'
       value={pinInput}
       onChange={setPinInput}
-      onComplete={(str) => 
+      onComplete={(str) =>
         console.log('completed', str)
       }
     >

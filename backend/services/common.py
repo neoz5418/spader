@@ -5,14 +5,15 @@ import math
 from enum import Enum
 from datetime import datetime
 from datetime import timezone
+
 UTC = timezone.utc
 from fastapi.exceptions import RequestValidationError
 import uuid6
 from typing import Annotated, Optional, Any
-from fastapi import Depends, Query
+from fastapi import Query
 from pydantic.dataclasses import dataclass
-from sqlmodel import Field, SQLModel
-from sqlalchemy import Column, DateTime
+from sqlmodel import Field
+from sqlalchemy import DateTime
 from typing import Generic, TypeVar
 from starlette import status as starlette_status
 
@@ -28,6 +29,7 @@ class Pagination(BaseModel):
     limit: int
     total_page: int
 
+
 class ListParams(BaseModel):
     limit: int = Query(default=DEFAULT_LIMIT, ge=1, le=MAX_LIMIT)
     page: int = Query(default=1, ge=1)
@@ -39,7 +41,9 @@ class ListParams(BaseModel):
         return (self.page - 1) * self.limit
 
     def to_pagination(self, total_count: int) -> Pagination:
-        return Pagination(limit=self.limit, total_page=math.ceil(total_count / self.limit))
+        return Pagination(
+            limit=self.limit, total_page=math.ceil(total_count / self.limit)
+        )
 
 
 class Direction(Enum):
@@ -68,7 +72,9 @@ Name = Annotated[
     ),
 ]
 
-DisplayName = Annotated[str | None, Field(default=None, min_length=0, max_length=64, nullable=True)]
+DisplayName = Annotated[
+    str | None, Field(default=None, min_length=0, max_length=64, nullable=True)
+]
 
 
 class ErrorInfo(BaseModel):
@@ -250,22 +256,62 @@ class ErrorCode(Enum):
 
 ErrorCodeMapping = {
     ErrorCode.CANCELLED: (499, "client closed request"),
-    ErrorCode.UNKNOWN: (starlette_status.HTTP_500_INTERNAL_SERVER_ERROR, "internal server error"),
-    ErrorCode.INVALID_ARGUMENT: (starlette_status.HTTP_400_BAD_REQUEST, "client specified an invalid argument"),
-    ErrorCode.DEADLINE_EXCEEDED: (starlette_status.HTTP_504_GATEWAY_TIMEOUT, "deadline exceeded"),
+    ErrorCode.UNKNOWN: (
+        starlette_status.HTTP_500_INTERNAL_SERVER_ERROR,
+        "internal server error",
+    ),
+    ErrorCode.INVALID_ARGUMENT: (
+        starlette_status.HTTP_400_BAD_REQUEST,
+        "client specified an invalid argument",
+    ),
+    ErrorCode.DEADLINE_EXCEEDED: (
+        starlette_status.HTTP_504_GATEWAY_TIMEOUT,
+        "deadline exceeded",
+    ),
     ErrorCode.NOT_FOUND: (starlette_status.HTTP_404_NOT_FOUND, "resource not found"),
-    ErrorCode.ALREADY_EXISTS: (starlette_status.HTTP_409_CONFLICT, "resource already exists"),
-    ErrorCode.PERMISSION_DENIED: (starlette_status.HTTP_403_FORBIDDEN, "permission denied"),
-    ErrorCode.UNAUTHENTICATED: (starlette_status.HTTP_401_UNAUTHORIZED, "unauthenticated"),
-    ErrorCode.RESOURCE_EXHAUSTED: (starlette_status.HTTP_429_TOO_MANY_REQUESTS, "some resources are exhausted"),
-    ErrorCode.FAILED_PRECONDITION: (starlette_status.HTTP_400_BAD_REQUEST, "some precondition is not met"),
+    ErrorCode.ALREADY_EXISTS: (
+        starlette_status.HTTP_409_CONFLICT,
+        "resource already exists",
+    ),
+    ErrorCode.PERMISSION_DENIED: (
+        starlette_status.HTTP_403_FORBIDDEN,
+        "permission denied",
+    ),
+    ErrorCode.UNAUTHENTICATED: (
+        starlette_status.HTTP_401_UNAUTHORIZED,
+        "unauthenticated",
+    ),
+    ErrorCode.RESOURCE_EXHAUSTED: (
+        starlette_status.HTTP_429_TOO_MANY_REQUESTS,
+        "some resources are exhausted",
+    ),
+    ErrorCode.FAILED_PRECONDITION: (
+        starlette_status.HTTP_400_BAD_REQUEST,
+        "some precondition is not met",
+    ),
     ErrorCode.ABORTED: (starlette_status.HTTP_409_CONFLICT, "this action was aborted"),
-    ErrorCode.OUT_OF_RANGE: (starlette_status.HTTP_400_BAD_REQUEST, "this action is out of range"),
-    ErrorCode.UNIMPLEMENTED: (starlette_status.HTTP_501_NOT_IMPLEMENTED, "this action is not implemented"),
-    ErrorCode.INTERNAL: (starlette_status.HTTP_500_INTERNAL_SERVER_ERROR, "internal server error"),
-    ErrorCode.UNAVAILABLE: (starlette_status.HTTP_503_SERVICE_UNAVAILABLE, "service is unavailable"),
-    ErrorCode.DATA_LOSS: (starlette_status.HTTP_500_INTERNAL_SERVER_ERROR, "unrecoverable data loss or corruption"),
+    ErrorCode.OUT_OF_RANGE: (
+        starlette_status.HTTP_400_BAD_REQUEST,
+        "this action is out of range",
+    ),
+    ErrorCode.UNIMPLEMENTED: (
+        starlette_status.HTTP_501_NOT_IMPLEMENTED,
+        "this action is not implemented",
+    ),
+    ErrorCode.INTERNAL: (
+        starlette_status.HTTP_500_INTERNAL_SERVER_ERROR,
+        "internal server error",
+    ),
+    ErrorCode.UNAVAILABLE: (
+        starlette_status.HTTP_503_SERVICE_UNAVAILABLE,
+        "service is unavailable",
+    ),
+    ErrorCode.DATA_LOSS: (
+        starlette_status.HTTP_500_INTERNAL_SERVER_ERROR,
+        "unrecoverable data loss or corruption",
+    ),
 }
+
 
 @dataclass
 class Error(Exception):
@@ -290,7 +336,9 @@ class Error(Exception):
         )
 
     @classmethod
-    def from_error_code(cls, code: ErrorCode, details: list[ErrorInfo | LocalizedMessage | BaseModel]) -> "Error":
+    def from_error_code(
+        cls, code: ErrorCode, details: list[ErrorInfo | LocalizedMessage | BaseModel]
+    ) -> "Error":
         return cls(
             http_code=ErrorCodeMapping[code][0],
             message=ErrorCodeMapping[code][1],
@@ -348,10 +396,20 @@ class CursorList(BaseModel, Generic[T]):
 
 UID = Field(default_factory=uuid6.uuid7, primary_key=True, nullable=False)
 
+
 def utcnow() -> datetime:
     return datetime.now(UTC)
 
+
 class TimestampsMixin(BaseModel):
     create_time: datetime = Field(default_factory=utcnow, nullable=False, index=True)
-    update_time: Optional[datetime] = Field(sa_type=DateTime(timezone=True), nullable=True, index=True, default=None, sa_column_kwargs={"onupdate": utcnow})
-    delete_time: Optional[datetime] = Field(sa_type=DateTime(timezone=True), nullable=True, index=True, default=None)
+    update_time: Optional[datetime] = Field(
+        sa_type=DateTime(timezone=True),
+        nullable=True,
+        index=True,
+        default=None,
+        sa_column_kwargs={"onupdate": utcnow},
+    )
+    delete_time: Optional[datetime] = Field(
+        sa_type=DateTime(timezone=True), nullable=True, index=True, default=None
+    )

@@ -39,8 +39,8 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
   const { mutateAsync: registerUserMutationAsync } = useRegisterUserHook()
   const navigate = useNavigate()
   const { toast } = useToast()
-  
-    
+
+
   // <div>注册邮件已经发送到邮箱 {message}，请查收</div>
   const registerForm = useForm<RegisterUserRequestSchema>({
     resolver: zodResolver(registerUserRequestSchema),

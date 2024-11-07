@@ -12,6 +12,9 @@ class Settings(BaseSettings):
     smtp_user: str
     smtp_password: str
 
+    ecloud_access_key: str
+    ecloud_secret_key: str
+
     model_config = SettingsConfigDict(env_file=".env")
 
 

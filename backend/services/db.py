@@ -4,9 +4,9 @@ from sqlalchemy.ext.asyncio import (
 )
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from config import get_settings
 from routers.types import Role, User
 from services.security import get_secret_hash
+from settings import get_settings
 
 sqlite_file_name = "database.db"
 sqlite_url = f"sqlite+aiosqlite:///{sqlite_file_name}"

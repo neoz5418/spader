@@ -6,7 +6,7 @@ import jwt
 import logging
 from argon2 import PasswordHasher
 
-from config import get_settings
+from settings import get_settings
 
 ph = PasswordHasher()
 

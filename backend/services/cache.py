@@ -2,7 +2,7 @@ from functools import lru_cache
 from fakeredis import FakeAsyncRedis as FakeRedis
 import redis.asyncio as redis
 
-from config import get_settings
+from settings import get_settings
 
 
 @lru_cache

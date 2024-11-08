@@ -14,6 +14,7 @@ class Settings(BaseSettings):
 
     ecloud_access_key: str
     ecloud_secret_key: str
+    ecloud_pool_id: str
 
     model_config = SettingsConfigDict(env_file=".env")
 

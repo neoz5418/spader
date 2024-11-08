@@ -1,5 +1,7 @@
-from routers.types import *
 from datetime import datetime, timezone
+from enum import Enum
+from uuid import UUID
+
 from fastapi import APIRouter, HTTPException
 from dependencies import (
     CurrentAdminUserDepAnnotated,
@@ -8,7 +10,30 @@ from dependencies import (
     ListParamsDep,
     SessionDep,
 )
-from services.celery import create_operation
+from routers.types import (
+    CreateFileStorageRequest,
+    CreateInstanceRequest,
+    FileList,
+    FileStorage,
+    FileStorageList,
+    GPUType,
+    GPUTypeList,
+    Image,
+    ImageList,
+    Instance,
+    InstanceList,
+    InstanceStatus,
+    Operation,
+    OperationList,
+    OperationStatus,
+    PortForward,
+    WatchEvent,
+    WorkspaceZoneQuota,
+    Zone,
+    ZoneCreate,
+    ZoneList,
+)
+from services.celery import create_instance_operation
 from services.common import PERMISSION_GLOBAL_ADMIN, PERMISSION_REGULAR_USER
 
 router = APIRouter(
@@ -209,7 +234,7 @@ async def create_instance(
     )
     await Instance.create(session, to_create)
     operation = await Operation.create(session, operation_creation)
-    create_operation.delay(operation.uid)
+    create_instance_operation.delay(operation.uid)
     return operation
 
 

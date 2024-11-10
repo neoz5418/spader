@@ -160,6 +160,22 @@ async def register_user(
     )
     db_user.create_time = datetime.now()
     session.add(db_user)
+
+    # check workspace exists, the workspace's name is same as user name
+    statement = select(Workspace).where(Workspace.name == register_user_request.name)
+    db_workspace = (await session.exec(statement)).first()
+    if db_workspace is not None:
+        logger.warn("workspace already exists")
+        if workspace.owner != register_user_request.name:
+            logger.warn("workspace's owner is not same as user name")
+    else:
+        workspace = Workspace(
+                name= register_user_request.name,
+                owner= register_user_request.name,
+                display_name= register_user_request.email,
+            )
+        session.add(workspace)
+
     await session.commit()
     await session.refresh(db_user)
     await cache.delete(otp_prefix(register_user_request.email))

@@ -44,4 +44,12 @@ async def init_admin_user():
             phone_number="+861234567890",
         )
         session.add(user)
+
+        workspace = Workspace(
+            name= user.name,
+            owner= user.name,
+            display_name= user.email,
+        )
+        
+        session.add(workspace)
         await session.commit()

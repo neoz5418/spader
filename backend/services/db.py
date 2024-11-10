@@ -29,7 +29,7 @@ async def get_session():
 
 async def init_admin_user():
     async with AsyncSession(engine) as session:
-        statement = select(User).where(User.email == "admin@localhost")
+        statement = select(User).where(User.email == "admin@localhost.dev")
         user = (await session.exec(statement)).first()
         # print(user)
         if user is not None:
@@ -37,7 +37,7 @@ async def init_admin_user():
 
         user = User(
             name="admin",
-            email="admin@localhost",
+            email="admin@localhost.dev",
             role=Role.global_admin,
             display_name="System Default Admin",
             hashed_password=get_secret_hash(get_settings().bootstrap_password),

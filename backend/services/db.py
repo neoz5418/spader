@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import (
 )
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from routers.types import Role, User, Workspace
+from routers.types import Provider, Role, User, Workspace, Zone
 from services.security import get_secret_hash
 from settings import get_settings
 
@@ -53,3 +53,26 @@ async def init_admin_user():
 
         session.add(workspace)
         await session.commit()
+
+
+async def init_data():
+    async with AsyncSession(engine) as session:
+        beijing = Zone(
+            name="beijing",
+            provider=Provider.ecloud,
+            provider_config={
+                "region": "BJJD",
+                "pool_id": "CIDC-RP-29",
+                "network_id": "02d27f9b-60dd-405f-83f7-b815daf0a5bc",
+                "security_group_id": "ad77b961-b606-4427-abdf-42dff277efb6",
+            },
+        )
+        await beijing.save(session)
+        # xiamen = Zone(name="xiamen", provider=Provider.ecloud)
+        # jinan = Zone(name="jinan", provider=Provider.ecloud)
+        # shanghai = Zone(name="shanghai", provider=Provider.ecloud)
+        # guangzhou = Zone(name="guangzhou", provider=Provider.ecloud)
+        # chongqing = Zone(name="chongqing", provider=Provider.ecloud)
+        # xian = Zone(name="xian", provider=Provider.ecloud)
+        # hohhot = Zone(name="hohhot", provider=Provider.ecloud)
+        # Suzhou = Zone(name="Suzhou", provider=Provider.ecloud)

@@ -269,13 +269,22 @@ class Provider(Enum):
     ecloud = "ecloud"
 
 
+class ProviderZoneConfigEcloud(BaseModel):
+    region: str
+    pool_id: str
+    network_id: str
+    security_group_id: str
+
+
 class ZoneBase(SQLModel):
-    name: Name
+    name: str = Field(primary_key=True, nullable=False)
     provider: Provider
+    provider_config: ProviderZoneConfigEcloud = Field(
+        sa_column=Column(JSON), default={}
+    )
 
 
 class Zone(ZoneBase, BaseModelMixin, table=True):
-    uid: UUID = UID
     pass
 
 

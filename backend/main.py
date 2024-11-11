@@ -9,10 +9,10 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.background import BackgroundTask
-from routers import workspaces, users, instances, types, oidc
+from routers import workspaces, users, instances, oidc
 from services.common import Error
 from services.logging import setup_logging
-from services.db import get_session, create_db_and_tables, init_admin_user
+from services.db import get_session, create_db_and_tables, init_admin_user, init_data
 import logging
 
 setup_logging()
@@ -24,6 +24,7 @@ logger = logging.getLogger(__name__)
 async def lifespan(a: FastAPI):
     await create_db_and_tables()
     await init_admin_user()
+    await init_data()
     yield
 
 
@@ -73,9 +74,7 @@ async def http_exception_handler(request, exc):
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request, exc):
-    return JSONResponse(
-        jsonable_encoder(Error.from_exception(exc)), status_code=400
-    )
+    return JSONResponse(jsonable_encoder(Error.from_exception(exc)), status_code=400)
 
 
 async def set_body(request: Request, body: bytes):

@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import (
 )
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from routers.types import Role, User
+from routers.types import Role, User, Workspace
 from services.security import get_secret_hash
 from settings import get_settings
 
@@ -46,10 +46,10 @@ async def init_admin_user():
         session.add(user)
 
         workspace = Workspace(
-            name= user.name,
-            owner= user.name,
-            display_name= user.email,
+            name=user.name,
+            owner=user.name,
+            display_name=user.email,
         )
-        
+
         session.add(workspace)
         await session.commit()

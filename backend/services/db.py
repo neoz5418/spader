@@ -67,7 +67,7 @@ async def init_data():
                 "security_group_id": "ad77b961-b606-4427-abdf-42dff277efb6",
             },
         )
-        await beijing.save(session)
+        await Zone.create_or_update(session, beijing)
         # xiamen = Zone(name="xiamen", provider=Provider.ecloud)
         # jinan = Zone(name="jinan", provider=Provider.ecloud)
         # shanghai = Zone(name="shanghai", provider=Provider.ecloud)

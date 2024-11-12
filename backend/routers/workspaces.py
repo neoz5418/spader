@@ -2,6 +2,7 @@ from enum import Enum
 
 from fastapi import APIRouter, status, HTTPException
 from dependencies import (
+    CurrentAdminUserDepAnnotated,
     CurrentUserDep,
     ListParamsDep,
     SessionDep,
@@ -86,11 +87,6 @@ async def list_user_workspaces(
     params: ListParamsDep,
     search: str = None,
 ) -> WorkspaceList:
-    if username != "" and user.name != username:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only the user itself can list workspaces",
-        )
     fuzzy_fields = {}
     if search:
         fuzzy_fields = {"name": search, "display_name": search}
@@ -110,7 +106,7 @@ async def list_user_workspaces(
 @router.get("/workspaces", tags=PERMISSION_GLOBAL_ADMIN)
 async def list_workspaces(
     session: SessionDep,
-    user: CurrentUserDepAnnotated,
+    user: CurrentAdminUserDepAnnotated,
     params: ListParamsDep,
     sort: ListWorkspacesSortOptions = ListWorkspacesSortOptions.create_time,
     direction: Direction = Direction.DESC,

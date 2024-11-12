@@ -9,7 +9,7 @@ from fastapi.security import (
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 from services.security import jwt_manager
-from routers.types import Role, User
+from routers.types import Role, User, Workspace
 from services.db import get_session
 
 
@@ -27,6 +27,7 @@ async def get_current_user(
 
     if user:
         request.state.user = user
+        await authorizer(session, request, user)
         return user
 
     raise HTTPException(status_code=401, detail="Unauthorized")
@@ -61,3 +62,31 @@ async def get_user_from_jwt_token(
     if not user:
         return None
     return user
+
+
+permission_denied = HTTPException(
+    status_code=403,
+    detail="permission denied",
+)
+
+
+async def authorizer(session: AsyncSession, request: Request, user: User):
+    if user.role == Role.global_admin:
+        return
+    if "username" in request.path_params:
+        username = request.path_params["username"]
+        if username != user.name:
+            raise permission_denied
+    if "workspace" in request.path_params:
+        workspace = request.path_params["workspace"]
+        db_workspace = await session.exec(
+            select(Workspace).where(Workspace.name == workspace)
+        ).first()
+        if not db_workspace:
+            raise HTTPException(
+                status_code=404,
+                detail="Workspace not found",
+            )
+        if user.name != db_workspace.owner:
+            raise permission_denied
+    return

@@ -4,6 +4,7 @@ import { MutationCache, QueryCache } from "@tanstack/react-query";
 import { mutationErrorHandler, queryErrorHandler } from "./error-handler";
 import type { AxiosError, AxiosHeaders, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
 import { getAccessToken } from './tokens'
+import { ApiError } from '@/core/ApiError';
 
 declare const AXIOS_BASE: string
 declare const AXIOS_HEADERS: string
@@ -52,9 +53,11 @@ const authRequestInterceptor = (config: InternalAxiosRequestConfig) => {
 
 axios.interceptors.request.use(authRequestInterceptor);
 
-export const axiosClient = async <TData, TError = unknown, TVariables = unknown>(config: RequestConfig<TVariables>): Promise<ResponseConfig<TData>> => {
+export async function axiosClient<TData, TVariables = unknown>(
+  config: RequestConfig<TVariables>
+): Promise<ResponseConfig<TData>> {
   const token = localStorage.getItem("access_token") || ""
-  let commonHeader = axiosInstance?.defaults?.headers?.common
+  const commonHeader = axiosInstance?.defaults?.headers?.common
   if (commonHeader) {
     commonHeader['Authorization'] = `Bearer ${token}`
     commonHeader["Content-Type"] = "application/json";
@@ -62,11 +65,40 @@ export const axiosClient = async <TData, TError = unknown, TVariables = unknown>
       Intl.DateTimeFormat().resolvedOptions().timeZone;
   }
 
-  const promise = axiosInstance.request<TData, ResponseConfig<TData>>(config).catch((e: AxiosError<TError>) => {
-    throw e
-  })
+  try {
+    const response = await axiosInstance.request<TData, ResponseConfig<TData>>(config);
+    return response;
+  } catch (err) {
+    const error = err as AxiosError ;
+    const errorResponse: ApiError = {
+      message: '未知错误',
+      status:  0,
+    };
 
-  return promise
+
+    if (!error.response) {
+      errorResponse.message = '网络连接失败，请检查网络设置！';
+    } else {
+      switch (error.response.status) {
+        case 401:
+          errorResponse.message = '未授权，请重新登录';
+          break;
+        case 403:
+          errorResponse.message = '拒绝访问';
+          break;
+        case 404:
+          errorResponse.message = '请求的资源不存在';
+          break;
+        case 500:
+          errorResponse.message = '服务器错误';
+          break;
+        default:
+          errorResponse.message = error.response.data as string || '请求失败';
+      }
+    }
+    console.log("[+]", errorResponse)
+    throw errorResponse
+  }
 }
 
 

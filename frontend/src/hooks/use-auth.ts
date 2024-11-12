@@ -72,13 +72,18 @@ const useAuth = () => {
   })
 
   const login = async (data: AccessToken) => {
-    const response = await loginAccessToken({
-      grant_type: 'password',
-      email: data.email,
-      password: data.password,
-    })
-    setRefreshToken(response.refresh_token)
-    setAccessToken(response.access_token)
+    try{
+      const response = await loginAccessToken({
+        grant_type: 'password',
+        email: data.email,
+        password: data.password,
+      })
+      setRefreshToken(response.refresh_token)
+      setAccessToken(response.access_token)
+    }catch(err) {
+      const error = err as ApiError ;
+      setError(error.message)
+    }
   }
 
   const loginMutation = useMutation({

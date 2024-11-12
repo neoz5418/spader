@@ -44,23 +44,14 @@ async def init_admin_user():
             phone_number="+861234567890",
         )
         session.add(user)
-        session.flush()
 
-        uid = str(user.uid)
-        statement = select(Workspace).where(Workspace.owner == uid)
-        db_workspace = (await session.exec(statement)).first()
-        if db_workspace is not None:
-            logger.warn("workspace already exists")
-            if workspace.owner != uid:
-                logger.warn("workspace's owner is not same as user name")
-        else:
-            workspace = Workspace(
-                name= user.name,
-                owner= uid,
-                display_name= user.email,
-            )
-            session.add(workspace)
+        workspace = Workspace(
+            name=user.name,
+            owner=user.name,
+            display_name=user.email,
+        )
 
+        session.add(workspace)
         await session.commit()
 
 

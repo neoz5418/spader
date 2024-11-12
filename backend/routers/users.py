@@ -6,12 +6,7 @@ import string
 from routers.types import *
 from sqlmodel import select
 
-from services.common import (
-    Direction,
-    PERMISSION_GLOBAL_ADMIN,
-    PERMISSION_REGULAR_USER,
-    PERMISSION_UNAUTHENTICATED,
-)
+from services.common import Direction, PERMISSION_GLOBAL_ADMIN, PERMISSION_REGULAR_USER, PERMISSION_UNAUTHENTICATED
 from services.notification import send_one_time_password_email
 from services.cache import get_redis
 from services.security import get_secret_hash
@@ -165,21 +160,18 @@ async def register_user(
     )
     db_user.create_time = datetime.now()
     session.add(db_user)
-    await session.flush()
 
-    # check workspace exists, the workspace's owner is user's uid
-    # the workspace's name is default set to user name
-    uid = str(db_user.uid)
-    statement = select(Workspace).where(Workspace.owner == uid)
+    # check workspace exists, the workspace's name is same as user name
+    statement = select(Workspace).where(Workspace.name == register_user_request.name)
     db_workspace = (await session.exec(statement)).first()
     if db_workspace is not None:
         logger.warn("workspace already exists")
-        if workspace.owner != uid:
+        if workspace.owner != register_user_request.name:
             logger.warn("workspace's owner is not same as user name")
     else:
         workspace = Workspace(
                 name= register_user_request.name,
-                owner= uid,
+                owner= register_user_request.name,
                 display_name= register_user_request.email,
             )
         session.add(workspace)

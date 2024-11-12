@@ -1,5 +1,6 @@
+from enum import Enum
+
 from fastapi import APIRouter, status, HTTPException
-from routers.types import *
 from dependencies import (
     CurrentUserDep,
     ListParamsDep,
@@ -8,6 +9,17 @@ from dependencies import (
 )
 from sqlmodel import and_, select
 
+from routers.types import (
+    Currency,
+    SSHKeyList,
+    Workspace,
+    WorkspaceAccount,
+    WorkspaceCreate,
+    WorkspaceInvitationList,
+    WorkspaceList,
+    WorkspaceMemberList,
+    WorkspaceQuota,
+)
 from services.common import Direction, PERMISSION_GLOBAL_ADMIN, PERMISSION_REGULAR_USER
 
 router = APIRouter(
@@ -36,7 +48,7 @@ async def create_workspace(
     db_workspace = (
         await session.exec(
             select(Workspace).where(
-                and_(Workspace.name == workspace.name, Workspace.delete_time == None)
+                and_(Workspace.name == workspace.name, Workspace.delete_time is None)
             )
         )
     ).first()
@@ -155,10 +167,23 @@ def replace_workspace_quota(workspace: str, quota: WorkspaceQuota):
 @router.get(
     "/workspaces/{workspace}/account",
     tags=PERMISSION_REGULAR_USER,
-    response_model=WorkspaceAccount,
 )
-def get_workspace_account(workspace: str):
-    return
+async def get_workspace_account(
+    session: SessionDep,
+    user: CurrentUserDepAnnotated,
+    workspace: str,
+) -> WorkspaceAccount:
+    # TODO: add transaction
+    db_workspace = await WorkspaceAccount.one_by_field(session, "workspace", workspace)
+    if not db_workspace:
+        db_workspace = WorkspaceAccount(
+            workspace=workspace,
+            balance=0,
+            currency=Currency.CNY,
+        )
+        await db_workspace.save(session)
+        await db_workspace.refresh(session)
+    return db_workspace
 
 
 @router.get(

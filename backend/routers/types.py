@@ -202,8 +202,8 @@ class Currency(Enum):
     CNY = "CNY"
 
 
-class WorkspaceAccount(BaseModel):
-    workspace: str
+class WorkspaceAccount(SQLModel, ActiveRecordMixin, table=True):
+    workspace: str = Field(primary_key=True, nullable=False)
     balance: int
     currency: Currency
 

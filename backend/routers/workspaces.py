@@ -1,5 +1,6 @@
-from enum import Enum
 
+from enum import Enum
+import logging
 from fastapi import APIRouter, status, HTTPException
 from dependencies import (
     CurrentUserDep,
@@ -13,6 +14,7 @@ from routers.types import (
     Currency,
     SSHKeyList,
     Workspace,
+    WorkspaceMember,
     WorkspaceAccount,
     WorkspaceCreate,
     WorkspaceInvitationList,
@@ -20,7 +22,9 @@ from routers.types import (
     WorkspaceMemberList,
     WorkspaceQuota,
 )
-from services.common import Direction, PERMISSION_GLOBAL_ADMIN, PERMISSION_REGULAR_USER
+from services.common import Direction, Pagination, PaginatedList, PERMISSION_GLOBAL_ADMIN, PERMISSION_REGULAR_USER
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(
     prefix="/apis/workspace/v1",
@@ -91,19 +95,38 @@ async def list_user_workspaces(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Only the user itself can list workspaces",
         )
-    fuzzy_fields = {}
-    if search:
-        fuzzy_fields = {"name": search, "display_name": search}
-    fields = {}
-    if username != "":
-        fields = {"owner": username}
+    workspaces = []
 
-    return await Workspace.paginated_by_query(
-        session=session,
-        fields=fields,
-        fuzzy_fields=fuzzy_fields,
-        page=params.page,
-        per_page=params.limit,
+    # check workspace exists, the workspace's name is same as user name
+    statement = select(Workspace).where(
+        and_(Workspace.name == username, Workspace.owner == username)
+    )
+    workspace = (await session.exec(statement)).first()
+    if workspace is not None:
+        if workspace.owner != username:
+            logger.warn("workspace's owner is not same as user name")
+        else:
+            workspaces.append(workspace)
+
+    results = await session.exec(
+        select(Workspace, WorkspaceMember).where(
+            and_(
+                Workspace.name == WorkspaceMember.workspace, 
+                WorkspaceMember.username == username
+            )
+        )
+    )
+
+    for workspace, member in results.all():
+        logger.info("[+] list_user_workspaces workspace", workspace, member)
+        workspaces.append(workspace)
+
+    return PaginatedList[Workspace](
+        items=workspaces,
+        pagination=Pagination(
+            total_page=1, 
+            limit=1000, 
+        ),
     )
 
 

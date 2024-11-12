@@ -1,15 +1,16 @@
 import { Outlet } from 'react-router-dom'
-import Sidebar from './sidebar'
+import Sidebar from '../components/sidebar'
 import useIsCollapsed from '@/hooks/use-is-collapsed'
-import SkipToMain from './skip-to-main'
+import SkipToMain from '../components/skip-to-main'
 
 import { Layout } from '@/components/custom/layout'
 import { Search } from '@/components/search'
 import ThemeSwitch from '@/components/theme-switch'
 import { TopNav } from '@/components/top-nav'
 import { UserNav } from '@/components/user-nav'
-import { WorkspaceSwitcher } from './custom/workspace-switch'
-import { SidebarProvider } from './ui/sidebar'
+import { WorkspaceSwitcher } from '../components/custom/workspace-switch'
+import { SidebarProvider } from '../components/ui/sidebar'
+import useWorkspace from '@/hooks/use-workspace'
 
 export default function AppShell() {
   const [isCollapsed, setIsCollapsed] = useIsCollapsed()
@@ -30,7 +31,7 @@ export default function AppShell() {
               <ThemeSwitch />
               <p className='text-sm font-semibold'>$10.00</p>
               {/* <UserNav /> */}
-              <WorkspaceSwitcher />
+              <WorkspaceSwitcher/>
             </div>
           </Layout.Header>
           <Outlet />

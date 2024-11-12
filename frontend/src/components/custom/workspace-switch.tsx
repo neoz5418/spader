@@ -13,16 +13,20 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/custom/button"
 import useAuth from "@/hooks/use-auth"
+import useWorkspace from "@/hooks/use-workspace"
 
 export function WorkspaceSwitcher() {
-  const [selectedWorkspace, setSelectedWorkspace] = React.useState("")
-  const { logout, user: currentUser } = useAuth()
+  const { logout } = useAuth()
   const handleLogout = async () => {
     logout()
   }
-  const workspaces = [currentUser?.email || ""]
+  const { 
+    workspaces,
+    workspace: current, 
+    switchWorkspace 
+  } = useWorkspace()
 
-
+  console.log(workspaces)
   return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -33,7 +37,7 @@ export function WorkspaceSwitcher() {
             >
               <div className="flex flex-col gap-0.5 leading-none">
                 <span className="font-semibold">Workspace</span>
-                <span className="">{currentUser?.email}</span>
+                <span className="">{current?.display_name}</span>
               </div>
               <ChevronsUpDown className="ml-auto" />
             </Button>
@@ -42,13 +46,13 @@ export function WorkspaceSwitcher() {
             className="w-[--radix-dropdown-menu-trigger-width]"
             align="start"
           >
-            {workspaces.map((workspace) => (
+            {workspaces?.map((workspace) => (
               <DropdownMenuItem
-                key={workspace}
-                onSelect={() => setSelectedWorkspace(workspace)}
+                key={workspace.name}
+                onSelect={() => switchWorkspace(workspace.name)}
               >
-                {workspace}{" "}
-                {workspace === selectedWorkspace && <Check className="ml-auto" />}
+                {workspace.display_name}{" "}
+                {workspace.name === current?.name && <Check className="ml-auto" />}
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />

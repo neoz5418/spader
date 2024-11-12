@@ -63,7 +63,7 @@ const router = createBrowserRouter([{
       {
         path: '/',
         lazy: async () => {
-          const AppShell = await import('./components/app-shell.tsx')
+          const AppShell = await import('./pages/app-shell.tsx')
           return { Component: AppShell.default }
         },
         errorElement: <GeneralError />,

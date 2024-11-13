@@ -13,7 +13,7 @@ from starlette.background import BackgroundTask
 
 from routers import workspaces, users, instances, oidc
 from services.common import Error
-from services.logging import setup_logging
+from services.logger import setup_logging
 from services.db import get_session, create_db_and_tables, init_admin_user, init_data
 import logging
 

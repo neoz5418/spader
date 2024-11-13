@@ -11,7 +11,6 @@ from dependencies import (
 from sqlmodel import and_, select
 
 from routers.types import (
-    Currency,
     SSHKeyList,
     Workspace,
     WorkspaceAccount,
@@ -22,6 +21,7 @@ from routers.types import (
     WorkspaceQuota,
 )
 from services.common import Direction, PERMISSION_GLOBAL_ADMIN, PERMISSION_REGULAR_USER
+from services.lago import get_account
 
 router = APIRouter(
     prefix="/apis/workspace/v1",
@@ -169,17 +169,8 @@ async def get_workspace_account(
     user: CurrentUserDepAnnotated,
     workspace: str,
 ) -> WorkspaceAccount:
-    # TODO: add transaction
-    db_workspace = await WorkspaceAccount.one_by_field(session, "workspace", workspace)
-    if not db_workspace:
-        db_workspace = WorkspaceAccount(
-            workspace=workspace,
-            balance=0,
-            currency=Currency.CNY,
-        )
-        await db_workspace.save(session)
-        await db_workspace.refresh(session)
-    return db_workspace
+    db_workspace = await Workspace.one_by_field(session, "name", workspace)
+    return get_account(db_workspace)
 
 
 @router.get(

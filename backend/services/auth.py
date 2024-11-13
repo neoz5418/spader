@@ -79,9 +79,7 @@ async def authorizer(session: AsyncSession, request: Request, user: User):
             raise permission_denied
     if "workspace" in request.path_params:
         workspace = request.path_params["workspace"]
-        db_workspace = await session.exec(
-            select(Workspace).where(Workspace.name == workspace)
-        ).first()
+        db_workspace = await Workspace.one_by_field(session, "name", workspace)
         if not db_workspace:
             raise HTTPException(
                 status_code=404,

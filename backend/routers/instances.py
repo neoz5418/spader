@@ -142,6 +142,7 @@ class ListInstancesSortOptions(Enum):
 )
 async def list_instances(
     session: SessionDep,
+    user: CurrentAdminUserDepAnnotated,
     params: ListParamsDep,
     zone: str = None,
     search: str = None,
@@ -152,6 +153,7 @@ async def list_instances(
         workspace="",
         zone=zone,
         search=search,
+        user=user,
     )
 
 
@@ -161,6 +163,7 @@ async def list_instances(
 )
 async def list_workspace_instances(
     session: SessionDep,
+    user: CurrentUserDepAnnotated,
     params: ListParamsDep,
     workspace: str,
     zone: str = None,

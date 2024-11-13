@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 
 from dependencies import SessionDep
 from providers.interface import ProviderInterface
-from routers.types import Instance, Operation, OperationStatus, Zone
+from routers.types import Instance, InstanceStatus, Operation, OperationStatus, Zone
 from ecloudsdkecs.v1.client import Client
 from ecloudsdkcore.config.config import Config
 from ecloudsdkecs.v1.model import (
@@ -23,7 +23,7 @@ def get_client(zone: Zone) -> Client:
         Config(
             access_key=get_settings().ecloud_access_key,
             secret_key=get_settings().ecloud_secret_key,
-            pool_id=zone.provider_config.pool_id,
+            pool_id=zone.provider_config.get("pool_id"),
         )
     )
 
@@ -54,11 +54,14 @@ class ProviderEcloud(ProviderInterface):
                 "start_time": datetime.now(timezone.utc),
             },
         )
+        await operation.refresh(session)
+        await zone.refresh(session)
+        await instance.refresh(session)
         request = VmCreateRequest()
         vm_create_body = VmCreateBody()
         networks = VmCreateRequestNetworks()
-        networks.network_id = zone.provider_config.network_id
-        security_group_ids = [zone.provider_config.secret_group_id]
+        networks.network_id = zone.provider_config.get("network_id")
+        security_group_ids = [zone.provider_config.get("secret_group_id")]
         boot_volume = VmCreateRequestBootVolume()
         boot_volume.volume_type = "highPerformance"
         boot_volume.size = 50
@@ -76,7 +79,7 @@ class ProviderEcloud(ProviderInterface):
         vm_create_body.keypair_name = "zheng1"
         vm_create_body.cpu = 8
         vm_create_body.name = str(instance.uid)
-        vm_create_body.region = zone.provider_config.region
+        vm_create_body.region = zone.provider_config.get("region")
         request.vm_create_body = vm_create_body
         result = client.vm_create(request)
         logger.info(result)
@@ -87,5 +90,12 @@ class ProviderEcloud(ProviderInterface):
                 "status": OperationStatus.done,
                 "progress": 100,
                 "end_time": datetime.now(timezone.utc),
+            },
+        )
+        await instance.update(
+            session,
+            {
+                "status": InstanceStatus.running,
+                "update_time": datetime.now(timezone.utc),
             },
         )

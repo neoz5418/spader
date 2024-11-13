@@ -16,6 +16,10 @@ class Settings(BaseSettings):
     ecloud_secret_key: str
     ecloud_pool_id: str
 
+    lago_host: str
+    lago_key: str
+    lago_org_id: str
+
     model_config = SettingsConfigDict(env_file=".env")
 
 

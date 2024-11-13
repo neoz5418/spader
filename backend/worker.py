@@ -1,6 +1,6 @@
 # start_worker.py
 from services.celery import celery
-from services.logging import setup_logging
+from services.logger import setup_logging
 
 setup_logging()
 

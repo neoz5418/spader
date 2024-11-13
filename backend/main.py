@@ -2,6 +2,7 @@ from contextlib import asynccontextmanager
 from starlette.middleware.cors import CORSMiddleware
 import uvicorn
 from fastapi.routing import APIRoute
+from fastapi.middleware.gzip import GZipMiddleware
 from starlette.responses import JSONResponse
 from starlette.types import Message
 from fastapi import FastAPI, status, Depends, Request, Response
@@ -9,9 +10,10 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.background import BackgroundTask
+
 from routers import workspaces, users, instances, oidc
 from services.common import Error
-from services.logging import setup_logging
+from services.logger import setup_logging
 from services.db import get_session, create_db_and_tables, init_admin_user, init_data
 import logging
 
@@ -130,6 +132,8 @@ async def middleware_logger(request: Request, call_next):
         background=task,
     )
 
+
+app.add_middleware(GZipMiddleware, minimum_size=1000, compresslevel=5)
 
 origins = [
     "*",

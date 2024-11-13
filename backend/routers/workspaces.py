@@ -3,6 +3,7 @@ from enum import Enum
 import logging
 from fastapi import APIRouter, status, HTTPException
 from dependencies import (
+    CurrentAdminUserDepAnnotated,
     CurrentUserDep,
     ListParamsDep,
     SessionDep,
@@ -11,7 +12,6 @@ from dependencies import (
 from sqlmodel import and_, select
 
 from routers.types import (
-    Currency,
     SSHKeyList,
     Workspace,
     WorkspaceMember,
@@ -23,6 +23,7 @@ from routers.types import (
     WorkspaceQuota,
 )
 from services.common import Direction, Pagination, PaginatedList, PERMISSION_GLOBAL_ADMIN, PERMISSION_REGULAR_USER
+from services.lago import get_account
 
 logger = logging.getLogger(__name__)
 
@@ -132,7 +133,7 @@ async def list_user_workspaces(
 @router.get("/workspaces", tags=PERMISSION_GLOBAL_ADMIN)
 async def list_workspaces(
     session: SessionDep,
-    user: CurrentUserDepAnnotated,
+    user: CurrentAdminUserDepAnnotated,
     params: ListParamsDep,
     sort: ListWorkspacesSortOptions = ListWorkspacesSortOptions.create_time,
     direction: Direction = Direction.DESC,
@@ -195,17 +196,8 @@ async def get_workspace_account(
     user: CurrentUserDepAnnotated,
     workspace: str,
 ) -> WorkspaceAccount:
-    # TODO: add transaction
-    db_workspace = await WorkspaceAccount.one_by_field(session, "workspace", workspace)
-    if not db_workspace:
-        db_workspace = WorkspaceAccount(
-            workspace=workspace,
-            balance=0,
-            currency=Currency.CNY,
-        )
-        await db_workspace.save(session)
-        await db_workspace.refresh(session)
-    return db_workspace
+    db_workspace = await Workspace.one_by_field(session, "name", workspace)
+    return get_account(db_workspace)
 
 
 @router.get(

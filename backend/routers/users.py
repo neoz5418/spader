@@ -1,12 +1,30 @@
-from datetime import timedelta
+from datetime import datetime, timedelta
 import logging
+from enum import Enum
+from pydantic_extra_types.phone_numbers import PhoneNumber
+from pydantic import EmailStr
 from fastapi import APIRouter, status, HTTPException, BackgroundTasks
 import random
 import string
-from routers.types import *
 from sqlmodel import select
 
-from services.common import Direction, PERMISSION_GLOBAL_ADMIN, PERMISSION_REGULAR_USER, PERMISSION_UNAUTHENTICATED
+from routers.types import (
+    OneTimePasswordValidateType,
+    RegisterUserRequest,
+    Role,
+    SendOneTimePasswordRequest,
+    SendOneTimePasswordResponse,
+    User,
+    UserList,
+    UserQuota,
+    Workspace,
+)
+from services.common import (
+    Direction,
+    PERMISSION_GLOBAL_ADMIN,
+    PERMISSION_REGULAR_USER,
+    PERMISSION_UNAUTHENTICATED,
+)
 from services.notification import send_one_time_password_email
 from services.cache import get_redis
 from services.security import get_secret_hash
@@ -165,9 +183,9 @@ async def register_user(
     statement = select(Workspace).where(Workspace.name == register_user_request.name)
     db_workspace = (await session.exec(statement)).first()
     if db_workspace is not None:
-        logger.warn("workspace already exists")
-        if workspace.owner != register_user_request.name:
-            logger.warn("workspace's owner is not same as user name")
+        logger.warning("workspace already exists")
+        if db_workspace.owner != register_user_request.name:
+            logger.warning("workspace's owner is not same as user name")
     else:
         workspace = Workspace(
             name=register_user_request.name,

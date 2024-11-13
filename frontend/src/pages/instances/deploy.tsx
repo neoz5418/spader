@@ -35,6 +35,7 @@ import {
 import {useAuth} from "@/hooks/use-auth"
 import { createInstanceBody } from '@/gen/spaderApi.zod';
 import { useCreateInstanceHook } from '@/gen/hooks/useCreateInstanceHook'
+import { useState } from 'react'
 
 type ProfileFormValues = z.infer<typeof createInstancePathParamsSchema>
 
@@ -45,6 +46,7 @@ const defaultValues: Partial<CreateInstanceRequestSchema> = {
 }
 
 export default function DeployForm() {
+  const [zone, setZone] = useState("default")
   const form = useForm<CreateInstanceRequestSchema>({
     resolver: zodResolver(createInstanceRequestSchema),
     defaultValues,
@@ -54,7 +56,7 @@ export default function DeployForm() {
   const {user:currentUser} = useAuth()
   console.log(currentUser)
 
-  const {mutate: createInstance} = useCreateInstanceHook(currentUser?.email || "", "default")
+  const {mutate: createInstance} = useCreateInstanceHook(currentUser?.name || "", zone)
 
   function onSubmit(data: createInstanceBody) {
     console.log(data)
@@ -83,6 +85,28 @@ export default function DeployForm() {
         >
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit, onSubmitError)} className='space-y-8'>
+            <FormField
+              name='zone'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>区域</FormLabel>
+                  <Select onValueChange={setZone} defaultValue={zone}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder='选择主机部署的区域' />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value='beijing'>北京</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormDescription>
+                    选择主机部署的区域
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name='name'

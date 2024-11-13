@@ -83,6 +83,7 @@ export * from "./paginationSchema.gen";
 export * from "./portForwardProtocolSchema.gen";
 export * from "./portForwardSchema.gen";
 export * from "./providerSchema.gen";
+export * from "./providerZoneConfigEcloudSchema.gen";
 export * from "./registerUserRequestSchema.gen";
 export * from "./registerUserSchema.gen";
 export * from "./replaceUserQuotaSchema.gen";

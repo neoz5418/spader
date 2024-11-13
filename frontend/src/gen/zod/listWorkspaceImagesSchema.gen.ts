@@ -6,7 +6,7 @@ import { errorSchema } from "./errorSchema.gen";
 export const listWorkspaceImagesPathParamsSchema = z.object({ "workspace": z.string(), "zone": z.string() });
 export type ListWorkspaceImagesPathParamsSchema = z.infer<typeof listWorkspaceImagesPathParamsSchema>;
 
- export const listWorkspaceImagesQueryParamsSchema = z.object({ "limit": z.number().int().min(1).max(100).default(20).optional(), "page": z.number().int().min(1).default(1).optional(), "before": z.string().default("").optional(), "after": z.string().default("").optional() }).optional();
+ export const listWorkspaceImagesQueryParamsSchema = z.object({ "offset": z.number().int().min(0).default(0).optional(), "limit": z.number().int().min(1).max(100).default(20).optional() }).optional();
 export type ListWorkspaceImagesQueryParamsSchema = z.infer<typeof listWorkspaceImagesQueryParamsSchema>;
 /**
  * @description Successful Response

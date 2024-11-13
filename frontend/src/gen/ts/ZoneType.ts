@@ -1,4 +1,5 @@
 import type { ProviderType } from "./ProviderType";
+import type { ProviderZoneConfigEcloudType } from "./ProviderZoneConfigEcloudType";
 
  export type ZoneType = {
     /**
@@ -8,7 +9,6 @@ import type { ProviderType } from "./ProviderType";
     update_time?: (string | null);
     delete_time?: (string | null);
     /**
-     * @description \nNAME is subset of RFC1123 label names:\n1. contain only lowercase alphanumeric characters or \'-\'\n2. start with an alphanumeric character\n3. end with an alphanumeric character\n
      * @type string
     */
     name: string;
@@ -17,7 +17,7 @@ import type { ProviderType } from "./ProviderType";
     */
     provider: ProviderType;
     /**
-     * @type string | undefined, uuid
+     * @type object | undefined
     */
-    uid?: string;
+    provider_config?: ProviderZoneConfigEcloudType;
 };

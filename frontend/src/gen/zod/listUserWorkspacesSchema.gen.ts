@@ -6,7 +6,7 @@ import { errorSchema } from "./errorSchema.gen";
 export const listUserWorkspacesPathParamsSchema = z.object({ "username": z.string() });
 export type ListUserWorkspacesPathParamsSchema = z.infer<typeof listUserWorkspacesPathParamsSchema>;
 
- export const listUserWorkspacesQueryParamsSchema = z.object({ "search": z.string().optional(), "limit": z.number().int().min(1).max(100).default(20).optional(), "page": z.number().int().min(1).default(1).optional(), "before": z.string().default("").optional(), "after": z.string().default("").optional() }).optional();
+ export const listUserWorkspacesQueryParamsSchema = z.object({ "search": z.string().optional(), "offset": z.number().int().min(0).default(0).optional(), "limit": z.number().int().min(1).max(100).default(20).optional() }).optional();
 export type ListUserWorkspacesQueryParamsSchema = z.infer<typeof listUserWorkspacesQueryParamsSchema>;
 /**
  * @description Successful Response

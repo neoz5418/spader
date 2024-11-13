@@ -83,6 +83,7 @@ export * from "./PaginationType";
 export * from "./PortForwardProtocolType";
 export * from "./PortForwardType";
 export * from "./ProviderType";
+export * from "./ProviderZoneConfigEcloudType";
 export * from "./RegisterUserRequestType";
 export * from "./RegisterUserType";
 export * from "./ReplaceUserQuotaType";

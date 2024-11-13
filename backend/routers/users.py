@@ -65,8 +65,8 @@ async def list_users(
         session=session,
         fields=fields,
         fuzzy_fields=fuzzy_fields,
-        page=params.page,
-        per_page=params.limit,
+        offset=params.offset,
+        limit=params.limit,
     )
 
 
@@ -170,10 +170,10 @@ async def register_user(
             logger.warn("workspace's owner is not same as user name")
     else:
         workspace = Workspace(
-                name= register_user_request.name,
-                owner= register_user_request.name,
-                display_name= register_user_request.email,
-            )
+            name=register_user_request.name,
+            owner=register_user_request.name,
+            display_name=register_user_request.email,
+        )
         session.add(workspace)
 
     await session.commit()

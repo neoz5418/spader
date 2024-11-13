@@ -6,7 +6,7 @@ import { errorSchema } from "./errorSchema.gen";
 export const listWorkspaceInstancesPathParamsSchema = z.object({ "workspace": z.string() });
 export type ListWorkspaceInstancesPathParamsSchema = z.infer<typeof listWorkspaceInstancesPathParamsSchema>;
 
- export const listWorkspaceInstancesQueryParamsSchema = z.object({ "zone": z.string().optional(), "search": z.string().optional(), "status": z.string().optional(), "limit": z.number().int().min(1).max(100).default(20).optional(), "page": z.number().int().min(1).default(1).optional(), "before": z.string().default("").optional(), "after": z.string().default("").optional() }).optional();
+ export const listWorkspaceInstancesQueryParamsSchema = z.object({ "zone": z.string().optional(), "search": z.string().optional(), "status": z.string().optional(), "offset": z.number().int().min(0).default(0).optional(), "limit": z.number().int().min(1).max(100).default(20).optional() }).optional();
 export type ListWorkspaceInstancesQueryParamsSchema = z.infer<typeof listWorkspaceInstancesQueryParamsSchema>;
 /**
  * @description Successful Response

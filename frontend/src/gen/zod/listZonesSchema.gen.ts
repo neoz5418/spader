@@ -3,7 +3,7 @@ import { paginatedListZoneSchema } from "./paginatedListZoneSchema.gen";
 import { errorSchema } from "./errorSchema.gen";
 
 
-export const listZonesQueryParamsSchema = z.object({ "limit": z.number().int().min(1).max(100).default(20).optional(), "page": z.number().int().min(1).default(1).optional(), "before": z.string().default("").optional(), "after": z.string().default("").optional() }).optional();
+export const listZonesQueryParamsSchema = z.object({ "offset": z.number().int().min(0).default(0).optional(), "limit": z.number().int().min(1).max(100).default(20).optional() }).optional();
 export type ListZonesQueryParamsSchema = z.infer<typeof listZonesQueryParamsSchema>;
 /**
  * @description Successful Response

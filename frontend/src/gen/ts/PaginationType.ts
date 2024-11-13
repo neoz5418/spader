@@ -6,5 +6,5 @@ export type PaginationType = {
     /**
      * @type integer
     */
-    total_page: number;
+    total: number;
 };

@@ -6,7 +6,7 @@ import { errorSchema } from "./errorSchema.gen";
 export const listGpuTypesPathParamsSchema = z.object({ "zone": z.string() });
 export type ListGpuTypesPathParamsSchema = z.infer<typeof listGpuTypesPathParamsSchema>;
 
- export const listGpuTypesQueryParamsSchema = z.object({ "limit": z.number().int().min(1).max(100).default(20).optional(), "page": z.number().int().min(1).default(1).optional(), "before": z.string().default("").optional(), "after": z.string().default("").optional() }).optional();
+ export const listGpuTypesQueryParamsSchema = z.object({ "offset": z.number().int().min(0).default(0).optional(), "limit": z.number().int().min(1).max(100).default(20).optional() }).optional();
 export type ListGpuTypesQueryParamsSchema = z.infer<typeof listGpuTypesQueryParamsSchema>;
 /**
  * @description Successful Response

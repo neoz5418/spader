@@ -68,8 +68,8 @@ async def list_zones(
 ) -> ZoneList:
     return await Zone.paginated_by_query(
         session=session,
-        page=params.page,
-        per_page=params.limit,
+        offset=params.offset,
+        limit=params.limit,
     )
 
 
@@ -82,8 +82,8 @@ async def list_gpu_types(
     return await GPUType.paginated_by_query(
         session=session,
         fields={"zone": zone},
-        page=params.page,
-        per_page=params.limit,
+        offset=params.offset,
+        limit=params.limit,
     )
 
 
@@ -182,8 +182,8 @@ async def list_workspace_instances(
         session=session,
         fields=fields,
         fuzzy_fields=fuzzy_fields,
-        page=params.page,
-        per_page=params.limit,
+        offset=params.offset,
+        limit=params.limit,
     )
 
 

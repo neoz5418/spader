@@ -106,8 +106,8 @@ class ActiveRecordMixin:
         session: AsyncSession,
         fields: Optional[dict] = None,
         fuzzy_fields: Optional[dict] = None,
-        page: int = 1,
-        per_page: int = 100,
+        offset: int = 0,
+        limit: int = 100,
     ) -> PaginatedList[T]:
         """
         Return a paginated list of objects match the given fields and values.
@@ -131,16 +131,15 @@ class ActiveRecordMixin:
             statement = statement.where(or_(*fuzzy_conditions))
             count_statement = count_statement.where(or_(*fuzzy_conditions))
 
-        if page is not None and per_page is not None:
-            statement = statement.offset((page - 1) * per_page).limit(per_page)
+        if offset is not None and limit is not None:
+            statement = statement.offset(offset).limit(limit)
 
         items = (await session.exec(statement)).all()
         count = (await session.exec(count_statement)).one()
 
-        total_page = math.ceil(count / per_page)
         pagination = Pagination(
-            limit=per_page,
-            total_page=total_page,
+            limit=limit,
+            total=count,
         )
 
         return PaginatedList[T](items=items, pagination=pagination)

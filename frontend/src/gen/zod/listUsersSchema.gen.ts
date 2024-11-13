@@ -5,7 +5,7 @@ import { paginatedListUserSchema } from "./paginatedListUserSchema.gen";
 import { errorSchema } from "./errorSchema.gen";
 
 
-export const listUsersQueryParamsSchema = z.object({ "sort": z.lazy(() => listUsersSortOptionsSchema).optional(), "direction": z.lazy(() => directionSchema).optional(), "phone_number": z.string().optional(), "display_name": z.string().optional(), "email": z.string().email().optional(), "name": z.string().optional(), "limit": z.number().int().min(1).max(100).default(20).optional(), "page": z.number().int().min(1).default(1).optional(), "before": z.string().default("").optional(), "after": z.string().default("").optional() }).optional();
+export const listUsersQueryParamsSchema = z.object({ "sort": z.lazy(() => listUsersSortOptionsSchema).optional(), "direction": z.lazy(() => directionSchema).optional(), "phone_number": z.string().optional(), "display_name": z.string().optional(), "email": z.string().email().optional(), "name": z.string().optional(), "offset": z.number().int().min(0).default(0).optional(), "limit": z.number().int().min(1).max(100).default(20).optional() }).optional();
 export type ListUsersQueryParamsSchema = z.infer<typeof listUsersQueryParamsSchema>;
 /**
  * @description Successful Response

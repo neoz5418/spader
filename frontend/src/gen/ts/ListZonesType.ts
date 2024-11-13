@@ -3,25 +3,15 @@ import type { ErrorType } from "./ErrorType";
 
  export type ListZonesQueryParamsType = {
     /**
+     * @default 0
+     * @type integer | undefined
+    */
+    offset?: number;
+    /**
      * @default 20
      * @type integer | undefined
     */
     limit?: number;
-    /**
-     * @default 1
-     * @type integer | undefined
-    */
-    page?: number;
-    /**
-     * @default ""
-     * @type string | undefined
-    */
-    before?: string;
-    /**
-     * @default ""
-     * @type string | undefined
-    */
-    after?: string;
 };
 /**
  * @description Successful Response

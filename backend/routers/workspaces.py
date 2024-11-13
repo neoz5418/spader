@@ -118,13 +118,12 @@ async def list_user_workspaces(
     )
 
     for workspace, member in results.all():
-        logger.info("[+] list_user_workspaces workspace", workspace, member)
         workspaces.append(workspace)
 
     return PaginatedList[Workspace](
         items=workspaces,
         pagination=Pagination(
-            total_page=1, 
+            total=1, 
             limit=1000, 
         ),
     )

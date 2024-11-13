@@ -27,22 +27,17 @@ PERMISSION_UNAUTHENTICATED = ["permission_unauthenticated"]
 
 class Pagination(BaseModel):
     limit: int
-    total_page: int
+    total: int
 
 
 class ListParams(BaseModel):
+    offset: int = Query(default=0, ge=0)
     limit: int = Query(default=DEFAULT_LIMIT, ge=1, le=MAX_LIMIT)
-    page: int = Query(default=1, ge=1)
-    before: str = Query(default="")
-    after: str = Query(default="")
 
-    @property
-    def offset(self) -> int:
-        return (self.page - 1) * self.limit
 
     def to_pagination(self, total_count: int) -> Pagination:
         return Pagination(
-            limit=self.limit, total_page=math.ceil(total_count / self.limit)
+            limit=self.limit, total=total_count
         )
 
 

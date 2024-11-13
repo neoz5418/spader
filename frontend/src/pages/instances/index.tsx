@@ -56,12 +56,12 @@ export const columns: ColumnDef<InstanceType>[] = [
 
 export default function Instances() {
   const [pagination, setPagination] = useState({
-    pageIndex: 1, //initial page index
+    pageIndex: 0, //initial page index
     pageSize: 10, //default page size
   });
   const { data, isLoading, error} = useReadInstancesHook({
     limit: pagination.pageSize,
-    page: pagination.pageIndex,
+    offset: pagination.pageSize * pagination.pageIndex,
   });
 
   const instances = useMemo(
@@ -103,7 +103,7 @@ export default function Instances() {
         </div>
         <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
             <DataTable columns={columns} data={instances}
-            rowCount={data?.pagination?.total_count ?? 0}
+            rowCount={data?.pagination?.total ?? 0}
             pagination={pagination} setPagination={setPagination} />
         </div>
       </Layout.Body>

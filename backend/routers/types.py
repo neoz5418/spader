@@ -279,9 +279,7 @@ class ProviderZoneConfigEcloud(BaseModel):
 class ZoneBase(SQLModel):
     name: str = Field(primary_key=True, nullable=False)
     provider: Provider
-    provider_config: ProviderZoneConfigEcloud = Field(
-        sa_column=Column(JSON), default={}
-    )
+    provider_config: dict[str, str] = Field(sa_column=Column(JSON), default={})
 
 
 class Zone(ZoneBase, BaseModelMixin, table=True):

@@ -7844,6 +7844,34 @@
         "const": "ecloud",
         "title": "Provider"
       },
+      "ProviderZoneConfigEcloud": {
+        "properties": {
+          "region": {
+            "type": "string",
+            "title": "Region"
+          },
+          "pool_id": {
+            "type": "string",
+            "title": "Pool Id"
+          },
+          "network_id": {
+            "type": "string",
+            "title": "Network Id"
+          },
+          "security_group_id": {
+            "type": "string",
+            "title": "Security Group Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "region",
+          "pool_id",
+          "network_id",
+          "security_group_id"
+        ],
+        "title": "ProviderZoneConfigEcloud"
+      },
       "RegisterUserRequest": {
         "properties": {
           "name": {
@@ -8538,19 +8566,14 @@
           },
           "name": {
             "type": "string",
-            "maxLength": 32,
-            "minLength": 3,
-            "pattern": "^[a-z0-9][a-z0-9-]*[a-z0-9]$",
-            "title": "Name",
-            "description": "\nNAME is subset of RFC1123 label names:\n1. contain only lowercase alphanumeric characters or '-'\n2. start with an alphanumeric character\n3. end with an alphanumeric character\n"
+            "title": "Name"
           },
           "provider": {
             "$ref": "#/components/schemas/Provider"
           },
-          "uid": {
-            "type": "string",
-            "format": "uuid",
-            "title": "Uid"
+          "provider_config": {
+            "$ref": "#/components/schemas/ProviderZoneConfigEcloud",
+            "default": {}
           }
         },
         "type": "object",
@@ -8564,14 +8587,14 @@
         "properties": {
           "name": {
             "type": "string",
-            "maxLength": 32,
-            "minLength": 3,
-            "pattern": "^[a-z0-9][a-z0-9-]*[a-z0-9]$",
-            "title": "Name",
-            "description": "\nNAME is subset of RFC1123 label names:\n1. contain only lowercase alphanumeric characters or '-'\n2. start with an alphanumeric character\n3. end with an alphanumeric character\n"
+            "title": "Name"
           },
           "provider": {
             "$ref": "#/components/schemas/Provider"
+          },
+          "provider_config": {
+            "$ref": "#/components/schemas/ProviderZoneConfigEcloud",
+            "default": {}
           }
         },
         "type": "object",

@@ -1,7 +1,5 @@
 from sqlmodel import select, SQLModel
-from sqlalchemy.ext.asyncio import (
-    create_async_engine,
-)
+from sqlalchemy.ext.asyncio import create_async_engine
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from routers.types import Provider, Role, User, Workspace, Zone
@@ -12,7 +10,7 @@ sqlite_file_name = "database.db"
 sqlite_url = f"sqlite+aiosqlite:///{sqlite_file_name}"
 
 connect_args = {"check_same_thread": False}
-engine = create_async_engine(sqlite_url, connect_args=connect_args)
+engine = create_async_engine(sqlite_url, connect_args=connect_args, future=True)
 
 
 async def create_db_and_tables():

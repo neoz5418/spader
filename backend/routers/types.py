@@ -246,6 +246,22 @@ class Price(BaseModel):
     period: BillingPeriod
 
 
+class ResourceUsageType(Enum):
+    instance = "instance"
+    volume = "volume"
+    snapshot = "snapshot"
+
+
+class ResourceUsageRecord(SQLModel, ActiveRecordMixin, table=True):
+    uid: UUID = UID
+    workspace: str
+    zone: str
+    start_time: datetime
+    end_time: datetime
+    target_id: UUID
+    target_resource_type: ResourceUsageType
+
+
 class GPUType(SQLModel, table=True):
     name: Name
     uid: UUID = UID

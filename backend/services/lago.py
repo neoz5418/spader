@@ -1,10 +1,13 @@
+from uuid import UUID
+
 from lago_python_client import Client
 from lago_python_client.exceptions import LagoApiError
+from lago_python_client.models.event import Event
 from lago_python_client.models.customer import Customer
 from lago_python_client.models.wallet import Wallet
 from lago_python_client.models.wallet_transaction import WalletTransaction
 from lago_python_client.models.subscription import Subscription
-from routers.types import Workspace, WorkspaceAccount
+from routers.types import ResourceUsageRecord, Workspace, WorkspaceAccount
 from settings import get_settings
 
 client = Client(api_key=get_settings().lago_key, api_url=get_settings().lago_host)
@@ -75,6 +78,26 @@ def top_up_account(workspace: Workspace, amount: int, free: bool) -> None:
 
     result = client.wallet_transactions.create(wallet_transaction)
     print(result)
+
+
+def send_event(
+    resource_usage_record: ResourceUsageRecord,
+    workspace_id: UUID,
+    gpu_type: str,
+    hours: str,
+) -> None:
+    client.events.create(
+        Event(
+            transaction_id=str(resource_usage_record.uid),
+            external_subscription_id=str(workspace_id),
+            code="compute",
+            timestamp=resource_usage_record.end_time.timestamp(),
+            properties={
+                "hours": hours,
+                "name": gpu_type,
+            },
+        )
+    )
 
 
 if __name__ == "__main__":

@@ -10,7 +10,7 @@ import { TopNav } from '@/components/top-nav'
 import { UserNav } from '@/components/user-nav'
 import { WorkspaceSwitcher } from '../components/custom/workspace-switch'
 import { SidebarProvider } from '../components/ui/sidebar'
-import useWorkspace from '@/hooks/use-workspace'
+import useWorkspace from '@/hooks/use-setting'
 
 export default function AppShell() {
   const [isCollapsed, setIsCollapsed] = useIsCollapsed()
@@ -28,7 +28,7 @@ export default function AppShell() {
           <Layout.Header>
             <div className='ml-auto flex items-center space-x-4'>
               <TopNav links={topNav} />
-              <ThemeSwitch />
+              {/* <ThemeSwitch /> */}
               <p className='text-sm font-semibold'>$10.00</p>
               {/* <UserNav /> */}
               <WorkspaceSwitcher/>

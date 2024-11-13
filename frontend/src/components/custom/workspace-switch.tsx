@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/custom/button"
 import useAuth from "@/hooks/use-auth"
-import useWorkspace from "@/hooks/use-workspace"
+import useWorkspace from "@/hooks/use-setting"
 
 export function WorkspaceSwitcher() {
   const { logout } = useAuth()

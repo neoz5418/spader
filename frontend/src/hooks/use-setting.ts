@@ -29,6 +29,7 @@ import useAuth from "./use-auth"
 
 const useWorkspace = () => {
   const showToast = useCustomToast()
+  const [theme, setTheme] = useState<string>("")
   const [workspace, setWorkspace] = useState<WorkspaceType | null>(null)
   // const [workspaces, setWorkspaces] = useState<WorkspaceType[] >([])
   const { user: currentUser } = useAuth()
@@ -59,10 +60,16 @@ const useWorkspace = () => {
     }
   }
 
+  const switchTheme = (theme: string) => {
+    setTheme(theme)
+  }
+
   return {
-    switchWorkspace,
     workspaces,
     workspace,
+    switchWorkspace,
+    theme,
+    switchTheme,
     isLoading,
   }
 }

@@ -16,6 +16,8 @@ import {
 } from '@/components/ui/form'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { toast } from '@/components/ui/use-toast'
+import { useTheme } from '@/components/theme-provider'
+import { useEffect } from 'react'
 
 const appearanceFormSchema = z.object({
   theme: z.enum(['light', 'dark'], {
@@ -35,66 +37,33 @@ const defaultValues: Partial<AppearanceFormValues> = {
 }
 
 export function AppearanceForm() {
+  const { theme, setTheme } = useTheme()
   const form = useForm<AppearanceFormValues>({
     resolver: zodResolver(appearanceFormSchema),
     defaultValues,
   })
 
-  function onSubmit(data: AppearanceFormValues) {
-    toast({
-      title: 'You submitted the following values:',
-      description: (
-        <pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4'>
-          <code className='text-white'>{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    })
-  }
+  /* Update theme-color meta tag
+   * when theme is updated */
+  useEffect(() => {
+    console.log("theme",theme)
+    const themeColor = theme === 'dark' ? '#020817' : '#fff'
+    const metaThemeColor = document.querySelector("meta[name='theme-color']")
+    metaThemeColor && metaThemeColor.setAttribute('content', themeColor)
+  }, [theme])
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
-        <FormField
-          control={form.control}
-          name='font'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Font</FormLabel>
-              <div className='relative w-max'>
-                <FormControl>
-                  <select
-                    className={cn(
-                      buttonVariants({ variant: 'outline' }),
-                      'w-[200px] appearance-none font-normal'
-                    )}
-                    {...field}
-                  >
-                    <option value='inter'>Inter</option>
-                    <option value='manrope'>Manrope</option>
-                    <option value='system'>System</option>
-                  </select>
-                </FormControl>
-                <ChevronDownIcon className='absolute right-3 top-2.5 h-4 w-4 opacity-50' />
-              </div>
-              <FormDescription>
-                Set the font you want to use in the dashboard.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+      <form className='space-y-8'>
         <FormField
           control={form.control}
           name='theme'
           render={({ field }) => (
             <FormItem className='space-y-1'>
-              <FormLabel>Theme</FormLabel>
-              <FormDescription>
-                Select the theme for the dashboard.
-              </FormDescription>
-              <FormMessage />
               <RadioGroup
-                onValueChange={field.onChange}
+                onValueChange={(value)=>{
+                  setTheme(value)
+                }}
                 defaultValue={field.value}
                 className='grid max-w-md grid-cols-2 gap-8 pt-2'
               >
@@ -154,8 +123,6 @@ export function AppearanceForm() {
             </FormItem>
           )}
         />
-
-        <Button type='submit'>Update preferences</Button>
       </form>
     </Form>
   )

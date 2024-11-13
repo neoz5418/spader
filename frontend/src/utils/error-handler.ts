@@ -23,12 +23,12 @@ const errorHandler = (
   mutation?: Mutation<unknown, unknown, unknown, unknown>,
   variables?: unknown
 ) => {
-  const { status, data } = (error as AxiosError).response!;
+  const { status, message } = (error as AxiosError);
 
   if (status === 401) {
     if (mutation) refreshTokenAndRetry(undefined, mutation, variables);
     else refreshTokenAndRetry(query);
-  } else console.error("[+]",data);
+  } else console.error("[+]",message);
 };
 
 export const queryErrorHandler = (error: Error, query: Query<unknown, unknown, unknown>) => {

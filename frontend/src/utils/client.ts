@@ -72,7 +72,7 @@ export async function axiosClient<TData, TVariables = unknown>(
     const error = err as AxiosError ;
     const errorResponse: ApiError = {
       message: '未知错误',
-      status:  0,
+      status: error.response?.status || 0,
     };
 
 

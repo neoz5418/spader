@@ -34,11 +34,6 @@ export default function Settings() {
 
 const sidebarNavItems = [
   {
-    title: 'Profile',
-    icon: <IconUser size={18} />,
-    href: '/settings',
-  },
-  {
     title: 'Account',
     icon: <IconTool size={18} />,
     href: '/settings/account',

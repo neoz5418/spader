@@ -17,7 +17,6 @@ import SidebarNav from './components/sidebar-nav'
 export default function Settings() {
   return (
     <Layout fixed>
-
       <Layout.Body className='flex flex-col'>
         <div className='flex flex-1 flex-col space-y-8 md:space-y-2 md:overflow-hidden lg:flex-row lg:space-x-12 lg:space-y-0'>
           <aside className='top-0 lg:sticky lg:w-1/5'>
@@ -36,7 +35,7 @@ const sidebarNavItems = [
   {
     title: 'Account',
     icon: <IconTool size={18} />,
-    href: '/settings/account',
+    href: '/settings',
   },
   {
     title: 'Appearance',

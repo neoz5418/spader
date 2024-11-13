@@ -22,27 +22,40 @@ import {
   setCurrentWorkspace,
   getCurrentWorkspace,
 } from "@/utils/tokens";
+import {
+  getRefreshToken,
+} from "@/utils/tokens";
 
+const isLoggedIn = () => {
+  return getRefreshToken() !== null
+}
 
+import {
+  getCurrentUser as readUserMe,
+} from "../gen/clients"
 import useCustomToast from "./use-custom-toast"
-import useAuth from "./use-auth"
 
-const useWorkspace = () => {
+const useSetting = () => {
   const showToast = useCustomToast()
-  const [theme, setTheme] = useState<string>("")
-  const [workspace, setWorkspace] = useState<WorkspaceType | null>(null)
-  // const [workspaces, setWorkspaces] = useState<WorkspaceType[] >([])
-  const { user: currentUser } = useAuth()
+  const [workspace, setWorkspace] = useState<WorkspaceType>()
+  const navigate = useNavigate()
+  const { data: user } = useQuery<UserPublicType | null, Error>({
+    queryKey: ["currentUser"],
+    queryFn: readUserMe,
+    enabled: isLoggedIn(),
+  })
+
+  const username = user?.name
+  
   const { isLoading, data: workspaces } = useQuery<WorkspaceType[] >({
-    queryKey: ["workspaces", currentUser?.name],
+    queryKey: ["workspaces", username],
     queryFn: async () =>{
-      const username = currentUser?.name as string
-      const response = await listUserWorkspaces(username)
-      const current = response?.items?.find(w => w.name === getCurrentWorkspace(username))
+      const response = await listUserWorkspaces(username as string)
+      const current = response?.items?.find(w => w.name === getCurrentWorkspace(username as string))
       setWorkspace(current || response.items[0])
       return response?.items || []
     },
-    enabled: !!currentUser?.name,
+    enabled: !!username,
   })
 
   const switchWorkspace = (workspaceName: string) => {
@@ -54,12 +67,13 @@ const useWorkspace = () => {
         "error"
       )
     } else {
-      const username = currentUser?.name as string
-      setCurrentWorkspace(username, workspaceName)
+      setCurrentWorkspace(username as string, workspaceName)
       setWorkspace(workspace) 
+      navigate(`/workspaces/${workspaceName}`)
     }
   }
 
+  const [theme, setTheme] = useState<string>("")
   const switchTheme = (theme: string) => {
     setTheme(theme)
   }
@@ -74,5 +88,5 @@ const useWorkspace = () => {
   }
 }
 
-export {  useWorkspace }
-export default useWorkspace
+export {  useSetting }
+export default useSetting

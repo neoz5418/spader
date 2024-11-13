@@ -1,14 +1,17 @@
 import { Layout } from '@/components/custom/layout'
 
 
-import { useListInstancesHook as useReadInstancesHook, InstanceType } from '@/gen'
+import { useListInstancesHook as useReadInstancesHook, InstanceType, useListWorkspaceInstancesHook, WorkspaceType, listWorkspaceInstances, PaginatedListInstanceType } from '@/gen'
 import { useMemo, useState } from 'react'
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable, DataError } from "@/components/custom/data-table";
 import Loader from '@/components/loader';
+import useWorkspace from '@/hooks/use-setting';
 import { Button } from '@/components/custom/button'
 import negateValue from '../../../../frontend-shadcn/node_modules/tailwindcss/src/util/negateValue';
 import { useNavigate, Link } from 'react-router-dom';
+import WorkspaceLayout from '../../../../../../spader-ai/spader-console/src/app/(authed)/workspaces/[workspace]/layout';
+import { useQuery } from '@tanstack/react-query';
 
 
 export const columns: ColumnDef<InstanceType>[] = [
@@ -55,14 +58,41 @@ export const columns: ColumnDef<InstanceType>[] = [
 ]
 
 export default function Instances() {
+  const {workspace:currentWorkspace} = useWorkspace()
   const [pagination, setPagination] = useState({
     pageIndex: 0, //initial page index
     pageSize: 10, //default page size
   });
-  const { data, isLoading, error} = useReadInstancesHook({
-    limit: pagination.pageSize,
-    offset: pagination.pageSize * pagination.pageIndex,
-  });
+  // const workspace = ws as WorkspaceType
+  console.log(currentWorkspace)
+  // if (!workspace) {
+  //   return <Loader />
+  // }
+
+  
+  // const { data, isLoading, error} = useReadInstancesHook({
+  //   limit: pagination.pageSize,
+  //   offset: pagination.pageSize * pagination.pageIndex,
+  // });
+
+  // const { data, isLoading, error} = useListWorkspaceInstancesHook(
+  //   workspace.name,
+  //   {
+  //   limit: pagination.pageSize,
+  //   offset: pagination.pageSize * pagination.pageIndex,
+  // });
+
+  const { isLoading: isLoading, data: data, error } = useQuery<PaginatedListInstanceType >({
+    queryKey: ["instances", currentWorkspace?.name],
+    queryFn: async () =>{
+      const workspaceName = (currentWorkspace as WorkspaceType).name
+      console.log("[+]listWorkspaceInstances", workspaceName)
+      const response = await listWorkspaceInstances(workspaceName)
+      console.log("[+]listWorkspaceInstances", response)
+      return response
+    },
+    enabled: !!currentWorkspace,
+  })
 
   const instances = useMemo(
     () =>
@@ -86,9 +116,10 @@ export default function Instances() {
   }
 
 
-  if (error) {
-    return <DataError {...error} />;
-  }
+  console.log("[+]error", error)
+  // if (error) {
+  //   return <DataError {...error} />;
+  // }
 
   return (
     <Layout>

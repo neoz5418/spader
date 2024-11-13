@@ -26,7 +26,6 @@ export function WorkspaceSwitcher() {
     switchWorkspace 
   } = useWorkspace()
 
-  console.log(workspaces)
   return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

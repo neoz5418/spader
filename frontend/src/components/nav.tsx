@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { IconChevronDown } from '@tabler/icons-react'
 import { Button, buttonVariants } from './custom/button'
 import {
@@ -37,8 +37,10 @@ export default function Nav({
   closeNav,
 }: NavProps) {
   const renderLink = ({ sub, ...rest }: SideLink) => {
+    const params = useParams();
+    rest.href = `/workspaces/${params.workspace}${rest.href}`
     const key = `${rest.title}-${rest.href}`
-    if (isCollapsed && sub)
+    if (isCollapsed && sub) {
       return (
         <NavLinkIconDropdown
           {...rest}
@@ -47,6 +49,7 @@ export default function Nav({
           closeNav={closeNav}
         />
       )
+    }
 
     if (isCollapsed)
       return <NavLinkIcon {...rest} key={key} closeNav={closeNav} />

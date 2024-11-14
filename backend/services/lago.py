@@ -7,7 +7,7 @@ from lago_python_client.models.customer import Customer
 from lago_python_client.models.wallet import Wallet
 from lago_python_client.models.wallet_transaction import WalletTransaction
 from lago_python_client.models.subscription import Subscription
-from routers.types import ResourceUsageRecord, Workspace, WorkspaceAccount
+from routers.types import Workspace, WorkspaceAccount
 from settings import get_settings
 
 client = Client(api_key=get_settings().lago_key, api_url=get_settings().lago_host)
@@ -53,7 +53,7 @@ def get_account(workspace: Workspace) -> WorkspaceAccount:
     if len(subscriptions) == 0:
         client.subscriptions.create(
             Subscription(
-                plan_code="pre_paid",
+                plan_code="common_plan",
                 external_customer_id=str(workspace.uid),
                 external_id=str(workspace.uid),
             )
@@ -81,20 +81,19 @@ def top_up_account(workspace: Workspace, amount: int, free: bool) -> None:
 
 
 def send_event(
-    resource_usage_record: ResourceUsageRecord,
+    billing_cycle_group: UUID,
     workspace_id: UUID,
     gpu_type: str,
     hours: str,
 ) -> None:
     client.events.create(
         Event(
-            transaction_id=str(resource_usage_record.uid),
+            transaction_id=str(billing_cycle_group),
             external_subscription_id=str(workspace_id),
-            code="compute",
-            timestamp=resource_usage_record.end_time.timestamp(),
+            code="compute_recurring",
             properties={
                 "hours": hours,
-                "name": gpu_type,
+                "gpu_name": gpu_type,
             },
         )
     )

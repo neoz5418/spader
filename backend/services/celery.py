@@ -2,6 +2,8 @@ import asyncio
 import functools
 import logging
 from datetime import datetime, timezone
+
+import uuid
 from sqlmodel import select
 from uuid import UUID
 from celery import Celery
@@ -15,6 +17,7 @@ from routers.types import (
     ResourceUsageType,
     Workspace,
 )
+from services.common import utcnow
 from services.db import get_session
 from services.lago import send_event
 
@@ -47,6 +50,17 @@ async def create_instance_operation(operation_id: UUID):
 
         provider = ProviderInterface.get_provider("ecloud")
         await provider.create_instance(session, operation, instance)
+        start_time = utcnow()
+        last_record = ResourceUsageRecord(
+            workspace=instance.workspace,
+            zone=instance.zone,
+            target_id=instance.uid,
+            target_resource_type=ResourceUsageType.instance,
+            start_time=start_time,
+            end_time=datetime.min,
+        )
+        session.add(last_record)
+        await session.commit()
 
 
 @celery.task
@@ -59,6 +73,17 @@ async def measure_usage():
                 "status": InstanceStatus.running,
             },
         )
+        ws_billing_cycle_group = {}
+
+        def get_ws_billing_cycle_group(ws, gpu_type):
+            key = "ws=%s&gpu:%s" % (ws, gpu_type)
+            if key not in ws_billing_cycle_group:
+                ws_billing_cycle_group[key] = uuid.uuid4()
+            return ws_billing_cycle_group[key]
+
+        # It seems that Lago has some bugs. For the same workspace and the same type of GPU,
+        # billing events must be combined; otherwise, individual records won’t appear in its invoice or wallet.
+        ws_gpu_hours = {}
         for instance in instances:
             await instance.refresh(session)
             workspace = await Workspace.one_by_field(
@@ -71,26 +96,52 @@ async def measure_usage():
                 .limit(1)
             )
             last_record = (await session.exec(stmt)).first()
+            need_update = False
             if last_record is None:
                 start_time = instance.create_time
+            elif last_record.end_time == datetime.min:
+                start_time = last_record.start_time
+                need_update = True
             else:
                 start_time = last_record.end_time
-            end_time = datetime.now(timezone.utc)
-            start_time = start_time.replace(tzinfo=None)
-            end_time = end_time.replace(tzinfo=None)
-            hours = (end_time - start_time).total_seconds() / 3600
-            new_record = ResourceUsageRecord(
-                workspace=instance.workspace,
-                zone=instance.zone,
-                target_id=instance.uid,
-                target_resource_type=ResourceUsageType.instance,
-                start_time=start_time,
-                end_time=end_time,
-            )
-            session.add(new_record)
-            logger.info(new_record)
-            send_event(new_record, workspace.uid, instance.gpu_type, str(hours))
+            end_time = utcnow()
+            start_time = start_time.replace(tzinfo=timezone.utc)
+            hours = (end_time - start_time).seconds / 3600
+            if need_update:
+                last_record.end_time = end_time
+                last_record.billing_cycle_group = get_ws_billing_cycle_group(
+                    workspace.uid, instance.gpu_type
+                )
+            else:
+                last_record = ResourceUsageRecord(
+                    workspace=instance.workspace,
+                    zone=instance.zone,
+                    target_id=instance.uid,
+                    target_resource_type=ResourceUsageType.instance,
+                    billing_cycle_group=get_ws_billing_cycle_group(
+                        workspace.uid, instance.gpu_type
+                    ),
+                    start_time=start_time,
+                    end_time=end_time,
+                )
+            session.add(last_record)
+            logger.info(last_record)
+            if workspace.uid not in ws_gpu_hours:
+                ws_gpu_hours[workspace.uid] = {}
+            if instance.gpu_type not in ws_gpu_hours[workspace.uid]:
+                ws_gpu_hours[workspace.uid][instance.gpu_type] = 0
+            ws_gpu_hours[workspace.uid][instance.gpu_type] += hours
             await session.commit()
 
+        for ws, gpu_hours in ws_gpu_hours.items():
+            for gpu_type, hours in gpu_hours.items():
+                billing_cycle_group = get_ws_billing_cycle_group(ws, gpu_type)
+                send_event(billing_cycle_group, ws, gpu_type, str(hours))
 
-celery.add_periodic_task(crontab(minute="0", hour="*"), measure_usage.s(), name="")
+
+# celery.add_periodic_task(crontab(minute="*", hour="*"), measure_usage.s(), name="send all resource event to lago")
+celery.add_periodic_task(
+    crontab(minute="0", hour="*"),
+    measure_usage.s(),
+    name="send all resource event to lago",
+)

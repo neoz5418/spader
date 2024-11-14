@@ -10,7 +10,7 @@ from datetime import datetime
 from enum import Enum
 from uuid import UUID
 from typing import Annotated, Optional
-from sqlalchemy import JSON, Column
+from sqlalchemy import JSON, Column, DateTime
 from sqlmodel import SQLModel
 from sqlmodel import Field
 from services.active_record import ActiveRecordMixin
@@ -254,10 +254,17 @@ class ResourceUsageType(Enum):
 
 class ResourceUsageRecord(SQLModel, ActiveRecordMixin, table=True):
     uid: UUID = UID
+    billing_cycle_group: UUID = UID
     workspace: str
     zone: str
-    start_time: datetime
-    end_time: datetime
+    start_time: datetime = Field(
+        sa_type=DateTime(timezone=True),
+        index=True,
+    )
+    end_time: datetime = Field(
+        sa_type=DateTime(timezone=True),
+        index=True,
+    )
     target_id: UUID
     target_resource_type: ResourceUsageType
 

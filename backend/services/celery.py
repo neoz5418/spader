@@ -19,7 +19,7 @@ from routers.types import (
 )
 from services.common import utcnow
 from services.db import get_session
-from services.lago import send_event
+from services.lago import get_account, send_event
 
 # TODO: use redis as broker
 celery = Celery(
@@ -58,9 +58,21 @@ async def create_instance_operation(operation_id: UUID):
             target_resource_type=ResourceUsageType.instance,
             start_time=start_time,
             end_time=datetime.min,
+            billing_cycle_group=UUID("00000000-0000-0000-0000-000000000000"),
         )
         session.add(last_record)
         await session.commit()
+
+
+@celery.task
+@sync
+async def check_all_user_balances():
+    async for session in get_session():
+        workspaces = await Workspace.all(session)
+        for workspace in workspaces:
+            account = get_account(workspace)
+            if account.balance <= 0:
+                logger.info("workspace %s balance is lower than 0", workspace.name)
 
 
 @celery.task
@@ -138,10 +150,16 @@ async def measure_usage():
                 billing_cycle_group = get_ws_billing_cycle_group(ws, gpu_type)
                 send_event(billing_cycle_group, ws, gpu_type, str(hours))
 
+    check_all_user_balances.delay()
 
-# celery.add_periodic_task(crontab(minute="*", hour="*"), measure_usage.s(), name="send all resource event to lago")
+
 celery.add_periodic_task(
-    crontab(minute="0", hour="*"),
+    crontab(minute="*", hour="*"),
     measure_usage.s(),
     name="send all resource event to lago",
 )
+# celery.add_periodic_task(
+#     crontab(minute="0", hour="*"),
+#     measure_usage.s(),
+#     name="send all resource event to lago",
+# )

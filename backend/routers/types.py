@@ -254,7 +254,7 @@ class ResourceUsageType(Enum):
 
 class ResourceUsageRecord(SQLModel, ActiveRecordMixin, table=True):
     uid: UUID = UID
-    billing_cycle_group: UUID = UID
+    billing_cycle_group: UUID
     workspace: str
     zone: str
     start_time: datetime = Field(

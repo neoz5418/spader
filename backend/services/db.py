@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import create_async_engine
 from sqlmodel import select, SQLModel
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from routers.types import Provider, Role, User, Workspace, Zone
+from routers.types import GPUType, Provider, Role, User, Workspace, Zone
 from services.security import get_secret_hash
 from settings import get_settings
 
@@ -74,3 +74,23 @@ async def init_data():
         # xian = Zone(name="xian", provider=Provider.ecloud)
         # hohhot = Zone(name="hohhot", provider=Provider.ecloud)
         # Suzhou = Zone(name="Suzhou", provider=Provider.ecloud)
+        beijing_v100 = GPUType(
+            name="beijing_v100",
+            display_name="NVIDIA Tesla V100",
+            description="",
+            gpuMemory="32GB",
+            memory="64GB",
+            cpu=8,
+            disk_size="100GB",
+            disk_type="SSD",
+            zone="beijing",
+            provider_config={
+                "boot_volume_type": "highPerformance",
+                "boot_volume_size": 50,
+                "specs_name": "g4v.2xlarge.8",
+                "vm_type": "gpu",
+                "ram": 64,
+                "cpu": 8,
+            },
+        )
+        await GPUType.create_or_update(session, beijing_v100)

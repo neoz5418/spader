@@ -276,8 +276,7 @@ ResourceUsageRecordList = PaginatedList[ResourceUsageRecord]
 
 
 class GPUType(SQLModel, BaseModelMixin, table=True):
-    uid: UUID = UID
-    name: Name
+    name: str = Field(primary_key=True, nullable=False)
     display_name: DisplayName
     description: Optional[str] = None
     gpuMemory: ByteSize
@@ -286,6 +285,7 @@ class GPUType(SQLModel, BaseModelMixin, table=True):
     disk_size: ByteSize
     disk_type: DiskType
     zone: str
+    provider_config: dict[str, str | int] = Field(sa_column=Column(JSON), default={})
 
 
 GPUTypeList = PaginatedList[GPUType]

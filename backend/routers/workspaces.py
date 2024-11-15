@@ -34,7 +34,6 @@ logger = logging.getLogger(__name__)
 router = APIRouter(
     prefix="/apis/workspace/v1",
     tags=["workspace"],
-    dependencies=[CurrentUserDep],
 )
 
 

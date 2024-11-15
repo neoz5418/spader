@@ -114,7 +114,7 @@ class ActiveRecordMixin:
         """
 
         statement = select(cls)
-        count_statement = select(func.count(cls.uid))
+        count_statement = select(func.count("*"))
         if fields:
             conditions = [
                 col(getattr(cls, key)) == value for key, value in fields.items()
@@ -191,7 +191,7 @@ class ActiveRecordMixin:
         if pk[0] is not None:
             existing = await session.get(cls, pk)
             if existing is None:
-                return None
+                return await cls.create(session, obj)
             else:
                 await existing.update(session, obj)
                 return existing

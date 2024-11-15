@@ -269,6 +269,10 @@ class ResourceUsageRecord(SQLModel, ActiveRecordMixin, table=True):
     target_resource_type: ResourceUsageType
 
 
+# TODO: change to cursor list
+ResourceUsageRecordList = PaginatedList[ResourceUsageRecord]
+
+
 class GPUType(SQLModel, BaseModelMixin, table=True):
     uid: UUID = UID
     name: Name

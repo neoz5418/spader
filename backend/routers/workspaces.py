@@ -1,5 +1,7 @@
 from enum import Enum
 import logging
+from uuid import UUID
+
 from fastapi import APIRouter, status, HTTPException
 from dependencies import (
     CurrentAdminUserDep,
@@ -12,6 +14,8 @@ from dependencies import (
 from sqlmodel import and_, select
 
 from routers.types import (
+    ResourceUsageRecord,
+    ResourceUsageRecordList,
     SSHKeyList,
     Workspace,
     WorkspaceMember,
@@ -186,18 +190,39 @@ def replace_workspace_quota(workspace: str, quota: WorkspaceQuota):
     return
 
 
-# TODO: 还需要补充消费记录、充值记录、账单
+# TODO: 还需要补充: 充值记录、账单
 @router.get(
     "/workspaces/{workspace}/account",
     dependencies=[CurrentUserDep],
 )
 async def get_workspace_account(
     session: SessionDep,
-    user: CurrentUserDepAnnotated,
     workspace: str,
 ) -> WorkspaceAccount:
     db_workspace = await Workspace.one_by_field(session, "name", workspace)
     return get_account(db_workspace)
+
+
+@router.get(
+    "/workspaces/{workspace}/resource_usage_record",
+    dependencies=[CurrentUserDep],
+)
+async def list_workspace_resource_usage_records(
+    session: SessionDep,
+    workspace: str,
+    target_id: UUID,
+    params: ListParamsDep,
+) -> ResourceUsageRecordList:
+    resource_usage_records = await ResourceUsageRecord.paginated_by_query(
+        session,
+        fields={
+            "workspace": workspace,
+            "target_id": target_id,
+        },
+        offset=params.offset,
+        limit=params.limit,
+    )
+    return resource_usage_records
 
 
 @router.get(

@@ -1,26 +1,28 @@
+import re
+from datetime import datetime
+from enum import Enum
+from typing import Annotated, Optional
+
 from pydantic import (
     BaseModel,
     ByteSize,
     EmailStr,
     field_validator,
 )
-import re
 from pydantic_extra_types.phone_numbers import PhoneNumber
-from datetime import datetime
-from enum import Enum
-from uuid import UUID
-from typing import Annotated, Optional
-from sqlalchemy import JSON, Column, DateTime
-from sqlmodel import SQLModel
+from sqlalchemy import Column, DateTime, JSON
 from sqlmodel import Field
+from sqlmodel import SQLModel
+from uuid import UUID
+
 from services.active_record import ActiveRecordMixin
 from services.common import (
-    Name,
-    DisplayName,
-    UID,
-    PaginatedList,
     CursorList,
+    DisplayName,
+    Name,
+    PaginatedList,
     TimestampsMixin,
+    UID,
 )
 
 

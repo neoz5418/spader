@@ -1,12 +1,12 @@
-from uuid import UUID
-
 from lago_python_client import Client
 from lago_python_client.exceptions import LagoApiError
-from lago_python_client.models.event import Event
 from lago_python_client.models.customer import Customer
+from lago_python_client.models.event import Event
+from lago_python_client.models.subscription import Subscription
 from lago_python_client.models.wallet import Wallet
 from lago_python_client.models.wallet_transaction import WalletTransaction
-from lago_python_client.models.subscription import Subscription
+from uuid import UUID
+
 from routers.types import Workspace, WorkspaceAccount
 from settings import get_settings
 

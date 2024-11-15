@@ -1,19 +1,18 @@
 import logging
 import time
-
-from fastapi import Depends, Request, HTTPException
 from typing import Annotated, Optional
+
+from fastapi import Depends, HTTPException, Request
 from fastapi.security import (
     OAuth2PasswordBearer,
 )
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from services.common import PERMISSIONS
-from services.security import jwt_manager
 from routers.types import Role, User, Workspace
+from services.common import PERMISSIONS
 from services.db import get_session
-
+from services.security import jwt_manager
 
 oauth2_scheme = OAuth2PasswordBearer(
     tokenUrl="/apis/oidc/v1/auth", scopes=PERMISSIONS, auto_error=False

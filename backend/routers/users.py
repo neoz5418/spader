@@ -1,13 +1,21 @@
-from datetime import datetime, timedelta
 import logging
-from enum import Enum
-from pydantic_extra_types.phone_numbers import PhoneNumber
-from pydantic import EmailStr
-from fastapi import APIRouter, status, HTTPException, BackgroundTasks
 import random
 import string
+from datetime import datetime, timedelta
+from enum import Enum
+
+from fastapi import APIRouter, BackgroundTasks, HTTPException, status
+from pydantic import EmailStr
+from pydantic_extra_types.phone_numbers import PhoneNumber
 from sqlmodel import select
 
+from dependencies import (
+    CurrentAdminUserDep,
+    CurrentUserDep,
+    CurrentUserDepAnnotated,
+    ListParamsDep,
+    SessionDep,
+)
 from routers.types import (
     OneTimePasswordValidateType,
     RegisterUserRequest,
@@ -19,19 +27,12 @@ from routers.types import (
     UserQuota,
     Workspace,
 )
+from services.cache import get_redis
 from services.common import (
     Direction,
 )
 from services.notification import send_one_time_password_email
-from services.cache import get_redis
 from services.security import get_secret_hash
-from dependencies import (
-    ListParamsDep,
-    SessionDep,
-    CurrentUserDep,
-    CurrentAdminUserDep,
-    CurrentUserDepAnnotated,
-)
 
 logger = logging.getLogger(__name__)
 

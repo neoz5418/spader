@@ -1,9 +1,10 @@
+import logging
 import secrets
 import string
 from datetime import datetime, timedelta, timezone
 from typing import Optional, Union
+
 import jwt
-import logging
 from argon2 import PasswordHasher
 
 from settings import get_settings

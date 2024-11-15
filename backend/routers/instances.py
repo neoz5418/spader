@@ -1,8 +1,9 @@
 from datetime import datetime, timezone
 from enum import Enum
-from uuid import UUID
 
 from fastapi import APIRouter, HTTPException
+from uuid import UUID
+
 from dependencies import (
     CurrentAdminUserDep,
     CurrentAdminUserDepAnnotated,

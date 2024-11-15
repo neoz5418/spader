@@ -1,15 +1,14 @@
-from datetime import datetime, timezone
 import logging
-import math
+from datetime import datetime, timezone
 from typing import Any, Optional, Type, TypeVar, Union
 
 from sqlalchemy import func
-from sqlmodel import SQLModel, and_, col, or_, select
-from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlalchemy.exc import IntegrityError, OperationalError
 from sqlalchemy.orm.exc import FlushError
-from services.common import PaginatedList, Pagination
+from sqlmodel import and_, col, or_, select, SQLModel
+from sqlmodel.ext.asyncio.session import AsyncSession
 
+from services.common import PaginatedList, Pagination
 
 logger = logging.getLogger(__name__)
 T = TypeVar("T", bound=SQLModel)

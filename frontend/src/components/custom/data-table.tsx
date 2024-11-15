@@ -34,6 +34,7 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
   rowCount: number
+  createLink: string
   pagination: PaginationState
   setPagination: (updater: Updater<PaginationState>) => void
 }
@@ -42,6 +43,7 @@ export function DataTable<TData, TValue>({
   columns,
   data,
   rowCount,
+  createLink,
   pagination,
   setPagination,
 }: DataTableProps<TData, TValue>) {
@@ -64,7 +66,7 @@ export function DataTable<TData, TValue>({
     <div className='space-y-4'>
       <div className='flex items-center justify-between'>
         <Button variant="outline" asChild>
-          <Link to="/instances/deploy">新建</Link>
+          <Link to={createLink}>新建</Link>
         </Button>
       </div>
       <DataTableToolbar table={table} />

@@ -69,7 +69,7 @@ export default function Instances() {
   //   return <Loader />
   // }
 
-  
+
   // const { data, isLoading, error} = useReadInstancesHook({
   //   limit: pagination.pageSize,
   //   offset: pagination.pageSize * pagination.pageIndex,
@@ -133,7 +133,7 @@ export default function Instances() {
           </div>
         </div>
         <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
-            <DataTable columns={columns} data={instances}
+            <DataTable columns={columns} data={instances} createLink={`/workspaces/${currentWorkspace?.name}/instances/deploy`}
             rowCount={data?.pagination?.total ?? 0}
             pagination={pagination} setPagination={setPagination} />
         </div>

@@ -1,29 +1,36 @@
+import logging
 import time
 
 from fastapi import Depends, Request, HTTPException
 from typing import Annotated, Optional
 from fastapi.security import (
-    HTTPAuthorizationCredentials,
-    HTTPBearer,
+    OAuth2PasswordBearer,
 )
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
+
+from services.common import PERMISSIONS
 from services.security import jwt_manager
 from routers.types import Role, User, Workspace
 from services.db import get_session
 
 
-bearer_auth = HTTPBearer(auto_error=False)
+oauth2_scheme = OAuth2PasswordBearer(
+    tokenUrl="/apis/oidc/v1/auth", scopes=PERMISSIONS, auto_error=False
+)
+
+
+logger = logging.getLogger(__name__)
 
 
 async def get_current_user(
     request: Request,
     session: Annotated[AsyncSession, Depends(get_session)],
-    bearer_token: Annotated[HTTPAuthorizationCredentials, Depends(bearer_auth)],
+    bearer_token: Annotated[str, Depends(oauth2_scheme)],
 ) -> User:
-    if bearer_token is None:
+    if not bearer_token:
         raise HTTPException(status_code=401, detail="Unauthorized")
-    user = await get_user_from_jwt_token(session, bearer_token.credentials)
+    user = await get_user_from_jwt_token(session, bearer_token)
 
     if user:
         request.state.user = user
@@ -47,7 +54,8 @@ async def get_user_from_jwt_token(
     try:
         payload = jwt_manager.decode_jwt_token(access_token)
         username = payload.get("sub")
-    except Exception:
+    except Exception as e:
+        logger.error(e)
         return None
 
     if username is None:

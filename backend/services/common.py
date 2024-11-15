@@ -1,12 +1,7 @@
-from pydantic import (
-    BaseModel,
-)
-import math
+from pydantic import BaseModel
 from enum import Enum
 from datetime import datetime
 from datetime import timezone
-
-UTC = timezone.utc
 from fastapi.exceptions import RequestValidationError
 import uuid6
 from typing import Annotated, Optional, Any
@@ -18,8 +13,14 @@ from typing import Generic, TypeVar
 from starlette import status as starlette_status
 
 
+UTC = timezone.utc
 DEFAULT_LIMIT = 20
 MAX_LIMIT = 100
+PERMISSIONS = {
+    "permission_unauthenticated": "the unauthenticated user",
+    "permission_regular_user": "a regular user",
+    "permission_global_admin": "a global admin",
+}
 PERMISSION_REGULAR_USER = ["permission_regular_user"]
 PERMISSION_GLOBAL_ADMIN = ["permission_global_admin"]
 PERMISSION_UNAUTHENTICATED = ["permission_unauthenticated"]
@@ -34,11 +35,8 @@ class ListParams(BaseModel):
     offset: int = Query(default=0, ge=0)
     limit: int = Query(default=DEFAULT_LIMIT, ge=1, le=MAX_LIMIT)
 
-
     def to_pagination(self, total_count: int) -> Pagination:
-        return Pagination(
-            limit=self.limit, total=total_count
-        )
+        return Pagination(limit=self.limit, total=total_count)
 
 
 class Direction(Enum):

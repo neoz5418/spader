@@ -242,7 +242,7 @@ class BillingPeriod(Enum):
 
 class Price(BaseModel):
     currency: Currency
-    price: float
+    price: int
     period: BillingPeriod
 
 
@@ -269,9 +269,9 @@ class ResourceUsageRecord(SQLModel, ActiveRecordMixin, table=True):
     target_resource_type: ResourceUsageType
 
 
-class GPUType(SQLModel, table=True):
-    name: Name
+class GPUType(SQLModel, BaseModelMixin, table=True):
     uid: UUID = UID
+    name: Name
     display_name: DisplayName
     description: Optional[str] = None
     gpuMemory: ByteSize
@@ -279,10 +279,7 @@ class GPUType(SQLModel, table=True):
     cpu: int
     disk_size: ByteSize
     disk_type: DiskType
-
-    create_time: Optional[datetime] = None
-    update_time: Optional[datetime] = None
-    delete_time: Optional[datetime] = None
+    zone: str
 
 
 GPUTypeList = PaginatedList[GPUType]

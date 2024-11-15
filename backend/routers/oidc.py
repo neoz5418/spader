@@ -1,14 +1,15 @@
 import time
 import logging
+from enum import Enum
 
-from fastapi import APIRouter, Form, HTTPException
+from fastapi import APIRouter, Form, HTTPException, Depends
+from typing import Annotated
+from fastapi.security import OAuth2PasswordRequestForm
 from dependencies import SessionDep
 from sqlmodel import select
-from routers.types import *
-
 from jwt import DecodeError, ExpiredSignatureError
 
-from services.common import PERMISSION_UNAUTHENTICATED
+from routers.types import PasswordType, Token, User
 from services.security import (
     jwt_manager,
     JWT_TOKEN_EXPIRE_MINUTES,
@@ -31,8 +32,22 @@ class GrantType(str, Enum):
 
 
 @router.post(
+    "/auth",
+)
+async def auth(
+    session: SessionDep,
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+) -> Token:
+    return await token(
+        session,
+        grant_type=GrantType.password,
+        username=form_data.username,
+        password=form_data.password,
+    )
+
+
+@router.post(
     "/token",
-    tags=PERMISSION_UNAUTHENTICATED,
 )
 async def token(
     session: SessionDep,
@@ -43,19 +58,19 @@ async def token(
     scope: Annotated[str, Form()] = "",
     username: Annotated[str, Form()] = "",
     phone: Annotated[str, Form()] = "",
-    email: Annotated[EmailStr, Form()] = "",
+    email: Annotated[str, Form()] = "",
     refresh_token: Annotated[str, Form()] = "",
 ) -> Token:
     if grant_type == GrantType.password:
         if not password:
-            raise HTTPException(status_code=400, detail="password cannot be empty")
+            raise HTTPException(status_code=412, detail="password cannot be empty")
         if not email and not username:
             raise HTTPException(
-                status_code=400, detail="username or email cannot be empty"
+                status_code=412, detail="username or email cannot be empty"
             )
         if email and username:
             raise HTTPException(
-                status_code=400,
+                status_code=412,
                 detail="email and username cannot be provided at the same time",
             )
         try:
@@ -72,22 +87,22 @@ async def token(
             logger.exception(e)
             raise HTTPException(status_code=500, detail="internal server error")
         if user is None:
-            raise HTTPException(status_code=400, detail="user not found")
+            raise HTTPException(status_code=404, detail="user not found")
         if verify_hashed_secret(user.hashed_password, password) is False:
-            raise HTTPException(status_code=400, detail="invalid username or password")
+            raise HTTPException(status_code=401, detail="invalid username or password")
         username = user.name
     if grant_type == GrantType.refresh_token:
         if len(refresh_token) == 0:
-            raise HTTPException(status_code=400, detail="refresh_token cannot be empty")
+            raise HTTPException(status_code=412, detail="refresh_token cannot be empty")
         try:
             payload = jwt_manager.decode_jwt_token(refresh_token)
             if not payload:
-                raise HTTPException(status_code=400, detail="refresh_token invalid")
+                raise HTTPException(status_code=412, detail="refresh_token invalid")
             if payload["exp"] - time.time() < 0:
-                raise HTTPException(status_code=400, detail="refresh_token expired")
+                raise HTTPException(status_code=401, detail="refresh_token expired")
             username = payload["sub"]
             if username == "":
-                raise HTTPException(status_code=400, detail="user not found")
+                raise HTTPException(status_code=401, detail="user not found")
         except (ExpiredSignatureError, DecodeError) as e:
             logger.exception(e)
     access_token = jwt_manager.create_access_token(username=username)

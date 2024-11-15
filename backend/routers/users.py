@@ -21,9 +21,6 @@ from routers.types import (
 )
 from services.common import (
     Direction,
-    PERMISSION_GLOBAL_ADMIN,
-    PERMISSION_REGULAR_USER,
-    PERMISSION_UNAUTHENTICATED,
 )
 from services.notification import send_one_time_password_email
 from services.cache import get_redis
@@ -45,7 +42,7 @@ router = APIRouter(
 
 
 # 普通用户只能获取自己的信息
-@router.get("/users/me", tags=PERMISSION_REGULAR_USER)
+@router.get("/users/me", dependencies=[CurrentUserDep])
 def get_current_user(
     user: CurrentUserDepAnnotated,
 ) -> User:
@@ -63,7 +60,6 @@ class ListUsersSortOptions(Enum):
 
 @router.get(
     "/users/",
-    tags=PERMISSION_GLOBAL_ADMIN,
     dependencies=[CurrentAdminUserDep],
 )
 async def list_users(
@@ -90,17 +86,17 @@ async def list_users(
 
 @router.get(
     "/users/{username}",
-    tags=PERMISSION_REGULAR_USER,
     dependencies=[CurrentUserDep],
-    response_model=User,
 )
-def get_user(username: str):
-    return
+async def get_user(
+    session: SessionDep,
+    username: str,
+) -> User:
+    return await User.one_by_field(session, "name", username)
 
 
 @router.delete(
     "/users/{username}",
-    tags=PERMISSION_GLOBAL_ADMIN,
     dependencies=[CurrentAdminUserDep],
     status_code=status.HTTP_204_NO_CONTENT,
 )
@@ -118,7 +114,6 @@ def otp_prefix(username: str):
 
 @router.post(
     "/one_time_password",
-    tags=PERMISSION_UNAUTHENTICATED,
     status_code=201,
 )
 async def send_one_time_password(
@@ -144,7 +139,7 @@ async def send_one_time_password(
     )
 
 
-@router.post("/users/", tags=PERMISSION_UNAUTHENTICATED)
+@router.post("/users/")
 async def register_user(
     session: SessionDep,
     register_user_request: RegisterUserRequest,
@@ -202,7 +197,6 @@ async def register_user(
 
 @router.get(
     "/users/{username}/quota",
-    tags=PERMISSION_REGULAR_USER,
     dependencies=[CurrentUserDep],
     response_model=UserQuota,
 )
@@ -212,7 +206,6 @@ def get_user_quota(username: str):
 
 @router.patch(
     "/users/{username}/quota",
-    tags=PERMISSION_GLOBAL_ADMIN,
     dependencies=[CurrentAdminUserDep],
     response_model=UserQuota,
 )
@@ -222,7 +215,6 @@ def update_user_quota(username: str):
 
 @router.put(
     "/users/{username}/quota",
-    tags=PERMISSION_GLOBAL_ADMIN,
     dependencies=[CurrentAdminUserDep],
     response_model=UserQuota,
 )

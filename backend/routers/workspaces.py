@@ -1,8 +1,8 @@
-
 from enum import Enum
 import logging
 from fastapi import APIRouter, status, HTTPException
 from dependencies import (
+    CurrentAdminUserDep,
     CurrentAdminUserDepAnnotated,
     CurrentUserDep,
     ListParamsDep,
@@ -22,7 +22,7 @@ from routers.types import (
     WorkspaceMemberList,
     WorkspaceQuota,
 )
-from services.common import Direction, Pagination, PaginatedList, PERMISSION_GLOBAL_ADMIN, PERMISSION_REGULAR_USER
+from services.common import Direction, Pagination, PaginatedList
 from services.lago import get_account
 
 logger = logging.getLogger(__name__)
@@ -36,7 +36,7 @@ router = APIRouter(
 
 @router.post(
     "/users/{username}/workspaces",
-    tags=PERMISSION_REGULAR_USER,
+    dependencies=[CurrentUserDep],
     status_code=status.HTTP_201_CREATED,
 )
 async def create_workspace(
@@ -82,7 +82,7 @@ class ListWorkspacesSortOptions(Enum):
 
 @router.get(
     "/users/{username}/workspaces",
-    tags=PERMISSION_REGULAR_USER,
+    dependencies=[CurrentUserDep],
 )
 async def list_user_workspaces(
     session: SessionDep,
@@ -112,8 +112,8 @@ async def list_user_workspaces(
     results = await session.exec(
         select(Workspace, WorkspaceMember).where(
             and_(
-                Workspace.name == WorkspaceMember.workspace, 
-                WorkspaceMember.username == username
+                Workspace.name == WorkspaceMember.workspace,
+                WorkspaceMember.username == username,
             )
         )
     )
@@ -124,13 +124,13 @@ async def list_user_workspaces(
     return PaginatedList[Workspace](
         items=workspaces,
         pagination=Pagination(
-            total=1, 
-            limit=1000, 
+            total=1,
+            limit=1000,
         ),
     )
 
 
-@router.get("/workspaces", tags=PERMISSION_GLOBAL_ADMIN)
+@router.get("/workspaces", dependencies=[CurrentAdminUserDep])
 async def list_workspaces(
     session: SessionDep,
     user: CurrentAdminUserDepAnnotated,
@@ -141,7 +141,7 @@ async def list_workspaces(
     return await list_user_workspaces(session, user, "", params, sort, direction)
 
 
-@router.get("/workspaces/{workspace}", tags=PERMISSION_REGULAR_USER)
+@router.get("/workspaces/{workspace}", dependencies=[CurrentUserDep])
 def get_workspace(
     session: SessionDep,
     user: CurrentUserDepAnnotated,
@@ -161,7 +161,7 @@ def get_workspace(
 
 @router.get(
     "/workspaces/{workspace}/quota",
-    tags=PERMISSION_REGULAR_USER,
+    dependencies=[CurrentUserDep],
     response_model=WorkspaceQuota,
 )
 def get_workspace_quota(workspace: str):
@@ -170,7 +170,7 @@ def get_workspace_quota(workspace: str):
 
 @router.patch(
     "/workspaces/{workspace}/quota",
-    tags=PERMISSION_GLOBAL_ADMIN,
+    dependencies=[CurrentAdminUserDep],
     response_model=WorkspaceQuota,
 )
 def update_workspace_quota(workspace: str, quota: WorkspaceQuota):
@@ -179,7 +179,7 @@ def update_workspace_quota(workspace: str, quota: WorkspaceQuota):
 
 @router.put(
     "/workspaces/{workspace}/quota",
-    tags=PERMISSION_GLOBAL_ADMIN,
+    dependencies=[CurrentAdminUserDep],
     response_model=WorkspaceQuota,
 )
 def replace_workspace_quota(workspace: str, quota: WorkspaceQuota):
@@ -189,7 +189,7 @@ def replace_workspace_quota(workspace: str, quota: WorkspaceQuota):
 # TODO: 还需要补充消费记录、充值记录、账单
 @router.get(
     "/workspaces/{workspace}/account",
-    tags=PERMISSION_REGULAR_USER,
+    dependencies=[CurrentUserDep],
 )
 async def get_workspace_account(
     session: SessionDep,
@@ -202,7 +202,7 @@ async def get_workspace_account(
 
 @router.get(
     "/workspaces/{workspace}/ssh_keys",
-    tags=PERMISSION_REGULAR_USER,
+    dependencies=[CurrentUserDep],
     response_model=SSHKeyList,
 )
 def get_workspace_ssh_keys(workspace: str):
@@ -211,7 +211,7 @@ def get_workspace_ssh_keys(workspace: str):
 
 @router.post(
     "/workspaces/{workspace}/ssh_keys",
-    tags=PERMISSION_REGULAR_USER,
+    dependencies=[CurrentUserDep],
     status_code=status.HTTP_201_CREATED,
 )
 def create_workspace_ssh_keys(workspace: str):
@@ -220,7 +220,7 @@ def create_workspace_ssh_keys(workspace: str):
 
 @router.delete(
     "/workspaces/{workspace}/ssh_keys/{name}",
-    tags=PERMISSION_REGULAR_USER,
+    dependencies=[CurrentUserDep],
     status_code=status.HTTP_204_NO_CONTENT,
 )
 def delete_workspace_ssh_keys(workspace: str, name: str):
@@ -229,7 +229,7 @@ def delete_workspace_ssh_keys(workspace: str, name: str):
 
 @router.delete(
     "/workspaces/{workspace}",
-    tags=PERMISSION_GLOBAL_ADMIN,
+    dependencies=[CurrentAdminUserDep],
     status_code=status.HTTP_204_NO_CONTENT,
 )
 def delete_workspace(workspace: str):
@@ -238,7 +238,7 @@ def delete_workspace(workspace: str):
 
 @router.get(
     "/workspaces/{workspace}/members",
-    tags=PERMISSION_REGULAR_USER,
+    dependencies=[CurrentUserDep],
     response_model=WorkspaceMemberList,
 )
 # TODO: create invitation
@@ -248,7 +248,7 @@ def get_workspace_members(workspace: str):
 
 @router.get(
     "/workspaces/{workspace}/invitations",
-    tags=PERMISSION_REGULAR_USER,
+    dependencies=[CurrentUserDep],
     response_model=WorkspaceInvitationList,
 )
 # TODO: cancel invitation

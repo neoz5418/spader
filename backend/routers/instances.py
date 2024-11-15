@@ -4,6 +4,7 @@ from uuid import UUID
 
 from fastapi import APIRouter, HTTPException
 from dependencies import (
+    CurrentAdminUserDep,
     CurrentAdminUserDepAnnotated,
     CurrentUserDep,
     CurrentUserDepAnnotated,
@@ -34,18 +35,16 @@ from routers.types import (
     ZoneList,
 )
 from services.celery import create_instance_operation
-from services.common import PERMISSION_GLOBAL_ADMIN, PERMISSION_REGULAR_USER
 
 router = APIRouter(
     prefix="/apis/compute/v1",
     tags=["compute"],
-    dependencies=[CurrentUserDep],
 )
 
 
 @router.post(
     "/zones/",
-    tags=PERMISSION_GLOBAL_ADMIN,
+    dependencies=[CurrentAdminUserDep],
     status_code=201,
     summary="Create a new zone",
 )
@@ -61,7 +60,7 @@ async def create_zone(
     return await Zone.create(session, to_create)
 
 
-@router.get("/zones", tags=PERMISSION_GLOBAL_ADMIN)
+@router.get("/zones", dependencies=[CurrentAdminUserDep])
 async def list_zones(
     session: SessionDep,
     params: ListParamsDep,
@@ -73,7 +72,7 @@ async def list_zones(
     )
 
 
-@router.get("/zones/{zone}/gpu_types", tags=PERMISSION_GLOBAL_ADMIN)
+@router.get("/zones/{zone}/gpu_types", dependencies=[CurrentAdminUserDep])
 async def list_gpu_types(
     session: SessionDep,
     params: ListParamsDep,
@@ -89,7 +88,7 @@ async def list_gpu_types(
 
 @router.get(
     "/workspaces/{workspace}/zones",
-    tags=PERMISSION_REGULAR_USER,
+    dependencies=[CurrentUserDep],
 )
 async def list_workspace_zones(
     workspace: str,
@@ -101,7 +100,7 @@ async def list_workspace_zones(
 
 @router.get(
     "/watch/workspaces/{workspace}/zones",
-    tags=PERMISSION_REGULAR_USER,
+    dependencies=[CurrentUserDep],
 )
 def watch_workspace_zones(
     workspace: str,
@@ -111,18 +110,25 @@ def watch_workspace_zones(
 
 @router.get(
     "/workspaces/{workspace}/zones/{zone}/gpu_types",
-    tags=PERMISSION_REGULAR_USER,
+    dependencies=[CurrentUserDep],
 )
-def list_workspace_zone_gpu_types(
+async def list_workspace_zone_gpu_types(
+    session: SessionDep,
     workspace: str,
     zone: str,
+    params: ListParamsDep,
 ) -> GPUTypeList:
-    return
+    return await GPUType.paginated_by_query(
+        session=session,
+        fields={"zone": zone},
+        offset=params.offset,
+        limit=params.limit,
+    )
 
 
 @router.get(
     "/workspaces/{workspace}/zones/{zone}/quota",
-    tags=PERMISSION_REGULAR_USER,
+    dependencies=[CurrentUserDep],
 )
 def get_workspace_zone_quota(
     workspace: str,
@@ -138,7 +144,7 @@ class ListInstancesSortOptions(Enum):
 
 @router.get(
     "/instances",
-    tags=PERMISSION_GLOBAL_ADMIN,
+    dependencies=[CurrentAdminUserDep],
 )
 async def list_instances(
     session: SessionDep,
@@ -159,7 +165,7 @@ async def list_instances(
 
 @router.get(
     "/workspaces/{workspace}/instances",
-    tags=PERMISSION_REGULAR_USER,
+    dependencies=[CurrentUserDep],
 )
 async def list_workspace_instances(
     session: SessionDep,
@@ -192,7 +198,7 @@ async def list_workspace_instances(
 
 @router.get(
     "/workspaces/{workspace}/zones/{zone}/instances/{name}",
-    tags=PERMISSION_REGULAR_USER,
+    dependencies=[CurrentUserDep],
 )
 def get_instance(
     workspace: str,
@@ -204,7 +210,7 @@ def get_instance(
 
 @router.post(
     "/workspaces/{workspace}/zones/{zone}/instances",
-    tags=PERMISSION_REGULAR_USER,
+    dependencies=[CurrentUserDep],
     status_code=201,
     summary="Create and start a new instance",
 )
@@ -243,7 +249,7 @@ async def create_instance(
 
 @router.post(
     "/workspaces/{workspace}/zones/{zone}/instances/{name}/start",
-    tags=PERMISSION_REGULAR_USER,
+    dependencies=[CurrentUserDep],
 )
 def start_instance(
     workspace: str,
@@ -255,7 +261,7 @@ def start_instance(
 
 @router.post(
     "/workspaces/{workspace}/zones/{zone}/instances/{name}/stop",
-    tags=PERMISSION_REGULAR_USER,
+    dependencies=[CurrentUserDep],
 )
 def stop_instance(
     workspace: str,
@@ -267,7 +273,7 @@ def stop_instance(
 
 @router.post(
     "/workspaces/{workspace}/zones/{zone}/instances/{name}/port_forward",
-    tags=PERMISSION_REGULAR_USER,
+    dependencies=[CurrentUserDep],
     status_code=201,
 )
 def create_instance_port_forward(
@@ -281,7 +287,7 @@ def create_instance_port_forward(
 
 @router.delete(
     "/workspaces/{workspace}/zones/{zone}/instances/{name}/port_forwards/{port_forward_name}",
-    tags=PERMISSION_REGULAR_USER,
+    dependencies=[CurrentUserDep],
     status_code=204,
 )
 def delete_instance_port_forward(
@@ -295,7 +301,7 @@ def delete_instance_port_forward(
 
 @router.get(
     "/workspaces/{workspace}/zones/{zone}/instances/{name}/port_forwards",
-    tags=PERMISSION_REGULAR_USER,
+    dependencies=[CurrentUserDep],
 )
 def list_instance_port_forwards(
     workspace: str,
@@ -307,7 +313,7 @@ def list_instance_port_forwards(
 
 @router.delete(
     "/workspaces/{workspace}/zones/{zone}/instances/{name}",
-    tags=PERMISSION_REGULAR_USER,
+    dependencies=[CurrentUserDep],
 )
 def delete_instance(
     workspace: str,
@@ -319,7 +325,7 @@ def delete_instance(
 
 @router.get(
     "/workspaces/{workspace}/zones/{zone}/operations",
-    tags=PERMISSION_REGULAR_USER,
+    dependencies=[CurrentUserDep],
 )
 def list_workspace_operations(
     workspace: str,
@@ -331,7 +337,7 @@ def list_workspace_operations(
 
 @router.get(
     "/workspaces/{workspace}/zones/{zone}/operations/{uid}",
-    tags=PERMISSION_REGULAR_USER,
+    dependencies=[CurrentUserDep],
 )
 def get_workspace_operation(
     workspace: str,
@@ -343,7 +349,7 @@ def get_workspace_operation(
 
 @router.get(
     "/watch/workspaces/{workspace}/zones/{zone}/operations",
-    tags=PERMISSION_REGULAR_USER,
+    dependencies=[CurrentUserDep],
 )
 def watch_workspace_operations(
     workspace: str,
@@ -354,7 +360,7 @@ def watch_workspace_operations(
 
 @router.get(
     "/watch/workspaces/{workspace}/zones/{zone}/operations/{uid}",
-    tags=PERMISSION_REGULAR_USER,
+    dependencies=[CurrentUserDep],
 )
 def watch_workspace_operation(
     workspace: str,
@@ -366,7 +372,7 @@ def watch_workspace_operation(
 
 @router.post(
     "/workspaces/{workspace}/zones/{zone}/file_storages/",
-    tags=PERMISSION_REGULAR_USER,
+    dependencies=[CurrentUserDep],
     status_code=201,
 )
 def create_file_storage(
@@ -379,7 +385,7 @@ def create_file_storage(
 
 @router.get(
     "/workspaces/{workspace}/zones/{zone}/file_storages",
-    tags=PERMISSION_REGULAR_USER,
+    dependencies=[CurrentUserDep],
 )
 def list_workspace_file_storages(
     workspace: str,
@@ -391,7 +397,7 @@ def list_workspace_file_storages(
 
 @router.get(
     "/workspaces/{workspace}/zones/{zone}/file_storages/{name}",
-    tags=PERMISSION_REGULAR_USER,
+    dependencies=[CurrentUserDep],
 )
 def get_file_storage(
     workspace: str,
@@ -403,7 +409,7 @@ def get_file_storage(
 
 @router.get(
     "/workspaces/{workspace}/zones/{zone}/file_storages/{name}/files",
-    tags=PERMISSION_REGULAR_USER,
+    dependencies=[CurrentUserDep],
     description="Up to 100 files can be listed",
 )
 def list_files_in_file_storage(
@@ -417,7 +423,7 @@ def list_files_in_file_storage(
 
 @router.delete(
     "/workspaces/{workspace}/zones/{zone}/file_storages/{name}",
-    tags=PERMISSION_REGULAR_USER,
+    dependencies=[CurrentUserDep],
 )
 def delete_file_storage(
     workspace: str,
@@ -429,7 +435,7 @@ def delete_file_storage(
 
 @router.post(
     "/zones/{zone}/images/",
-    tags=PERMISSION_GLOBAL_ADMIN,
+    dependencies=[CurrentAdminUserDep],
     status_code=201,
 )
 def create_image(
@@ -441,7 +447,7 @@ def create_image(
 
 @router.patch(
     "/zones/{zone}/images/{name}",
-    tags=PERMISSION_GLOBAL_ADMIN,
+    dependencies=[CurrentAdminUserDep],
 )
 def update_image(
     zone: str,
@@ -452,7 +458,7 @@ def update_image(
 
 @router.get(
     "/workspaces/{workspace}/zones/{zone}/images",
-    tags=PERMISSION_REGULAR_USER,
+    dependencies=[CurrentUserDep],
 )
 def list_workspace_images(
     workspace: str,

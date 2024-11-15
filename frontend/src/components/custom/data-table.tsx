@@ -1,17 +1,34 @@
-'use client'
+"use client"
 
-import { ColumnDef, flexRender, getCoreRowModel, PaginationState, Updater, useReactTable } from '@tanstack/react-table'
+import {
+  ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  HeaderGroup,
+  PaginationState,
+  Row,
+  type Table as TableType,
+  Updater,
+  useReactTable,
+} from "@tanstack/react-table"
 
 import { Button } from '@/components/custom/button'
 
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 
-import { DataTablePagination } from './data-table-pagination'
-import { Skeleton } from '../ui/skeleton'
-import { Link, useNavigate } from 'react-router-dom'
-import { ErrorType } from '@/gen'
-import { DataTableToolbar } from './data-table-toolbar'
-import useWorkspace from '@/hooks/use-setting.ts'
+import { DataTablePagination } from "./data-table-pagination"
+import { Skeleton } from "../ui/skeleton"
+import { Link, useNavigate } from "react-router-dom"
+import { ErrorType } from "@/gen"
+import { DataTableToolbar } from "./data-table-toolbar"
+import getAllConfigs from '../../../../frontend-shadcn/node_modules/tailwindcss/src/util/getAllConfigs';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -22,12 +39,12 @@ interface DataTableProps<TData, TValue> {
 }
 
 export function DataTable<TData, TValue>({
-                                           columns,
-                                           data,
-                                           rowCount,
-                                           pagination,
-                                           setPagination,
-                                         }: DataTableProps<TData, TValue>) {
+  columns,
+  data,
+  rowCount,
+  pagination,
+  setPagination,
+}: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
     columns,
@@ -42,12 +59,12 @@ export function DataTable<TData, TValue>({
       pagination,
     },
   })
-  const { workspace: currentWorkspace } = useWorkspace()
+
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
+    <div className='space-y-4'>
+      <div className='flex items-center justify-between'>
         <Button variant="outline" asChild>
-          <Link to={'/workspaces/' + currentWorkspace?.name + '/instances/deploy'}>新建</Link>
+          <Link to="/instances/deploy">新建</Link>
         </Button>
       </div>
       <DataTableToolbar table={table} />
@@ -62,9 +79,9 @@ export function DataTable<TData, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                     </TableHead>
                   )
                 })}
@@ -76,7 +93,7 @@ export function DataTable<TData, TValue>({
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  data-state={row.getIsSelected() && 'selected'}
+                  data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -101,16 +118,17 @@ export function DataTable<TData, TValue>({
 }
 
 
+
 export function DataLoading() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-background">
-      <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-4">
         <Skeleton className="h-12 w-12 rounded-full" />
         <div className="space-y-2">
-          <Skeleton className="h-4 w-[250px]" />
-          <Skeleton className="h-4 w-[200px]" />
+            <Skeleton className="h-4 w-[250px]" />
+            <Skeleton className="h-4 w-[200px]" />
         </div>
-      </div>
+        </div>
     </div>
   )
 }
@@ -118,14 +136,14 @@ export function DataLoading() {
 export function DataError(error: ErrorType) {
   const navigate = useNavigate()
   return (
-    <div className="h-svh">
-      <div className="m-auto flex h-full w-full flex-col items-center justify-center gap-2">
-        <span className="font-medium">数据获取失败!</span>
-        <p className="text-center text-muted-foreground">
+    <div className='h-svh'>
+      <div className='m-auto flex h-full w-full flex-col items-center justify-center gap-2'>
+        <span className='font-medium'>数据获取失败!</span>
+        <p className='text-center text-muted-foreground'>
           {error.message}
         </p>
-        <div className="mt-6 flex gap-4">
-          <Button variant="outline" onClick={() => navigate(-1)}>
+        <div className='mt-6 flex gap-4'>
+          <Button variant='outline' onClick={() => navigate(-1)}>
             Go Back
           </Button>
           <Button onClick={() => navigate('/')}>Back to Home</Button>
@@ -136,4 +154,5 @@ export function DataError(error: ErrorType) {
 }
 
 
-export default DataTable
+
+export default DataTable;

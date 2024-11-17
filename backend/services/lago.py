@@ -53,7 +53,7 @@ def get_account(workspace: Workspace) -> WorkspaceAccount:
     if len(subscriptions) == 0:
         client.subscriptions.create(
             Subscription(
-                plan_code="common_plan",
+                plan_code=get_settings().lago_plan_code,
                 external_customer_id=str(workspace.uid),
                 external_id=str(workspace.uid),
             )

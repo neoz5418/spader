@@ -19,6 +19,7 @@ class Settings(BaseSettings):
     lago_host: str
     lago_key: str
     lago_org_id: str
+    lago_plan_code: str
 
     model_config = SettingsConfigDict(env_file=".env")
 

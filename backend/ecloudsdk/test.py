@@ -1,5 +1,5 @@
 from ecloudsdkcore.config.config import Config
-from ecloudsdkecs.v1.model import VmListServeQuery
+from ecloudsdkecs.v1.model import VmlistServerRespQuery, VmlistServerRespRequest
 from ecloudsdkecs.v1.client import Client
 
 if __name__ == "__main__":
@@ -9,10 +9,13 @@ if __name__ == "__main__":
         pool_id="CIDC-RP-29",
     )
     client = Client(config)
-    request = VmListServeQuery(
+    query = VmlistServerRespQuery(
         server_types=["VM"],
         product_types=["NORMAL"],
         visible=True,
+        query_word_name="pending-instance",
+        specs_name="g3v.2xlarge.8",
     )
-    response = client.vm_list_serve(request)
+    request = VmlistServerRespRequest(vmlist_server_resp_query=query)
+    response = client.vmlist_server_resp(request)
     print(response)

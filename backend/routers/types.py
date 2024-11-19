@@ -1,7 +1,7 @@
 import re
 from datetime import datetime
 from enum import Enum
-from typing import Annotated, Optional
+from typing import Annotated, Literal, Optional, Union
 
 from pydantic import (
     BaseModel,
@@ -130,9 +130,6 @@ class Token(BaseModel):
     expires_in: int
     token_type: str
     scope: str
-
-
-UserList = PaginatedList[User]
 
 
 class UserQuota(SQLModel, table=True):
@@ -275,7 +272,18 @@ class ResourceUsageRecord(SQLModel, ActiveRecordMixin, table=True):
 ResourceUsageRecordList = PaginatedList[ResourceUsageRecord]
 
 
-class GPUType(SQLModel, BaseModelMixin, table=True):
+class GPUProviderConfigEcloud(BaseModel):
+    provider: Literal["ecloud"]
+    boot_volume_type: str
+    boot_volume_size: int
+    specs_name: str
+    server_type: str
+    vm_type: str
+    ram: int
+    cpu: int
+
+
+class GPUTypeBase(SQLModel):
     name: str = Field(primary_key=True, nullable=False)
     display_name: DisplayName
     description: Optional[str] = None
@@ -285,10 +293,20 @@ class GPUType(SQLModel, BaseModelMixin, table=True):
     disk_size: ByteSize
     disk_type: DiskType
     zone: str
-    provider_config: dict[str, str | int] = Field(sa_column=Column(JSON), default={})
+
+
+class GPUType(GPUTypeBase, BaseModelMixin, table=True):
+    provider_config: Union[GPUProviderConfigEcloud] = Field(
+        sa_column=Column(JSON), default={}, discriminator="provider"
+    )
+
+
+class GPUTypePublic(GPUTypeBase):
+    pass
 
 
 GPUTypeList = PaginatedList[GPUType]
+GPUTypePublicList = PaginatedList[GPUTypePublic]
 
 
 class Provider(Enum):
@@ -296,6 +314,8 @@ class Provider(Enum):
 
 
 class ProviderZoneConfigEcloud(BaseModel):
+    provider: Literal["ecloud"]
+    default_image_name: str
     region: str
     pool_id: str
     network_id: str
@@ -304,19 +324,23 @@ class ProviderZoneConfigEcloud(BaseModel):
 
 class ZoneBase(SQLModel):
     name: str = Field(primary_key=True, nullable=False)
-    provider: Provider
-    provider_config: dict[str, str] = Field(sa_column=Column(JSON), default={})
 
 
 class Zone(ZoneBase, BaseModelMixin, table=True):
-    pass
+    provider: Provider
+    provider_config: Union[ProviderZoneConfigEcloud] = Field(
+        sa_column=Column(JSON), default={}, discriminator="provider"
+    )
 
 
 ZoneList = PaginatedList[Zone]
 
 
-class ZoneCreate(ZoneBase):
+class ZonePublic(ZoneBase):
     pass
+
+
+ZonePublicList = PaginatedList[ZonePublic]
 
 
 class OperationStatus(Enum):
@@ -347,7 +371,7 @@ OperationList = CursorList[Operation]
 
 class InstanceStatus(Enum):
     """
-    A instance can be in one of the following states:
+    An instance can be in one of the following states:
 
     - `provisioning`: resources are allocated for the instance. The instance is not running yet.
     - `staging`: resources are acquired, and the instance is preparing for first boot.

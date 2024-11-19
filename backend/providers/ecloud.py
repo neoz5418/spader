@@ -77,26 +77,26 @@ async def _create_instance(
     request = VmCreateRequest()
     vm_create_body = VmCreateBody()
     networks = VmCreateRequestNetworks()
-    networks.network_id = zone.provider_config.get("network_id")
-    security_group_ids = [zone.provider_config.get("secret_group_id")]
+    networks.network_id = zone.provider_config.network_id
+    security_group_ids = [zone.provider_config.secret_group_id]
     boot_volume = VmCreateRequestBootVolume()
-    boot_volume.volume_type = gpu_type.provider_config.get("boot_volume_type")
-    boot_volume.size = gpu_type.provider_config.get("boot_volume_size")
-    vm_create_body.specs_name = gpu_type.provider_config.get("specs_name")
+    boot_volume.volume_type = gpu_type.provider_config.boot_volume_type
+    boot_volume.size = gpu_type.provider_config.boot_volume_size
+    vm_create_body.specs_name = gpu_type.provider_config.specs_name
     vm_create_body.networks = networks
     vm_create_body.duration = 0
-    vm_create_body.vm_type = gpu_type.provider_config.get("vm_type")
+    vm_create_body.vm_type = gpu_type.provider_config.vm_type
     vm_create_body.billing_type = "HOUR"
     vm_create_body.security_group_ids = security_group_ids
     vm_create_body.auto_renew = False
-    vm_create_body.ram = gpu_type.provider_config.get("ram")
+    vm_create_body.ram = gpu_type.provider_config.ram
     vm_create_body.boot_volume = boot_volume
-    vm_create_body.image_name = "zheng1-1"
+    vm_create_body.image_name = zone.provider_config.default_image_name
     vm_create_body.quantity = 1
     vm_create_body.keypair_name = "zheng1"
-    vm_create_body.cpu = gpu_type.provider_config.get("cpu")
+    vm_create_body.cpu = gpu_type.provider_config.cpu
     vm_create_body.name = PREFIX + str(instance.uid)
-    vm_create_body.region = zone.provider_config.get("region")
+    vm_create_body.region = zone.provider_config.region
     request.vm_create_body = vm_create_body
     result = client.vm_create(request)
     logger.info(result)
@@ -137,12 +137,11 @@ class ProviderEcloud(ProviderInterface):
             return await self.set_operation_failed(session, operation)
         client = get_client(zone)
         query = VmlistServerRespQuery(
-            server_types=["VM", "IRONIC"],
+            server_types=[gpu_type.provider_config.server_type],
             product_types=["NORMAL"],
             visible=True,
             query_word_name=PREFIX,
-            # TODO: get specs from gpu_type
-            specs_name="g3v.2xlarge.8",
+            specs_name=gpu_type.provider_config.specs_name,
         )
         request = VmlistServerRespRequest(vmlist_server_resp_query=query)
         resp: VmlistServerRespResponse = client.vmlist_server_resp(request)

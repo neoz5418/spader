@@ -10,8 +10,14 @@ import useWorkspace from '@/hooks/use-setting'
 
 export default function AppShell() {
   const [isCollapsed, setIsCollapsed] = useIsCollapsed()
-  const { workspace: workspace } = useWorkspace()
-
+  const { 
+    workspaces,
+    workspace: current, 
+    workspacesAccount,
+    switchWorkspace 
+  } = useWorkspace()
+  const balance = workspacesAccount?.balance || 0
+  const currency = workspacesAccount?.currency || 'CNY'
 
   return (
     <div className="relative h-full overflow-hidden bg-background">
@@ -27,9 +33,13 @@ export default function AppShell() {
             <div className="ml-auto flex items-center space-x-4">
               <TopNav links={topNav} />
               {/* <ThemeSwitch /> */}
-              <p className="text-sm font-semibold">$10.00</p>
+              <p className="text-sm font-semibold">{balance.toLocaleString('zh-CN', {
+                style: 'currency',
+                currency: currency,
+                minimumFractionDigits: 2
+              })}</p>
               {/* <UserNav /> */}
-              <WorkspaceSwitcher />
+              <WorkspaceSwitcher workspaces={workspaces} current={current} switchWorkspace={switchWorkspace} />
             </div>
           </Layout.Header>
           <Outlet />

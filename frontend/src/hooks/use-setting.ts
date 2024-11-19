@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { queryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 // import { useNavigate } from "@tanstack/react-router"
 import {  useNavigate } from 'react-router-dom'
 import { useState } from "react"
@@ -8,6 +8,7 @@ import {
   type BodyTokenApisOidcV1TokenPostType as AccessToken,
   RegisterUserMutationRequestType,
   GetCurrentUserQueryResponseType as UserPublicType,
+  WorkspaceAccountType,
   WorkspaceType,
 } from "../gen/ts"
 
@@ -17,6 +18,7 @@ import {
 
 import {
   listUserWorkspaces,
+  getWorkspaceAccount,
 } from "../gen/clients"
 import {
   setCurrentWorkspace,
@@ -44,18 +46,27 @@ const useSetting = () => {
     queryFn: readUserMe,
     enabled: isLoggedIn(),
   })
-
-  const username = user?.name
   
+  const username = user?.name
   const { isLoading, data: workspaces } = useQuery<WorkspaceType[] >({
     queryKey: ["workspaces", username],
     queryFn: async () =>{
       const response = await listUserWorkspaces(username as string)
       const current = response?.items?.find(w => w.name === getCurrentWorkspace(username as string))
+      console.log(["[+] current", current], response.items)
       setWorkspace(current || response.items[0])
       return response?.items || []
     },
     enabled: !!username,
+  })
+
+  const { data: workspacesAccount } = useQuery<WorkspaceAccountType>({
+    queryKey: ["workspaceAccount", workspace?.name],
+    queryFn: async () =>{
+      const response = await getWorkspaceAccount(workspace?.name as string)
+      return response
+    },
+    enabled: !!workspace,
   })
 
   const switchWorkspace = (workspaceName: string) => {
@@ -81,6 +92,7 @@ const useSetting = () => {
   return {
     workspaces,
     workspace,
+    workspacesAccount,
     switchWorkspace,
     theme,
     switchTheme,

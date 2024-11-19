@@ -14,17 +14,13 @@ import {
 import { Button } from "@/components/custom/button"
 import useAuth from "@/hooks/use-auth"
 import useWorkspace from "@/hooks/use-setting"
+import type { WorkspaceType } from "@/ts/WorkspaceType"
 
-export function WorkspaceSwitcher() {
+export function WorkspaceSwitcher({ workspaces, current, switchWorkspace }: { workspaces: WorkspaceType[] | undefined, current: WorkspaceType | undefined, switchWorkspace: (workspace: string) => void }) {
   const { logout } = useAuth()
   const handleLogout = async () => {
     logout()
   }
-  const { 
-    workspaces,
-    workspace: current, 
-    switchWorkspace 
-  } = useWorkspace()
 
   return (
         <DropdownMenu>

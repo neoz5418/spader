@@ -197,8 +197,8 @@ WorkspaceInvitationList = PaginatedList[WorkspaceInvitation]
 
 
 class Currency(Enum):
-    USD = "USD"
     CNY = "CNY"
+    USD = "USD"
 
 
 class WorkspaceAccount(SQLModel, ActiveRecordMixin, table=True):
@@ -514,3 +514,33 @@ class Image(SQLModel, table=True):
 
 
 ImageList = PaginatedList[Image]
+
+
+class RechargeType(Enum):
+    alipay = "alipay"
+
+
+class RechargeStatus(Enum):
+    pending = "pending"
+    succeeded = "succeeded"
+    failed = "failed"
+
+
+class WorkspaceAccountRecharge(SQLModel, BaseModelMixin, table=True):
+    uid: UUID = UID
+    workspace: str
+    currency: Currency
+    amount: int
+    type: RechargeType
+    pay_url: str
+    status: RechargeStatus
+
+
+WorkspaceAccountRechargeList = PaginatedList[WorkspaceAccountRecharge]
+
+
+class RechargeWorkspaceAccount(BaseModel):
+    amount: int
+    currency: Currency
+    type: RechargeType
+    callback_url: str

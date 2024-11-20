@@ -14,11 +14,16 @@ from dependencies import (
     SessionDep,
 )
 from routers.types import (
+    RechargeStatus,
+    RechargeType,
+    RechargeWorkspaceAccount,
     ResourceUsageRecord,
     ResourceUsageRecordList,
     SSHKeyList,
     Workspace,
     WorkspaceAccount,
+    WorkspaceAccountRecharge,
+    WorkspaceAccountRechargeList,
     WorkspaceCreate,
     WorkspaceInvitationList,
     WorkspaceList,
@@ -27,7 +32,8 @@ from routers.types import (
     WorkspaceQuota,
 )
 from services.common import Direction, PaginatedList, Pagination
-from services.lago import get_account
+from services.lago import get_account, top_up_account
+from services.payment import alipay_recharge, check_alipay_recharge
 
 logger = logging.getLogger(__name__)
 
@@ -200,6 +206,112 @@ async def get_workspace_account(
 ) -> WorkspaceAccount:
     db_workspace = await Workspace.one_by_field(session, "name", workspace)
     return get_account(db_workspace)
+
+
+@router.post(
+    "/workspaces/{workspace}/account/recharge",
+    dependencies=[CurrentUserDep],
+)
+async def recharge_workspace_account(
+    session: SessionDep,
+    workspace: str,
+    recharge_in: RechargeWorkspaceAccount,
+) -> WorkspaceAccountRecharge:
+    if recharge_in.type != RechargeType.alipay:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="recharge type [%s] is not supported" % recharge_in.type,
+        )
+    recharge = WorkspaceAccountRecharge(
+        workspace=workspace,
+        currency=recharge_in.currency,
+        amount=recharge_in.amount,
+        type=recharge_in.type,
+        pay_url="",
+        status=RechargeStatus.pending,
+    )
+    pay_url = alipay_recharge(recharge.uid, recharge.amount, recharge_in.callback_url)
+    recharge.pay_url = pay_url
+    await recharge.save(session)
+    return recharge
+
+
+@router.get(
+    "/workspaces/{workspace}/account/recharges",
+    dependencies=[CurrentUserDep],
+)
+async def list_workspace_account_recharges(
+    session: SessionDep,
+    workspace: str,
+    params: ListParamsDep,
+) -> WorkspaceAccountRechargeList:
+    recharge_list = await WorkspaceAccountRecharge.paginated_by_query(
+        session,
+        {
+            "workspace": workspace,
+        },
+        offset=params.offset,
+        limit=params.limit,
+    )
+    return recharge_list
+
+
+@router.get(
+    "/workspaces/{workspace}/account/recharges/{recharge_id}",
+    dependencies=[CurrentUserDep],
+)
+async def get_workspace_account_recharge(
+    session: SessionDep,
+    workspace: str,
+    recharge_id: UUID,
+) -> WorkspaceAccountRecharge:
+    db_recharge = await WorkspaceAccountRecharge.one_by_fields(
+        session,
+        {
+            "uid": recharge_id,
+            "workspace": workspace,
+        },
+    )
+    if db_recharge is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Recharge not found",
+        )
+    return db_recharge
+
+
+@router.post(
+    "/recharges/{recharge_id}/check",
+    dependencies=[CurrentUserDep],
+)
+# TODO: rate limit
+async def check_workspace_account_recharge(
+    session: SessionDep,
+    recharge_id: UUID,
+) -> WorkspaceAccountRecharge:
+    db_recharge = await WorkspaceAccountRecharge.one_by_fields(
+        session,
+        {
+            "uid": recharge_id,
+        },
+    )
+    # TODO: check user has workspace permission
+    if db_recharge is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Recharge not found",
+        )
+    if db_recharge.status == RechargeStatus.succeeded:
+        return db_recharge
+    recharged = check_alipay_recharge(db_recharge.uid)
+    if recharged:
+        db_workspace = await Workspace.one_by_field(
+            session, "name", db_recharge.workspace
+        )
+        top_up_account(db_workspace, db_recharge.amount, False)
+        db_recharge.status = RechargeStatus.succeeded
+        await db_recharge.save(session)
+    return db_recharge
 
 
 @router.get(

@@ -34,12 +34,14 @@ class ProviderInterface(ABC):
         )
 
     @staticmethod
-    async def set_operation_running(session: SessionDep, operation: Operation):
+    async def set_operation_running(
+        session: SessionDep, operation: Operation, progress=10
+    ):
         await operation.update(
             session,
             {
                 "status": OperationStatus.running,
-                "progress": 10,
+                "progress": progress,
                 "start_time": utcnow(),
             },
         )

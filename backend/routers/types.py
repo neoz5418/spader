@@ -316,6 +316,7 @@ class Provider(Enum):
 class ProviderZoneConfigEcloud(BaseModel):
     provider: Literal["ecloud"]
     default_image_name: str
+    default_image_id: str
     region: str
     pool_id: str
     network_id: str

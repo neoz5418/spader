@@ -29,7 +29,7 @@ def alipay_recharge(recharge_id: UUID, amount: int, callback_url: str) -> str:
     model.total_amount = amount / 100
     model.subject = "钱包充值"
     model.body = "钱包充值 %s 元" % (amount / 100)
-    model.product_code = "FAST_RECHARGE"
+    model.product_code = "FAST_INSTANT_TRADE_PAY"
     model.request_from_url = callback_url
     request = AlipayTradePagePayRequest(biz_model=model)
     response = client.page_execute(request, http_method="GET")

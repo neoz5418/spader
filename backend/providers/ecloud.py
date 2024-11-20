@@ -24,6 +24,8 @@ from ecloudsdkecs.v1.model import (
     VmlistServerRespResponseBody,
     VmUpdateNameRequest,
     VmUpdateNameBody,
+    VmRebuildBody,
+    VmRebuildRequest,
 )
 
 from settings import get_settings
@@ -41,7 +43,8 @@ def get_client(zone: Zone) -> Client:
     )
 
 
-PREFIX = "pending-instance-"
+PENDING_PREFIX = "pending-"
+RUNNING_PREFIX = "running-"
 
 
 async def _create_instance(
@@ -95,7 +98,7 @@ async def _create_instance(
     vm_create_body.quantity = 1
     vm_create_body.keypair_name = "zheng1"
     vm_create_body.cpu = gpu_type.provider_config.cpu
-    vm_create_body.name = PREFIX + str(instance.uid)
+    vm_create_body.name = PENDING_PREFIX + str(instance.uid)
     vm_create_body.region = zone.provider_config.region
     request.vm_create_body = vm_create_body
     result = client.vm_create(request)
@@ -120,8 +123,8 @@ async def _create_instance(
 
 class ProviderEcloud(ProviderInterface):
     @staticmethod
-    async def update_vm_name(client, vm_id: str, name: str):
-        body = VmUpdateNameBody(name=name, server_id=vm_id)
+    async def update_vm_name(client, server_id: str, name: str):
+        body = VmUpdateNameBody(name=name, server_id=server_id)
         request = VmUpdateNameRequest(body)
         resp = client.vm_update_name(request)
         if resp.status != "OK":
@@ -140,14 +143,43 @@ class ProviderEcloud(ProviderInterface):
             server_types=[gpu_type.provider_config.server_type],
             product_types=["NORMAL"],
             visible=True,
-            query_word_name=PREFIX,
+            query_word_name=PENDING_PREFIX,
             specs_name=gpu_type.provider_config.specs_name,
         )
         request = VmlistServerRespRequest(vmlist_server_resp_query=query)
         resp: VmlistServerRespResponse = client.vmlist_server_resp(request)
         body: VmlistServerRespResponseBody = resp.body
-        if body.total == 0:
+        if resp.body.total == 0:
             # TODO: create instance and wait for it to be ready
             return await self.set_operation_failed(session, operation)
+        server_id = body.content[0].id
 
+        await self.update_vm_name(
+            client, server_id=server_id, name=RUNNING_PREFIX + str(instance.uid)
+        )
+
+        request = VmRebuildRequest(
+            vm_rebuild_body=VmRebuildBody(
+                server_id=server_id,
+                image_id=zone.provider_config.default_image_id,
+                user_data="",
+            )
+        )
+        client.vm_rebuild(request)
+        await self.set_operation_running(session, operation, progress=20)
+        while True:
+            query = VmlistServerRespQuery(
+                server_types=[gpu_type.provider_config.server_type],
+                product_types=["NORMAL"],
+                visible=True,
+                server_id=server_id,
+                specs_name=gpu_type.provider_config.specs_name,
+            )
+            request = VmlistServerRespRequest(vmlist_server_resp_query=query)
+            resp: VmlistServerRespResponse = client.vmlist_server_resp(request)
+            status = resp.body.content[0].ec_status
+            if status == "active":
+                break
+            else:
+                await self.set_operation_running(session, operation, progress=60)
         return await self.set_operation_done(session, operation)

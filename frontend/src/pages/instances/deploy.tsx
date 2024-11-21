@@ -108,10 +108,7 @@ export default function DeployForm() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="A100">A100</SelectItem>
-                        <SelectItem value="A10">A10</SelectItem>
-                        <SelectItem value="A40">A40</SelectItem>
-                        <SelectItem value="4090">4090</SelectItem>
+                        <SelectItem value="beijing_v100">NVIDIA Tesla V100</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormDescription>

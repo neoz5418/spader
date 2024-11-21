@@ -51,6 +51,7 @@ async def create_instance_operation(operation_id: UUID):
 
         provider = ProviderInterface.get_provider("ecloud")
         await provider.create_instance(session, operation, instance)
+        await instance.refresh(session)
         start_time = utcnow()
         last_record = ResourceUsageRecord(
             workspace=instance.workspace,

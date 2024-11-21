@@ -1,13 +1,14 @@
 import re
 from datetime import datetime
 from enum import Enum
-from typing import Annotated, Literal, Optional, Union
+from typing import Annotated, Literal, Optional
 
 from pydantic import (
     BaseModel,
     ByteSize,
     EmailStr,
     field_validator,
+    computed_field,
 )
 from pydantic_extra_types.phone_numbers import PhoneNumber
 from sqlalchemy import Column, DateTime, JSON
@@ -272,7 +273,7 @@ class ResourceUsageRecord(SQLModel, ActiveRecordMixin, table=True):
 ResourceUsageRecordList = PaginatedList[ResourceUsageRecord]
 
 
-class GPUProviderConfigEcloud(BaseModel):
+class GPUProviderConfigEcloud(SQLModel):
     provider: Literal["ecloud"]
     boot_volume_type: str
     boot_volume_size: int
@@ -296,9 +297,12 @@ class GPUTypeBase(SQLModel):
 
 
 class GPUType(GPUTypeBase, BaseModelMixin, table=True):
-    provider_config: Union[GPUProviderConfigEcloud] = Field(
-        sa_column=Column(JSON), default={}, discriminator="provider"
-    )
+    provider_config: dict = Field(sa_column=Column(JSON))
+
+    @computed_field
+    @property
+    def ecloud(self) -> GPUProviderConfigEcloud:
+        return GPUProviderConfigEcloud(**self.provider_config)
 
 
 class GPUTypePublic(GPUTypeBase):
@@ -313,7 +317,7 @@ class Provider(Enum):
     ecloud = "ecloud"
 
 
-class ProviderZoneConfigEcloud(BaseModel):
+class ProviderZoneConfigEcloud(SQLModel):
     provider: Literal["ecloud"]
     default_image_name: str
     default_image_id: str
@@ -329,9 +333,12 @@ class ZoneBase(SQLModel):
 
 class Zone(ZoneBase, BaseModelMixin, table=True):
     provider: Provider
-    provider_config: Union[ProviderZoneConfigEcloud] = Field(
-        sa_column=Column(JSON), default={}, discriminator="provider"
-    )
+    provider_config: dict = Field(sa_column=Column(JSON))
+
+    @computed_field
+    @property
+    def ecloud(self) -> ProviderZoneConfigEcloud:
+        return ProviderZoneConfigEcloud(**self.provider_config)
 
 
 ZoneList = PaginatedList[Zone]

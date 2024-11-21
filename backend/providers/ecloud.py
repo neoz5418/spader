@@ -38,7 +38,7 @@ def get_client(zone: Zone) -> Client:
         Config(
             access_key=get_settings().ecloud_access_key,
             secret_key=get_settings().ecloud_secret_key,
-            pool_id=zone.provider_config.get("pool_id"),
+            pool_id=zone.ecloud.pool_id,
         )
     )
 
@@ -80,26 +80,26 @@ async def _create_instance(
     request = VmCreateRequest()
     vm_create_body = VmCreateBody()
     networks = VmCreateRequestNetworks()
-    networks.network_id = zone.provider_config.network_id
-    security_group_ids = [zone.provider_config.secret_group_id]
+    networks.network_id = zone.ecloud.network_id
+    security_group_ids = [zone.ecloud.secret_group_id]
     boot_volume = VmCreateRequestBootVolume()
-    boot_volume.volume_type = gpu_type.provider_config.boot_volume_type
-    boot_volume.size = gpu_type.provider_config.boot_volume_size
-    vm_create_body.specs_name = gpu_type.provider_config.specs_name
+    boot_volume.volume_type = gpu_type.ecloud.boot_volume_type
+    boot_volume.size = gpu_type.ecloud.boot_volume_size
+    vm_create_body.specs_name = gpu_type.ecloud.specs_name
     vm_create_body.networks = networks
     vm_create_body.duration = 0
-    vm_create_body.vm_type = gpu_type.provider_config.vm_type
+    vm_create_body.vm_type = gpu_type.ecloud.vm_type
     vm_create_body.billing_type = "HOUR"
     vm_create_body.security_group_ids = security_group_ids
     vm_create_body.auto_renew = False
-    vm_create_body.ram = gpu_type.provider_config.ram
+    vm_create_body.ram = gpu_type.ecloud.ram
     vm_create_body.boot_volume = boot_volume
-    vm_create_body.image_name = zone.provider_config.default_image_name
+    vm_create_body.image_name = zone.ecloud.default_image_name
     vm_create_body.quantity = 1
     vm_create_body.keypair_name = "zheng1"
-    vm_create_body.cpu = gpu_type.provider_config.cpu
+    vm_create_body.cpu = gpu_type.ecloud.cpu
     vm_create_body.name = PENDING_PREFIX + str(instance.uid)
-    vm_create_body.region = zone.provider_config.region
+    vm_create_body.region = zone.ecloud.region
     request.vm_create_body = vm_create_body
     result = client.vm_create(request)
     logger.info(result)
@@ -140,12 +140,13 @@ class ProviderEcloud(ProviderInterface):
             return await self.set_operation_failed(session, operation)
         client = get_client(zone)
         query = VmlistServerRespQuery(
-            server_types=[gpu_type.provider_config.server_type],
+            server_types=[gpu_type.ecloud.server_type],
             product_types=["NORMAL"],
             visible=True,
             query_word_name=PENDING_PREFIX,
-            specs_name=gpu_type.provider_config.specs_name,
+            specs_name=gpu_type.ecloud.specs_name,
         )
+        logger.info(query)
         request = VmlistServerRespRequest(vmlist_server_resp_query=query)
         resp: VmlistServerRespResponse = client.vmlist_server_resp(request)
         body: VmlistServerRespResponseBody = resp.body
@@ -161,7 +162,7 @@ class ProviderEcloud(ProviderInterface):
         request = VmRebuildRequest(
             vm_rebuild_body=VmRebuildBody(
                 server_id=server_id,
-                image_id=zone.provider_config.default_image_id,
+                image_id=zone.ecloud.default_image_id,
                 user_data="",
             )
         )
@@ -169,11 +170,11 @@ class ProviderEcloud(ProviderInterface):
         await self.set_operation_running(session, operation, progress=20)
         while True:
             query = VmlistServerRespQuery(
-                server_types=[gpu_type.provider_config.server_type],
+                server_types=[gpu_type.ecloud.server_type],
                 product_types=["NORMAL"],
                 visible=True,
                 server_id=server_id,
-                specs_name=gpu_type.provider_config.specs_name,
+                specs_name=gpu_type.ecloud.specs_name,
             )
             request = VmlistServerRespRequest(vmlist_server_resp_query=query)
             resp: VmlistServerRespResponse = client.vmlist_server_resp(request)

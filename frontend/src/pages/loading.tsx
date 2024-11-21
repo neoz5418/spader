@@ -1,4 +1,4 @@
-import { Outlet, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import Loader from '@/components/loader';
 import useSetting from '@/hooks/use-setting';
 import { useEffect } from 'react';
@@ -9,6 +9,8 @@ export default function Loading() {
   useEffect(() => {
     if (workspace) {
       navigate(`/workspaces/${workspace.name}`)
+    }else {
+      navigate('/login')
     }
   }, [workspace])
 

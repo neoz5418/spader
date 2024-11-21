@@ -11,6 +11,18 @@ import type { ErrorType } from "./ErrorType";
     */
     zone: string;
 };
+export type ListWorkspaceZoneGpuTypesQueryParamsType = {
+    /**
+     * @default 0
+     * @type integer | undefined
+    */
+    offset?: number;
+    /**
+     * @default 20
+     * @type integer | undefined
+    */
+    limit?: number;
+};
 /**
  * @description Successful Response
 */
@@ -50,5 +62,6 @@ export type ListWorkspaceZoneGpuTypesQueryResponseType = PaginatedListGpuTypeTyp
 export type ListWorkspaceZoneGpuTypesTypeQuery = {
     Response: ListWorkspaceZoneGpuTypesQueryResponseType;
     PathParams: ListWorkspaceZoneGpuTypesPathParamsType;
+    QueryParams: ListWorkspaceZoneGpuTypesQueryParamsType;
     Errors: ListWorkspaceZoneGpuTypes400Type | ListWorkspaceZoneGpuTypes401Type | ListWorkspaceZoneGpuTypes404Type | ListWorkspaceZoneGpuTypes422Type | ListWorkspaceZoneGpuTypes429Type | ListWorkspaceZoneGpuTypes500Type | ListWorkspaceZoneGpuTypes503Type;
 };

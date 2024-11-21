@@ -16,6 +16,11 @@ import { getWorkspaceQuotaQueryResponseSchema, getWorkspaceQuota400Schema, getWo
 import { updateWorkspaceQuotaMutationRequestSchema, updateWorkspaceQuotaMutationResponseSchema, updateWorkspaceQuota400Schema, updateWorkspaceQuota401Schema, updateWorkspaceQuota404Schema, updateWorkspaceQuota422Schema, updateWorkspaceQuota429Schema, updateWorkspaceQuota500Schema, updateWorkspaceQuota503Schema, updateWorkspaceQuotaPathParamsSchema } from "./updateWorkspaceQuotaSchema.gen";
 import { replaceWorkspaceQuotaMutationRequestSchema, replaceWorkspaceQuotaMutationResponseSchema, replaceWorkspaceQuota400Schema, replaceWorkspaceQuota401Schema, replaceWorkspaceQuota404Schema, replaceWorkspaceQuota422Schema, replaceWorkspaceQuota429Schema, replaceWorkspaceQuota500Schema, replaceWorkspaceQuota503Schema, replaceWorkspaceQuotaPathParamsSchema } from "./replaceWorkspaceQuotaSchema.gen";
 import { getWorkspaceAccountQueryResponseSchema, getWorkspaceAccount400Schema, getWorkspaceAccount401Schema, getWorkspaceAccount404Schema, getWorkspaceAccount422Schema, getWorkspaceAccount429Schema, getWorkspaceAccount500Schema, getWorkspaceAccount503Schema, getWorkspaceAccountPathParamsSchema } from "./getWorkspaceAccountSchema.gen";
+import { rechargeWorkspaceAccountMutationRequestSchema, rechargeWorkspaceAccountMutationResponseSchema, rechargeWorkspaceAccount400Schema, rechargeWorkspaceAccount401Schema, rechargeWorkspaceAccount404Schema, rechargeWorkspaceAccount422Schema, rechargeWorkspaceAccount429Schema, rechargeWorkspaceAccount500Schema, rechargeWorkspaceAccount503Schema, rechargeWorkspaceAccountPathParamsSchema } from "./rechargeWorkspaceAccountSchema.gen";
+import { listWorkspaceAccountRechargesQueryResponseSchema, listWorkspaceAccountRecharges400Schema, listWorkspaceAccountRecharges401Schema, listWorkspaceAccountRecharges404Schema, listWorkspaceAccountRecharges422Schema, listWorkspaceAccountRecharges429Schema, listWorkspaceAccountRecharges500Schema, listWorkspaceAccountRecharges503Schema, listWorkspaceAccountRechargesPathParamsSchema, listWorkspaceAccountRechargesQueryParamsSchema } from "./listWorkspaceAccountRechargesSchema.gen";
+import { getWorkspaceAccountRechargeQueryResponseSchema, getWorkspaceAccountRecharge400Schema, getWorkspaceAccountRecharge401Schema, getWorkspaceAccountRecharge404Schema, getWorkspaceAccountRecharge422Schema, getWorkspaceAccountRecharge429Schema, getWorkspaceAccountRecharge500Schema, getWorkspaceAccountRecharge503Schema, getWorkspaceAccountRechargePathParamsSchema } from "./getWorkspaceAccountRechargeSchema.gen";
+import { checkWorkspaceAccountRechargeMutationResponseSchema, checkWorkspaceAccountRecharge400Schema, checkWorkspaceAccountRecharge401Schema, checkWorkspaceAccountRecharge404Schema, checkWorkspaceAccountRecharge422Schema, checkWorkspaceAccountRecharge429Schema, checkWorkspaceAccountRecharge500Schema, checkWorkspaceAccountRecharge503Schema, checkWorkspaceAccountRechargePathParamsSchema } from "./checkWorkspaceAccountRechargeSchema.gen";
+import { listWorkspaceResourceUsageRecordsQueryResponseSchema, listWorkspaceResourceUsageRecords400Schema, listWorkspaceResourceUsageRecords401Schema, listWorkspaceResourceUsageRecords404Schema, listWorkspaceResourceUsageRecords422Schema, listWorkspaceResourceUsageRecords429Schema, listWorkspaceResourceUsageRecords500Schema, listWorkspaceResourceUsageRecords503Schema, listWorkspaceResourceUsageRecordsPathParamsSchema, listWorkspaceResourceUsageRecordsQueryParamsSchema } from "./listWorkspaceResourceUsageRecordsSchema.gen";
 import { getWorkspaceSshKeysQueryResponseSchema, getWorkspaceSshKeys400Schema, getWorkspaceSshKeys401Schema, getWorkspaceSshKeys404Schema, getWorkspaceSshKeys422Schema, getWorkspaceSshKeys429Schema, getWorkspaceSshKeys500Schema, getWorkspaceSshKeys503Schema, getWorkspaceSshKeysPathParamsSchema } from "./getWorkspaceSshKeysSchema.gen";
 import { createWorkspaceSshKeysMutationResponseSchema, createWorkspaceSshKeys400Schema, createWorkspaceSshKeys401Schema, createWorkspaceSshKeys404Schema, createWorkspaceSshKeys422Schema, createWorkspaceSshKeys429Schema, createWorkspaceSshKeys500Schema, createWorkspaceSshKeys503Schema, createWorkspaceSshKeysPathParamsSchema } from "./createWorkspaceSshKeysSchema.gen";
 import { deleteWorkspaceSshKeysMutationResponseSchema, deleteWorkspaceSshKeys400Schema, deleteWorkspaceSshKeys401Schema, deleteWorkspaceSshKeys404Schema, deleteWorkspaceSshKeys422Schema, deleteWorkspaceSshKeys429Schema, deleteWorkspaceSshKeys500Schema, deleteWorkspaceSshKeys503Schema, deleteWorkspaceSshKeysPathParamsSchema } from "./deleteWorkspaceSshKeysSchema.gen";
@@ -26,7 +31,7 @@ import { listZonesQueryResponseSchema, listZones400Schema, listZones401Schema, l
 import { listGpuTypesQueryResponseSchema, listGpuTypes400Schema, listGpuTypes401Schema, listGpuTypes404Schema, listGpuTypes422Schema, listGpuTypes429Schema, listGpuTypes500Schema, listGpuTypes503Schema, listGpuTypesPathParamsSchema, listGpuTypesQueryParamsSchema } from "./listGpuTypesSchema.gen";
 import { listWorkspaceZonesQueryResponseSchema, listWorkspaceZones400Schema, listWorkspaceZones401Schema, listWorkspaceZones404Schema, listWorkspaceZones422Schema, listWorkspaceZones429Schema, listWorkspaceZones500Schema, listWorkspaceZones503Schema, listWorkspaceZonesPathParamsSchema, listWorkspaceZonesQueryParamsSchema } from "./listWorkspaceZonesSchema.gen";
 import { watchWorkspaceZonesQueryResponseSchema, watchWorkspaceZones400Schema, watchWorkspaceZones401Schema, watchWorkspaceZones404Schema, watchWorkspaceZones422Schema, watchWorkspaceZones429Schema, watchWorkspaceZones500Schema, watchWorkspaceZones503Schema, watchWorkspaceZonesPathParamsSchema } from "./watchWorkspaceZonesSchema.gen";
-import { listWorkspaceZoneGpuTypesQueryResponseSchema, listWorkspaceZoneGpuTypes400Schema, listWorkspaceZoneGpuTypes401Schema, listWorkspaceZoneGpuTypes404Schema, listWorkspaceZoneGpuTypes422Schema, listWorkspaceZoneGpuTypes429Schema, listWorkspaceZoneGpuTypes500Schema, listWorkspaceZoneGpuTypes503Schema, listWorkspaceZoneGpuTypesPathParamsSchema } from "./listWorkspaceZoneGpuTypesSchema.gen";
+import { listWorkspaceZoneGpuTypesQueryResponseSchema, listWorkspaceZoneGpuTypes400Schema, listWorkspaceZoneGpuTypes401Schema, listWorkspaceZoneGpuTypes404Schema, listWorkspaceZoneGpuTypes422Schema, listWorkspaceZoneGpuTypes429Schema, listWorkspaceZoneGpuTypes500Schema, listWorkspaceZoneGpuTypes503Schema, listWorkspaceZoneGpuTypesPathParamsSchema, listWorkspaceZoneGpuTypesQueryParamsSchema } from "./listWorkspaceZoneGpuTypesSchema.gen";
 import { getWorkspaceZoneQuotaQueryResponseSchema, getWorkspaceZoneQuota400Schema, getWorkspaceZoneQuota401Schema, getWorkspaceZoneQuota404Schema, getWorkspaceZoneQuota422Schema, getWorkspaceZoneQuota429Schema, getWorkspaceZoneQuota500Schema, getWorkspaceZoneQuota503Schema, getWorkspaceZoneQuotaPathParamsSchema } from "./getWorkspaceZoneQuotaSchema.gen";
 import { listInstancesQueryResponseSchema, listInstances400Schema, listInstances401Schema, listInstances404Schema, listInstances422Schema, listInstances429Schema, listInstances500Schema, listInstances503Schema, listInstancesQueryParamsSchema } from "./listInstancesSchema.gen";
 import { listWorkspaceInstancesQueryResponseSchema, listWorkspaceInstances400Schema, listWorkspaceInstances401Schema, listWorkspaceInstances404Schema, listWorkspaceInstances422Schema, listWorkspaceInstances429Schema, listWorkspaceInstances500Schema, listWorkspaceInstances503Schema, listWorkspaceInstancesPathParamsSchema, listWorkspaceInstancesQueryParamsSchema } from "./listWorkspaceInstancesSchema.gen";
@@ -50,6 +55,7 @@ import { listFilesInFileStorageQueryResponseSchema, listFilesInFileStorage400Sch
 import { createImageMutationRequestSchema, createImageMutationResponseSchema, createImage400Schema, createImage401Schema, createImage404Schema, createImage422Schema, createImage429Schema, createImage500Schema, createImage503Schema, createImagePathParamsSchema } from "./createImageSchema.gen";
 import { updateImageMutationResponseSchema, updateImage400Schema, updateImage401Schema, updateImage404Schema, updateImage422Schema, updateImage429Schema, updateImage500Schema, updateImage503Schema, updateImagePathParamsSchema } from "./updateImageSchema.gen";
 import { listWorkspaceImagesQueryResponseSchema, listWorkspaceImages400Schema, listWorkspaceImages401Schema, listWorkspaceImages404Schema, listWorkspaceImages422Schema, listWorkspaceImages429Schema, listWorkspaceImages500Schema, listWorkspaceImages503Schema, listWorkspaceImagesPathParamsSchema, listWorkspaceImagesQueryParamsSchema } from "./listWorkspaceImagesSchema.gen";
+import { authMutationRequestSchema, authMutationResponseSchema, auth400Schema, auth401Schema, auth404Schema, auth422Schema, auth429Schema, auth500Schema, auth503Schema } from "./authSchema.gen";
 import { tokenMutationRequestSchema, tokenMutationResponseSchema, token400Schema, token401Schema, token404Schema, token422Schema, token429Schema, token500Schema, token503Schema } from "./tokenSchema.gen";
 
  export const operations = { "get_current_user": {
@@ -538,6 +544,141 @@ import { tokenMutationRequestSchema, tokenMutationResponseSchema, token400Schema
             500: getWorkspaceAccount500Schema,
             503: getWorkspaceAccount503Schema
         }
+    }, "recharge_workspace_account": {
+        request: rechargeWorkspaceAccountMutationRequestSchema,
+        parameters: {
+            path: rechargeWorkspaceAccountPathParamsSchema,
+            query: undefined,
+            header: undefined
+        },
+        responses: {
+            200: rechargeWorkspaceAccountMutationResponseSchema,
+            400: rechargeWorkspaceAccount400Schema,
+            401: rechargeWorkspaceAccount401Schema,
+            404: rechargeWorkspaceAccount404Schema,
+            422: rechargeWorkspaceAccount422Schema,
+            429: rechargeWorkspaceAccount429Schema,
+            500: rechargeWorkspaceAccount500Schema,
+            503: rechargeWorkspaceAccount503Schema,
+            default: rechargeWorkspaceAccountMutationResponseSchema
+        },
+        errors: {
+            400: rechargeWorkspaceAccount400Schema,
+            401: rechargeWorkspaceAccount401Schema,
+            404: rechargeWorkspaceAccount404Schema,
+            422: rechargeWorkspaceAccount422Schema,
+            429: rechargeWorkspaceAccount429Schema,
+            500: rechargeWorkspaceAccount500Schema,
+            503: rechargeWorkspaceAccount503Schema
+        }
+    }, "list_workspace_account_recharges": {
+        request: undefined,
+        parameters: {
+            path: listWorkspaceAccountRechargesPathParamsSchema,
+            query: listWorkspaceAccountRechargesQueryParamsSchema,
+            header: undefined
+        },
+        responses: {
+            200: listWorkspaceAccountRechargesQueryResponseSchema,
+            400: listWorkspaceAccountRecharges400Schema,
+            401: listWorkspaceAccountRecharges401Schema,
+            404: listWorkspaceAccountRecharges404Schema,
+            422: listWorkspaceAccountRecharges422Schema,
+            429: listWorkspaceAccountRecharges429Schema,
+            500: listWorkspaceAccountRecharges500Schema,
+            503: listWorkspaceAccountRecharges503Schema,
+            default: listWorkspaceAccountRechargesQueryResponseSchema
+        },
+        errors: {
+            400: listWorkspaceAccountRecharges400Schema,
+            401: listWorkspaceAccountRecharges401Schema,
+            404: listWorkspaceAccountRecharges404Schema,
+            422: listWorkspaceAccountRecharges422Schema,
+            429: listWorkspaceAccountRecharges429Schema,
+            500: listWorkspaceAccountRecharges500Schema,
+            503: listWorkspaceAccountRecharges503Schema
+        }
+    }, "get_workspace_account_recharge": {
+        request: undefined,
+        parameters: {
+            path: getWorkspaceAccountRechargePathParamsSchema,
+            query: undefined,
+            header: undefined
+        },
+        responses: {
+            200: getWorkspaceAccountRechargeQueryResponseSchema,
+            400: getWorkspaceAccountRecharge400Schema,
+            401: getWorkspaceAccountRecharge401Schema,
+            404: getWorkspaceAccountRecharge404Schema,
+            422: getWorkspaceAccountRecharge422Schema,
+            429: getWorkspaceAccountRecharge429Schema,
+            500: getWorkspaceAccountRecharge500Schema,
+            503: getWorkspaceAccountRecharge503Schema,
+            default: getWorkspaceAccountRechargeQueryResponseSchema
+        },
+        errors: {
+            400: getWorkspaceAccountRecharge400Schema,
+            401: getWorkspaceAccountRecharge401Schema,
+            404: getWorkspaceAccountRecharge404Schema,
+            422: getWorkspaceAccountRecharge422Schema,
+            429: getWorkspaceAccountRecharge429Schema,
+            500: getWorkspaceAccountRecharge500Schema,
+            503: getWorkspaceAccountRecharge503Schema
+        }
+    }, "check_workspace_account_recharge": {
+        request: undefined,
+        parameters: {
+            path: checkWorkspaceAccountRechargePathParamsSchema,
+            query: undefined,
+            header: undefined
+        },
+        responses: {
+            200: checkWorkspaceAccountRechargeMutationResponseSchema,
+            400: checkWorkspaceAccountRecharge400Schema,
+            401: checkWorkspaceAccountRecharge401Schema,
+            404: checkWorkspaceAccountRecharge404Schema,
+            422: checkWorkspaceAccountRecharge422Schema,
+            429: checkWorkspaceAccountRecharge429Schema,
+            500: checkWorkspaceAccountRecharge500Schema,
+            503: checkWorkspaceAccountRecharge503Schema,
+            default: checkWorkspaceAccountRechargeMutationResponseSchema
+        },
+        errors: {
+            400: checkWorkspaceAccountRecharge400Schema,
+            401: checkWorkspaceAccountRecharge401Schema,
+            404: checkWorkspaceAccountRecharge404Schema,
+            422: checkWorkspaceAccountRecharge422Schema,
+            429: checkWorkspaceAccountRecharge429Schema,
+            500: checkWorkspaceAccountRecharge500Schema,
+            503: checkWorkspaceAccountRecharge503Schema
+        }
+    }, "list_workspace_resource_usage_records": {
+        request: undefined,
+        parameters: {
+            path: listWorkspaceResourceUsageRecordsPathParamsSchema,
+            query: listWorkspaceResourceUsageRecordsQueryParamsSchema,
+            header: undefined
+        },
+        responses: {
+            200: listWorkspaceResourceUsageRecordsQueryResponseSchema,
+            400: listWorkspaceResourceUsageRecords400Schema,
+            401: listWorkspaceResourceUsageRecords401Schema,
+            404: listWorkspaceResourceUsageRecords404Schema,
+            422: listWorkspaceResourceUsageRecords422Schema,
+            429: listWorkspaceResourceUsageRecords429Schema,
+            500: listWorkspaceResourceUsageRecords500Schema,
+            503: listWorkspaceResourceUsageRecords503Schema,
+            default: listWorkspaceResourceUsageRecordsQueryResponseSchema
+        },
+        errors: {
+            400: listWorkspaceResourceUsageRecords400Schema,
+            401: listWorkspaceResourceUsageRecords401Schema,
+            404: listWorkspaceResourceUsageRecords404Schema,
+            422: listWorkspaceResourceUsageRecords422Schema,
+            429: listWorkspaceResourceUsageRecords429Schema,
+            500: listWorkspaceResourceUsageRecords500Schema,
+            503: listWorkspaceResourceUsageRecords503Schema
+        }
     }, "get_workspace_ssh_keys": {
         request: undefined,
         parameters: {
@@ -812,7 +953,7 @@ import { tokenMutationRequestSchema, tokenMutationResponseSchema, token400Schema
         request: undefined,
         parameters: {
             path: listWorkspaceZoneGpuTypesPathParamsSchema,
-            query: undefined,
+            query: listWorkspaceZoneGpuTypesQueryParamsSchema,
             header: undefined
         },
         responses: {
@@ -1456,6 +1597,33 @@ import { tokenMutationRequestSchema, tokenMutationResponseSchema, token400Schema
             500: listWorkspaceImages500Schema,
             503: listWorkspaceImages503Schema
         }
+    }, "auth": {
+        request: authMutationRequestSchema,
+        parameters: {
+            path: undefined,
+            query: undefined,
+            header: undefined
+        },
+        responses: {
+            200: authMutationResponseSchema,
+            400: auth400Schema,
+            401: auth401Schema,
+            404: auth404Schema,
+            422: auth422Schema,
+            429: auth429Schema,
+            500: auth500Schema,
+            503: auth503Schema,
+            default: authMutationResponseSchema
+        },
+        errors: {
+            400: auth400Schema,
+            401: auth401Schema,
+            404: auth404Schema,
+            422: auth422Schema,
+            429: auth429Schema,
+            500: auth500Schema,
+            503: auth503Schema
+        }
     }, "token": {
         request: tokenMutationRequestSchema,
         parameters: {
@@ -1512,6 +1680,16 @@ export const paths = { "/apis/user/v1/users/me": {
         put: operations["replace_workspace_quota"]
     }, "/apis/workspace/v1/workspaces/{workspace}/account": {
         get: operations["get_workspace_account"]
+    }, "/apis/workspace/v1/workspaces/{workspace}/account/recharge": {
+        post: operations["recharge_workspace_account"]
+    }, "/apis/workspace/v1/workspaces/{workspace}/account/recharges": {
+        get: operations["list_workspace_account_recharges"]
+    }, "/apis/workspace/v1/workspaces/{workspace}/account/recharges/{recharge_id}": {
+        get: operations["get_workspace_account_recharge"]
+    }, "/apis/workspace/v1/recharges/{recharge_id}/check": {
+        post: operations["check_workspace_account_recharge"]
+    }, "/apis/workspace/v1/workspaces/{workspace}/resource_usage_record": {
+        get: operations["list_workspace_resource_usage_records"]
     }, "/apis/workspace/v1/workspaces/{workspace}/ssh_keys": {
         get: operations["get_workspace_ssh_keys"],
         post: operations["create_workspace_ssh_keys"]
@@ -1577,6 +1755,8 @@ export const paths = { "/apis/user/v1/users/me": {
         patch: operations["update_image"]
     }, "/apis/compute/v1/workspaces/{workspace}/zones/{zone}/images": {
         get: operations["list_workspace_images"]
+    }, "/apis/oidc/v1/auth": {
+        post: operations["auth"]
     }, "/apis/oidc/v1/token": {
         post: operations["token"]
     } } as const;

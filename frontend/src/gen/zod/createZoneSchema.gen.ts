@@ -1,7 +1,7 @@
 import { z } from "@/utils/zod.ts";
 import { zoneSchema } from "./zoneSchema.gen";
 import { errorSchema } from "./errorSchema.gen";
-import { zoneCreateSchema } from "./zoneCreateSchema.gen";
+import { zoneBaseSchema } from "./zoneBaseSchema.gen";
 
  /**
  * @description Successful Response
@@ -44,7 +44,7 @@ export type CreateZone500Schema = z.infer<typeof createZone500Schema>;
 export const createZone503Schema = z.lazy(() => errorSchema);
 export type CreateZone503Schema = z.infer<typeof createZone503Schema>;
 
- export const createZoneMutationRequestSchema = z.lazy(() => zoneCreateSchema);
+ export const createZoneMutationRequestSchema = z.lazy(() => zoneBaseSchema);
 export type CreateZoneMutationRequestSchema = z.infer<typeof createZoneMutationRequestSchema>;
 /**
  * @description Successful Response

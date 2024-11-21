@@ -5,6 +5,9 @@ import { errorSchema } from "./errorSchema.gen";
 
 export const listWorkspaceZoneGpuTypesPathParamsSchema = z.object({ "workspace": z.string(), "zone": z.string() });
 export type ListWorkspaceZoneGpuTypesPathParamsSchema = z.infer<typeof listWorkspaceZoneGpuTypesPathParamsSchema>;
+
+ export const listWorkspaceZoneGpuTypesQueryParamsSchema = z.object({ "offset": z.number().int().min(0).default(0).optional(), "limit": z.number().int().min(1).max(100).default(20).optional() }).optional();
+export type ListWorkspaceZoneGpuTypesQueryParamsSchema = z.infer<typeof listWorkspaceZoneGpuTypesQueryParamsSchema>;
 /**
  * @description Successful Response
  */

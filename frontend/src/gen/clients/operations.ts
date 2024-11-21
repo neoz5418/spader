@@ -71,6 +71,26 @@ export const operations = {
         "path": "/apis/workspace/v1/workspaces/:workspace/account",
         "method": "get"
     },
+    "recharge_workspace_account": {
+        "path": "/apis/workspace/v1/workspaces/:workspace/account/recharge",
+        "method": "post"
+    },
+    "list_workspace_account_recharges": {
+        "path": "/apis/workspace/v1/workspaces/:workspace/account/recharges",
+        "method": "get"
+    },
+    "get_workspace_account_recharge": {
+        "path": "/apis/workspace/v1/workspaces/:workspace/account/recharges/:recharge_id",
+        "method": "get"
+    },
+    "check_workspace_account_recharge": {
+        "path": "/apis/workspace/v1/recharges/:recharge_id/check",
+        "method": "post"
+    },
+    "list_workspace_resource_usage_records": {
+        "path": "/apis/workspace/v1/workspaces/:workspace/resource_usage_record",
+        "method": "get"
+    },
     "get_workspace_ssh_keys": {
         "path": "/apis/workspace/v1/workspaces/:workspace/ssh_keys",
         "method": "get"
@@ -206,6 +226,10 @@ export const operations = {
     "list_workspace_images": {
         "path": "/apis/compute/v1/workspaces/:workspace/zones/:zone/images",
         "method": "get"
+    },
+    "auth": {
+        "path": "/apis/oidc/v1/auth",
+        "method": "post"
     },
     "token": {
         "path": "/apis/oidc/v1/token",

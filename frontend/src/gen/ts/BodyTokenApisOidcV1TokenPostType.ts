@@ -37,7 +37,7 @@ import type { GrantTypeType } from "./GrantTypeType";
     phone?: string;
     /**
      * @default ""
-     * @type string | undefined, email
+     * @type string | undefined
     */
     email?: string;
     /**

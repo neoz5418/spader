@@ -1,6 +1,6 @@
 import type { ZoneType } from "./ZoneType";
 import type { ErrorType } from "./ErrorType";
-import type { ZoneCreateType } from "./ZoneCreateType";
+import type { ZoneBaseType } from "./ZoneBaseType";
 
  /**
  * @description Successful Response
@@ -34,7 +34,7 @@ export type CreateZone500Type = ErrorType;
  * @description Service unavailable
 */
 export type CreateZone503Type = ErrorType;
-export type CreateZoneMutationRequestType = ZoneCreateType;
+export type CreateZoneMutationRequestType = ZoneBaseType;
 /**
  * @description Successful Response
 */

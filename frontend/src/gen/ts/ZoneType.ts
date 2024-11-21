@@ -17,7 +17,11 @@ import type { ProviderZoneConfigEcloudType } from "./ProviderZoneConfigEcloudTyp
     */
     provider: ProviderType;
     /**
-     * @type object | undefined
+     * @type object
     */
-    provider_config?: ProviderZoneConfigEcloudType;
+    provider_config: object;
+    /**
+     * @type object
+    */
+    ecloud: ProviderZoneConfigEcloudType;
 };

@@ -9,8 +9,7 @@
     "/apis/user/v1/users/me": {
       "get": {
         "tags": [
-          "user",
-          "permission_regular_user"
+          "user"
         ],
         "summary": "Get Current User",
         "operationId": "get_current_user",
@@ -98,7 +97,9 @@
         },
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
           }
         ]
       }
@@ -106,14 +107,15 @@
     "/apis/user/v1/users/": {
       "get": {
         "tags": [
-          "user",
-          "permission_global_admin"
+          "user"
         ],
         "summary": "List Users",
         "operationId": "list_users",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_global_admin"
+            ]
           }
         ],
         "parameters": [
@@ -282,8 +284,7 @@
       },
       "post": {
         "tags": [
-          "user",
-          "permission_unauthenticated"
+          "user"
         ],
         "summary": "Register User",
         "operationId": "register_user",
@@ -384,14 +385,15 @@
     "/apis/user/v1/users/{username}": {
       "get": {
         "tags": [
-          "user",
-          "permission_regular_user"
+          "user"
         ],
         "summary": "Get User",
         "operationId": "get_user",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
           }
         ],
         "parameters": [
@@ -490,14 +492,15 @@
       },
       "delete": {
         "tags": [
-          "user",
-          "permission_global_admin"
+          "user"
         ],
         "summary": "Delete User",
         "operationId": "delete_user",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_global_admin"
+            ]
           }
         ],
         "parameters": [
@@ -591,8 +594,7 @@
     "/apis/user/v1/one_time_password": {
       "post": {
         "tags": [
-          "user",
-          "permission_unauthenticated"
+          "user"
         ],
         "summary": "Send One Time Password",
         "operationId": "send_one_time_password",
@@ -693,14 +695,15 @@
     "/apis/user/v1/users/{username}/quota": {
       "get": {
         "tags": [
-          "user",
-          "permission_regular_user"
+          "user"
         ],
         "summary": "Get User Quota",
         "operationId": "get_user_quota",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
           }
         ],
         "parameters": [
@@ -799,14 +802,15 @@
       },
       "patch": {
         "tags": [
-          "user",
-          "permission_global_admin"
+          "user"
         ],
         "summary": "Update User Quota",
         "operationId": "update_user_quota",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_global_admin"
+            ]
           }
         ],
         "parameters": [
@@ -905,14 +909,15 @@
       },
       "put": {
         "tags": [
-          "user",
-          "permission_global_admin"
+          "user"
         ],
         "summary": "Replace User Quota",
         "operationId": "replace_user_quota",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_global_admin"
+            ]
           }
         ],
         "parameters": [
@@ -1013,14 +1018,15 @@
     "/apis/workspace/v1/users/{username}/workspaces": {
       "post": {
         "tags": [
-          "workspace",
-          "permission_regular_user"
+          "workspace"
         ],
         "summary": "Create Workspace",
         "operationId": "create_workspace",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
           }
         ],
         "parameters": [
@@ -1129,14 +1135,15 @@
       },
       "get": {
         "tags": [
-          "workspace",
-          "permission_regular_user"
+          "workspace"
         ],
         "summary": "List User Workspaces",
         "operationId": "list_user_workspaces",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
           }
         ],
         "parameters": [
@@ -1269,14 +1276,15 @@
     "/apis/workspace/v1/workspaces": {
       "get": {
         "tags": [
-          "workspace",
-          "permission_global_admin"
+          "workspace"
         ],
         "summary": "List Workspaces",
         "operationId": "list_workspaces",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_global_admin"
+            ]
           }
         ],
         "parameters": [
@@ -1409,14 +1417,15 @@
     "/apis/workspace/v1/workspaces/{workspace}": {
       "get": {
         "tags": [
-          "workspace",
-          "permission_regular_user"
+          "workspace"
         ],
         "summary": "Get Workspace",
         "operationId": "get_workspace",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
           }
         ],
         "parameters": [
@@ -1515,14 +1524,15 @@
       },
       "delete": {
         "tags": [
-          "workspace",
-          "permission_global_admin"
+          "workspace"
         ],
         "summary": "Delete Workspace",
         "operationId": "delete_workspace",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_global_admin"
+            ]
           }
         ],
         "parameters": [
@@ -1616,14 +1626,15 @@
     "/apis/workspace/v1/workspaces/{workspace}/quota": {
       "get": {
         "tags": [
-          "workspace",
-          "permission_regular_user"
+          "workspace"
         ],
         "summary": "Get Workspace Quota",
         "operationId": "get_workspace_quota",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
           }
         ],
         "parameters": [
@@ -1722,14 +1733,15 @@
       },
       "patch": {
         "tags": [
-          "workspace",
-          "permission_global_admin"
+          "workspace"
         ],
         "summary": "Update Workspace Quota",
         "operationId": "update_workspace_quota",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_global_admin"
+            ]
           }
         ],
         "parameters": [
@@ -1838,14 +1850,15 @@
       },
       "put": {
         "tags": [
-          "workspace",
-          "permission_global_admin"
+          "workspace"
         ],
         "summary": "Replace Workspace Quota",
         "operationId": "replace_workspace_quota",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_global_admin"
+            ]
           }
         ],
         "parameters": [
@@ -1956,14 +1969,15 @@
     "/apis/workspace/v1/workspaces/{workspace}/account": {
       "get": {
         "tags": [
-          "workspace",
-          "permission_regular_user"
+          "workspace"
         ],
         "summary": "Get Workspace Account",
         "operationId": "get_workspace_account",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
           }
         ],
         "parameters": [
@@ -2061,17 +2075,640 @@
         }
       }
     },
+    "/apis/workspace/v1/workspaces/{workspace}/account/recharge": {
+      "post": {
+        "tags": [
+          "workspace"
+        ],
+        "summary": "Recharge Workspace Account",
+        "operationId": "recharge_workspace_account",
+        "security": [
+          {
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Workspace"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RechargeWorkspaceAccount"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceAccountRecharge"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/apis/workspace/v1/workspaces/{workspace}/account/recharges": {
+      "get": {
+        "tags": [
+          "workspace"
+        ],
+        "summary": "List Workspace Account Recharges",
+        "operationId": "list_workspace_account_recharges",
+        "security": [
+          {
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Workspace"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedList_WorkspaceAccountRecharge_"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/apis/workspace/v1/workspaces/{workspace}/account/recharges/{recharge_id}": {
+      "get": {
+        "tags": [
+          "workspace"
+        ],
+        "summary": "Get Workspace Account Recharge",
+        "operationId": "get_workspace_account_recharge",
+        "security": [
+          {
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Workspace"
+            }
+          },
+          {
+            "name": "recharge_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Recharge Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceAccountRecharge"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/apis/workspace/v1/recharges/{recharge_id}/check": {
+      "post": {
+        "tags": [
+          "workspace"
+        ],
+        "summary": "Check Workspace Account Recharge",
+        "operationId": "check_workspace_account_recharge",
+        "security": [
+          {
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "recharge_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Recharge Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceAccountRecharge"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/apis/workspace/v1/workspaces/{workspace}/resource_usage_record": {
+      "get": {
+        "tags": [
+          "workspace"
+        ],
+        "summary": "List Workspace Resource Usage Records",
+        "operationId": "list_workspace_resource_usage_records",
+        "security": [
+          {
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Workspace"
+            }
+          },
+          {
+            "name": "target_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Target Id"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedList_ResourceUsageRecord_"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/apis/workspace/v1/workspaces/{workspace}/ssh_keys": {
       "get": {
         "tags": [
-          "workspace",
-          "permission_regular_user"
+          "workspace"
         ],
         "summary": "Get Workspace Ssh Keys",
         "operationId": "get_workspace_ssh_keys",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
           }
         ],
         "parameters": [
@@ -2170,14 +2807,15 @@
       },
       "post": {
         "tags": [
-          "workspace",
-          "permission_regular_user"
+          "workspace"
         ],
         "summary": "Create Workspace Ssh Keys",
         "operationId": "create_workspace_ssh_keys",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
           }
         ],
         "parameters": [
@@ -2276,14 +2914,15 @@
     "/apis/workspace/v1/workspaces/{workspace}/ssh_keys/{name}": {
       "delete": {
         "tags": [
-          "workspace",
-          "permission_regular_user"
+          "workspace"
         ],
         "summary": "Delete Workspace Ssh Keys",
         "operationId": "delete_workspace_ssh_keys",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
           }
         ],
         "parameters": [
@@ -2386,14 +3025,15 @@
     "/apis/workspace/v1/workspaces/{workspace}/members": {
       "get": {
         "tags": [
-          "workspace",
-          "permission_regular_user"
+          "workspace"
         ],
         "summary": "Get Workspace Members",
         "operationId": "get_workspace_members",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
           }
         ],
         "parameters": [
@@ -2494,14 +3134,15 @@
     "/apis/workspace/v1/workspaces/{workspace}/invitations": {
       "get": {
         "tags": [
-          "workspace",
-          "permission_regular_user"
+          "workspace"
         ],
         "summary": "Get Workspace Invitations",
         "operationId": "get_workspace_invitations",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
           }
         ],
         "parameters": [
@@ -2602,8 +3243,7 @@
     "/apis/compute/v1/zones/": {
       "post": {
         "tags": [
-          "compute",
-          "permission_global_admin"
+          "compute"
         ],
         "summary": "Create a new zone",
         "operationId": "create_zone",
@@ -2611,7 +3251,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ZoneCreate"
+                "$ref": "#/components/schemas/ZoneBase"
               }
             }
           },
@@ -2701,7 +3341,9 @@
         },
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_global_admin"
+            ]
           }
         ]
       }
@@ -2709,14 +3351,15 @@
     "/apis/compute/v1/zones": {
       "get": {
         "tags": [
-          "compute",
-          "permission_global_admin"
+          "compute"
         ],
         "summary": "List Zones",
         "operationId": "list_zones",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_global_admin"
+            ]
           }
         ],
         "parameters": [
@@ -2831,14 +3474,15 @@
     "/apis/compute/v1/zones/{zone}/gpu_types": {
       "get": {
         "tags": [
-          "compute",
-          "permission_global_admin"
+          "compute"
         ],
         "summary": "List Gpu Types",
         "operationId": "list_gpu_types",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_global_admin"
+            ]
           }
         ],
         "parameters": [
@@ -2962,14 +3606,15 @@
     "/apis/compute/v1/workspaces/{workspace}/zones": {
       "get": {
         "tags": [
-          "compute",
-          "permission_regular_user"
+          "compute"
         ],
         "summary": "List Workspace Zones",
         "operationId": "list_workspace_zones",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
           }
         ],
         "parameters": [
@@ -3093,14 +3738,15 @@
     "/apis/compute/v1/watch/workspaces/{workspace}/zones": {
       "get": {
         "tags": [
-          "compute",
-          "permission_regular_user"
+          "compute"
         ],
         "summary": "Watch Workspace Zones",
         "operationId": "watch_workspace_zones",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
           }
         ],
         "parameters": [
@@ -3201,14 +3847,15 @@
     "/apis/compute/v1/workspaces/{workspace}/zones/{zone}/gpu_types": {
       "get": {
         "tags": [
-          "compute",
-          "permission_regular_user"
+          "compute"
         ],
         "summary": "List Workspace Zone Gpu Types",
         "operationId": "list_workspace_zone_gpu_types",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
           }
         ],
         "parameters": [
@@ -3228,6 +3875,29 @@
             "schema": {
               "type": "string",
               "title": "Zone"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
             }
           }
         ],
@@ -3318,14 +3988,15 @@
     "/apis/compute/v1/workspaces/{workspace}/zones/{zone}/quota": {
       "get": {
         "tags": [
-          "compute",
-          "permission_regular_user"
+          "compute"
         ],
         "summary": "Get Workspace Zone Quota",
         "operationId": "get_workspace_zone_quota",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
           }
         ],
         "parameters": [
@@ -3435,14 +4106,15 @@
     "/apis/compute/v1/instances": {
       "get": {
         "tags": [
-          "compute",
-          "permission_global_admin"
+          "compute"
         ],
         "summary": "List Instances",
         "operationId": "list_instances",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_global_admin"
+            ]
           }
         ],
         "parameters": [
@@ -3575,14 +4247,15 @@
     "/apis/compute/v1/workspaces/{workspace}/instances": {
       "get": {
         "tags": [
-          "compute",
-          "permission_regular_user"
+          "compute"
         ],
         "summary": "List Workspace Instances",
         "operationId": "list_workspace_instances",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
           }
         ],
         "parameters": [
@@ -3733,14 +4406,15 @@
     "/apis/compute/v1/workspaces/{workspace}/zones/{zone}/instances/{name}": {
       "get": {
         "tags": [
-          "compute",
-          "permission_regular_user"
+          "compute"
         ],
         "summary": "Get Instance",
         "operationId": "get_instance",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
           }
         ],
         "parameters": [
@@ -3857,14 +4531,15 @@
       },
       "delete": {
         "tags": [
-          "compute",
-          "permission_regular_user"
+          "compute"
         ],
         "summary": "Delete Instance",
         "operationId": "delete_instance",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
           }
         ],
         "parameters": [
@@ -3983,14 +4658,15 @@
     "/apis/compute/v1/workspaces/{workspace}/zones/{zone}/instances": {
       "post": {
         "tags": [
-          "compute",
-          "permission_regular_user"
+          "compute"
         ],
         "summary": "Create and start a new instance",
         "operationId": "create_instance",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
           }
         ],
         "parameters": [
@@ -4110,14 +4786,15 @@
     "/apis/compute/v1/workspaces/{workspace}/zones/{zone}/instances/{name}/start": {
       "post": {
         "tags": [
-          "compute",
-          "permission_regular_user"
+          "compute"
         ],
         "summary": "Start Instance",
         "operationId": "start_instance",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
           }
         ],
         "parameters": [
@@ -4236,14 +4913,15 @@
     "/apis/compute/v1/workspaces/{workspace}/zones/{zone}/instances/{name}/stop": {
       "post": {
         "tags": [
-          "compute",
-          "permission_regular_user"
+          "compute"
         ],
         "summary": "Stop Instance",
         "operationId": "stop_instance",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
           }
         ],
         "parameters": [
@@ -4362,14 +5040,15 @@
     "/apis/compute/v1/workspaces/{workspace}/zones/{zone}/instances/{name}/port_forward": {
       "post": {
         "tags": [
-          "compute",
-          "permission_regular_user"
+          "compute"
         ],
         "summary": "Create Instance Port Forward",
         "operationId": "create_instance_port_forward",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
           }
         ],
         "parameters": [
@@ -4498,14 +5177,15 @@
     "/apis/compute/v1/workspaces/{workspace}/zones/{zone}/instances/{name}/port_forwards/{port_forward_name}": {
       "delete": {
         "tags": [
-          "compute",
-          "permission_regular_user"
+          "compute"
         ],
         "summary": "Delete Instance Port Forward",
         "operationId": "delete_instance_port_forward",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
           }
         ],
         "parameters": [
@@ -4626,14 +5306,15 @@
     "/apis/compute/v1/workspaces/{workspace}/zones/{zone}/instances/{name}/port_forwards": {
       "get": {
         "tags": [
-          "compute",
-          "permission_regular_user"
+          "compute"
         ],
         "summary": "List Instance Port Forwards",
         "operationId": "list_instance_port_forwards",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
           }
         ],
         "parameters": [
@@ -4756,14 +5437,15 @@
     "/apis/compute/v1/workspaces/{workspace}/zones/{zone}/operations": {
       "get": {
         "tags": [
-          "compute",
-          "permission_regular_user"
+          "compute"
         ],
         "summary": "List Workspace Operations",
         "operationId": "list_workspace_operations",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
           }
         ],
         "parameters": [
@@ -4896,14 +5578,15 @@
     "/apis/compute/v1/workspaces/{workspace}/zones/{zone}/operations/{uid}": {
       "get": {
         "tags": [
-          "compute",
-          "permission_regular_user"
+          "compute"
         ],
         "summary": "Get Workspace Operation",
         "operationId": "get_workspace_operation",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
           }
         ],
         "parameters": [
@@ -5023,14 +5706,15 @@
     "/apis/compute/v1/watch/workspaces/{workspace}/zones/{zone}/operations": {
       "get": {
         "tags": [
-          "compute",
-          "permission_regular_user"
+          "compute"
         ],
         "summary": "Watch Workspace Operations",
         "operationId": "watch_workspace_operations",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
           }
         ],
         "parameters": [
@@ -5140,14 +5824,15 @@
     "/apis/compute/v1/watch/workspaces/{workspace}/zones/{zone}/operations/{uid}": {
       "get": {
         "tags": [
-          "compute",
-          "permission_regular_user"
+          "compute"
         ],
         "summary": "Watch Workspace Operation",
         "operationId": "watch_workspace_operation",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
           }
         ],
         "parameters": [
@@ -5267,14 +5952,15 @@
     "/apis/compute/v1/workspaces/{workspace}/zones/{zone}/file_storages/": {
       "post": {
         "tags": [
-          "compute",
-          "permission_regular_user"
+          "compute"
         ],
         "summary": "Create File Storage",
         "operationId": "create_file_storage",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
           }
         ],
         "parameters": [
@@ -5394,14 +6080,15 @@
     "/apis/compute/v1/workspaces/{workspace}/zones/{zone}/file_storages": {
       "get": {
         "tags": [
-          "compute",
-          "permission_regular_user"
+          "compute"
         ],
         "summary": "List Workspace File Storages",
         "operationId": "list_workspace_file_storages",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
           }
         ],
         "parameters": [
@@ -5534,14 +6221,15 @@
     "/apis/compute/v1/workspaces/{workspace}/zones/{zone}/file_storages/{name}": {
       "get": {
         "tags": [
-          "compute",
-          "permission_regular_user"
+          "compute"
         ],
         "summary": "Get File Storage",
         "operationId": "get_file_storage",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
           }
         ],
         "parameters": [
@@ -5658,14 +6346,15 @@
       },
       "delete": {
         "tags": [
-          "compute",
-          "permission_regular_user"
+          "compute"
         ],
         "summary": "Delete File Storage",
         "operationId": "delete_file_storage",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
           }
         ],
         "parameters": [
@@ -5784,15 +6473,16 @@
     "/apis/compute/v1/workspaces/{workspace}/zones/{zone}/file_storages/{name}/files": {
       "get": {
         "tags": [
-          "compute",
-          "permission_regular_user"
+          "compute"
         ],
         "summary": "List Files In File Storage",
         "description": "Up to 100 files can be listed",
         "operationId": "list_files_in_file_storage",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
           }
         ],
         "parameters": [
@@ -5921,14 +6611,15 @@
     "/apis/compute/v1/zones/{zone}/images/": {
       "post": {
         "tags": [
-          "compute",
-          "permission_global_admin"
+          "compute"
         ],
         "summary": "Create Image",
         "operationId": "create_image",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_global_admin"
+            ]
           }
         ],
         "parameters": [
@@ -6039,14 +6730,15 @@
     "/apis/compute/v1/zones/{zone}/images/{name}": {
       "patch": {
         "tags": [
-          "compute",
-          "permission_global_admin"
+          "compute"
         ],
         "summary": "Update Image",
         "operationId": "update_image",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_global_admin"
+            ]
           }
         ],
         "parameters": [
@@ -6156,14 +6848,15 @@
     "/apis/compute/v1/workspaces/{workspace}/zones/{zone}/images": {
       "get": {
         "tags": [
-          "compute",
-          "permission_regular_user"
+          "compute"
         ],
         "summary": "List Workspace Images",
         "operationId": "list_workspace_images",
         "security": [
           {
-            "HTTPBearer": []
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
           }
         ],
         "parameters": [
@@ -6293,11 +6986,111 @@
         }
       }
     },
+    "/apis/oidc/v1/auth": {
+      "post": {
+        "tags": [
+          "oidc"
+        ],
+        "summary": "Auth",
+        "operationId": "auth",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_auth_apis_oidc_v1_auth_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Token"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/apis/oidc/v1/token": {
       "post": {
         "tags": [
-          "oidc",
-          "permission_unauthenticated"
+          "oidc"
         ],
         "summary": "Token",
         "operationId": "token",
@@ -6411,6 +7204,63 @@
         "type": "object",
         "title": "BaseModel"
       },
+      "Body_auth_apis_oidc_v1_auth_post": {
+        "properties": {
+          "grant_type": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "password"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Grant Type"
+          },
+          "username": {
+            "type": "string",
+            "title": "Username"
+          },
+          "password": {
+            "type": "string",
+            "title": "Password"
+          },
+          "scope": {
+            "type": "string",
+            "title": "Scope",
+            "default": ""
+          },
+          "client_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Client Id"
+          },
+          "client_secret": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Client Secret"
+          }
+        },
+        "type": "object",
+        "required": [
+          "username",
+          "password"
+        ],
+        "title": "Body_auth_apis_oidc_v1_auth_post"
+      },
       "Body_token_apis_oidc_v1_token_post": {
         "properties": {
           "grant_type": {
@@ -6450,7 +7300,6 @@
           },
           "email": {
             "type": "string",
-            "format": "email",
             "title": "Email",
             "default": ""
           },
@@ -6566,8 +7415,8 @@
       "Currency": {
         "type": "string",
         "enum": [
-          "USD",
-          "CNY"
+          "CNY",
+          "USD"
         ],
         "title": "Currency"
       },
@@ -6835,20 +7684,92 @@
         ],
         "title": "FileStorageStatus"
       },
+      "GPUProviderConfigEcloud": {
+        "properties": {
+          "provider": {
+            "type": "string",
+            "enum": [
+              "ecloud"
+            ],
+            "const": "ecloud",
+            "title": "Provider"
+          },
+          "boot_volume_type": {
+            "type": "string",
+            "title": "Boot Volume Type"
+          },
+          "boot_volume_size": {
+            "type": "integer",
+            "title": "Boot Volume Size"
+          },
+          "specs_name": {
+            "type": "string",
+            "title": "Specs Name"
+          },
+          "server_type": {
+            "type": "string",
+            "title": "Server Type"
+          },
+          "vm_type": {
+            "type": "string",
+            "title": "Vm Type"
+          },
+          "ram": {
+            "type": "integer",
+            "title": "Ram"
+          },
+          "cpu": {
+            "type": "integer",
+            "title": "Cpu"
+          }
+        },
+        "type": "object",
+        "required": [
+          "provider",
+          "boot_volume_type",
+          "boot_volume_size",
+          "specs_name",
+          "server_type",
+          "vm_type",
+          "ram",
+          "cpu"
+        ],
+        "title": "GPUProviderConfigEcloud"
+      },
       "GPUType": {
         "properties": {
+          "create_time": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Create Time"
+          },
+          "update_time": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Update Time"
+          },
+          "delete_time": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Delete Time"
+          },
           "name": {
             "type": "string",
-            "maxLength": 32,
-            "minLength": 3,
-            "pattern": "^[a-z0-9][a-z0-9-]*[a-z0-9]$",
-            "title": "Name",
-            "description": "\nNAME is subset of RFC1123 label names:\n1. contain only lowercase alphanumeric characters or '-'\n2. start with an alphanumeric character\n3. end with an alphanumeric character\n"
-          },
-          "uid": {
-            "type": "string",
-            "format": "uuid",
-            "title": "Uid"
+            "title": "Name"
           },
           "display_name": {
             "anyOf": [
@@ -6896,41 +7817,17 @@
           "disk_type": {
             "$ref": "#/components/schemas/DiskType"
           },
-          "create_time": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Create Time"
+          "zone": {
+            "type": "string",
+            "title": "Zone"
           },
-          "update_time": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Update Time"
+          "provider_config": {
+            "type": "object",
+            "title": "Provider Config"
           },
-          "delete_time": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Delete Time"
+          "ecloud": {
+            "$ref": "#/components/schemas/GPUProviderConfigEcloud",
+            "readOnly": true
           }
         },
         "type": "object",
@@ -6940,7 +7837,10 @@
           "memory",
           "cpu",
           "disk_size",
-          "disk_type"
+          "disk_type",
+          "zone",
+          "provider_config",
+          "ecloud"
         ],
         "title": "GPUType"
       },
@@ -7157,7 +8057,7 @@
           "terminated"
         ],
         "title": "InstanceStatus",
-        "description": "A instance can be in one of the following states:\n\n- `provisioning`: resources are allocated for the instance. The instance is not running yet.\n- `staging`: resources are acquired, and the instance is preparing for first boot.\n- `running`: the instance is booting up or running.\n- `stopping`: the instance is being stopped. You requested a stop, or a failure occurred. This is a temporary status after which the instance enters the `terminated` status.\n- `terminated`: the instance is stopped. You stopped the instance, or the instance encountered a failure. You can restart or delete the instance."
+        "description": "An instance can be in one of the following states:\n\n- `provisioning`: resources are allocated for the instance. The instance is not running yet.\n- `staging`: resources are acquired, and the instance is preparing for first boot.\n- `running`: the instance is booting up or running.\n- `stopping`: the instance is being stopped. You requested a stop, or a failure occurred. This is a temporary status after which the instance enters the `terminated` status.\n- `terminated`: the instance is stopped. You stopped the instance, or the instance encountered a failure. You can restart or delete the instance."
       },
       "InvitationStatus": {
         "type": "string",
@@ -7428,6 +8328,26 @@
         ],
         "title": "PaginatedList[Instance]"
       },
+      "PaginatedList_ResourceUsageRecord_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ResourceUsageRecord"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "pagination"
+        ],
+        "title": "PaginatedList[ResourceUsageRecord]"
+      },
       "PaginatedList_SSHKey_": {
         "properties": {
           "items": {
@@ -7467,6 +8387,26 @@
           "pagination"
         ],
         "title": "PaginatedList[User]"
+      },
+      "PaginatedList_WorkspaceAccountRecharge_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/WorkspaceAccountRecharge"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "pagination"
+        ],
+        "title": "PaginatedList[WorkspaceAccountRecharge]"
       },
       "PaginatedList_WorkspaceInvitation_": {
         "properties": {
@@ -7626,6 +8566,22 @@
       },
       "ProviderZoneConfigEcloud": {
         "properties": {
+          "provider": {
+            "type": "string",
+            "enum": [
+              "ecloud"
+            ],
+            "const": "ecloud",
+            "title": "Provider"
+          },
+          "default_image_name": {
+            "type": "string",
+            "title": "Default Image Name"
+          },
+          "default_image_id": {
+            "type": "string",
+            "title": "Default Image Id"
+          },
           "region": {
             "type": "string",
             "title": "Region"
@@ -7645,12 +8601,58 @@
         },
         "type": "object",
         "required": [
+          "provider",
+          "default_image_name",
+          "default_image_id",
           "region",
           "pool_id",
           "network_id",
           "security_group_id"
         ],
         "title": "ProviderZoneConfigEcloud"
+      },
+      "RechargeStatus": {
+        "type": "string",
+        "enum": [
+          "pending",
+          "succeeded",
+          "failed"
+        ],
+        "title": "RechargeStatus"
+      },
+      "RechargeType": {
+        "type": "string",
+        "enum": [
+          "alipay"
+        ],
+        "const": "alipay",
+        "title": "RechargeType"
+      },
+      "RechargeWorkspaceAccount": {
+        "properties": {
+          "amount": {
+            "type": "integer",
+            "title": "Amount"
+          },
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
+          },
+          "type": {
+            "$ref": "#/components/schemas/RechargeType"
+          },
+          "callback_url": {
+            "type": "string",
+            "title": "Callback Url"
+          }
+        },
+        "type": "object",
+        "required": [
+          "amount",
+          "currency",
+          "type",
+          "callback_url"
+        ],
+        "title": "RechargeWorkspaceAccount"
       },
       "RegisterUserRequest": {
         "properties": {
@@ -7710,6 +8712,66 @@
           "one_time_password"
         ],
         "title": "RegisterUserRequest"
+      },
+      "ResourceUsageRecord": {
+        "properties": {
+          "uid": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Uid"
+          },
+          "billing_cycle_group": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Billing Cycle Group"
+          },
+          "workspace": {
+            "type": "string",
+            "title": "Workspace"
+          },
+          "zone": {
+            "type": "string",
+            "title": "Zone"
+          },
+          "start_time": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Start Time"
+          },
+          "end_time": {
+            "type": "string",
+            "format": "date-time",
+            "title": "End Time"
+          },
+          "target_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Target Id"
+          },
+          "target_resource_type": {
+            "$ref": "#/components/schemas/ResourceUsageType"
+          }
+        },
+        "type": "object",
+        "required": [
+          "billing_cycle_group",
+          "workspace",
+          "zone",
+          "start_time",
+          "end_time",
+          "target_id",
+          "target_resource_type"
+        ],
+        "title": "ResourceUsageRecord"
+      },
+      "ResourceUsageType": {
+        "type": "string",
+        "enum": [
+          "instance",
+          "volume",
+          "snapshot"
+        ],
+        "title": "ResourceUsageType"
       },
       "Role": {
         "type": "string",
@@ -8097,6 +9159,75 @@
         ],
         "title": "WorkspaceAccount"
       },
+      "WorkspaceAccountRecharge": {
+        "properties": {
+          "create_time": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Create Time"
+          },
+          "update_time": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Update Time"
+          },
+          "delete_time": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Delete Time"
+          },
+          "uid": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Uid"
+          },
+          "workspace": {
+            "type": "string",
+            "title": "Workspace"
+          },
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
+          },
+          "amount": {
+            "type": "integer",
+            "title": "Amount"
+          },
+          "type": {
+            "$ref": "#/components/schemas/RechargeType"
+          },
+          "pay_url": {
+            "type": "string",
+            "title": "Pay Url"
+          },
+          "status": {
+            "$ref": "#/components/schemas/RechargeStatus"
+          }
+        },
+        "type": "object",
+        "required": [
+          "workspace",
+          "currency",
+          "amount",
+          "type",
+          "pay_url",
+          "status"
+        ],
+        "title": "WorkspaceAccountRecharge"
+      },
       "WorkspaceCreate": {
         "properties": {
           "name": {
@@ -8352,43 +9483,50 @@
             "$ref": "#/components/schemas/Provider"
           },
           "provider_config": {
+            "type": "object",
+            "title": "Provider Config"
+          },
+          "ecloud": {
             "$ref": "#/components/schemas/ProviderZoneConfigEcloud",
-            "default": {}
+            "readOnly": true
           }
         },
         "type": "object",
         "required": [
           "name",
-          "provider"
+          "provider",
+          "provider_config",
+          "ecloud"
         ],
         "title": "Zone"
       },
-      "ZoneCreate": {
+      "ZoneBase": {
         "properties": {
           "name": {
             "type": "string",
             "title": "Name"
-          },
-          "provider": {
-            "$ref": "#/components/schemas/Provider"
-          },
-          "provider_config": {
-            "$ref": "#/components/schemas/ProviderZoneConfigEcloud",
-            "default": {}
           }
         },
         "type": "object",
         "required": [
-          "name",
-          "provider"
+          "name"
         ],
-        "title": "ZoneCreate"
+        "title": "ZoneBase"
       }
     },
     "securitySchemes": {
-      "HTTPBearer": {
-        "type": "http",
-        "scheme": "bearer"
+      "OAuth2PasswordBearer": {
+        "type": "oauth2",
+        "flows": {
+          "password": {
+            "scopes": {
+              "permission_unauthenticated": "the unauthenticated user",
+              "permission_regular_user": "a regular user",
+              "permission_global_admin": "a global admin"
+            },
+            "tokenUrl": "/apis/oidc/v1/auth"
+          }
+        }
       }
     }
   }

@@ -1,5 +1,5 @@
 export const currency = {
-    "USD": "USD",
-    "CNY": "CNY"
+    "CNY": "CNY",
+    "USD": "USD"
 } as const;
 export type CurrencyType = (typeof currency)[keyof typeof currency];

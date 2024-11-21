@@ -32,7 +32,7 @@ from routers.types import (
     WatchEvent,
     WorkspaceZoneQuota,
     Zone,
-    ZoneCreate,
+    ZoneBase,
     ZoneList,
 )
 from services.celery import create_instance_operation
@@ -51,7 +51,7 @@ router = APIRouter(
 )
 async def create_zone(
     session: SessionDep,
-    zone_in: ZoneCreate,
+    zone_in: ZoneBase,
     user: CurrentAdminUserDepAnnotated,
 ) -> Zone:
     existing = await Zone.one_by_field(session, "name", zone_in.name)

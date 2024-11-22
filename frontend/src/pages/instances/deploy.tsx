@@ -11,6 +11,8 @@ import { createInstanceRequestSchema, CreateInstanceRequestSchema } from '@/gen/
 import { useAuth } from '@/hooks/use-auth'
 import { useCreateInstanceHook } from '@/gen/hooks/useCreateInstanceHook'
 import { useState } from 'react'
+import { useListWorkspaceZoneGpuTypesHook } from '@/gen/hooks/useListWorkspaceZoneGpuTypesHook'
+import useWorkspace from '@/hooks/use-setting.ts'
 
 
 // This can come from your database or API.
@@ -19,7 +21,10 @@ const defaultValues: Partial<CreateInstanceRequestSchema> = {
 }
 
 export default function DeployForm() {
-  const [zone, setZone] = useState('default')
+  const { workspace: currentWorkspace } = useWorkspace()
+  const [zone, setZone] = useState('beijing')
+  const {data: listGpuTypesResp} = useListWorkspaceZoneGpuTypesHook(currentWorkspace?.name, zone)
+
   const form = useForm<CreateInstanceRequestSchema>({
     resolver: zodResolver(createInstanceRequestSchema),
     defaultValues,
@@ -48,7 +53,10 @@ export default function DeployForm() {
   function onSubmitError(error: any) {
     console.log(error)
   }
-
+  if (!listGpuTypesResp) {
+    return
+  }
+  const {items: gpuTypes } = listGpuTypesResp
   return (
     <Layout>
       <Layout.Body>
@@ -60,7 +68,7 @@ export default function DeployForm() {
             <form onSubmit={form.handleSubmit(onSubmit, onSubmitError)} className="space-y-8">
               <FormField
                 name="zone"
-                render={({ field }) => (
+                render={() => (
                   <FormItem>
                     <FormLabel>区域</FormLabel>
                     <Select onValueChange={setZone} defaultValue={zone}>
@@ -87,7 +95,7 @@ export default function DeployForm() {
                   <FormItem>
                     <FormLabel>名称</FormLabel>
                     <FormControl>
-                      <Input placeholder="instance name" {...field} />
+                      <Input placeholder="主机名称" {...field} />
                     </FormControl>
                     <FormDescription>
                     </FormDescription>
@@ -108,7 +116,7 @@ export default function DeployForm() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="beijing_v100">NVIDIA Tesla V100</SelectItem>
+                        {gpuTypes.map((gpuType) => <SelectItem value={gpuType.name}>{gpuType.display_name}</SelectItem>)}
                       </SelectContent>
                     </Select>
                     <FormDescription>

@@ -1,4 +1,5 @@
 import logging
+import time
 from datetime import datetime, timezone
 
 from dependencies import SessionDep
@@ -127,7 +128,7 @@ class ProviderEcloud(ProviderInterface):
         body = VmUpdateNameBody(name=name, server_id=server_id)
         request = VmUpdateNameRequest(body)
         resp = client.vm_update_name(request)
-        if resp.status != "OK":
+        if resp.state != "OK":
             raise Exception("update vm name failed")
 
     # TODO: use vmRebuild to rebuild instance
@@ -146,19 +147,21 @@ class ProviderEcloud(ProviderInterface):
             query_word_name=PENDING_PREFIX,
             specs_name=gpu_type.ecloud.specs_name,
         )
-        logger.info(query)
         request = VmlistServerRespRequest(vmlist_server_resp_query=query)
         resp: VmlistServerRespResponse = client.vmlist_server_resp(request)
         body: VmlistServerRespResponseBody = resp.body
         if resp.body.total == 0:
             # TODO: create instance and wait for it to be ready
+            logger.error(
+                "cannot find available server with name prefix [%s] ...", PENDING_PREFIX
+            )
             return await self.set_operation_failed(session, operation)
         server_id = body.content[0].id
-
+        logger.info("rename server [%s] ...", server_id)
         await self.update_vm_name(
             client, server_id=server_id, name=RUNNING_PREFIX + str(instance.uid)
         )
-
+        logger.info("rebuild server [%s] ...", server_id)
         request = VmRebuildRequest(
             vm_rebuild_body=VmRebuildBody(
                 server_id=server_id,
@@ -169,6 +172,8 @@ class ProviderEcloud(ProviderInterface):
         client.vm_rebuild(request)
         await self.set_operation_running(session, operation, progress=20)
         while True:
+            logger.info("wait server [%s] rebuild", server_id)
+            await gpu_type.refresh(session)
             query = VmlistServerRespQuery(
                 server_types=[gpu_type.ecloud.server_type],
                 product_types=["NORMAL"],
@@ -180,7 +185,11 @@ class ProviderEcloud(ProviderInterface):
             resp: VmlistServerRespResponse = client.vmlist_server_resp(request)
             status = resp.body.content[0].ec_status
             if status == "active":
+                logger.info("server [%s] rebuild done", server_id)
                 break
             else:
+                await operation.refresh(session)
                 await self.set_operation_running(session, operation, progress=60)
+                time.sleep(5)
+        await operation.refresh(session)
         return await self.set_operation_done(session, operation)

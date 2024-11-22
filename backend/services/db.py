@@ -91,11 +91,33 @@ async def init_data():
                 "provider": "ecloud",
                 "boot_volume_type": "highPerformance",
                 "boot_volume_size": 50,
-                "specs_name": "g4v.2xlarge.8",
+                "specs_name": "g3v.2xlarge.8",
                 "vm_type": "gpu",
                 "ram": 64,
                 "cpu": 8,
                 "server_type": "VM",
             },
         )
+        beijing_cpu001 = GPUType(
+            name="beijing_cpu001",
+            display_name="CPU Instance",
+            description="",
+            gpuMemory="0",
+            memory="16GB",
+            cpu=8,
+            disk_size="100GB",
+            disk_type="SSD",
+            zone="beijing",
+            provider_config={
+                "provider": "ecloud",
+                "boot_volume_type": "highPerformance",
+                "boot_volume_size": 50,
+                "specs_name": "c3.2xlarge.2",
+                "vm_type": "gpu",
+                "ram": 16,
+                "cpu": 8,
+                "server_type": "VM",
+            },
+        )
         await GPUType.create_or_update(session, beijing_v100)
+        await GPUType.create_or_update(session, beijing_cpu001)

@@ -304,6 +304,10 @@ class GPUType(GPUTypeBase, BaseModelMixin, table=True):
     def ecloud(self) -> GPUProviderConfigEcloud:
         return GPUProviderConfigEcloud(**self.provider_config)
 
+    @ecloud.setter
+    def ecloud(self, value):
+        self.provider_config = value
+
 
 class GPUTypePublic(GPUTypeBase):
     pass
@@ -339,6 +343,10 @@ class Zone(ZoneBase, BaseModelMixin, table=True):
     @property
     def ecloud(self) -> ProviderZoneConfigEcloud:
         return ProviderZoneConfigEcloud(**self.provider_config)
+
+    @ecloud.setter
+    def ecloud(self, value):
+        self.provider_config = value
 
 
 ZoneList = PaginatedList[Zone]

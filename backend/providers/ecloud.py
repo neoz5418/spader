@@ -2,6 +2,8 @@ import logging
 import time
 from datetime import datetime, timezone
 
+import uuid
+
 from dependencies import SessionDep
 from providers.interface import ProviderInterface
 from routers.types import (
@@ -23,6 +25,9 @@ from ecloudsdkecs.v1.model import (
     VmlistServerRespRequest,
     VmlistServerRespResponse,
     VmlistServerRespResponseBody,
+    VmListServeQuery,
+    VmListServeRequest,
+    VmListServeResponse,
     VmUpdateNameRequest,
     VmUpdateNameBody,
     VmRebuildBody,
@@ -122,6 +127,14 @@ async def _create_instance(
     )
 
 
+def generate_cloud_init(jupyter_password: str, public_key: str) -> str:
+    return """docker run -d --net=host \
+      -e PUBLIC_KEY="%s" \
+      -e JUPYTER_PASSWORD=%s \
+      runpod/pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04
+    """ % (public_key, jupyter_password)
+
+
 class ProviderEcloud(ProviderInterface):
     @staticmethod
     async def update_vm_name(client, server_id: str, name: str):
@@ -162,11 +175,16 @@ class ProviderEcloud(ProviderInterface):
             client, server_id=server_id, name=RUNNING_PREFIX + str(instance.uid)
         )
         logger.info("rebuild server [%s] ...", server_id)
+        jupyter_password = str(uuid.uuid4())
         request = VmRebuildRequest(
             vm_rebuild_body=VmRebuildBody(
                 server_id=server_id,
                 image_id=zone.ecloud.default_image_id,
-                user_data="",
+                # TODO: get ssh key from workspace config
+                user_data=generate_cloud_init(
+                    jupyter_password=jupyter_password,
+                    public_key="",
+                ),
             )
         )
         client.vm_rebuild(request)
@@ -174,21 +192,35 @@ class ProviderEcloud(ProviderInterface):
         while True:
             logger.info("wait server [%s] rebuild", server_id)
             await gpu_type.refresh(session)
-            query = VmlistServerRespQuery(
+            query = VmListServeQuery(
                 server_types=[gpu_type.ecloud.server_type],
                 product_types=["NORMAL"],
                 visible=True,
                 server_id=server_id,
                 specs_name=gpu_type.ecloud.specs_name,
             )
-            request = VmlistServerRespRequest(vmlist_server_resp_query=query)
-            resp: VmlistServerRespResponse = client.vmlist_server_resp(request)
-            status = resp.body.content[0].ec_status
+            request = VmListServeRequest(vm_list_serve_query=query)
+            resp: VmListServeResponse = client.vm_list_serve(request)
+            vm = resp.body.content[0]
+            status = vm.ec_status
+            ip = ""
+            for port in vm.port_detail:
+                if port.fip_address:
+                    ip = port.fip_address
+                    break
             if status == "active":
                 logger.info("server [%s] rebuild done", server_id)
                 break
             else:
                 await operation.refresh(session)
+                instance.status = InstanceStatus.running
+                services = {
+                    "jupyter-lab": "%s:8888" % ip,
+                    "ssh": "%s:22" % ip,
+                    "jupyter-password": jupyter_password,
+                }
+                instance.services = services
+                session.add(instance)
                 await self.set_operation_running(session, operation, progress=60)
                 time.sleep(5)
         await operation.refresh(session)

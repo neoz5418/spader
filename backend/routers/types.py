@@ -416,6 +416,8 @@ class Instance(SQLModel, BaseModelMixin, table=True):
 
     image: str
 
+    services: dict = Field(sa_column=Column(JSON), default={})
+
 
 class PortForwardProtocol(Enum):
     TCP = "TCP"

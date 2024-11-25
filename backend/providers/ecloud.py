@@ -32,6 +32,10 @@ from ecloudsdkecs.v1.model import (
     VmUpdateNameBody,
     VmRebuildBody,
     VmRebuildRequest,
+    VmStopPath,
+    VmStopRequest,
+    VmStartPath,
+    VmStartRequest,
 )
 
 from settings import get_settings
@@ -51,6 +55,8 @@ def get_client(zone: Zone) -> Client:
 
 PENDING_PREFIX = "pending-"
 RUNNING_PREFIX = "running-"
+STOP_STATUS = "shutoff"
+RUNNING_STATUS = "active"
 
 
 async def _create_instance(
@@ -128,7 +134,7 @@ async def _create_instance(
 
 
 def generate_cloud_init(jupyter_password: str, public_key: str) -> str:
-    return """docker run -d --net=host \
+    return """docker run -d --net=host --gpus all --name default_runner \
       -e PUBLIC_KEY="%s" \
       -e JUPYTER_PASSWORD=%s \
       runpod/pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04
@@ -138,11 +144,144 @@ def generate_cloud_init(jupyter_password: str, public_key: str) -> str:
 class ProviderEcloud(ProviderInterface):
     @staticmethod
     async def update_vm_name(client, server_id: str, name: str):
+        # TODO: 移动云不支持关机状态下修改名称，需要手动增加 API 来支持只修改名字，不修改 hostname
         body = VmUpdateNameBody(name=name, server_id=server_id)
         request = VmUpdateNameRequest(body)
         resp = client.vm_update_name(request)
-        if resp.state != "OK":
+        if (
+            resp.state != "OK"
+            and resp.error_code
+            != "CSLOPENSTACK_COMPUTE_SERVER_STATUS_ERROR_CANNOT_DO_THIS_OPERATION"
+        ):
             raise Exception("update vm name failed")
+
+    async def delete_instance(
+        self, session: SessionDep, operation: Operation, instance: Instance
+    ):
+        # TODO: rebuild this instance to default instance
+        zone = await Zone.one_by_field(session, "name", instance.zone)
+        gpu_type = await GPUType.one_by_field(session, "name", instance.gpu_type)
+        if not zone or not gpu_type:
+            return await self.set_operation_failed(session, operation)
+        client = get_client(zone)
+        server_id = instance.target_id
+        logger.info("rename server [%s] ...", server_id)
+        await self.update_vm_name(
+            client, server_id=server_id, name=PENDING_PREFIX + str(instance.uid)
+        )
+        logger.info("stop server [%s] ...", server_id)
+        request = VmStopRequest(
+            vm_stop_query=VmStopPath(server_id=server_id),
+        )
+        client.vm_stop(request)
+        await self.set_operation_running(session, operation, progress=20)
+        while True:
+            logger.info("wait server [%s] stop", server_id)
+            await gpu_type.refresh(session)
+            query = VmListServeQuery(
+                server_types=[gpu_type.ecloud.server_type],
+                product_types=["NORMAL"],
+                visible=True,
+                server_id=server_id,
+                specs_name=gpu_type.ecloud.specs_name,
+            )
+            request = VmListServeRequest(vm_list_serve_query=query)
+            resp: VmListServeResponse = client.vm_list_serve(request)
+            vm = resp.body.content[0]
+            status = vm.ec_status
+            if status == STOP_STATUS:
+                logger.info("stop server [%s] done", server_id)
+                break
+            else:
+                await operation.refresh(session)
+                instance.status = InstanceStatus.terminated
+                session.add(instance)
+                await self.set_operation_running(session, operation, progress=60)
+                time.sleep(5)
+        await operation.refresh(session)
+        return await self.set_operation_done(session, operation)
+
+    async def start_instance(
+        self, session: SessionDep, operation: Operation, instance: Instance
+    ):
+        zone = await Zone.one_by_field(session, "name", instance.zone)
+        gpu_type = await GPUType.one_by_field(session, "name", instance.gpu_type)
+        if not zone or not gpu_type:
+            return await self.set_operation_failed(session, operation)
+        client = get_client(zone)
+        server_id = instance.target_id
+        logger.info("start server [%s] ...", server_id)
+        request = VmStartRequest(
+            vm_start_path=VmStartPath(server_id=server_id),
+        )
+        client.vm_start(request)
+        await self.set_operation_running(session, operation, progress=20)
+        while True:
+            logger.info("wait server [%s] active", server_id)
+            await gpu_type.refresh(session)
+            query = VmListServeQuery(
+                server_types=[gpu_type.ecloud.server_type],
+                product_types=["NORMAL"],
+                visible=True,
+                server_id=server_id,
+                specs_name=gpu_type.ecloud.specs_name,
+            )
+            request = VmListServeRequest(vm_list_serve_query=query)
+            resp: VmListServeResponse = client.vm_list_serve(request)
+            vm = resp.body.content[0]
+            status = vm.ec_status
+            if status == RUNNING_STATUS:
+                logger.info("start server [%s] done", server_id)
+                break
+            else:
+                await operation.refresh(session)
+                instance.status = InstanceStatus.terminated
+                session.add(instance)
+                await self.set_operation_running(session, operation, progress=60)
+                time.sleep(5)
+        await operation.refresh(session)
+        return await self.set_operation_done(session, operation)
+
+    async def stop_instance(
+        self, session: SessionDep, operation: Operation, instance: Instance
+    ):
+        zone = await Zone.one_by_field(session, "name", instance.zone)
+        gpu_type = await GPUType.one_by_field(session, "name", instance.gpu_type)
+        if not zone or not gpu_type:
+            return await self.set_operation_failed(session, operation)
+        client = get_client(zone)
+        server_id = instance.target_id
+        logger.info("stop server [%s] ...", server_id)
+        request = VmStopRequest(
+            vm_stop_query=VmStopPath(server_id=server_id),
+        )
+        client.vm_stop(request)
+        await self.set_operation_running(session, operation, progress=20)
+        while True:
+            logger.info("wait server [%s] stop", server_id)
+            await gpu_type.refresh(session)
+            query = VmListServeQuery(
+                server_types=[gpu_type.ecloud.server_type],
+                product_types=["NORMAL"],
+                visible=True,
+                server_id=server_id,
+                specs_name=gpu_type.ecloud.specs_name,
+            )
+            request = VmListServeRequest(vm_list_serve_query=query)
+            resp: VmListServeResponse = client.vm_list_serve(request)
+            vm = resp.body.content[0]
+            status = vm.ec_status
+            if status == STOP_STATUS:
+                logger.info("stop server [%s] done", server_id)
+                break
+            else:
+                await operation.refresh(session)
+                instance.status = InstanceStatus.terminated
+                session.add(instance)
+                await self.set_operation_running(session, operation, progress=60)
+                time.sleep(5)
+        await operation.refresh(session)
+        return await self.set_operation_done(session, operation)
 
     # TODO: use vmRebuild to rebuild instance
     async def create_instance(
@@ -208,7 +347,7 @@ class ProviderEcloud(ProviderInterface):
                 if port.fip_address:
                     ip = port.fip_address
                     break
-            if status == "active":
+            if status == RUNNING_STATUS:
                 logger.info("server [%s] rebuild done", server_id)
                 break
             else:
@@ -220,6 +359,7 @@ class ProviderEcloud(ProviderInterface):
                     "jupyter-password": jupyter_password,
                 }
                 instance.services = services
+                instance.target_id = server_id
                 session.add(instance)
                 await self.set_operation_running(session, operation, progress=60)
                 time.sleep(5)

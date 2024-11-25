@@ -416,6 +416,8 @@ class Instance(SQLModel, BaseModelMixin, table=True):
 
     image: str
 
+    target_id: str = Field(default="")
+
     services: dict = Field(sa_column=Column(JSON), default={})
 
 

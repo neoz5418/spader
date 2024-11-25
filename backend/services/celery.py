@@ -68,6 +68,78 @@ async def create_instance_operation(operation_id: UUID):
 
 @celery.task
 @sync
+async def stop_instance_operation(operation_id: UUID):
+    async for session in get_session():
+        operation = await Operation.one_by_field(session, "uid", operation_id)
+        instance = await Instance.one_by_field(session, "uid", operation.target)
+
+        provider = ProviderInterface.get_provider("ecloud")
+        await provider.stop_instance(session, operation, instance)
+
+
+@celery.task
+@sync
+async def start_instance_operation(operation_id: UUID):
+    async for session in get_session():
+        operation = await Operation.one_by_field(session, "uid", operation_id)
+        instance = await Instance.one_by_field(session, "uid", operation.target)
+
+        provider = ProviderInterface.get_provider("ecloud")
+        await provider.start_instance(session, operation, instance)
+
+
+@celery.task
+@sync
+async def delete_instance_operation(operation_id: UUID):
+    async for session in get_session():
+        operation = await Operation.one_by_field(session, "uid", operation_id)
+        instance = await Instance.one_by_field(session, "uid", operation.target)
+        workspace = await Workspace.one_by_field(session, "name", instance.workspace)
+
+        provider = ProviderInterface.get_provider("ecloud")
+        await provider.delete_instance(session, operation, instance)
+        await instance.refresh(session)
+        stmt = (
+            select(ResourceUsageRecord)
+            .where(ResourceUsageRecord.target_id == instance.uid)
+            .order_by(ResourceUsageRecord.end_time.desc())
+            .limit(1)
+        )
+        last_record = (await session.exec(stmt)).first()
+        need_update = False
+        if last_record is None:
+            start_time = instance.create_time
+        elif last_record.end_time == datetime.min:
+            start_time = last_record.start_time
+            need_update = True
+        else:
+            start_time = last_record.end_time
+        end_time = utcnow()
+        start_time = start_time.replace(tzinfo=timezone.utc)
+        hours = (end_time - start_time).seconds / 3600
+        billing_cycle_group = uuid.uuid4()
+        if need_update:
+            last_record.end_time = end_time
+            last_record.billing_cycle_group = billing_cycle_group
+        else:
+            last_record = ResourceUsageRecord(
+                workspace=instance.workspace,
+                zone=instance.zone,
+                target_id=instance.uid,
+                target_resource_type=ResourceUsageType.instance,
+                billing_cycle_group=billing_cycle_group,
+                start_time=start_time,
+                end_time=end_time,
+            )
+        session.add(last_record)
+        await workspace.refresh(session)
+        await instance.refresh(session)
+        send_event(billing_cycle_group, workspace.uid, instance.gpu_type, str(hours))
+        await session.commit()
+
+
+@celery.task
+@sync
 async def check_all_user_balances():
     async for session in get_session():
         workspaces = await Workspace.all(session)

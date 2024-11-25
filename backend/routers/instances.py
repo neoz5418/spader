@@ -35,7 +35,12 @@ from routers.types import (
     ZoneBase,
     ZoneList,
 )
-from services.celery import create_instance_operation
+from services.celery import (
+    create_instance_operation,
+    delete_instance_operation,
+    start_instance_operation,
+    stop_instance_operation,
+)
 
 router = APIRouter(
     prefix="/apis/compute/v1",
@@ -252,24 +257,58 @@ async def create_instance(
     "/workspaces/{workspace}/zones/{zone}/instances/{name}/start",
     dependencies=[CurrentUserDep],
 )
-def start_instance(
+async def start_instance(
+    session: SessionDep,
     workspace: str,
     zone: str,
     name: str,
+    user: CurrentUserDepAnnotated,
 ) -> Operation:
-    return
+    instance = await Instance.one_by_field(session, "name", name)
+    if not instance:
+        raise HTTPException(status_code=404, detail="Instance not found")
+
+    operation_creation = Operation(
+        workspace=workspace,
+        zone=zone,
+        create_time=datetime.now(timezone.utc),
+        target=instance.uid,
+        user=user.uid,
+        status=OperationStatus.pending,
+        progress=0,
+    )
+    operation = await Operation.create(session, operation_creation)
+    start_instance_operation.delay(operation.uid)
+    return operation
 
 
 @router.post(
     "/workspaces/{workspace}/zones/{zone}/instances/{name}/stop",
     dependencies=[CurrentUserDep],
 )
-def stop_instance(
+async def stop_instance(
+    session: SessionDep,
     workspace: str,
     zone: str,
     name: str,
+    user: CurrentUserDepAnnotated,
 ) -> Operation:
-    return
+    instance = await Instance.one_by_field(session, "name", name)
+    if not instance:
+        raise HTTPException(status_code=404, detail="Instance not found")
+
+    operation_creation = Operation(
+        workspace=workspace,
+        zone=zone,
+        create_time=datetime.now(timezone.utc),
+        target=instance.uid,
+        user=user.uid,
+        status=OperationStatus.pending,
+        progress=0,
+    )
+    operation = await Operation.create(session, operation_creation)
+    stop_instance_operation.delay(operation.uid)
+    return operation
 
 
 @router.post(
@@ -316,12 +355,29 @@ def list_instance_port_forwards(
     "/workspaces/{workspace}/zones/{zone}/instances/{name}",
     dependencies=[CurrentUserDep],
 )
-def delete_instance(
+async def delete_instance(
+    session: SessionDep,
     workspace: str,
     zone: str,
     name: str,
+    user: CurrentUserDepAnnotated,
 ) -> Operation:
-    return
+    instance = await Instance.one_by_field(session, "name", name)
+    if not instance:
+        raise HTTPException(status_code=404, detail="Instance not found")
+
+    operation_creation = Operation(
+        workspace=workspace,
+        zone=zone,
+        create_time=datetime.now(timezone.utc),
+        target=instance.uid,
+        user=user.uid,
+        status=OperationStatus.pending,
+        progress=0,
+    )
+    operation = await Operation.create(session, operation_creation)
+    delete_instance_operation.delay(operation.uid)
+    return operation
 
 
 @router.get(

@@ -17,6 +17,24 @@ class ProviderInterface(ABC):
                 raise ValueError(f"Unknown provider: {provider_name}")
 
     @abstractmethod
+    async def stop_instance(
+        self, session: SessionDep, operation: Operation, instance: Instance
+    ):
+        pass
+
+    @abstractmethod
+    async def start_instance(
+        self, session: SessionDep, operation: Operation, instance: Instance
+    ):
+        pass
+
+    @abstractmethod
+    async def delete_instance(
+        self, session: SessionDep, operation: Operation, instance: Instance
+    ):
+        pass
+
+    @abstractmethod
     async def create_instance(
         self, session: SessionDep, operation: Operation, instance: Instance
     ):

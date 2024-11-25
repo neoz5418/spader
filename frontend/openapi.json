@@ -8033,6 +8033,11 @@
           "image": {
             "type": "string",
             "title": "Image"
+          },
+          "services": {
+            "type": "object",
+            "title": "Services",
+            "default": {}
           }
         },
         "type": "object",

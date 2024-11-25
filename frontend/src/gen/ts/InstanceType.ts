@@ -41,4 +41,9 @@ import type { InstanceStatusType } from "./InstanceStatusType";
      * @type string
     */
     image: string;
+    /**
+     * @default [object Object]
+     * @type object | undefined
+    */
+    services?: object;
 };

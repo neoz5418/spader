@@ -15,6 +15,16 @@ cp openapi.json frontend/
 cd frontend
 npx kubb --config kubb.config.ts
 npx biome format --write ./src/gen
+
+echo "Cleaning up error generating"
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    # macOS
+    find src/gen -type f -exec sed -i '' 's/\[object, Object\]/{}/g' {} +
+else
+    # Linux and others
+    find src/gen -type f -exec sed -i 's/\[object, Object\]/{}/g' {} +
+fi 
+
 cd ..
 
 echo "Cleaning up"

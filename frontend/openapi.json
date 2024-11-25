@@ -8034,6 +8034,11 @@
             "type": "string",
             "title": "Image"
           },
+          "target_id": {
+            "type": "string",
+            "title": "Target Id",
+            "default": ""
+          },
           "services": {
             "type": "object",
             "title": "Services",

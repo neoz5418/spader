@@ -24,7 +24,7 @@ async function modifyOpenAPIFile(filePath) {
     
     await fs.promises.writeFile(
       filePath,
-      JSON.stringify(openapiContent, null, 2).replaceAll('[object, Object]', '{}'),
+      JSON.stringify(openapiContent, null, 2),
     )
     console.log("File successfully modified")
   } catch (err) {

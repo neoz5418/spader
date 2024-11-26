@@ -134,7 +134,7 @@ async def _create_instance(
 
 
 def generate_cloud_init(jupyter_password: str, public_key: str) -> str:
-    return """docker run -d --net=host --gpus all --name default_runner \
+    return """docker run -d --restart unless-stopped --net=host --gpus all --name default_runner \
       -e PUBLIC_KEY="%s" \
       -e JUPYTER_PASSWORD=%s \
       runpod/pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04

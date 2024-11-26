@@ -74,7 +74,7 @@ const router = createBrowserRouter([{
           const AppShell = await import('./pages/app-shell.tsx')
           return { Component: AppShell.default }
         },
-        errorElement: <GeneralError />,
+        // errorElement: <GeneralError />,
         children: [
           {
             index: true,
@@ -148,7 +148,7 @@ const router = createBrowserRouter([{
             lazy: async () => ({
               Component: (await import('./pages/settings/index.tsx')).default,
             }),
-            errorElement: <GeneralError />,
+            // errorElement: <GeneralError />,
             children: [
               // {
               //   index: true,
@@ -188,7 +188,7 @@ const router = createBrowserRouter([{
                   Component: (await import('./pages/settings/error-example/index.tsx'))
                     .default,
                 }),
-                errorElement: <GeneralError className='h-[50svh]' minimal />,
+                // errorElement: <GeneralError className='h-[50svh]' minimal />,
               },
             ],
           },

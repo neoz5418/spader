@@ -42,6 +42,11 @@ import type { InstanceStatusType } from "./InstanceStatusType";
     */
     image: string;
     /**
+     * @default ""
+     * @type string | undefined
+    */
+    target_id?: string;
+    /**
      * @default [object Object]
      * @type object | undefined
     */

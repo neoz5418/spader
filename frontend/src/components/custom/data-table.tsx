@@ -28,7 +28,6 @@ import { Skeleton } from "../ui/skeleton"
 import { Link, useNavigate } from "react-router-dom"
 import { ErrorType } from "@/gen"
 import { DataTableToolbar } from "./data-table-toolbar"
-import getAllConfigs from '../../../../frontend-shadcn/node_modules/tailwindcss/src/util/getAllConfigs';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]

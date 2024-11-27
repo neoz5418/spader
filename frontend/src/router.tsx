@@ -138,6 +138,12 @@ const router = createBrowserRouter([{
             }),
           },
           {
+            path: 'recharge',
+            lazy: async () => ({
+              Component: (await import('./pages/workspaces/recharge.tsx')).default,
+            }),
+          },
+          {
             path: 'logs',
             lazy: async () => ({
               Component: (await import('@/components/coming-soon')).default,

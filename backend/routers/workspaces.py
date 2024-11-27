@@ -230,7 +230,11 @@ async def recharge_workspace_account(
         pay_url="",
         status=RechargeStatus.pending,
     )
-    pay_url = alipay_recharge(recharge.uid, recharge.amount, recharge_in.callback_url)
+    pay_url = alipay_recharge(
+        recharge.uid,
+        recharge.amount,
+        recharge_in.callback_url,
+    )
     recharge.pay_url = pay_url
     await recharge.save(session)
     return recharge

@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router-dom'
+import { Link, Outlet } from 'react-router-dom'
 import Sidebar from '../components/sidebar'
 import useIsCollapsed from '@/hooks/use-is-collapsed'
 import SkipToMain from '../components/skip-to-main'
@@ -10,15 +10,15 @@ import useWorkspace from '@/hooks/use-setting'
 
 export default function AppShell() {
   const [isCollapsed, setIsCollapsed] = useIsCollapsed()
-  const { 
+  const {
     workspaces,
-    workspace: current, 
+    workspace: current,
     workspacesAccount,
-    switchWorkspace 
+    switchWorkspace
   } = useWorkspace()
   const balance = workspacesAccount?.balance || 0
   const currency = workspacesAccount?.currency || 'CNY'
-
+  const rechargeLink = "/workspaces/" + (current?.name || "") + "/recharge"
   return (
     <div className="relative h-full overflow-hidden bg-background">
       <SkipToMain />
@@ -33,11 +33,16 @@ export default function AppShell() {
             <div className="ml-auto flex items-center space-x-4">
               <TopNav links={topNav} />
               {/* <ThemeSwitch /> */}
-              <p className="text-sm font-semibold">{balance.toLocaleString('zh-CN', {
+              <p className="text-sm font-semibold">{(balance / 100).toLocaleString('zh-CN', {
                 style: 'currency',
                 currency: currency,
                 minimumFractionDigits: 2
               })}</p>
+              <Link
+                  to={rechargeLink}
+                >
+                  {"充值"}
+                </Link>
               {/* <UserNav /> */}
               <WorkspaceSwitcher workspaces={workspaces} current={current} switchWorkspace={switchWorkspace} />
             </div>
@@ -52,13 +57,8 @@ export default function AppShell() {
 
 const topNav = [
   {
-    title: 'Docs',
+    title: '文档',
     href: '/docs',
-    isActive: true,
-  },
-  {
-    title: 'Referrals',
-    href: '/referrals',
     isActive: true,
   },
 ]

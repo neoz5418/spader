@@ -49,18 +49,30 @@ export default function Recharge() {
   }
 
   return (
-    <form onSubmit={recharge}>
+    <form onSubmit={recharge} className="space-y-4">
       {mutation.error && (
-        <h5 onClick={() => mutation.reset()}>{mutation.error.toString()}</h5>
+        <h5
+          onClick={() => mutation.reset()}
+          className="cursor-pointer text-red-600"
+        >
+          {mutation.error.toString()}
+        </h5>
       )}
-      请输入充值金额：
-      <input
-        type="text"
-        value={amount}
-        onChange={(e) => setAmount(parseInt(e.target.value))}
-      />
-      <br />
-      <button type="submit">使用支付宝进行支付</button>
+      <label className="block">
+        请输入充值金额：
+        <input
+          type="text"
+          value={amount}
+          onChange={(e) => setAmount(parseInt(e.target.value))}
+          className="border border-gray-300 p-2 rounded-md"
+        />
+      </label>
+      <button
+        type="submit"
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md"
+      >
+        使用支付宝进行支付
+      </button>
     </form>
   )
 }

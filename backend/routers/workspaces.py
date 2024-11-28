@@ -31,6 +31,7 @@ from routers.types import (
     WorkspaceMemberList,
     WorkspaceQuota,
 )
+from services.cache import get_redis
 from services.common import Direction, PaginatedList, Pagination
 from services.lago import get_account, top_up_account
 from services.payment import alipay_recharge, check_alipay_recharge
@@ -293,29 +294,31 @@ async def check_workspace_account_recharge(
     session: SessionDep,
     recharge_id: UUID,
 ) -> WorkspaceAccountRecharge:
-    db_recharge = await WorkspaceAccountRecharge.one_by_fields(
-        session,
-        {
-            "uid": recharge_id,
-        },
-    )
-    # TODO: check user has workspace permission
-    if db_recharge is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Recharge not found",
+    cache = get_redis()
+    async with cache.lock("lock:" + str(recharge_id)):
+        db_recharge = await WorkspaceAccountRecharge.one_by_fields(
+            session,
+            {
+                "uid": recharge_id,
+            },
         )
-    if db_recharge.status == RechargeStatus.succeeded:
+        # TODO: check user has workspace permission
+        if db_recharge is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Recharge not found",
+            )
+        if db_recharge.status == RechargeStatus.succeeded:
+            return db_recharge
+        recharged = check_alipay_recharge(db_recharge.uid)
+        if recharged:
+            db_workspace = await Workspace.one_by_field(
+                session, "name", db_recharge.workspace
+            )
+            top_up_account(db_workspace, db_recharge.amount, False)
+            db_recharge.status = RechargeStatus.succeeded
+            await db_recharge.save(session)
         return db_recharge
-    recharged = check_alipay_recharge(db_recharge.uid)
-    if recharged:
-        db_workspace = await Workspace.one_by_field(
-            session, "name", db_recharge.workspace
-        )
-        top_up_account(db_workspace, db_recharge.amount, False)
-        db_recharge.status = RechargeStatus.succeeded
-        await db_recharge.save(session)
-    return db_recharge
 
 
 @router.get(

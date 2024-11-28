@@ -197,7 +197,7 @@ class WorkspaceInvitation(BaseModel):
 WorkspaceInvitationList = PaginatedList[WorkspaceInvitation]
 
 
-class Currency(Enum):
+class Currency(str, Enum):
     CNY = "CNY"
     USD = "USD"
 

@@ -3,26 +3,24 @@ import GeneralError from './pages/errors/general-error.tsx'
 import NotFoundError from './pages/errors/not-found-error.tsx'
 import MaintenanceError from './pages/errors/maintenance-error.tsx'
 import UnauthorisedError from './pages/errors/unauthorised-error.tsx'
-import {AuthLayout, Layout} from './lib/layouts.tsx'
-import { isLoggedIn  as isAuthenticated} from './hooks/use-auth.ts'
-import { useSetting } from './hooks/use-setting.ts'
-
+import { AuthLayout, Layout } from './lib/layouts.tsx'
+import { isLoggedIn as isAuthenticated } from './hooks/use-auth.ts'
 
 async function requireAuth() {
   console.log('requireAuth', isAuthenticated())
   if (!isAuthenticated()) {
-    throw redirect('/sign-in');
+    throw redirect('/sign-in')
   }
 
-  return null;
+  return null
 }
 
 async function redirectIfUser() {
   console.log('redirectIfUser', isAuthenticated())
   if (isAuthenticated()) {
-    throw redirect('/');
+    throw redirect('/')
   }
-  return null;
+  return null
 }
 
 
@@ -55,8 +53,8 @@ const router = createBrowserRouter([{
         Component: (await import('./pages/auth/forgot-password.tsx')).default,
       }),
     },
-  ]
-  },
+  ],
+},
   {
     path: '/',
     lazy: async () => ({
@@ -67,6 +65,12 @@ const router = createBrowserRouter([{
     element: <AuthLayout />,
     loader: requireAuth,
     children: [
+      {
+        path: '/workspaces/',
+        lazy: async () => ({
+          Component: (await import('./pages/workspaces/index.tsx')).default,
+        }),
+      },
       // Main routes
       {
         path: '/workspaces/:workspace/',
@@ -199,8 +203,8 @@ const router = createBrowserRouter([{
             ],
           },
         ],
-      }
-    ]
+      },
+    ],
   },
 
   // Error routes

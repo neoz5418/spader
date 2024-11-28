@@ -1,22 +1,22 @@
 import { useNavigate } from 'react-router-dom'
-import Loader from '@/components/loader';
-import useSetting from '@/hooks/use-setting';
-import { useEffect } from 'react';
+import Loader from '@/components/loader'
+import { useCurrentUser } from '@/hooks/use-setting'
+import { useEffect } from 'react'
 
 export default function Loading() {
   const navigate = useNavigate()
-  const { workspace } = useSetting()
+  const { currentUser, isLoading } = useCurrentUser()
   useEffect(() => {
-    if (workspace) {
-      navigate(`/workspaces/${workspace.name}`)
-    }else {
-      navigate('/login')
-    }
-  }, [workspace])
-
-  return (
-    <div className='relative h-full overflow-hidden bg-background'>
-      <Loader />      
+    if (isLoading) return;
+    if (currentUser) {
+    navigate(`/workspaces/`)
+  } else {
+    navigate('/login')
+  }
+  }, [currentUser, navigate, isLoading])
+  if (isLoading) {
+    return <div className="relative h-full overflow-hidden bg-background">
+      <Loader />
     </div>
-  )
+  }
 }

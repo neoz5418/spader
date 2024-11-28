@@ -6,19 +6,17 @@ import SkipToMain from '../components/skip-to-main'
 import { Layout } from '@/components/custom/layout'
 import { TopNav } from '@/components/top-nav'
 import { WorkspaceSwitcher } from '@/components/custom/workspace-switch'
-import useWorkspace from '@/hooks/use-setting'
+import { useCurrentWorkspace, useWorkspaceAccount, useWorkspaces } from '@/hooks/use-setting.ts'
+import ThemeSwitch from '@/components/theme-switch.tsx'
 
 export default function AppShell() {
   const [isCollapsed, setIsCollapsed] = useIsCollapsed()
-  const {
-    workspaces,
-    workspace: current,
-    workspacesAccount,
-    switchWorkspace
-  } = useWorkspace()
+  const { workspacesAccount, isLoading: workspaceAccountIsLoading } = useWorkspaceAccount()
+  const { workspaces } = useWorkspaces()
+  const { currentWorkspace: current } = useCurrentWorkspace()
   const balance = workspacesAccount?.balance || 0
   const currency = workspacesAccount?.currency || 'CNY'
-  const rechargeLink = "/workspaces/" + (current?.name || "") + "/recharge"
+  const rechargeLink = '/workspaces/' + (current?.name || '') + '/recharge'
   return (
     <div className="relative h-full overflow-hidden bg-background">
       <SkipToMain />
@@ -32,19 +30,25 @@ export default function AppShell() {
           <Layout.Header>
             <div className="ml-auto flex items-center space-x-4">
               <TopNav links={topNav} />
-              {/* <ThemeSwitch /> */}
-              <p className="text-sm font-semibold">{(balance / 100).toLocaleString('zh-CN', {
-                style: 'currency',
-                currency: currency,
-                minimumFractionDigits: 2
-              })}</p>
+              <ThemeSwitch />
+              {
+                workspaceAccountIsLoading ?
+                  '...'
+                  :
+                  <p className="text-sm font-semibold">{(balance / 100).toLocaleString('zh-CN', {
+                    style: 'currency',
+                    currency: currency,
+                    minimumFractionDigits: 2,
+                  })}</p>
+              }
+
               <Link
-                  to={rechargeLink}
-                >
-                  {"充值"}
-                </Link>
+                to={rechargeLink}
+              >
+                {'充值'}
+              </Link>
               {/* <UserNav /> */}
-              <WorkspaceSwitcher workspaces={workspaces} current={current} switchWorkspace={switchWorkspace} />
+              <WorkspaceSwitcher workspaces={workspaces} current={current} />
             </div>
           </Layout.Header>
           <Outlet />

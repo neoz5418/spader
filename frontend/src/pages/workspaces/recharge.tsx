@@ -1,6 +1,6 @@
 import { useCheckWorkspaceAccountRechargeHook, useRechargeWorkspaceAccountHook } from '@/gen'
 import { useEffect, useState } from 'react'
-import useSetting from '@/hooks/use-setting.ts'
+import { useCurrentWorkspace } from '@/hooks/use-setting.ts'
 import { useSearchParams } from 'react-router-dom'
 
 export function RechargeCallback(out_trade_no: string) {
@@ -27,7 +27,7 @@ export function RechargeCallback(out_trade_no: string) {
 
 export default function Recharge() {
   const [searchParams] = useSearchParams()
-  const { workspace } = useSetting()
+  const { currentWorkspace: workspace } = useCurrentWorkspace()
   const mutation = useRechargeWorkspaceAccountHook(workspace?.name || '')
   const [amount, setAmount] = useState(100)
   const out_trade_no = searchParams.get('out_trade_no')

@@ -12,7 +12,7 @@ import { useAuth } from '@/hooks/use-auth'
 import { useCreateInstanceHook } from '@/gen/hooks/useCreateInstanceHook'
 import { useState } from 'react'
 import { useListWorkspaceZoneGpuTypesHook } from '@/gen/hooks/useListWorkspaceZoneGpuTypesHook'
-import useWorkspace from '@/hooks/use-setting.ts'
+import { useCurrentWorkspace } from '@/hooks/use-setting.ts'
 
 
 // This can come from your database or API.
@@ -21,9 +21,9 @@ const defaultValues: Partial<CreateInstanceRequestSchema> = {
 }
 
 export default function DeployForm() {
-  const { workspace: currentWorkspace } = useWorkspace()
+  const { currentWorkspace } = useCurrentWorkspace()
   const [zone, setZone] = useState('beijing')
-  const {data: listGpuTypesResp} = useListWorkspaceZoneGpuTypesHook(currentWorkspace?.name, zone)
+  const { data: listGpuTypesResp } = useListWorkspaceZoneGpuTypesHook(currentWorkspace?.name, zone)
 
   const form = useForm<CreateInstanceRequestSchema>({
     resolver: zodResolver(createInstanceRequestSchema),
@@ -53,10 +53,11 @@ export default function DeployForm() {
   function onSubmitError(error: any) {
     console.log(error)
   }
+
   if (!listGpuTypesResp) {
     return
   }
-  const {items: gpuTypes } = listGpuTypesResp
+  const { items: gpuTypes } = listGpuTypesResp
   return (
     <Layout>
       <Layout.Body>
@@ -116,7 +117,8 @@ export default function DeployForm() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {gpuTypes.map((gpuType) => <SelectItem value={gpuType.name}>{gpuType.display_name}</SelectItem>)}
+                        {gpuTypes.map((gpuType) => <SelectItem
+                          value={gpuType.name}>{gpuType.display_name}</SelectItem>)}
                       </SelectContent>
                     </Select>
                     <FormDescription>

@@ -6,7 +6,7 @@ import { useMemo, useState } from 'react'
 import { ColumnDef } from '@tanstack/react-table'
 import { DataTable } from '@/components/custom/data-table'
 import Loader from '@/components/loader'
-import useWorkspace from '@/hooks/use-setting'
+import { useCurrentWorkspace } from '@/hooks/use-setting'
 import { useQuery } from '@tanstack/react-query'
 
 
@@ -54,7 +54,7 @@ export const columns: ColumnDef<InstanceType>[] = [
 ]
 
 export default function Instances() {
-  const { workspace: currentWorkspace } = useWorkspace()
+  const { currentWorkspace } = useCurrentWorkspace()
   const [pagination, setPagination] = useState({
     pageIndex: 0, //initial page index
     pageSize: 10, //default page size

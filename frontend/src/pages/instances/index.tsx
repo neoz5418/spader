@@ -1,13 +1,12 @@
 import { Layout } from '@/components/custom/layout'
 
 
-import { InstanceType, listWorkspaceInstances, PaginatedListInstanceType, WorkspaceType } from '@/gen'
-import { useMemo, useState } from 'react'
-import { ColumnDef } from '@tanstack/react-table'
+import { InstanceType, useListWorkspaceInstancesHook } from '@/gen'
+import { ColumnDef, PaginationState, Updater } from '@tanstack/react-table'
 import { DataTable } from '@/components/custom/data-table'
 import Loader from '@/components/loader'
 import { useCurrentWorkspace } from '@/hooks/use-setting'
-import { useQuery } from '@tanstack/react-query'
+import { useSearchParams } from 'react-router-dom'
 
 
 export const columns: ColumnDef<InstanceType>[] = [
@@ -55,67 +54,39 @@ export const columns: ColumnDef<InstanceType>[] = [
 
 export default function Instances() {
   const { currentWorkspace } = useCurrentWorkspace()
-  const [pagination, setPagination] = useState({
-    pageIndex: 0, //initial page index
-    pageSize: 10, //default page size
-  })
-  // const workspace = ws as WorkspaceType
-  console.log(currentWorkspace)
-  // if (!workspace) {
-  //   return <Loader />
-  // }
+  const [searchParams, setSearchParams] = useSearchParams()
+  const pagination = {
+    pageIndex: parseInt(searchParams.get('pageIndex') || '0'),
+    pageSize: parseInt(searchParams.get('pageSize') || '10'),
+  }
 
+  function setPagination(updater: Updater<PaginationState>) {
+    let state: PaginationState
+    if (typeof updater === "function") {
+       state = updater(pagination)
+    } else {
+      state = updater
+    }
 
-  // const { data, isLoading, error} = useReadInstancesHook({
-  //   limit: pagination.pageSize,
-  //   offset: pagination.pageSize * pagination.pageIndex,
-  // });
+    searchParams.set('pageIndex', state.pageIndex.toString())
+    searchParams.set('pageSize', state.pageSize.toString())
+    setSearchParams(searchParams)
+  }
 
-  // const { data, isLoading, error} = useListWorkspaceInstancesHook(
-  //   workspace.name,
-  //   {
-  //   limit: pagination.pageSize,
-  //   offset: pagination.pageSize * pagination.pageIndex,
-  // });
-
-  const { isLoading: isLoading, data: data, error } = useQuery<PaginatedListInstanceType>({
-    queryKey: ['instances', currentWorkspace?.name],
-    queryFn: async () => {
-      const workspaceName = (currentWorkspace as WorkspaceType).name
-      console.log('[+]listWorkspaceInstances', workspaceName)
-      const response = await listWorkspaceInstances(workspaceName)
-      console.log('[+]listWorkspaceInstances', response)
-      return response
+  const {
+    isLoading,
+    data: { items: instances = [], pagination: { total = 0 } = {} } = {},
+  } = useListWorkspaceInstancesHook(currentWorkspace?.name || '', {
+    offset: pagination.pageIndex * pagination.pageSize,
+    limit: pagination.pageSize,
+  }, {
+    query: {
+      enabled: !!currentWorkspace,
     },
-    enabled: !!currentWorkspace,
   })
-
-  const instances = useMemo(
-    () =>
-      (data?.items ?? []).map((instance) => ({
-        id: instance.uid,
-        name: instance.name,
-        display_name: instance.display_name,
-        status: instance.status,
-        zone: instance.zone,
-        workspace: instance.workspace,
-        gpu_count: instance.gpu_count,
-        gpu_type: instance.gpu_type,
-        image: instance.image,
-        create_time: instance.create_time,
-      })),
-    [data],
-  )
-
   if (isLoading) {
     return <Loader />
   }
-
-
-  console.log('[+]error', error)
-  // if (error) {
-  //   return <DataError {...error} />;
-  // }
 
   return (
     <Layout>
@@ -131,7 +102,7 @@ export default function Instances() {
         <div className="-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0">
           <DataTable columns={columns} data={instances}
                      createLink={`/workspaces/${currentWorkspace?.name}/instances/deploy`}
-                     rowCount={data?.pagination?.total ?? 0}
+                     rowCount={total}
                      pagination={pagination} setPagination={setPagination} />
         </div>
       </Layout.Body>

@@ -109,8 +109,7 @@ const router = createBrowserRouter([{
             lazy: async () => ({
               Component: (await import('@/pages/instances/deploy.tsx')).default,
             }),
-          }
-          ,
+          },
           {
             path: 'files',
             lazy: async () => ({
@@ -151,6 +150,12 @@ const router = createBrowserRouter([{
             path: 'logs',
             lazy: async () => ({
               Component: (await import('@/components/coming-soon')).default,
+            }),
+          },
+          {
+            path: 'billing',
+            lazy: async () => ({
+              Component: (await import('./pages/billing/index.tsx')).default,
             }),
           },
           {

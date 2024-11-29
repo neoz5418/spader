@@ -85,6 +85,12 @@ export const sidelinks: SideLink[] = [
     icon: <IconLogs size={18} />,
   },
   {
+    title: '账单管理',
+    label: '',
+    href: '/billing',
+    icon: <IconLogs size={18} />,
+  },
+  {
     title: '用户设置',
     label: '',
     href: '/settings',

@@ -31,6 +31,11 @@ class BaseModelMixin(ActiveRecordMixin, TimestampsMixin):
     pass
 
 
+class SortOrder(Enum):
+    ASC = "asc"
+    DESC = "desc"
+
+
 class Workspace(SQLModel, BaseModelMixin, table=True):
     name: Name
     display_name: DisplayName

@@ -2,8 +2,14 @@ import { ColumnDef } from '@tanstack/react-table'
 import { InstanceType } from '@/gen'
 import { toast } from '@/hooks/use-toast.ts'
 
-function SelectorAble({ children }: { children: React.ReactNode }) {
-  return <span className={"select-all cursor-pointer"}>{children}</span>
+function Copyable({ text }: { text: string }) {
+  return <span className={'select-all cursor-pointer'} onClick={() => {
+    navigator.clipboard.writeText(text).then(() => {
+      toast({
+        description: '已复制到剪贴板',
+      })
+    })
+  }}>{text}</span>
 }
 
 export const InstancesColumns: ColumnDef<InstanceType>[] = [
@@ -39,26 +45,14 @@ export const InstancesColumns: ColumnDef<InstanceType>[] = [
       const services = []
       if (row.original.services) {
         if (row.original.services['jupyter-lab']) {
-          services.push(<div>Jupyter 地址: <SelectorAble>{row.original.services['jupyter-lab']}</SelectorAble></div>)
+          services.push(<div>Jupyter 地址: <Copyable text={row.original.services['jupyter-lab'] as string} /></div>)
         }
         if (row.original.services['jupyter-password']) {
-          services.push(
-            <div>
-              Jupyter 密码:
-              <span
-                className="select-all cursor-pointer"
-                onClick={() => {
-                  navigator.clipboard.writeText(row.original.services['jupyter-password'] || '')
-                  toast(<p>密码已复制到剪贴板</p>)
-                }}
-              >
-                {row.original.services['jupyter-password']}
-              </span>
-            </div>,
-          )
-          if (row.original.services['ssh']) {
-            services.push(<div>SSH 地址: <SelectorAble>{row.original.services['ssh']}</SelectorAble></div>)
-          }
+          services.push(<div>Jupyter 密码: <Copyable text={row.original.services['jupyter-password'] as string} />
+          </div>)
+        }
+        if (row.original.services['ssh']) {
+          services.push(<div>SSH 地址: <Copyable text={row.original.services['ssh']} /></div>)
         }
         return <div>{services}</div>
       }

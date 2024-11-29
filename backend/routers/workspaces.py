@@ -154,10 +154,8 @@ async def list_workspaces(
 @router.get("/workspaces/{workspace}", dependencies=[CurrentUserDep])
 def get_workspace(
     session: SessionDep,
-    user: CurrentUserDepAnnotated,
     workspace: str,
 ) -> Workspace:
-    # TODO: check user permission
     workspace = session.exec(
         select(Workspace).where(Workspace.name == workspace)
     ).first()

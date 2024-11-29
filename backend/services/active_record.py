@@ -1,8 +1,9 @@
 import logging
 from datetime import datetime, timezone
+from enum import Enum
 from typing import Any, Optional, Type, TypeVar, Union
 
-from sqlalchemy import func
+from sqlalchemy import func, text
 from sqlalchemy.exc import IntegrityError, OperationalError
 from sqlalchemy.orm.exc import FlushError
 from sqlmodel import and_, col, or_, select, SQLModel
@@ -107,6 +108,7 @@ class ActiveRecordMixin:
         fuzzy_fields: Optional[dict] = None,
         offset: int = 0,
         limit: int = 100,
+        order_by: (Enum, Enum) = None,
     ) -> PaginatedList[T]:
         """
         Return a paginated list of objects match the given fields and values.
@@ -132,6 +134,11 @@ class ActiveRecordMixin:
 
         if offset is not None and limit is not None:
             statement = statement.offset(offset).limit(limit)
+
+        if order_by is not None:
+            statement = statement.order_by(
+                text("%s %s" % (order_by[0].value, order_by[1].value))
+            )
 
         items = (await session.exec(statement)).all()
         count = (await session.exec(count_statement)).one()

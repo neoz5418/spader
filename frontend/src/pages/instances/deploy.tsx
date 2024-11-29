@@ -4,15 +4,15 @@ import ContentSection from '@/components/custom/content-section'
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { toast } from '@/components/ui/use-toast'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Layout } from '@/components/custom/layout'
 import { createInstanceRequestSchema, CreateInstanceRequestSchema } from '@/gen/zod/createInstanceRequestSchema.gen'
 import { useAuth } from '@/hooks/use-auth'
 import { useCreateInstanceHook } from '@/gen/hooks/useCreateInstanceHook'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useListWorkspaceZoneGpuTypesHook } from '@/gen/hooks/useListWorkspaceZoneGpuTypesHook'
 import { useCurrentWorkspace } from '@/hooks/use-setting.ts'
+import { toast } from '@/hooks/use-toast.ts'
 
 
 // This can come from your database or API.
@@ -23,7 +23,11 @@ const defaultValues: Partial<CreateInstanceRequestSchema> = {
 export default function DeployForm() {
   const { currentWorkspace } = useCurrentWorkspace()
   const [zone, setZone] = useState('beijing')
-  const { data: listGpuTypesResp } = useListWorkspaceZoneGpuTypesHook(currentWorkspace?.name, zone)
+  const { data: listGpuTypesResp } = useListWorkspaceZoneGpuTypesHook(currentWorkspace?.name || '', zone, {}, {
+    query: {
+      enabled: !!currentWorkspace,
+    },
+  })
 
   const form = useForm<CreateInstanceRequestSchema>({
     resolver: zodResolver(createInstanceRequestSchema),
@@ -34,25 +38,28 @@ export default function DeployForm() {
   const { user: currentUser } = useAuth()
   console.log(currentUser)
 
-  const { mutate: createInstance } = useCreateInstanceHook(currentUser?.name || '', zone)
+  const { mutate: createInstance, error, data } = useCreateInstanceHook(currentUser?.name || '', zone)
 
-  function onSubmit(data: any) {
-    console.log(data)
-    const response = createInstance(data)
-    console.log(response)
-    toast({
-      title: 'You submitted the following values:',
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    })
+  function onSubmit(data) {
+    createInstance(data)
   }
 
   function onSubmitError(error: any) {
-    console.log(error)
+    toast({
+      variant: 'destructive',
+      title: '创建失败',
+      description: error.message,
+    })
   }
+
+  useEffect(() => {
+    if (data) {
+      toast({
+        title: '创建成功',
+        description: JSON.stringify(data),
+      })
+    }
+  }, [data])
 
   if (!listGpuTypesResp) {
     return
@@ -183,6 +190,7 @@ export default function DeployForm() {
                   </FormItem>
                 )}
               />
+              {error && <p className="text-red-500">{error.message}</p>}
               <Button variant="outline" type="submit">创建</Button>
             </form>
           </Form>

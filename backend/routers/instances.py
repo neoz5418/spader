@@ -29,6 +29,7 @@ from routers.types import (
     OperationList,
     OperationStatus,
     PortForward,
+    SortOrder,
     WatchEvent,
     WorkspaceZoneQuota,
     Zone,
@@ -154,10 +155,11 @@ class ListInstancesSortOptions(Enum):
 )
 async def list_instances(
     session: SessionDep,
-    user: CurrentAdminUserDepAnnotated,
     params: ListParamsDep,
     zone: str = None,
     search: str = None,
+    sort: ListInstancesSortOptions = ListInstancesSortOptions.create_time,
+    sort_order: SortOrder = SortOrder.DESC,
 ) -> InstanceList:
     return await list_workspace_instances(
         session=session,
@@ -165,7 +167,7 @@ async def list_instances(
         workspace="",
         zone=zone,
         search=search,
-        user=user,
+        sort=sort,
     )
 
 
@@ -175,12 +177,13 @@ async def list_instances(
 )
 async def list_workspace_instances(
     session: SessionDep,
-    user: CurrentUserDepAnnotated,
     params: ListParamsDep,
     workspace: str,
     zone: str = None,
     search: str = None,
     status: str = None,
+    sort: ListInstancesSortOptions = ListInstancesSortOptions.create_time,
+    sort_order: SortOrder = SortOrder.DESC,
 ) -> InstanceList:
     fields = {}
     if workspace:
@@ -199,6 +202,7 @@ async def list_workspace_instances(
         fuzzy_fields=fuzzy_fields,
         offset=params.offset,
         limit=params.limit,
+        order_by=(sort, sort_order),
     )
 
 

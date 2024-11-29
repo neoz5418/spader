@@ -162,7 +162,7 @@ async def register_user(
         otp,
         register_user_request.one_time_password,
     )
-    if otp is None or otp.decode() != str(register_user_request.one_time_password):
+    if not otp or otp != str(register_user_request.one_time_password):
         raise HTTPException(status_code=400, detail="invalid one time password")
 
     db_user = User.model_validate(

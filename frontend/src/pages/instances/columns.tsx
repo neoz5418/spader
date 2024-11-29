@@ -1,5 +1,5 @@
 import { ColumnDef } from '@tanstack/react-table'
-import { InstanceType } from '@/gen'
+import { InstancePublicType } from '@/gen'
 import { toast } from '@/hooks/use-toast.ts'
 
 function Copyable({ text }: { text: string }) {
@@ -12,7 +12,7 @@ function Copyable({ text }: { text: string }) {
   }}>{text}</span>
 }
 
-export const InstancesColumns: ColumnDef<InstanceType>[] = [
+export const InstancesColumns: ColumnDef<InstancePublicType>[] = [
   {
     accessorFn: (row) => {
       if (row.display_name) {
@@ -27,12 +27,12 @@ export const InstancesColumns: ColumnDef<InstanceType>[] = [
     header: '状态',
   },
   {
-    accessorKey: 'zone',
+    accessorKey: 'zone_display_name',
     header: '区域',
   },
   {
     accessorFn: (row) => {
-      return `${row.gpu_type}*${row.gpu_count}`
+      return `${row.gpu_display_name}*${row.gpu_count}`
     },
     header: 'GPU 类型*数量',
   },

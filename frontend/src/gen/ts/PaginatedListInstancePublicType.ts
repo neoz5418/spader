@@ -1,11 +1,11 @@
-import type { InstanceType } from "./InstanceType";
+import type { InstancePublicType } from "./InstancePublicType";
 import type { PaginationType } from "./PaginationType";
 
- export type PaginatedListInstanceType = {
+ export type PaginatedListInstancePublicType = {
     /**
      * @type array
     */
-    items: InstanceType[];
+    items: InstancePublicType[];
     /**
      * @type object
     */

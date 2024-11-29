@@ -23,7 +23,8 @@ from routers.types import (
     Image,
     ImageList,
     Instance,
-    InstanceList,
+    InstancePublic,
+    InstancePublicList,
     InstanceStatus,
     Operation,
     OperationList,
@@ -42,6 +43,7 @@ from services.celery import (
     start_instance_operation,
     stop_instance_operation,
 )
+from services.lru_resource_cache import get_gpu_type_display_name, get_zone_display_name
 
 router = APIRouter(
     prefix="/apis/compute/v1",
@@ -160,7 +162,7 @@ async def list_instances(
     search: str = None,
     sort: ListInstancesSortOptions = ListInstancesSortOptions.create_time,
     sort_order: SortOrder = SortOrder.DESC,
-) -> InstanceList:
+) -> InstancePublicList:
     return await list_workspace_instances(
         session=session,
         params=params,
@@ -184,7 +186,7 @@ async def list_workspace_instances(
     status: str = None,
     sort: ListInstancesSortOptions = ListInstancesSortOptions.create_time,
     sort_order: SortOrder = SortOrder.DESC,
-) -> InstanceList:
+) -> InstancePublicList:
     fields = {}
     if workspace:
         fields["workspace"] = workspace
@@ -196,7 +198,7 @@ async def list_workspace_instances(
     if search:
         fuzzy_fields = {"name": search, "display_name": search}
 
-    return await Instance.paginated_by_query(
+    instance_list = await Instance.paginated_by_query(
         session=session,
         fields=fields,
         fuzzy_fields=fuzzy_fields,
@@ -204,6 +206,20 @@ async def list_workspace_instances(
         limit=params.limit,
         order_by=(sort, sort_order),
     )
+    public_list = InstancePublicList(pagination=instance_list.pagination, items=[])
+    for i in instance_list.items:
+        zone_display_name = await get_zone_display_name(session, i.zone)
+        gpu_display_name = await get_gpu_type_display_name(session, i.gpu_type)
+        new_i = InstancePublic.model_validate(
+            i,
+            update={
+                "zone_display_name": zone_display_name,
+                "gpu_display_name": gpu_display_name,
+            },
+        )
+        public_list.items.append(new_i)
+
+    return public_list
 
 
 @router.get(

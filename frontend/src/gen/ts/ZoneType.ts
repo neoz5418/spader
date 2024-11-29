@@ -12,6 +12,7 @@ import type { ProviderZoneConfigEcloudType } from "./ProviderZoneConfigEcloudTyp
      * @type string
     */
     name: string;
+    display_name?: (string | null);
     /**
      * @type string
     */

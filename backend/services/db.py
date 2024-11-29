@@ -57,6 +57,7 @@ async def init_data():
     async with AsyncSession(engine) as session:
         beijing = Zone(
             name="beijing",
+            display_name="北京区",
             provider=Provider.ecloud,
             provider_config={
                 "provider": "ecloud",

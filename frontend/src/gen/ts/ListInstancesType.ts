@@ -1,4 +1,6 @@
-import type { PaginatedListInstanceType } from "./PaginatedListInstanceType";
+import type { ListInstancesSortOptionsType } from "./ListInstancesSortOptionsType";
+import type { SortOrderType } from "./SortOrderType";
+import type { PaginatedListInstancePublicType } from "./PaginatedListInstancePublicType";
 import type { ErrorType } from "./ErrorType";
 
  export type ListInstancesQueryParamsType = {
@@ -10,6 +12,14 @@ import type { ErrorType } from "./ErrorType";
      * @type string | undefined
     */
     search?: string;
+    /**
+     * @type string | undefined
+    */
+    sort?: ListInstancesSortOptionsType;
+    /**
+     * @type string | undefined
+    */
+    sort_order?: SortOrderType;
     /**
      * @default 0
      * @type integer | undefined
@@ -24,7 +34,7 @@ import type { ErrorType } from "./ErrorType";
 /**
  * @description Successful Response
 */
-export type ListInstances200Type = PaginatedListInstanceType;
+export type ListInstances200Type = PaginatedListInstancePublicType;
 /**
  * @description Request error
 */
@@ -56,7 +66,7 @@ export type ListInstances503Type = ErrorType;
 /**
  * @description Successful Response
 */
-export type ListInstancesQueryResponseType = PaginatedListInstanceType;
+export type ListInstancesQueryResponseType = PaginatedListInstancePublicType;
 export type ListInstancesTypeQuery = {
     Response: ListInstancesQueryResponseType;
     QueryParams: ListInstancesQueryParamsType;

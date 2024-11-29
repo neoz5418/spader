@@ -4137,6 +4137,24 @@
             }
           },
           {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/ListInstancesSortOptions",
+              "default": "create_time"
+            }
+          },
+          {
+            "name": "sort_order",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/SortOrder",
+              "default": "desc"
+            }
+          },
+          {
             "name": "offset",
             "in": "query",
             "required": false,
@@ -4166,7 +4184,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaginatedList_Instance_"
+                  "$ref": "#/components/schemas/PaginatedList_InstancePublic_"
                 }
               }
             }
@@ -4296,6 +4314,24 @@
             }
           },
           {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/ListInstancesSortOptions",
+              "default": "create_time"
+            }
+          },
+          {
+            "name": "sort_order",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/SortOrder",
+              "default": "desc"
+            }
+          },
+          {
             "name": "offset",
             "in": "query",
             "required": false,
@@ -4325,7 +4361,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaginatedList_Instance_"
+                  "$ref": "#/components/schemas/PaginatedList_InstancePublic_"
                 }
               }
             }
@@ -8057,6 +8093,119 @@
         ],
         "title": "Instance"
       },
+      "InstancePublic": {
+        "properties": {
+          "create_time": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Create Time"
+          },
+          "update_time": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Update Time"
+          },
+          "delete_time": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Delete Time"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 32,
+            "minLength": 3,
+            "pattern": "^[a-z0-9][a-z0-9-]*[a-z0-9]$",
+            "title": "Name",
+            "description": "\nNAME is subset of RFC1123 label names:\n1. contain only lowercase alphanumeric characters or '-'\n2. start with an alphanumeric character\n3. end with an alphanumeric character\n"
+          },
+          "display_name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 64,
+                "minLength": 0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Display Name"
+          },
+          "uid": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Uid"
+          },
+          "status": {
+            "$ref": "#/components/schemas/InstanceStatus"
+          },
+          "zone": {
+            "type": "string",
+            "title": "Zone"
+          },
+          "workspace": {
+            "type": "string",
+            "title": "Workspace"
+          },
+          "gpu_count": {
+            "type": "integer",
+            "title": "Gpu Count"
+          },
+          "gpu_type": {
+            "type": "string",
+            "title": "Gpu Type"
+          },
+          "image": {
+            "type": "string",
+            "title": "Image"
+          },
+          "target_id": {
+            "type": "string",
+            "title": "Target Id",
+            "default": ""
+          },
+          "services": {
+            "type": "object",
+            "title": "Services",
+            "default": {}
+          },
+          "gpu_display_name": {
+            "type": "string",
+            "title": "Gpu Display Name"
+          },
+          "zone_display_name": {
+            "type": "string",
+            "title": "Zone Display Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "status",
+          "zone",
+          "workspace",
+          "gpu_count",
+          "gpu_type",
+          "image",
+          "gpu_display_name",
+          "zone_display_name"
+        ],
+        "title": "InstancePublic"
+      },
       "InstanceStatus": {
         "type": "string",
         "enum": [
@@ -8085,6 +8234,14 @@
           "zh-Hans"
         ],
         "title": "LanguageCode"
+      },
+      "ListInstancesSortOptions": {
+        "type": "string",
+        "enum": [
+          "create_time",
+          "name"
+        ],
+        "title": "ListInstancesSortOptions"
       },
       "ListUsersSortOptions": {
         "type": "string",
@@ -8318,11 +8475,11 @@
         ],
         "title": "PaginatedList[Image]"
       },
-      "PaginatedList_Instance_": {
+      "PaginatedList_InstancePublic_": {
         "properties": {
           "items": {
             "items": {
-              "$ref": "#/components/schemas/Instance"
+              "$ref": "#/components/schemas/InstancePublic"
             },
             "type": "array",
             "title": "Items"
@@ -8336,7 +8493,7 @@
           "items",
           "pagination"
         ],
-        "title": "PaginatedList[Instance]"
+        "title": "PaginatedList[InstancePublic]"
       },
       "PaginatedList_ResourceUsageRecord_": {
         "properties": {
@@ -8906,6 +9063,14 @@
           "type"
         ],
         "title": "SendOneTimePasswordResponse"
+      },
+      "SortOrder": {
+        "type": "string",
+        "enum": [
+          "asc",
+          "desc"
+        ],
+        "title": "SortOrder"
       },
       "Token": {
         "properties": {
@@ -9489,6 +9654,19 @@
             "type": "string",
             "title": "Name"
           },
+          "display_name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 64,
+                "minLength": 0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Display Name"
+          },
           "provider": {
             "$ref": "#/components/schemas/Provider"
           },
@@ -9515,6 +9693,19 @@
           "name": {
             "type": "string",
             "title": "Name"
+          },
+          "display_name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 64,
+                "minLength": 0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Display Name"
           }
         },
         "type": "object",

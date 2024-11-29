@@ -1,4 +1,6 @@
-import type { PaginatedListInstanceType } from "./PaginatedListInstanceType";
+import type { ListInstancesSortOptionsType } from "./ListInstancesSortOptionsType";
+import type { SortOrderType } from "./SortOrderType";
+import type { PaginatedListInstancePublicType } from "./PaginatedListInstancePublicType";
 import type { ErrorType } from "./ErrorType";
 
  export type ListWorkspaceInstancesPathParamsType = {
@@ -21,6 +23,14 @@ export type ListWorkspaceInstancesQueryParamsType = {
     */
     status?: string;
     /**
+     * @type string | undefined
+    */
+    sort?: ListInstancesSortOptionsType;
+    /**
+     * @type string | undefined
+    */
+    sort_order?: SortOrderType;
+    /**
      * @default 0
      * @type integer | undefined
     */
@@ -34,7 +44,7 @@ export type ListWorkspaceInstancesQueryParamsType = {
 /**
  * @description Successful Response
 */
-export type ListWorkspaceInstances200Type = PaginatedListInstanceType;
+export type ListWorkspaceInstances200Type = PaginatedListInstancePublicType;
 /**
  * @description Request error
 */
@@ -66,7 +76,7 @@ export type ListWorkspaceInstances503Type = ErrorType;
 /**
  * @description Successful Response
 */
-export type ListWorkspaceInstancesQueryResponseType = PaginatedListInstanceType;
+export type ListWorkspaceInstancesQueryResponseType = PaginatedListInstancePublicType;
 export type ListWorkspaceInstancesTypeQuery = {
     Response: ListWorkspaceInstancesQueryResponseType;
     PathParams: ListWorkspaceInstancesPathParamsType;

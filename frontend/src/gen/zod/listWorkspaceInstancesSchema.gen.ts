@@ -1,17 +1,19 @@
 import { z } from "@/utils/zod.ts";
-import { paginatedListInstanceSchema } from "./paginatedListInstanceSchema.gen";
+import { listInstancesSortOptionsSchema } from "./listInstancesSortOptionsSchema.gen";
+import { sortOrderSchema } from "./sortOrderSchema.gen";
+import { paginatedListInstancePublicSchema } from "./paginatedListInstancePublicSchema.gen";
 import { errorSchema } from "./errorSchema.gen";
 
 
 export const listWorkspaceInstancesPathParamsSchema = z.object({ "workspace": z.string() });
 export type ListWorkspaceInstancesPathParamsSchema = z.infer<typeof listWorkspaceInstancesPathParamsSchema>;
 
- export const listWorkspaceInstancesQueryParamsSchema = z.object({ "zone": z.string().optional(), "search": z.string().optional(), "status": z.string().optional(), "offset": z.number().int().min(0).default(0).optional(), "limit": z.number().int().min(1).max(100).default(20).optional() }).optional();
+ export const listWorkspaceInstancesQueryParamsSchema = z.object({ "zone": z.string().optional(), "search": z.string().optional(), "status": z.string().optional(), "sort": z.lazy(() => listInstancesSortOptionsSchema).optional(), "sort_order": z.lazy(() => sortOrderSchema).optional(), "offset": z.number().int().min(0).default(0).optional(), "limit": z.number().int().min(1).max(100).default(20).optional() }).optional();
 export type ListWorkspaceInstancesQueryParamsSchema = z.infer<typeof listWorkspaceInstancesQueryParamsSchema>;
 /**
  * @description Successful Response
  */
-export const listWorkspaceInstances200Schema = z.lazy(() => paginatedListInstanceSchema);
+export const listWorkspaceInstances200Schema = z.lazy(() => paginatedListInstancePublicSchema);
 export type ListWorkspaceInstances200Schema = z.infer<typeof listWorkspaceInstances200Schema>;
 /**
  * @description Request error
@@ -51,5 +53,5 @@ export type ListWorkspaceInstances503Schema = z.infer<typeof listWorkspaceInstan
 /**
  * @description Successful Response
  */
-export const listWorkspaceInstancesQueryResponseSchema = z.lazy(() => paginatedListInstanceSchema);
+export const listWorkspaceInstancesQueryResponseSchema = z.lazy(() => paginatedListInstancePublicSchema);
 export type ListWorkspaceInstancesQueryResponseSchema = z.infer<typeof listWorkspaceInstancesQueryResponseSchema>;

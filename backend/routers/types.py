@@ -338,6 +338,7 @@ class ProviderZoneConfigEcloud(SQLModel):
 
 class ZoneBase(SQLModel):
     name: str = Field(primary_key=True, nullable=False)
+    display_name: DisplayName
 
 
 class Zone(ZoneBase, BaseModelMixin, table=True):
@@ -408,7 +409,7 @@ class InstanceStatus(Enum):
     terminated = "terminated"
 
 
-class Instance(SQLModel, BaseModelMixin, table=True):
+class InstanceBase(SQLModel, BaseModelMixin):
     name: Name
     display_name: DisplayName
     uid: UUID = UID
@@ -426,6 +427,15 @@ class Instance(SQLModel, BaseModelMixin, table=True):
     services: dict = Field(sa_column=Column(JSON), default={})
 
 
+class Instance(InstanceBase, table=True):
+    pass
+
+
+class InstancePublic(InstanceBase):
+    gpu_display_name: str
+    zone_display_name: str
+
+
 class PortForwardProtocol(Enum):
     TCP = "TCP"
     UDP = "UDP"
@@ -441,6 +451,7 @@ class PortForward(BaseModel):
 
 
 InstanceList = PaginatedList[Instance]
+InstancePublicList = PaginatedList[InstancePublic]
 
 
 class CreateInstanceRequest(BaseModel):

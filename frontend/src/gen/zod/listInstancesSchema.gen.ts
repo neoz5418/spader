@@ -1,14 +1,16 @@
 import { z } from "@/utils/zod.ts";
-import { paginatedListInstanceSchema } from "./paginatedListInstanceSchema.gen";
+import { listInstancesSortOptionsSchema } from "./listInstancesSortOptionsSchema.gen";
+import { sortOrderSchema } from "./sortOrderSchema.gen";
+import { paginatedListInstancePublicSchema } from "./paginatedListInstancePublicSchema.gen";
 import { errorSchema } from "./errorSchema.gen";
 
 
-export const listInstancesQueryParamsSchema = z.object({ "zone": z.string().optional(), "search": z.string().optional(), "offset": z.number().int().min(0).default(0).optional(), "limit": z.number().int().min(1).max(100).default(20).optional() }).optional();
+export const listInstancesQueryParamsSchema = z.object({ "zone": z.string().optional(), "search": z.string().optional(), "sort": z.lazy(() => listInstancesSortOptionsSchema).optional(), "sort_order": z.lazy(() => sortOrderSchema).optional(), "offset": z.number().int().min(0).default(0).optional(), "limit": z.number().int().min(1).max(100).default(20).optional() }).optional();
 export type ListInstancesQueryParamsSchema = z.infer<typeof listInstancesQueryParamsSchema>;
 /**
  * @description Successful Response
  */
-export const listInstances200Schema = z.lazy(() => paginatedListInstanceSchema);
+export const listInstances200Schema = z.lazy(() => paginatedListInstancePublicSchema);
 export type ListInstances200Schema = z.infer<typeof listInstances200Schema>;
 /**
  * @description Request error
@@ -48,5 +50,5 @@ export type ListInstances503Schema = z.infer<typeof listInstances503Schema>;
 /**
  * @description Successful Response
  */
-export const listInstancesQueryResponseSchema = z.lazy(() => paginatedListInstanceSchema);
+export const listInstancesQueryResponseSchema = z.lazy(() => paginatedListInstancePublicSchema);
 export type ListInstancesQueryResponseSchema = z.infer<typeof listInstancesQueryResponseSchema>;

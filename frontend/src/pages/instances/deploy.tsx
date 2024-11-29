@@ -13,6 +13,7 @@ import { useEffect, useState } from 'react'
 import { useListWorkspaceZoneGpuTypesHook } from '@/gen/hooks/useListWorkspaceZoneGpuTypesHook'
 import { useCurrentWorkspace } from '@/hooks/use-setting.ts'
 import { toast } from '@/hooks/use-toast.ts'
+import { useListWorkspaceZonesHook } from '@/gen'
 
 
 // This can come from your database or API.
@@ -23,7 +24,12 @@ const defaultValues: Partial<CreateInstanceRequestSchema> = {
 export default function DeployForm() {
   const { currentWorkspace } = useCurrentWorkspace()
   const [zone, setZone] = useState('beijing')
-  const { data: listGpuTypesResp } = useListWorkspaceZoneGpuTypesHook(currentWorkspace?.name || '', zone, {}, {
+  const { data: { items: zones = [] } = {} } = useListWorkspaceZonesHook(currentWorkspace?.name || '', {}, {
+    query: {
+      enabled: !!currentWorkspace,
+    },
+  })
+  const { data: { items: gpuTypes = [] } = {} } = useListWorkspaceZoneGpuTypesHook(currentWorkspace?.name || '', zone, {}, {
     query: {
       enabled: !!currentWorkspace,
     },
@@ -61,10 +67,6 @@ export default function DeployForm() {
     }
   }, [data])
 
-  if (!listGpuTypesResp) {
-    return
-  }
-  const { items: gpuTypes } = listGpuTypesResp
   return (
     <Layout>
       <Layout.Body>
@@ -86,7 +88,8 @@ export default function DeployForm() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="beijing">北京</SelectItem>
+                        {zones.map((zone) => <SelectItem
+                          value={zone.name}>{zone.display_name}</SelectItem>)}
                       </SelectContent>
                     </Select>
                     <FormDescription>

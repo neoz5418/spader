@@ -298,7 +298,7 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
                       <FormItem className='space-y-1'>
                         <FormLabel>Password</FormLabel>
                         <FormControl>
-                          <PasswordInput placeholder='********' {...field} />
+                          <PasswordInput placeholder='' {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>

@@ -14,6 +14,7 @@ import { useListWorkspaceZoneGpuTypesHook } from '@/gen/hooks/useListWorkspaceZo
 import { useCurrentWorkspace } from '@/hooks/use-setting.ts'
 import { toast } from '@/hooks/use-toast.ts'
 import { useListWorkspaceZonesHook } from '@/gen'
+import { useNavigate, useParams } from 'react-router-dom'
 
 
 // This can come from your database or API.
@@ -24,6 +25,8 @@ const defaultValues: Partial<CreateInstanceRequestSchema> = {
 export default function DeployForm() {
   const { currentWorkspace } = useCurrentWorkspace()
   const [zone, setZone] = useState('beijing')
+  const { workspace } = useParams()
+  const navigate = useNavigate()
   const { data: { items: zones = [] } = {} } = useListWorkspaceZonesHook(currentWorkspace?.name || '', {}, {
     query: {
       enabled: !!currentWorkspace,
@@ -63,7 +66,8 @@ export default function DeployForm() {
       toast({
         title: '创建成功',
         description: JSON.stringify(data),
-      })
+      })      
+      navigate(`/workspaces/${workspace}/instances`)
     }
   }, [data])
 

@@ -6,10 +6,12 @@ from sqlmodel import and_, select
 from uuid import UUID
 
 from dependencies import (
+    active_connections_set,
     CurrentAdminUserDep,
     CurrentAdminUserDepAnnotated,
     CurrentUserDep,
     CurrentUserDepAnnotated,
+    CurrentUserDepForWS,
     ListParamsDep,
     SessionDep,
 )
@@ -397,20 +399,27 @@ def get_workspace_invitations(workspace: str):
 
 @router.websocket(
     "/watch/workspaces/{workspace}",
-    dependencies=[CurrentUserDep],
+    dependencies=[CurrentUserDepForWS],
 )
 async def watch_workspace(
     websocket: WebSocket,
     workspace: str,
 ):
     await websocket.accept()
+    active_connections_set.add(websocket)
     redis = get_redis()
-    async with redis.pubsub() as pubsub:
-        await pubsub.subscribe("workspace:" + workspace)
-        while True:
-            message = await pubsub.get_message()
-            if message is None:
-                break
-            await websocket.send_text(message["data"])
-
-    await websocket.close()
+    try:
+        async with redis.pubsub() as pubsub:
+            await pubsub.subscribe("workspace:" + workspace)
+            while True:
+                message = await pubsub.get_message(
+                    ignore_subscribe_messages=True, timeout=None
+                )
+                if message is not None:
+                    logger.info(message["data"])
+                    await websocket.send_text(message["data"])
+    except Exception as e:
+        logger.error(e)
+        await websocket.close()
+    finally:
+        active_connections_set.discard(websocket)

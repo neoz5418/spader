@@ -296,7 +296,11 @@ class ActiveRecordMixin:
             redis = get_redis()
             await redis.publish(
                 "workspace:" + data.workspace,
-                WatchEvent(type=event_type, object=data).model_dump_json(),
+                WatchEvent(
+                    type=event_type,
+                    resource_type=cls.__name__,
+                    resource=data,
+                ).model_dump_json(),
             )
 
     #

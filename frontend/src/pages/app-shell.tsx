@@ -17,7 +17,7 @@ export function EventWatcher() {
   useEffect(() => {
     if (!current || !token) return;
     const workspace = current.name
-    const ws = new WebSocket('/apis/workspace/v1/watch/workspaces/' + workspace + '?access_token=' + token)
+    const ws = new WebSocket('/apis/workspace/v1/watch/workspaces/' + workspace + '?token=' + token)
     ws.onopen = () => console.log('ws opened')
     ws.onclose = () => console.log('ws closed')
     ws.onmessage = (msg) => console.log('ws message', msg)

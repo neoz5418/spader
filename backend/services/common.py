@@ -7,7 +7,7 @@ from typing import Generic, TypeVar
 import uuid6
 from fastapi import Query
 from fastapi.exceptions import RequestValidationError
-from pydantic import BaseModel
+from pydantic import BaseModel, SerializeAsAny
 from pydantic.dataclasses import dataclass
 from sqlalchemy import DateTime
 from sqlmodel import Field
@@ -403,7 +403,8 @@ class EventType(Enum):
 
 class WatchEvent(BaseModel):
     type: EventType
-    object: BaseModel
+    resource_type: str
+    resource: SerializeAsAny[BaseModel]
 
 
 class TimestampsMixin(BaseModel):

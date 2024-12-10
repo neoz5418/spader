@@ -1,8 +1,8 @@
 import logging
 import time
 from typing import Annotated, Optional
-
-from fastapi import Depends, HTTPException, Request
+from starlette.requests import HTTPConnection
+from fastapi import Depends, HTTPException, Request, WebSocket, Query
 from fastapi.security import (
     OAuth2PasswordBearer,
 )
@@ -22,13 +22,28 @@ oauth2_scheme = OAuth2PasswordBearer(
 logger = logging.getLogger(__name__)
 
 
+async def get_current_user_for_ws(
+    websocket: WebSocket,
+    session: Annotated[AsyncSession, Depends(get_session)],
+    token: str = Query(None),
+) -> User:
+    if token is None or token == "":
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    user = await get_user_from_jwt_token(session, token)
+
+    if user:
+        websocket.state.user = user
+        await authorizer(session, websocket, user)
+        return user
+
+    raise HTTPException(status_code=401, detail="Unauthorized")
+
+
 async def get_current_user(
     request: Request,
     session: Annotated[AsyncSession, Depends(get_session)],
     bearer_token: Annotated[str, Depends(oauth2_scheme)],
 ) -> User:
-    if not bearer_token:
-        bearer_token = request.query_params.get("access_token")
     if not bearer_token:
         raise HTTPException(status_code=401, detail="Unauthorized")
     user = await get_user_from_jwt_token(session, bearer_token)
@@ -79,7 +94,7 @@ permission_denied = HTTPException(
 )
 
 
-async def authorizer(session: AsyncSession, request: Request, user: User):
+async def authorizer(session: AsyncSession, request: HTTPConnection, user: User):
     if user.role == Role.global_admin:
         return
     if "username" in request.path_params:

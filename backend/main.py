@@ -11,6 +11,7 @@ from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.background import BackgroundTask
 
+from dependencies import active_connections_set
 from routers import workspaces, users, instances, oidc
 from services.common import Error
 from services.logger import setup_logging
@@ -28,6 +29,9 @@ async def lifespan(a: FastAPI):
     await init_admin_user()
     await init_data()
     yield
+    # TODO: clear is not working
+    for websocket in active_connections_set:
+        await websocket.close(code=1001)
 
 
 app = FastAPI(

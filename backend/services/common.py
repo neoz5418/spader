@@ -394,6 +394,18 @@ def utcnow() -> datetime:
     return datetime.now(UTC)
 
 
+class EventType(Enum):
+    ADDED = "ADDED"
+    MODIFIED = "MODIFIED"
+    DELETED = "DELETED"
+    ERROR = "ERROR"
+
+
+class WatchEvent(BaseModel):
+    type: EventType
+    object: BaseModel
+
+
 class TimestampsMixin(BaseModel):
     create_time: datetime = Field(default_factory=utcnow, nullable=False, index=True)
     update_time: Optional[datetime] = Field(

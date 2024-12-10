@@ -28,6 +28,8 @@ async def get_current_user(
     bearer_token: Annotated[str, Depends(oauth2_scheme)],
 ) -> User:
     if not bearer_token:
+        bearer_token = request.query_params.get("access_token")
+    if not bearer_token:
         raise HTTPException(status_code=401, detail="Unauthorized")
     user = await get_user_from_jwt_token(session, bearer_token)
 

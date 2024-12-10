@@ -31,7 +31,6 @@ from routers.types import (
     OperationStatus,
     PortForward,
     SortOrder,
-    WatchEvent,
     WorkspaceZoneQuota,
     Zone,
     ZoneBase,
@@ -105,16 +104,6 @@ async def list_workspace_zones(
     params: ListParamsDep,
 ) -> ZoneList:
     return await list_zones(session, params)
-
-
-@router.get(
-    "/watch/workspaces/{workspace}/zones",
-    dependencies=[CurrentUserDep],
-)
-def watch_workspace_zones(
-    workspace: str,
-) -> WatchEvent:
-    return
 
 
 @router.get(
@@ -421,29 +410,6 @@ def get_workspace_operation(
     zone: str,
     uid: UUID,
 ) -> OperationList:
-    return
-
-
-@router.get(
-    "/watch/workspaces/{workspace}/zones/{zone}/operations",
-    dependencies=[CurrentUserDep],
-)
-def watch_workspace_operations(
-    workspace: str,
-    zone: str,
-) -> WatchEvent:
-    return
-
-
-@router.get(
-    "/watch/workspaces/{workspace}/zones/{zone}/operations/{uid}",
-    dependencies=[CurrentUserDep],
-)
-def watch_workspace_operation(
-    workspace: str,
-    zone: str,
-    uid: UUID,
-) -> WatchEvent:
     return
 
 

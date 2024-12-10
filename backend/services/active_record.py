@@ -9,7 +9,8 @@ from sqlalchemy.orm.exc import FlushError
 from sqlmodel import and_, col, or_, select, SQLModel
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from services.common import PaginatedList, Pagination
+from services.cache import get_redis
+from services.common import EventType, PaginatedList, Pagination, WatchEvent
 
 logger = logging.getLogger(__name__)
 T = TypeVar("T", bound=SQLModel)
@@ -179,7 +180,7 @@ class ActiveRecordMixin:
             return None
 
         await obj.save(session)
-        # await cls._publish_event(EventType.CREATED, obj)
+        await cls._publish_event(EventType.ADDED, obj)
         return obj
 
     @classmethod
@@ -240,7 +241,7 @@ class ActiveRecordMixin:
         for key, value in source.items():
             setattr(self, key, value)
         await self.save(session)
-        # await self._publish_event(EventType.UPDATED, self)
+        await self._publish_event(EventType.MODIFIED, self)
 
     async def delete(self, session: AsyncSession):
         """Delete the object from the database."""
@@ -253,7 +254,7 @@ class ActiveRecordMixin:
 
         await session.delete(self)
         await session.commit()
-        # await self._publish_event(EventType.DELETED, self)
+        await self._publish_event(EventType.DELETED, self)
 
     async def _handle_cascade_delete(self, session: AsyncSession):
         """Handle cascading deletes for all defined relationships."""
@@ -287,28 +288,17 @@ class ActiveRecordMixin:
 
         for obj in await cls.all(session):
             await obj.delete(session)
-            # await cls._publish_event(EventType.DELETED, obj)
+            await cls._publish_event(EventType.DELETED, obj)
 
-    # @classmethod
-    # async def _publish_event(cls, event_type: str, data: Any):
-    #     try:
-    #         await event_bus.publish(
-    #             cls.__name__.lower(), Event(type=event_type, data=data)
-    #         )
-    #     except Exception as e:
-    #         logger.error(f"Failed to publish event: {e}")
-    #
-    # @overload
-    # @classmethod
-    # async def subscribe(
-    #     cls, session_or_engine: AsyncEngine
-    # ) -> AsyncGenerator[Event, None]: ...
-    #
-    # @overload
-    # @classmethod
-    # async def subscribe(
-    #     cls, session_or_engine: AsyncEngine
-    # ) -> AsyncGenerator[Event, None]: ...
+    @classmethod
+    async def _publish_event(cls, event_type: EventType, data: Any):
+        if hasattr(data, "workspace"):
+            redis = get_redis()
+            await redis.publish(
+                "workspace:" + data.workspace,
+                WatchEvent(type=event_type, object=data).model_dump_json(),
+            )
+
     #
     # @classmethod
     # async def subscribe(

@@ -45,7 +45,6 @@ export default function DeployForm() {
   })
 
   const { user: currentUser } = useAuth()
-  console.log(currentUser)
 
   const { mutate: createInstance, error, data } = useCreateInstanceHook(currentUser?.name || '', zone)
 

@@ -25,23 +25,3 @@ export const getRefreshToken = (): string | null => {
 export const removeRefreshToken = (): void => {
     if (getRefreshToken() != null) localStorage.removeItem("refresh_token");
 };
-
-
-export const setCurrentWorkspace = (username: string, token: string): void => {
-    const key = "workspace-" + username
-    localStorage.setItem(key, token);
-};
-export const getCurrentWorkspace = (username: string): string | null => {
-    const key = "workspace-" + username
-    return typeof localStorage === "object"
-        ? localStorage.getItem(key)
-        : null;
-};
-
-export const removeCurrentWorkspace = (username: string): void => { 
-    const key = "workspace-" + username
-    if (getCurrentWorkspace(username) != null) localStorage.removeItem(key);
-};
-
-
-

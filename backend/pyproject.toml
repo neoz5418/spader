@@ -32,6 +32,7 @@ dependencies = [
     "lago-python-client>=1.15.1",
     "httpx[socks]>=0.27.2",
     "alipay-sdk-python>=3.7.322",
+    "websockets>=14.1",
 ]
 
 [tool.uv.sources]

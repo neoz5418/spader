@@ -1,7 +1,7 @@
 import logging
 from enum import Enum
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, WebSocket
 from sqlmodel import and_, select
 from uuid import UUID
 
@@ -152,13 +152,11 @@ async def list_workspaces(
 
 
 @router.get("/workspaces/{workspace}", dependencies=[CurrentUserDep])
-def get_workspace(
+async def get_workspace(
     session: SessionDep,
     workspace: str,
 ) -> Workspace:
-    workspace = session.exec(
-        select(Workspace).where(Workspace.name == workspace)
-    ).first()
+    workspace = await Workspace.one_by_field(session, "name", workspace)
     if not workspace:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -395,3 +393,24 @@ def get_workspace_members(workspace: str):
 # TODO: cancel invitation
 def get_workspace_invitations(workspace: str):
     return
+
+
+@router.websocket(
+    "/watch/workspaces/{workspace}",
+    dependencies=[CurrentUserDep],
+)
+async def watch_workspace(
+    websocket: WebSocket,
+    workspace: str,
+):
+    await websocket.accept()
+    redis = get_redis()
+    async with redis.pubsub() as pubsub:
+        await pubsub.subscribe("workspace:" + workspace)
+        while True:
+            message = await pubsub.get_message()
+            if message is None:
+                break
+            await websocket.send_text(message["data"])
+
+    await websocket.close()

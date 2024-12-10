@@ -9,6 +9,8 @@ export default defineConfig({
       '/apis': {
         target: 'http://localhost:8000',
         changeOrigin: true,
+        ws: true,
+        rewriteWsOrigin: true,
       },
     },
   },

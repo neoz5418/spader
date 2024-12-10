@@ -470,18 +470,6 @@ class UpdateInstanceRequest(BaseModel):
     display_name: DisplayName
 
 
-class EventType(Enum):
-    ADDED = "ADDED"
-    MODIFIED = "MODIFIED"
-    DELETED = "DELETED"
-    ERROR = "ERROR"
-
-
-class WatchEvent(BaseModel):
-    type: EventType
-    object: dict
-
-
 class FileInfo(BaseModel):
     name: Name
     size: ByteSize

@@ -10,12 +10,13 @@ import { useCurrentWorkspace, useWorkspaceAccount, useWorkspaces } from '@/hooks
 import ThemeSwitch from '@/components/theme-switch.tsx'
 import { useEffect } from 'react'
 import { getAccessToken } from '@/utils/tokens.ts'
+import { WatchEvents } from '@/hooks/use-watch.tsx'
 
 export function EventWatcher() {
   const { currentWorkspace: current } = useCurrentWorkspace()
-  const token = getAccessToken();
+  const token = getAccessToken()
   useEffect(() => {
-    if (!current || !token) return;
+    if (!current || !token) return
     const workspace = current.name
     const ws = new WebSocket('/apis/workspace/v1/watch/workspaces/' + workspace + '?token=' + token)
     ws.onopen = () => console.log('ws opened')
@@ -48,30 +49,31 @@ export default function AppShell() {
       >
         <Layout>
           {/* ===== Top Heading ===== */}
-          <Layout.Header>
-            <div className="ml-auto flex items-center space-x-4">
-              <TopNav links={topNav} />
-              <ThemeSwitch />
+          <WatchEvents>
+            <Layout.Header>
+              <div className="ml-auto flex items-center space-x-4">
+                <TopNav links={topNav} />
+                <ThemeSwitch />
 
-              <Link to={billingLink}>
-                {workspaceAccountIsLoading ? (
-                  '...'
-                ) : (
-                  <p className="text-sm font-semibold">
-                    {(balance / 100).toLocaleString('zh-CN', {
-                      style: 'currency',
-                      currency: currency,
-                      minimumFractionDigits: 2
-                    })}
-                  </p>
-                )}
-              </Link>
-              {/* <UserNav /> */}
-              <WorkspaceSwitcher workspaces={workspaces} current={current} />
-            </div>
-          </Layout.Header>
-          <Outlet />
-          <EventWatcher />
+                <Link to={billingLink}>
+                  {workspaceAccountIsLoading ? (
+                    '...'
+                  ) : (
+                    <p className="text-sm font-semibold">
+                      {(balance / 100).toLocaleString('zh-CN', {
+                        style: 'currency',
+                        currency: currency,
+                        minimumFractionDigits: 2,
+                      })}
+                    </p>
+                  )}
+                </Link>
+                {/* <UserNav /> */}
+                <WorkspaceSwitcher workspaces={workspaces} current={current} />
+              </div>
+            </Layout.Header>
+            <Outlet />
+          </WatchEvents>
         </Layout>
       </main>
     </div>

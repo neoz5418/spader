@@ -62,6 +62,20 @@ const router = createBrowserRouter([{
     }),
   },
   {
+    path: '/terms',
+    element: <Layout />,
+    lazy: async () => ({
+      Component: (await import('./pages/terms.tsx')).default,
+    }),
+  },
+  {
+    path: '/privacy',
+    element: <Layout />,
+    lazy: async () => ({
+      Component: (await import('./pages/privacy.tsx')).default,
+    }),
+  },
+  {
     element: <AuthLayout />,
     loader: requireAuth,
     children: [

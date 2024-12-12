@@ -35,8 +35,8 @@ export default function SignIn() {
           <div className='relative z-20 mt-auto'>
             <blockquote className='space-y-2'>
               <p className='text-lg'>
-                &ldquo;All in one cloud.
-                Develop, train, and scale AI models in one cloud.&rdquo;
+                &ldquo;一体化的云服务。
+                在一朵云上开发、训练和扩展AI模型。&rdquo;
               </p>
               <footer className='text-sm'>Spader.AI</footer>
             </blockquote>
@@ -53,19 +53,19 @@ export default function SignIn() {
             </div>
             <UserAuthForm />
             <p className='px-8 text-center text-sm text-muted-foreground'>
-              By clicking login, you agree to our{' '}
+              点击登录，即表示您同意我们的
               <a
                 href='/terms'
                 className='underline underline-offset-4 hover:text-primary'
               >
-                Terms of Service
-              </a>{' '}
-              and{' '}
+                服务条款
+              </a>
+              和
               <a
                 href='/privacy'
                 className='underline underline-offset-4 hover:text-primary'
               >
-                Privacy Policy
+                隐私政策
               </a>
               .
             </p>

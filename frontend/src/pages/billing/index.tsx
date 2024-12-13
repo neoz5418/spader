@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
     Table,
@@ -11,7 +10,8 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { CreditCard, Calendar, Loader } from 'lucide-react'
+import { CreditCard } from 'lucide-react'
+import Loader from '@/components/loader'
 import { useCurrentWorkspace, useWorkspaceAccount } from "@/hooks/use-setting"
 import { Link, useNavigate, useSearchParams } from "react-router-dom"
 import { useListWorkspaceResourceUsageRecordsHook } from "@/gen/hooks/useListWorkspaceResourceUsageRecordsHook"
@@ -89,7 +89,7 @@ export default function BillingDashboard() {
                         </div>
                     </CardContent>
                 </Card>
-                
+
 
                 <Card>
                 <CardHeader>
@@ -99,8 +99,8 @@ export default function BillingDashboard() {
                     <div className="space-y-4">
                     <div className="flex gap-2">
                         {rechargeAmountValues.map((value, index) => (
-                            <Button 
-                                key={index} 
+                            <Button
+                                key={index}
                                 variant={rechargeAmount === value ? "secondary" : "outline"}
                                 onClick={() => setRechargeAmount(value)}
                             >
@@ -110,9 +110,9 @@ export default function BillingDashboard() {
                     </div>
                     <div className="flex gap-2">
                         <div className="w-1/2 flex-1">
-                            <Input 
-                                type="number" 
-                                placeholder={`${currency} 自定义金额`} 
+                            <Input
+                                type="number"
+                                placeholder={`${currency} 自定义金额`}
                                 value={rechargeAmount || ''}
                                 onChange={(e) => setRechargeAmount(Number(e.target.value))}
                             />
@@ -209,4 +209,3 @@ export default function BillingDashboard() {
         </div>
     )
 }
-

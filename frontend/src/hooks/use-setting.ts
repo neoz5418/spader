@@ -15,7 +15,7 @@ export function useCurrentUser() {
 }
 
 export function useWorkspaces() {
-  const { currentUser } = useCurrentUser()
+  const { currentUser, isLoading: isUserLoading } = useCurrentUser()
   const {
     data: { items: workspaces = [] } = {},
     isLoading,
@@ -26,7 +26,7 @@ export function useWorkspaces() {
   })
   return {
     workspaces,
-    isLoading,
+    isLoading: isLoading || isUserLoading,
   }
 }
 

@@ -11,7 +11,7 @@ import { InstancesColumns } from '@/pages/instances/columns.tsx'
 
 
 export default function Instances() {
-  const { currentWorkspace } = useCurrentWorkspace()
+  const { currentWorkspace, isLoading: isWorkspaceLoading } = useCurrentWorkspace()
   const [searchParams, setSearchParams] = useSearchParams()
   const events = useEvents()
   const pagination = {
@@ -33,7 +33,7 @@ export default function Instances() {
   }
 
   const {
-    isLoading,
+    isLoading: isInstancesLoading,
     data: { items: instances = [], pagination: { total = 0 } = {} } = {},
   } = useListWorkspaceInstancesHook(currentWorkspace?.name || '', {
     offset: pagination.pageIndex * pagination.pageSize,
@@ -43,7 +43,7 @@ export default function Instances() {
       enabled: !!currentWorkspace,
     },
   })
-  if (isLoading) {
+  if (isWorkspaceLoading || isInstancesLoading) {
     return <Loader />
   }
 

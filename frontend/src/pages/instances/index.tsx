@@ -34,7 +34,7 @@ export default function Instances() {
 
   const {
     isLoading: isInstancesLoading,
-    data: { items: instances = [], pagination: { total = 0 } = {} } = {},
+    data: { items: instances = [], pagination: { total = 1 } = {} } = {},
   } = useListWorkspaceInstancesHook(currentWorkspace?.name || '', {
     offset: pagination.pageIndex * pagination.pageSize,
     limit: pagination.pageSize,

@@ -42,12 +42,12 @@ export interface SideLink extends NavLink {
 }
 
 export const sidelinks: SideLink[] = [
-  {
-    title: '总览',
-    label: '',
-    href: '/',
-    icon: <IconHome size={18} />,
-  },
+  // {
+  //   title: '总览',
+  //   label: '',
+  //   href: '/',
+  //   icon: <IconHome size={18} />,
+  // },
   {
     title: '算力容器',
     label: '',

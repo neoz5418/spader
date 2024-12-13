@@ -8,27 +8,7 @@ import { TopNav } from '@/components/top-nav'
 import { WorkspaceSwitcher } from '@/components/custom/workspace-switch'
 import { useCurrentWorkspace, useWorkspaceAccount, useWorkspaces } from '@/hooks/use-setting.ts'
 import ThemeSwitch from '@/components/theme-switch.tsx'
-import { useEffect } from 'react'
-import { getAccessToken } from '@/utils/tokens.ts'
 import { WatchEvents } from '@/hooks/use-watch.tsx'
-
-export function EventWatcher() {
-  const { currentWorkspace: current } = useCurrentWorkspace()
-  const token = getAccessToken()
-  useEffect(() => {
-    if (!current || !token) return
-    const workspace = current.name
-    const ws = new WebSocket('/apis/workspace/v1/watch/workspaces/' + workspace + '?token=' + token)
-    ws.onopen = () => console.log('ws opened')
-    ws.onclose = () => console.log('ws closed')
-    ws.onmessage = (msg) => console.log('ws message', msg)
-
-    return () => {
-      ws.close()
-    }
-  }, [current, token])
-  return null
-}
 
 export default function AppShell() {
   const [isCollapsed, setIsCollapsed] = useIsCollapsed()

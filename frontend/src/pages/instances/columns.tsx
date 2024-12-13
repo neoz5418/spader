@@ -1,8 +1,9 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { InstancePublicType } from '@/gen'
 import { toast } from '@/hooks/use-toast.ts'
-import { Button } from "@/components/ui/button"
-import { Play, Square, Trash2 } from "lucide-react"
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Play, Square, Trash2 } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -10,8 +11,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { useState } from "react"
+} from '@/components/ui/dialog'
+import { useState } from 'react'
 
 function Copyable({ text }: { text: string }) {
   return <span className={'select-all cursor-pointer'} onClick={() => {
@@ -34,8 +35,23 @@ export const InstancesColumns: ColumnDef<InstancePublicType>[] = [
     header: '名称',
   },
   {
-    accessorKey: 'status',
     header: '状态',
+    cell: ({ row }) => {
+      switch (row.original.status) {
+        case 'provisioning':
+          return <Badge variant="secondary">启动中</Badge>
+        case 'running':
+          return <Badge variant="default">运行中</Badge>
+        case 'stopping':
+          return <Badge variant="destructive">运行中</Badge>
+        case 'staging':
+          return <Badge variant="secondary">启动中</Badge>
+        case 'terminated':
+          return <Badge variant="outline">已释放</Badge>
+        default:
+          return null
+      }
+    },
   },
   {
     accessorKey: 'zone_display_name',
@@ -95,8 +111,8 @@ export const InstancesColumns: ColumnDef<InstancePublicType>[] = [
       return (
         <>
           <div className="flex items-center gap-2">
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               size="icon"
               onClick={() => {
                 // TODO: 实现启动/停止逻辑
@@ -109,9 +125,9 @@ export const InstancesColumns: ColumnDef<InstancePublicType>[] = [
                 <Play className="h-4 w-4" />
               )}
             </Button>
-            
-            <Button 
-              variant="ghost" 
+
+            <Button
+              variant="ghost"
               size="icon"
               className="text-red-600 hover:text-red-700 hover:bg-red-100"
               onClick={() => setShowDeleteDialog(true)}
@@ -146,6 +162,6 @@ export const InstancesColumns: ColumnDef<InstancePublicType>[] = [
           </Dialog>
         </>
       )
-    }
-  }
+    },
+  },
 ]

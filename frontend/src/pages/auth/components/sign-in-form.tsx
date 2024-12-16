@@ -98,7 +98,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                 </FormItem>
               )}
             />
-            <Button className='mt-2' >
+            <Button className='mt-2' loading={isLoading}>
               登录
             </Button>
            {error && <FormMessage>{error}</FormMessage>}
@@ -118,7 +118,6 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                 variant='outline'
                 className='w-full'
                 type='button'
-                loading={isLoading}
                 onClick={() => {
                   navigate('/sign-up')
                 }}

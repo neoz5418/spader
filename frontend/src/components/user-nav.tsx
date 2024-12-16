@@ -58,7 +58,7 @@ export function UserNav() {
         <DropdownMenuItem
           onClick={handleLogout}
         >
-          Log out
+          登出
           <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
         </DropdownMenuItem>
       </DropdownMenuContent>

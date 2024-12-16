@@ -19,8 +19,8 @@ interface ForgotFormProps extends HTMLAttributes<HTMLDivElement> {}
 const formSchema = z.object({
   email: z
     .string()
-    .min(1, { message: 'Please enter your email' })
-    .email({ message: 'Invalid email address' }),
+    .min(1, { message: '请输入您的邮箱' })
+    .email({ message: '非法的邮箱地址' }),
 })
 
 export function ForgotForm({ className, ...props }: ForgotFormProps) {
@@ -50,7 +50,7 @@ export function ForgotForm({ className, ...props }: ForgotFormProps) {
               name='email'
               render={({ field }) => (
                 <FormItem className='space-y-1'>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>邮箱</FormLabel>
                   <FormControl>
                     <Input placeholder='name@example.com' {...field} />
                   </FormControl>
@@ -59,7 +59,7 @@ export function ForgotForm({ className, ...props }: ForgotFormProps) {
               )}
             />
             <Button className='mt-2' loading={isLoading}>
-              Continue
+              继续
             </Button>
           </div>
         </form>

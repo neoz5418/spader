@@ -127,10 +127,6 @@ export const operations = {
         "path": "/apis/compute/v1/workspaces/:workspace/zones",
         "method": "get"
     },
-    "watch_workspace_zones": {
-        "path": "/apis/compute/v1/watch/workspaces/:workspace/zones",
-        "method": "get"
-    },
     "list_workspace_zone_gpu_types": {
         "path": "/apis/compute/v1/workspaces/:workspace/zones/:zone/gpu_types",
         "method": "get"
@@ -185,14 +181,6 @@ export const operations = {
     },
     "get_workspace_operation": {
         "path": "/apis/compute/v1/workspaces/:workspace/zones/:zone/operations/:uid",
-        "method": "get"
-    },
-    "watch_workspace_operations": {
-        "path": "/apis/compute/v1/watch/workspaces/:workspace/zones/:zone/operations",
-        "method": "get"
-    },
-    "watch_workspace_operation": {
-        "path": "/apis/compute/v1/watch/workspaces/:workspace/zones/:zone/operations/:uid",
         "method": "get"
     },
     "create_file_storage": {

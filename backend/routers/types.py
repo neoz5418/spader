@@ -60,24 +60,13 @@ class OneTimePasswordValidateType(Enum):
     # phone_number = "phone_number"
 
 
-class SendOneTimePasswordRequest(BaseModel):
-    type: OneTimePasswordValidateType
-    email: Optional[EmailStr] = None
-    # phone_number: Optional[PhoneNumber] = None
-
-
-class SendOneTimePasswordResponse(BaseModel):
-    type: OneTimePasswordValidateType
-    email: Optional[EmailStr] = None
-    phone_number: Optional[PhoneNumber] = None
-
-
 class Role(Enum):
     global_admin = "global_admin"
     user = "user"
 
 
 class UserBase(SQLModel):
+    uid: UUID = UID
     name: Name
     email: EmailStr
     display_name: DisplayName
@@ -85,23 +74,15 @@ class UserBase(SQLModel):
 
 
 class User(UserBase, BaseModelMixin, table=True):
-    uid: UUID = UID
     hashed_password: str
     role: Role
-
-    create_time: Optional[datetime] = None
-    update_time: Optional[datetime] = None
-    delete_time: Optional[datetime] = None
 
 
 UserList = PaginatedList[User]
 
 
-class UserPublic(UserBase):
-    uid: UUID = UID
-    create_time: Optional[datetime] = None
-    update_time: Optional[datetime] = None
-    delete_time: Optional[datetime] = None
+class UserPublic(UserBase, BaseModelMixin):
+    pass
 
 
 PasswordType = Annotated[
@@ -127,6 +108,18 @@ class UserCreate(UserBase):
 class RegisterUserRequest(UserCreate):
     one_time_password_validate_type: OneTimePasswordValidateType
     one_time_password: str
+
+
+class SendOneTimePasswordRequest(UserCreate):
+    type: OneTimePasswordValidateType
+    email: Optional[EmailStr] = None
+    # phone_number: Optional[PhoneNumber] = None
+
+
+class SendOneTimePasswordResponse(BaseModel):
+    type: OneTimePasswordValidateType
+    email: Optional[EmailStr] = None
+    phone_number: Optional[PhoneNumber] = None
 
 
 class Token(BaseModel):

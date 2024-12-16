@@ -1,7 +1,7 @@
 import logging
 import random
 import string
-from datetime import datetime, timedelta
+from datetime import timedelta
 from enum import Enum
 
 from fastapi import APIRouter, BackgroundTasks, HTTPException, status
@@ -118,11 +118,18 @@ def otp_prefix(username: str):
     status_code=201,
 )
 async def send_one_time_password(
+    session: SessionDep,
     send_one_time_password_request: SendOneTimePasswordRequest,
     background_tasks: BackgroundTasks,
 ) -> SendOneTimePasswordResponse:
     if send_one_time_password_request.type != OneTimePasswordValidateType.email:
         raise HTTPException(status_code=400, detail="invalid type")
+
+    await check_user_register_info(
+        session,
+        send_one_time_password_request.email,
+        send_one_time_password_request.name,
+    )
 
     otp_password = generate_random_one_time_password()
     cache = get_redis()
@@ -140,20 +147,32 @@ async def send_one_time_password(
     )
 
 
+async def check_user_register_info(
+    session: SessionDep,
+    email: str,
+    name: str,
+):
+    # check user exists
+    statement = select(User).where(User.email == email)
+    db_user = (await session.exec(statement)).first()
+    if db_user is not None:
+        raise HTTPException(status_code=400, detail="email already exists")
+    statement = select(User).where(User.name == name)
+    db_user = (await session.exec(statement)).first()
+    if db_user is not None:
+        raise HTTPException(status_code=400, detail="username already exists")
+
+
 @router.post("/users/")
 async def register_user(
     session: SessionDep,
     register_user_request: RegisterUserRequest,
 ) -> User:
-    # check user exists
-    statement = select(User).where(User.email == register_user_request.email)
-    db_user = (await session.exec(statement)).first()
-    if db_user is not None:
-        raise HTTPException(status_code=400, detail="email already exists")
-    statement = select(User).where(User.name == register_user_request.name)
-    db_user = (await session.exec(statement)).first()
-    if db_user is not None:
-        raise HTTPException(status_code=400, detail="username already exists")
+    await check_user_register_info(
+        session,
+        register_user_request.email,
+        register_user_request.name,
+    )
 
     cache = get_redis()
     otp = await cache.get(otp_prefix(register_user_request.email))
@@ -172,16 +191,15 @@ async def register_user(
             "role": Role.user,
         },
     )
-    db_user.create_time = datetime.now()
     session.add(db_user)
 
-    # check workspace exists, the workspace's name is same as user name
+    # check workspace exists, the workspace name is same as username
     statement = select(Workspace).where(Workspace.name == register_user_request.name)
     db_workspace = (await session.exec(statement)).first()
     if db_workspace is not None:
         logger.warning("workspace already exists")
         if db_workspace.owner != register_user_request.name:
-            logger.warning("workspace's owner is not same as user name")
+            logger.warning("workspace owner is not same as user name")
     else:
         workspace = Workspace(
             name=register_user_request.name,

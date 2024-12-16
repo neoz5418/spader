@@ -54,6 +54,3 @@ export * from "./useTokenHook";
 export * from "./useUpdateImageHook";
 export * from "./useUpdateUserQuotaHook";
 export * from "./useUpdateWorkspaceQuotaHook";
-export * from "./useWatchWorkspaceOperationHook";
-export * from "./useWatchWorkspaceOperationsHook";
-export * from "./useWatchWorkspaceZonesHook";

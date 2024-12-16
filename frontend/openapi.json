@@ -3735,115 +3735,6 @@
         }
       }
     },
-    "/apis/compute/v1/watch/workspaces/{workspace}/zones": {
-      "get": {
-        "tags": [
-          "compute"
-        ],
-        "summary": "Watch Workspace Zones",
-        "operationId": "watch_workspace_zones",
-        "security": [
-          {
-            "OAuth2PasswordBearer": [
-              "permission_regular_user"
-            ]
-          }
-        ],
-        "parameters": [
-          {
-            "name": "workspace",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "title": "Workspace"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/WatchEvent"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Request error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Rate limit exceeded",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "503": {
-            "description": "Service unavailable",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/apis/compute/v1/workspaces/{workspace}/zones/{zone}/gpu_types": {
       "get": {
         "tags": [
@@ -5739,252 +5630,6 @@
         }
       }
     },
-    "/apis/compute/v1/watch/workspaces/{workspace}/zones/{zone}/operations": {
-      "get": {
-        "tags": [
-          "compute"
-        ],
-        "summary": "Watch Workspace Operations",
-        "operationId": "watch_workspace_operations",
-        "security": [
-          {
-            "OAuth2PasswordBearer": [
-              "permission_regular_user"
-            ]
-          }
-        ],
-        "parameters": [
-          {
-            "name": "workspace",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "title": "Workspace"
-            }
-          },
-          {
-            "name": "zone",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "title": "Zone"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/WatchEvent"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Request error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Rate limit exceeded",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "503": {
-            "description": "Service unavailable",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/apis/compute/v1/watch/workspaces/{workspace}/zones/{zone}/operations/{uid}": {
-      "get": {
-        "tags": [
-          "compute"
-        ],
-        "summary": "Watch Workspace Operation",
-        "operationId": "watch_workspace_operation",
-        "security": [
-          {
-            "OAuth2PasswordBearer": [
-              "permission_regular_user"
-            ]
-          }
-        ],
-        "parameters": [
-          {
-            "name": "workspace",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "title": "Workspace"
-            }
-          },
-          {
-            "name": "zone",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "title": "Zone"
-            }
-          },
-          {
-            "name": "uid",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid",
-              "title": "Uid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/WatchEvent"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Request error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Rate limit exceeded",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "503": {
-            "description": "Service unavailable",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/apis/compute/v1/workspaces/{workspace}/zones/{zone}/file_storages/": {
       "post": {
         "tags": [
@@ -7581,16 +7226,6 @@
         ],
         "title": "ErrorInfo"
       },
-      "EventType": {
-        "type": "string",
-        "enum": [
-          "ADDED",
-          "MODIFIED",
-          "DELETED",
-          "ERROR"
-        ],
-        "title": "EventType"
-      },
       "FileInfo": {
         "properties": {
           "name": {
@@ -8823,6 +8458,11 @@
       },
       "RegisterUserRequest": {
         "properties": {
+          "uid": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Uid"
+          },
           "name": {
             "type": "string",
             "maxLength": 32,
@@ -9006,8 +8646,18 @@
       },
       "SendOneTimePasswordRequest": {
         "properties": {
-          "type": {
-            "$ref": "#/components/schemas/OneTimePasswordValidateType"
+          "uid": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Uid"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 32,
+            "minLength": 3,
+            "pattern": "^[a-z0-9][a-z0-9-]*[a-z0-9]$",
+            "title": "Name",
+            "description": "\nNAME is subset of RFC1123 label names:\n1. contain only lowercase alphanumeric characters or '-'\n2. start with an alphanumeric character\n3. end with an alphanumeric character\n"
           },
           "email": {
             "anyOf": [
@@ -9020,10 +8670,41 @@
               }
             ],
             "title": "Email"
+          },
+          "display_name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 64,
+                "minLength": 0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Display Name"
+          },
+          "phone_number": {
+            "type": "string",
+            "format": "phone",
+            "title": "Phone Number"
+          },
+          "password": {
+            "type": "string",
+            "maxLength": 32,
+            "minLength": 8,
+            "title": "Password",
+            "description": "Minimum eight characters, at least one uppercase letter, one lowercase letter and one number"
+          },
+          "type": {
+            "$ref": "#/components/schemas/OneTimePasswordValidateType"
           }
         },
         "type": "object",
         "required": [
+          "name",
+          "phone_number",
+          "password",
           "type"
         ],
         "title": "SendOneTimePasswordRequest"
@@ -9108,15 +8789,8 @@
       "User": {
         "properties": {
           "create_time": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
+            "type": "string",
+            "format": "date-time",
             "title": "Create Time"
           },
           "update_time": {
@@ -9142,6 +8816,11 @@
               }
             ],
             "title": "Delete Time"
+          },
+          "uid": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Uid"
           },
           "name": {
             "type": "string",
@@ -9173,11 +8852,6 @@
             "type": "string",
             "format": "phone",
             "title": "Phone Number"
-          },
-          "uid": {
-            "type": "string",
-            "format": "uuid",
-            "title": "Uid"
           },
           "hashed_password": {
             "type": "string",
@@ -9225,23 +8899,6 @@
           "username"
         ],
         "title": "UserQuota"
-      },
-      "WatchEvent": {
-        "properties": {
-          "type": {
-            "$ref": "#/components/schemas/EventType"
-          },
-          "object": {
-            "type": "object",
-            "title": "Object"
-          }
-        },
-        "type": "object",
-        "required": [
-          "type",
-          "object"
-        ],
-        "title": "WatchEvent"
       },
       "Workspace": {
         "properties": {

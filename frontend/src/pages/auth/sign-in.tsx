@@ -1,5 +1,5 @@
 import { UserAuthForm } from './components/sign-in-form'
-import ViteLogo from '@/assets/icon-white.svg'
+import Logo from '@/assets/icon-white.svg'
 
 export default function SignIn() {
 
@@ -11,9 +11,8 @@ export default function SignIn() {
           <div className='relative z-20 flex items-center text-lg font-medium'>
             Spader AI
           </div>
-
           <img
-            src={ViteLogo}
+            src={Logo}
             className='relative m-auto'
             width={301}
             height={60}

@@ -30,7 +30,6 @@ import { createZoneMutationRequestSchema, createZoneMutationResponseSchema, crea
 import { listZonesQueryResponseSchema, listZones400Schema, listZones401Schema, listZones404Schema, listZones422Schema, listZones429Schema, listZones500Schema, listZones503Schema, listZonesQueryParamsSchema } from "./listZonesSchema.gen";
 import { listGpuTypesQueryResponseSchema, listGpuTypes400Schema, listGpuTypes401Schema, listGpuTypes404Schema, listGpuTypes422Schema, listGpuTypes429Schema, listGpuTypes500Schema, listGpuTypes503Schema, listGpuTypesPathParamsSchema, listGpuTypesQueryParamsSchema } from "./listGpuTypesSchema.gen";
 import { listWorkspaceZonesQueryResponseSchema, listWorkspaceZones400Schema, listWorkspaceZones401Schema, listWorkspaceZones404Schema, listWorkspaceZones422Schema, listWorkspaceZones429Schema, listWorkspaceZones500Schema, listWorkspaceZones503Schema, listWorkspaceZonesPathParamsSchema, listWorkspaceZonesQueryParamsSchema } from "./listWorkspaceZonesSchema.gen";
-import { watchWorkspaceZonesQueryResponseSchema, watchWorkspaceZones400Schema, watchWorkspaceZones401Schema, watchWorkspaceZones404Schema, watchWorkspaceZones422Schema, watchWorkspaceZones429Schema, watchWorkspaceZones500Schema, watchWorkspaceZones503Schema, watchWorkspaceZonesPathParamsSchema } from "./watchWorkspaceZonesSchema.gen";
 import { listWorkspaceZoneGpuTypesQueryResponseSchema, listWorkspaceZoneGpuTypes400Schema, listWorkspaceZoneGpuTypes401Schema, listWorkspaceZoneGpuTypes404Schema, listWorkspaceZoneGpuTypes422Schema, listWorkspaceZoneGpuTypes429Schema, listWorkspaceZoneGpuTypes500Schema, listWorkspaceZoneGpuTypes503Schema, listWorkspaceZoneGpuTypesPathParamsSchema, listWorkspaceZoneGpuTypesQueryParamsSchema } from "./listWorkspaceZoneGpuTypesSchema.gen";
 import { getWorkspaceZoneQuotaQueryResponseSchema, getWorkspaceZoneQuota400Schema, getWorkspaceZoneQuota401Schema, getWorkspaceZoneQuota404Schema, getWorkspaceZoneQuota422Schema, getWorkspaceZoneQuota429Schema, getWorkspaceZoneQuota500Schema, getWorkspaceZoneQuota503Schema, getWorkspaceZoneQuotaPathParamsSchema } from "./getWorkspaceZoneQuotaSchema.gen";
 import { listInstancesQueryResponseSchema, listInstances400Schema, listInstances401Schema, listInstances404Schema, listInstances422Schema, listInstances429Schema, listInstances500Schema, listInstances503Schema, listInstancesQueryParamsSchema } from "./listInstancesSchema.gen";
@@ -45,8 +44,6 @@ import { deleteInstancePortForwardMutationResponseSchema, deleteInstancePortForw
 import { listInstancePortForwardsQueryResponseSchema, listInstancePortForwards400Schema, listInstancePortForwards401Schema, listInstancePortForwards404Schema, listInstancePortForwards422Schema, listInstancePortForwards429Schema, listInstancePortForwards500Schema, listInstancePortForwards503Schema, listInstancePortForwardsPathParamsSchema } from "./listInstancePortForwardsSchema.gen";
 import { listWorkspaceOperationsQueryResponseSchema, listWorkspaceOperations400Schema, listWorkspaceOperations401Schema, listWorkspaceOperations404Schema, listWorkspaceOperations422Schema, listWorkspaceOperations429Schema, listWorkspaceOperations500Schema, listWorkspaceOperations503Schema, listWorkspaceOperationsPathParamsSchema, listWorkspaceOperationsQueryParamsSchema } from "./listWorkspaceOperationsSchema.gen";
 import { getWorkspaceOperationQueryResponseSchema, getWorkspaceOperation400Schema, getWorkspaceOperation401Schema, getWorkspaceOperation404Schema, getWorkspaceOperation422Schema, getWorkspaceOperation429Schema, getWorkspaceOperation500Schema, getWorkspaceOperation503Schema, getWorkspaceOperationPathParamsSchema } from "./getWorkspaceOperationSchema.gen";
-import { watchWorkspaceOperationsQueryResponseSchema, watchWorkspaceOperations400Schema, watchWorkspaceOperations401Schema, watchWorkspaceOperations404Schema, watchWorkspaceOperations422Schema, watchWorkspaceOperations429Schema, watchWorkspaceOperations500Schema, watchWorkspaceOperations503Schema, watchWorkspaceOperationsPathParamsSchema } from "./watchWorkspaceOperationsSchema.gen";
-import { watchWorkspaceOperationQueryResponseSchema, watchWorkspaceOperation400Schema, watchWorkspaceOperation401Schema, watchWorkspaceOperation404Schema, watchWorkspaceOperation422Schema, watchWorkspaceOperation429Schema, watchWorkspaceOperation500Schema, watchWorkspaceOperation503Schema, watchWorkspaceOperationPathParamsSchema } from "./watchWorkspaceOperationSchema.gen";
 import { createFileStorageMutationRequestSchema, createFileStorageMutationResponseSchema, createFileStorage400Schema, createFileStorage401Schema, createFileStorage404Schema, createFileStorage422Schema, createFileStorage429Schema, createFileStorage500Schema, createFileStorage503Schema, createFileStoragePathParamsSchema } from "./createFileStorageSchema.gen";
 import { listWorkspaceFileStoragesQueryResponseSchema, listWorkspaceFileStorages400Schema, listWorkspaceFileStorages401Schema, listWorkspaceFileStorages404Schema, listWorkspaceFileStorages422Schema, listWorkspaceFileStorages429Schema, listWorkspaceFileStorages500Schema, listWorkspaceFileStorages503Schema, listWorkspaceFileStoragesPathParamsSchema, listWorkspaceFileStoragesQueryParamsSchema } from "./listWorkspaceFileStoragesSchema.gen";
 import { getFileStorageQueryResponseSchema, getFileStorage400Schema, getFileStorage401Schema, getFileStorage404Schema, getFileStorage422Schema, getFileStorage429Schema, getFileStorage500Schema, getFileStorage503Schema, getFileStoragePathParamsSchema } from "./getFileStorageSchema.gen";
@@ -922,33 +919,6 @@ import { tokenMutationRequestSchema, tokenMutationResponseSchema, token400Schema
             500: listWorkspaceZones500Schema,
             503: listWorkspaceZones503Schema
         }
-    }, "watch_workspace_zones": {
-        request: undefined,
-        parameters: {
-            path: watchWorkspaceZonesPathParamsSchema,
-            query: undefined,
-            header: undefined
-        },
-        responses: {
-            200: watchWorkspaceZonesQueryResponseSchema,
-            400: watchWorkspaceZones400Schema,
-            401: watchWorkspaceZones401Schema,
-            404: watchWorkspaceZones404Schema,
-            422: watchWorkspaceZones422Schema,
-            429: watchWorkspaceZones429Schema,
-            500: watchWorkspaceZones500Schema,
-            503: watchWorkspaceZones503Schema,
-            default: watchWorkspaceZonesQueryResponseSchema
-        },
-        errors: {
-            400: watchWorkspaceZones400Schema,
-            401: watchWorkspaceZones401Schema,
-            404: watchWorkspaceZones404Schema,
-            422: watchWorkspaceZones422Schema,
-            429: watchWorkspaceZones429Schema,
-            500: watchWorkspaceZones500Schema,
-            503: watchWorkspaceZones503Schema
-        }
     }, "list_workspace_zone_gpu_types": {
         request: undefined,
         parameters: {
@@ -1327,60 +1297,6 @@ import { tokenMutationRequestSchema, tokenMutationResponseSchema, token400Schema
             500: getWorkspaceOperation500Schema,
             503: getWorkspaceOperation503Schema
         }
-    }, "watch_workspace_operations": {
-        request: undefined,
-        parameters: {
-            path: watchWorkspaceOperationsPathParamsSchema,
-            query: undefined,
-            header: undefined
-        },
-        responses: {
-            200: watchWorkspaceOperationsQueryResponseSchema,
-            400: watchWorkspaceOperations400Schema,
-            401: watchWorkspaceOperations401Schema,
-            404: watchWorkspaceOperations404Schema,
-            422: watchWorkspaceOperations422Schema,
-            429: watchWorkspaceOperations429Schema,
-            500: watchWorkspaceOperations500Schema,
-            503: watchWorkspaceOperations503Schema,
-            default: watchWorkspaceOperationsQueryResponseSchema
-        },
-        errors: {
-            400: watchWorkspaceOperations400Schema,
-            401: watchWorkspaceOperations401Schema,
-            404: watchWorkspaceOperations404Schema,
-            422: watchWorkspaceOperations422Schema,
-            429: watchWorkspaceOperations429Schema,
-            500: watchWorkspaceOperations500Schema,
-            503: watchWorkspaceOperations503Schema
-        }
-    }, "watch_workspace_operation": {
-        request: undefined,
-        parameters: {
-            path: watchWorkspaceOperationPathParamsSchema,
-            query: undefined,
-            header: undefined
-        },
-        responses: {
-            200: watchWorkspaceOperationQueryResponseSchema,
-            400: watchWorkspaceOperation400Schema,
-            401: watchWorkspaceOperation401Schema,
-            404: watchWorkspaceOperation404Schema,
-            422: watchWorkspaceOperation422Schema,
-            429: watchWorkspaceOperation429Schema,
-            500: watchWorkspaceOperation500Schema,
-            503: watchWorkspaceOperation503Schema,
-            default: watchWorkspaceOperationQueryResponseSchema
-        },
-        errors: {
-            400: watchWorkspaceOperation400Schema,
-            401: watchWorkspaceOperation401Schema,
-            404: watchWorkspaceOperation404Schema,
-            422: watchWorkspaceOperation422Schema,
-            429: watchWorkspaceOperation429Schema,
-            500: watchWorkspaceOperation500Schema,
-            503: watchWorkspaceOperation503Schema
-        }
     }, "create_file_storage": {
         request: createFileStorageMutationRequestSchema,
         parameters: {
@@ -1707,8 +1623,6 @@ export const paths = { "/apis/user/v1/users/me": {
         get: operations["list_gpu_types"]
     }, "/apis/compute/v1/workspaces/{workspace}/zones": {
         get: operations["list_workspace_zones"]
-    }, "/apis/compute/v1/watch/workspaces/{workspace}/zones": {
-        get: operations["watch_workspace_zones"]
     }, "/apis/compute/v1/workspaces/{workspace}/zones/{zone}/gpu_types": {
         get: operations["list_workspace_zone_gpu_types"]
     }, "/apis/compute/v1/workspaces/{workspace}/zones/{zone}/quota": {
@@ -1736,10 +1650,6 @@ export const paths = { "/apis/user/v1/users/me": {
         get: operations["list_workspace_operations"]
     }, "/apis/compute/v1/workspaces/{workspace}/zones/{zone}/operations/{uid}": {
         get: operations["get_workspace_operation"]
-    }, "/apis/compute/v1/watch/workspaces/{workspace}/zones/{zone}/operations": {
-        get: operations["watch_workspace_operations"]
-    }, "/apis/compute/v1/watch/workspaces/{workspace}/zones/{zone}/operations/{uid}": {
-        get: operations["watch_workspace_operation"]
     }, "/apis/compute/v1/workspaces/{workspace}/zones/{zone}/file_storages/": {
         post: operations["create_file_storage"]
     }, "/apis/compute/v1/workspaces/{workspace}/zones/{zone}/file_storages": {

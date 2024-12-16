@@ -54,6 +54,3 @@ export * from "./token";
 export * from "./updateImage";
 export * from "./updateUserQuota";
 export * from "./updateWorkspaceQuota";
-export * from "./watchWorkspaceOperation";
-export * from "./watchWorkspaceOperations";
-export * from "./watchWorkspaceZones";

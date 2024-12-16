@@ -4,6 +4,7 @@ import string
 from datetime import timedelta
 from enum import Enum
 
+from email_validator import EmailNotValidError, validate_email
 from fastapi import APIRouter, BackgroundTasks, HTTPException, status
 from pydantic import EmailStr
 from pydantic_extra_types.phone_numbers import PhoneNumber
@@ -152,6 +153,19 @@ async def check_user_register_info(
     email: str,
     name: str,
 ):
+    try:
+        # Check that the email address is valid. Turn on check_deliverability
+        # for first-time validations like on account creation pages (but not
+        # login pages).
+        emailinfo = validate_email(email, check_deliverability=True)
+
+        # After this point, use only the normalized form of the email address,
+        # especially before going to a database query.
+        email = emailinfo.normalized
+
+    except EmailNotValidError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
     # check user exists
     statement = select(User).where(User.email == email)
     db_user = (await session.exec(statement)).first()

@@ -32,7 +32,7 @@ export function WorkspaceSwitcher({ workspaces, current }: {
           className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
         >
           <div className="flex flex-col gap-0.5 leading-none">
-            <span className="font-semibold">Workspace</span>
+            <span className="font-semibold">工作区</span>
             <span className="">{current?.display_name}</span>
           </div>
           <ChevronsUpDown className="ml-auto" />

@@ -219,21 +219,18 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
     <div className='container grid h-svh flex-col items-center justify-center bg-primary-foreground lg:max-w-none lg:px-0'>
       <div className='mx-auto flex w-full flex-col justify-center space-y-2 sm:w-[480px] lg:p-8'>
         <div className='mb-4 flex items-center justify-center'>
-          <h1 className='text-xl font-medium'>欢迎注册 Spader 账户</h1>
+          <h1 className='text-xl font-medium'>欢迎注册 SpaderAI</h1>
         </div>
         <Card className='p-6'>
           <div className='mb-2 flex flex-col space-y-2 text-left'>
-            <h1 className='text-lg font-semibold tracking-tight'>
-              Create an account
-            </h1>
-            <p className='text-sm text-muted-foreground'>
-              Enter your email and password to create an account. <br />
-              Already have an account?{' '}
+            <p className='mt-4 px-8 text-center text-sm text-muted-foreground'>
+              请输入您的邮箱和密码以创建账户。<br />
+              已经有账户了？{' '}
               <Link
                 to='/sign-in'
                 className='underline underline-offset-4 hover:text-primary'
               >
-                Sign In
+                登录
               </Link>
             </p>
           </div>
@@ -296,7 +293,7 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
                     name='password'
                     render={({ field }) => (
                       <FormItem className='space-y-1'>
-                        <FormLabel>Password</FormLabel>
+                        <FormLabel>密码</FormLabel>
                         <FormControl>
                           <PasswordInput placeholder='' {...field} />
                         </FormControl>
@@ -305,26 +302,26 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
                     )}
                   />
                   <Button className='mt-2' loading={isPending}>
-                    Create Account
+                    创建账户
                   </Button>
                 </div>
               </form>
             </Form>
           </div>
           <p className='mt-4 px-8 text-center text-sm text-muted-foreground'>
-            By creating an account, you agree to our{' '}
+            创建账户即表示您同意我们的{' '}
             <a
               href='/terms'
               className='underline underline-offset-4 hover:text-primary'
             >
-              Terms of Service
+              服务条款
             </a>{' '}
-            and{' '}
+            和{' '}
             <a
               href='/privacy'
               className='underline underline-offset-4 hover:text-primary'
             >
-              Privacy Policy
+              隐私政策
             </a>
             .
           </p>

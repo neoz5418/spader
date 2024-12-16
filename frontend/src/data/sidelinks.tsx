@@ -91,7 +91,7 @@ export const sidelinks: SideLink[] = [
     icon: <IconLogs size={18} />,
   },
   {
-    title: '用户设置',
+    title: '工作区设置',
     label: '',
     href: '/settings',
     icon: <IconSettings size={18} />,

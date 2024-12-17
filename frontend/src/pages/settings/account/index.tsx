@@ -3,18 +3,20 @@
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import useAuth from "@/hooks/use-auth"
-import { FileText, ChevronDown, ChevronUp } from 'lucide-react'
+import { FileText, ChevronDown, ChevronUp, Monitor } from 'lucide-react'
 import { useState } from "react"
 import { AppearanceForm } from "./appearance-form"
+import { Textarea } from "@/components/ui/textarea"
 
 export default function Component() {
   const [isApiKeysOpen, setIsApiKeysOpen] = useState(true)
-  const [isLoginSettingsOpen, setIsLoginSettingsOpen] = useState(false)
+  const [isActiveSessionsOpen, setIsActiveSessionsOpen] = useState(false)
   const [isThemeSettingsOpen, setIsThemeSettingsOpen] = useState(false)
   const [isContainerRegistryAuthOpen, setIsContainerRegistryAuthOpen] = useState(false)
   const [isNotificationSettingsOpen, setIsNotificationSettingsOpen] = useState(false)
   const [isSshPublicKeyOpen, setIsSshPublicKeyOpen] = useState(false)
   const { user } = useAuth()
+  const [sshKey, setSSHKey] = useState('abcd')
   console.log(user)
 
   return (
@@ -103,80 +105,77 @@ export default function Component() {
           )}
         </Card>
 
-        <Card className="p-6">
-          <button 
-            className="w-full flex justify-between items-center"
-            onClick={() => setIsLoginSettingsOpen(!isLoginSettingsOpen)}
+        <Card className="border rounded-lg overflow-hidden">
+          <button
+            onClick={() => setIsActiveSessionsOpen(!isActiveSessionsOpen)}
+            className="w-full px-6 py-4 flex items-center justify-between hover:bg-accent/50"
           >
-            <h2 className="text-xl font-semibold">Login Settings</h2>
-            {isLoginSettingsOpen ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
+            <span className="text-lg font-medium">Active Sessions</span>
+            {isActiveSessionsOpen ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
           </button>
           
-          {isLoginSettingsOpen && (
-            <div className="mt-6">
-              {/* Login settings content would go here */}
+          {isActiveSessionsOpen && (
+            <div className="px-6 py-4 border-t">
+              <div className="flex items-center gap-4">
+                <Monitor className="h-5 w-5" />
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">Chrome</span>
+                    <span className="text-muted-foreground">on</span>
+                    <span>Macintosh</span>
+                    <span className="px-2 py-0.5 text-xs bg-secondary rounded">This device</span>
+                  </div>
+                  <div className="text-sm text-muted-foreground mt-1">
+                    <div>45.120.216.129 (, HK)</div>
+                    <div>Last active: 2024/12/17 21:20:44</div>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
         </Card>
 
-        <Card className="p-6">
-          <button 
-            className="w-full flex justify-between items-center"
-            onClick={() => setIsContainerRegistryAuthOpen(!isContainerRegistryAuthOpen)}
-          >
-            <h2 className="text-xl font-semibold">Container Registry Auth</h2>
-            {isContainerRegistryAuthOpen ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
-          </button>
-          
-          {isContainerRegistryAuthOpen && (
-            <div className="mt-6">
-              <p className="text-muted-foreground">
-                Register your container registry credentials here to pull private images from various container registries. Please be aware that we currently only support docker login type credentials. You can add your credentials to a template by registering the credential here and then selecting it from the dropdown when editing or creating your template.
-              </p>
-              <AppearanceForm />
-            </div>
-          )}
-        </Card>
-
-        <Card className="p-6">
-          <button 
-            className="w-full flex justify-between items-center"
-            onClick={() => setIsNotificationSettingsOpen(!isNotificationSettingsOpen)}
-          >
-            <h2 className="text-xl font-semibold">Notification Settings</h2>
-            {isNotificationSettingsOpen ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
-          </button>
-          
-          {isNotificationSettingsOpen && (
-            <div className="mt-6">
-              <p className="text-muted-foreground">
-                Configure your notification settings here.
-              </p>
-              <AppearanceForm />
-            </div>
-          )}
-        </Card>
-
-        <Card className="p-6">
-          <button 
-            className="w-full flex justify-between items-center"
+        <Card className="border rounded-lg overflow-hidden">
+          <button
             onClick={() => setIsSshPublicKeyOpen(!isSshPublicKeyOpen)}
+            className="w-full px-6 py-4 flex items-center justify-between hover:bg-accent/50"
           >
-            <h2 className="text-xl font-semibold">SSH Public Key</h2>
+            <span className="text-lg font-medium">SSH Public Keys</span>
             {isSshPublicKeyOpen ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
           </button>
           
           {isSshPublicKeyOpen && (
-            <div className="mt-6">
-              <p className="text-muted-foreground">
-                Add your SSH public key here to enable passwordless SSH access to your pods.
+            <div className="px-6 py-4 border-t">
+              <p className="text-sm text-muted-foreground mb-4">
+                Adding public keys to your account lets you access pods via terminal using the matching private key. 
+                You can add multiple keys, separated by a newline (up to 65500 characters). 
+                RunPod automatically adds these keys to your pod&apos;s authorized_keys file, making it easy to connect via SSH using the pod&apos;s public IP.
               </p>
-              <AppearanceForm />
+              
+              <div className="space-y-4">
+                <div>
+                  <label htmlFor="ssh-key" className="text-sm font-medium">
+                    SSH Public Key
+                  </label>
+                  <Textarea
+                    id="ssh-key"
+                    value={sshKey}
+                    onChange={(e) => setSSHKey(e.target.value)}
+                    className="font-mono text-sm mt-2"
+                    rows={2}
+                  />
+                  <div className="text-sm text-muted-foreground mt-1">
+                    {sshKey.length}/65500 characters
+                  </div>
+                </div>
+                
+                <Button variant="outline">
+                  Update Public Key
+                </Button>
+              </div>
             </div>
           )}
         </Card>
-
-
       </div>
     </div>
   )

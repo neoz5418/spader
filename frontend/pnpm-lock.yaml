@@ -19,25 +19,25 @@ importers:
         version: 2.28.3
       '@kubb/plugin-oas':
         specifier: ^2.28.3
-        version: 2.28.3(@kubb/react@2.28.3)
+        version: 2.28.3
       '@kubb/plugin-redoc':
         specifier: ^2.28.3
-        version: 2.28.3(@kubb/react@2.28.3)(core-js@2.6.12)(enzyme@3.11.0)
+        version: 2.28.3(core-js@2.6.12)(enzyme@3.11.0)
       '@kubb/swagger-client':
         specifier: ^2.28.3
-        version: 2.28.3(@kubb/react@2.28.3)(axios@1.7.4)
+        version: 2.28.3(axios@1.7.4)
       '@kubb/swagger-faker':
         specifier: ^2.28.3
-        version: 2.28.3(@kubb/react@2.28.3)
+        version: 2.28.3
       '@kubb/swagger-msw':
-        specifier: ^2.28.3
-        version: 2.28.3(@kubb/react@2.28.3)
+        specifier: ^2.28.4
+        version: 2.28.4
       '@kubb/swagger-tanstack-query':
         specifier: ^2.28.3
-        version: 2.28.3(@kubb/react@2.28.3)(axios@1.7.4)
+        version: 2.28.3(axios@1.7.4)
       '@kubb/swagger-ts':
         specifier: ^2.28.3
-        version: 2.28.3(@kubb/react@2.28.3)
+        version: 2.28.3
       '@radix-ui/react-avatar':
         specifier: ^1.0.4
         version: 1.1.1(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -765,16 +765,32 @@ packages:
     resolution: {integrity: sha512-DvldKVutboCPxgT2Q8qkyomX60kIgPO1+GSLSqYiOYxPIm4WLO8KbuNBzhvePpdfCm6L+dAi6dl5/vxidVVzKg==}
     engines: {node: '>=18'}
 
+  '@kubb/core@2.28.4':
+    resolution: {integrity: sha512-ceujy+nWvG2vavxS6tqbkKCsQQNAqhPRBaKJ3skJ1o4JgNfoOprjKM3E1u5Z1+XboRa8xp8GhzymZ94DDYeeuA==}
+    engines: {node: '>=18'}
+
   '@kubb/fs@2.28.3':
     resolution: {integrity: sha512-t/FN/7+2WAHAu9F/SIzzUZ+XUvna02Lv8EqRsMWXB/xVJ763AuHuqucFDumN2LY1tAl90xLFSKh3fDg42cTqUA==}
+    engines: {node: '>=18'}
+
+  '@kubb/fs@2.28.4':
+    resolution: {integrity: sha512-r14Opu6BbRfbovGRph2vK30H6vI4KkGQVG/qEY4ZrGKenoQhsLqDllkLYTUbZc77E6ncpBlw5m17mE0N2EyXbw==}
     engines: {node: '>=18'}
 
   '@kubb/oas@2.28.3':
     resolution: {integrity: sha512-sthQTqz/ICTwwRNEkKbZo7oWazHVtivs3bfT+v40+Qk45ZsKgXkWI5x5cpAwn/elDLQMXmtKCOEy6i1AMJZmjA==}
     engines: {node: '>=18'}
 
+  '@kubb/oas@2.28.4':
+    resolution: {integrity: sha512-uxb1L4iiAXbvZRhovm1MfuqVgYik6fxnlinVTHxr/gOEC/VKFchsW5Nd6WIMGS/DSAmQroQH6bz2Imn9z1QAKw==}
+    engines: {node: '>=18'}
+
   '@kubb/parser-ts@2.28.3':
     resolution: {integrity: sha512-rj+GPTuTUGiMpkp63BEXJDQdrzSMkj6hRlQ1sBhVsYE4H5GKLmNGrLq2pvnIT6s7aIdNUL3JSMdwJzU4dLm1zA==}
+    engines: {node: '>=18'}
+
+  '@kubb/parser-ts@2.28.4':
+    resolution: {integrity: sha512-YQHTBMzMMJzVvNFRXzUSLmjIAXVXVyvWVApOHgoRWgvO3vDCLbGij3fdKoiMIsaLg2R8BB9IcGubCfLgjkkj4w==}
     engines: {node: '>=18'}
 
   '@kubb/plugin-oas@2.28.3':
@@ -783,15 +799,17 @@ packages:
     peerDependencies:
       '@kubb/react': 2.28.3
 
+  '@kubb/plugin-oas@2.28.4':
+    resolution: {integrity: sha512-0sHNP0TY7kaiQdvLOm8LVPB4eLFJLJ/Zs1aECOZj7U2NkEbseIZKGDCBjG2vVWPtCEn0lomHLeQimJxFgrCAsw==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@kubb/react': 2.28.4
+
   '@kubb/plugin-redoc@2.28.3':
     resolution: {integrity: sha512-my4xghEakd2LPbgKETfBn30Os5XNfUkOR69FJOho/HyFws9Su2JKc6heelmldl+yN/PfQtOmy/TS3ClvV9hwbQ==}
     engines: {node: '>=18'}
     peerDependencies:
       '@kubb/react': 2.28.3
-
-  '@kubb/react@2.28.3':
-    resolution: {integrity: sha512-OkGYO571Menc/KU5ktq05mqsU4rpunpGMffESro893nkW2jLl0JVxOxy81JyilfQNLYRfYnSh5O50GLnaV6guw==}
-    engines: {node: '>=18'}
 
   '@kubb/swagger-client@2.28.3':
     resolution: {integrity: sha512-TqRlyTL3WB0XT6QEvMpQYsh4nQ4Y/PdNXm3JBBH5JtvTTFnxcy0EKhW6ij6co4yPM6q0FXaLHkqASaK+jTaVog==}
@@ -809,11 +827,17 @@ packages:
     peerDependencies:
       '@kubb/react': 2.28.3
 
-  '@kubb/swagger-msw@2.28.3':
-    resolution: {integrity: sha512-7+V625lGtN8jXxkhWSV5S7o2DCMaha2Kgk8W+XzSExb0C30a7Qs7157dbhZMqy+uZ/jrSfTltRpUYx7YSHPxjg==}
+  '@kubb/swagger-faker@2.28.4':
+    resolution: {integrity: sha512-HBWa1SVjiQYBpJTVa02L0PLgodZktz/pxyUXPm0yeCBRYWAw5nzNDroU87N49W6VqM5blj+Mqf21k0+asueRbg==}
     engines: {node: '>=18'}
     peerDependencies:
-      '@kubb/react': 2.28.3
+      '@kubb/react': 2.28.4
+
+  '@kubb/swagger-msw@2.28.4':
+    resolution: {integrity: sha512-Qh8VcY/g8XjeByrvfOuUWvbAb/srsH/6rq9ClMJItWldGzVYAFnkU+z0zvaEoWLBU2N4CVtk0XmnsBWd7cYOtA==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@kubb/react': 2.28.4
 
   '@kubb/swagger-tanstack-query@2.28.3':
     resolution: {integrity: sha512-C7ati4P2a/2oIjpmaTla8MQsa8Q5YpWboOxxYmUV/nHWXgwFrqkKQ+8r7yEG8ddRmPGUCkFmLU/77hLIzSmrIw==}
@@ -827,6 +851,12 @@ packages:
     peerDependencies:
       '@kubb/react': 2.28.3
 
+  '@kubb/swagger-ts@2.28.4':
+    resolution: {integrity: sha512-ChH8D6Mpk7ILhZc8FzApnk4aeyYupyUJDgXLHsJD9d2+CwxE3Kxi/mW5rj4WHr0rL106VtucoL+syfSnAkefQQ==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@kubb/react': 2.28.4
+
   '@kubb/swagger-zod@2.28.3':
     resolution: {integrity: sha512-bjDTWspn2vAk488R5u3KEk89o8OfWNpnlZ3Yr4FgvLm2S7zfl6uPiV8OEYZ8tXnjPfILcek7BEJ0uPUiMIde8g==}
     engines: {node: '>=18'}
@@ -835,6 +865,10 @@ packages:
 
   '@kubb/types@2.28.3':
     resolution: {integrity: sha512-NJU/bKb6aFrIk9npT7Hc0NSUPxJZWRWVQXwXD+Q2N8ZRujQ6CpPFjvF/mVa3HDSTP1ugpXNL+emneykDDQFmgQ==}
+    engines: {node: '>=18'}
+
+  '@kubb/types@2.28.4':
+    resolution: {integrity: sha512-UVNIFptS6iwLYKi78HqpbMzr+1FWJ9hn9mVQjYH4U1uwWbCV5QHchII0MqhOgJpdwjnkuCq57oqRMBm668D7zw==}
     engines: {node: '>=18'}
 
   '@nodelib/fs.scandir@2.1.5':
@@ -5705,12 +5739,48 @@ snapshots:
       semver: 7.6.3
       unraw: 3.0.0
 
+  '@kubb/core@2.28.4':
+    dependencies:
+      '@kubb/fs': 2.28.4
+      '@kubb/parser-ts': 2.28.4
+      '@kubb/types': 2.28.4
+      change-case: 5.4.4
+      directory-tree: 3.5.2
+      find-up: 7.0.0
+      natural-orderby: 3.0.2
+      p-queue: 8.0.1
+      remeda: 2.16.0
+      seedrandom: 3.0.5
+      semver: 7.6.3
+      unraw: 3.0.0
+
   '@kubb/fs@2.28.3':
     dependencies:
       fs-extra: 11.2.0
       js-runtime: 0.0.8
 
+  '@kubb/fs@2.28.4':
+    dependencies:
+      fs-extra: 11.2.0
+      js-runtime: 0.0.8
+
   '@kubb/oas@2.28.3':
+    dependencies:
+      '@redocly/openapi-core': 1.25.11
+      hotscript: 1.0.13
+      json-schema-to-ts: 3.1.1
+      jsonpointer: 5.0.1
+      oas: 25.0.3
+      oas-normalize: 11.1.3
+      openapi-types: 12.1.3
+      remeda: 2.16.0
+      swagger2openapi: 7.0.8
+      ts-toolbelt: 9.6.0
+    transitivePeerDependencies:
+      - encoding
+      - supports-color
+
+  '@kubb/oas@2.28.4':
     dependencies:
       '@redocly/openapi-core': 1.25.11
       hotscript: 1.0.13
@@ -5732,24 +5802,39 @@ snapshots:
       ts-morph: 23.0.0
       typescript: 5.6.3
 
-  '@kubb/plugin-oas@2.28.3(@kubb/react@2.28.3)':
+  '@kubb/parser-ts@2.28.4':
+    dependencies:
+      remeda: 2.16.0
+      ts-morph: 23.0.0
+      typescript: 5.6.3
+
+  '@kubb/plugin-oas@2.28.3':
     dependencies:
       '@kubb/core': 2.28.3
       '@kubb/fs': 2.28.3
       '@kubb/oas': 2.28.3
-      '@kubb/react': 2.28.3
       '@stoplight/yaml': 4.3.0
       remeda: 2.16.0
     transitivePeerDependencies:
       - encoding
       - supports-color
 
-  '@kubb/plugin-redoc@2.28.3(@kubb/react@2.28.3)(core-js@2.6.12)(enzyme@3.11.0)':
+  '@kubb/plugin-oas@2.28.4':
+    dependencies:
+      '@kubb/core': 2.28.4
+      '@kubb/fs': 2.28.4
+      '@kubb/oas': 2.28.4
+      '@stoplight/yaml': 4.3.0
+      remeda: 2.16.0
+    transitivePeerDependencies:
+      - encoding
+      - supports-color
+
+  '@kubb/plugin-redoc@2.28.3(core-js@2.6.12)(enzyme@3.11.0)':
     dependencies:
       '@kubb/core': 2.28.3
       '@kubb/oas': 2.28.3
-      '@kubb/plugin-oas': 2.28.3(@kubb/react@2.28.3)
-      '@kubb/react': 2.28.3
+      '@kubb/plugin-oas': 2.28.3
       handlebars: 4.7.8
       mobx: 6.13.5
       react: 18.3.1
@@ -5763,98 +5848,111 @@ snapshots:
       - react-native
       - supports-color
 
-  '@kubb/react@2.28.3':
-    dependencies:
-      '@kubb/core': 2.28.3
-      '@kubb/fs': 2.28.3
-      '@kubb/parser-ts': 2.28.3
-      natural-orderby: 3.0.2
-
-  '@kubb/swagger-client@2.28.3(@kubb/react@2.28.3)(axios@1.7.4)':
+  '@kubb/swagger-client@2.28.3(axios@1.7.4)':
     dependencies:
       '@kubb/core': 2.28.3
       '@kubb/fs': 2.28.3
       '@kubb/oas': 2.28.3
       '@kubb/parser-ts': 2.28.3
-      '@kubb/plugin-oas': 2.28.3(@kubb/react@2.28.3)
-      '@kubb/react': 2.28.3
-      '@kubb/swagger-ts': 2.28.3(@kubb/react@2.28.3)
+      '@kubb/plugin-oas': 2.28.3
+      '@kubb/swagger-ts': 2.28.3
     optionalDependencies:
       axios: 1.7.4
     transitivePeerDependencies:
       - encoding
       - supports-color
 
-  '@kubb/swagger-faker@2.28.3(@kubb/react@2.28.3)':
+  '@kubb/swagger-faker@2.28.3':
     dependencies:
       '@kubb/core': 2.28.3
       '@kubb/fs': 2.28.3
       '@kubb/oas': 2.28.3
       '@kubb/parser-ts': 2.28.3
-      '@kubb/plugin-oas': 2.28.3(@kubb/react@2.28.3)
-      '@kubb/react': 2.28.3
-      '@kubb/swagger-ts': 2.28.3(@kubb/react@2.28.3)
+      '@kubb/plugin-oas': 2.28.3
+      '@kubb/swagger-ts': 2.28.3
     transitivePeerDependencies:
       - encoding
       - supports-color
 
-  '@kubb/swagger-msw@2.28.3(@kubb/react@2.28.3)':
+  '@kubb/swagger-faker@2.28.4':
     dependencies:
-      '@kubb/core': 2.28.3
-      '@kubb/fs': 2.28.3
-      '@kubb/oas': 2.28.3
-      '@kubb/parser-ts': 2.28.3
-      '@kubb/plugin-oas': 2.28.3(@kubb/react@2.28.3)
-      '@kubb/react': 2.28.3
-      '@kubb/swagger-faker': 2.28.3(@kubb/react@2.28.3)
-      '@kubb/swagger-ts': 2.28.3(@kubb/react@2.28.3)
+      '@kubb/core': 2.28.4
+      '@kubb/fs': 2.28.4
+      '@kubb/oas': 2.28.4
+      '@kubb/parser-ts': 2.28.4
+      '@kubb/plugin-oas': 2.28.4
+      '@kubb/swagger-ts': 2.28.4
     transitivePeerDependencies:
       - encoding
       - supports-color
 
-  '@kubb/swagger-tanstack-query@2.28.3(@kubb/react@2.28.3)(axios@1.7.4)':
+  '@kubb/swagger-msw@2.28.4':
+    dependencies:
+      '@kubb/core': 2.28.4
+      '@kubb/fs': 2.28.4
+      '@kubb/oas': 2.28.4
+      '@kubb/parser-ts': 2.28.4
+      '@kubb/plugin-oas': 2.28.4
+      '@kubb/swagger-faker': 2.28.4
+      '@kubb/swagger-ts': 2.28.4
+    transitivePeerDependencies:
+      - encoding
+      - supports-color
+
+  '@kubb/swagger-tanstack-query@2.28.3(axios@1.7.4)':
     dependencies:
       '@kubb/core': 2.28.3
       '@kubb/fs': 2.28.3
       '@kubb/oas': 2.28.3
       '@kubb/parser-ts': 2.28.3
-      '@kubb/plugin-oas': 2.28.3(@kubb/react@2.28.3)
-      '@kubb/react': 2.28.3
-      '@kubb/swagger-client': 2.28.3(@kubb/react@2.28.3)(axios@1.7.4)
-      '@kubb/swagger-ts': 2.28.3(@kubb/react@2.28.3)
-      '@kubb/swagger-zod': 2.28.3(@kubb/react@2.28.3)
+      '@kubb/plugin-oas': 2.28.3
+      '@kubb/swagger-client': 2.28.3(axios@1.7.4)
+      '@kubb/swagger-ts': 2.28.3
+      '@kubb/swagger-zod': 2.28.3
     transitivePeerDependencies:
       - axios
       - encoding
       - supports-color
 
-  '@kubb/swagger-ts@2.28.3(@kubb/react@2.28.3)':
+  '@kubb/swagger-ts@2.28.3':
     dependencies:
       '@kubb/core': 2.28.3
       '@kubb/fs': 2.28.3
       '@kubb/oas': 2.28.3
       '@kubb/parser-ts': 2.28.3
-      '@kubb/plugin-oas': 2.28.3(@kubb/react@2.28.3)
-      '@kubb/react': 2.28.3
+      '@kubb/plugin-oas': 2.28.3
       '@kubb/types': 2.28.3
     transitivePeerDependencies:
       - encoding
       - supports-color
 
-  '@kubb/swagger-zod@2.28.3(@kubb/react@2.28.3)':
+  '@kubb/swagger-ts@2.28.4':
+    dependencies:
+      '@kubb/core': 2.28.4
+      '@kubb/fs': 2.28.4
+      '@kubb/oas': 2.28.4
+      '@kubb/parser-ts': 2.28.4
+      '@kubb/plugin-oas': 2.28.4
+      '@kubb/types': 2.28.4
+    transitivePeerDependencies:
+      - encoding
+      - supports-color
+
+  '@kubb/swagger-zod@2.28.3':
     dependencies:
       '@kubb/core': 2.28.3
       '@kubb/fs': 2.28.3
       '@kubb/oas': 2.28.3
       '@kubb/parser-ts': 2.28.3
-      '@kubb/plugin-oas': 2.28.3(@kubb/react@2.28.3)
-      '@kubb/react': 2.28.3
-      '@kubb/swagger-ts': 2.28.3(@kubb/react@2.28.3)
+      '@kubb/plugin-oas': 2.28.3
+      '@kubb/swagger-ts': 2.28.3
     transitivePeerDependencies:
       - encoding
       - supports-color
 
   '@kubb/types@2.28.3': {}
+
+  '@kubb/types@2.28.4': {}
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:

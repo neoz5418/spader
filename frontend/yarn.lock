@@ -686,7 +686,7 @@
     string-argv "^0.3.2"
     tinyrainbow "^1.2.0"
 
-"@kubb/core@2.28.3", "@kubb/core@^2.28.3":
+"@kubb/core@2.28.3":
   version "2.28.3"
   resolved "https://registry.yarnpkg.com/@kubb/core/-/core-2.28.3.tgz#f78a4fa1b56e1236215a2614f57fe9e86e9d3f86"
   integrity sha512-DvldKVutboCPxgT2Q8qkyomX60kIgPO1+GSLSqYiOYxPIm4WLO8KbuNBzhvePpdfCm6L+dAi6dl5/vxidVVzKg==
@@ -694,6 +694,24 @@
     "@kubb/fs" "2.28.3"
     "@kubb/parser-ts" "2.28.3"
     "@kubb/types" "2.28.3"
+    change-case "^5.4.4"
+    directory-tree "^3.5.2"
+    find-up "^7.0.0"
+    natural-orderby "^3.0.2"
+    p-queue "^8.0.1"
+    remeda "^2.14.0"
+    seedrandom "^3.0.5"
+    semver "^7.6.3"
+    unraw "^3.0.0"
+
+"@kubb/core@2.28.4", "@kubb/core@^2.28.3":
+  version "2.28.4"
+  resolved "https://registry.yarnpkg.com/@kubb/core/-/core-2.28.4.tgz#3a34b7092fac4a6ed0c80312f9e1f8c9469178fa"
+  integrity sha512-ceujy+nWvG2vavxS6tqbkKCsQQNAqhPRBaKJ3skJ1o4JgNfoOprjKM3E1u5Z1+XboRa8xp8GhzymZ94DDYeeuA==
+  dependencies:
+    "@kubb/fs" "2.28.4"
+    "@kubb/parser-ts" "2.28.4"
+    "@kubb/types" "2.28.4"
     change-case "^5.4.4"
     directory-tree "^3.5.2"
     find-up "^7.0.0"
@@ -712,10 +730,34 @@
     fs-extra "^11.2.0"
     js-runtime "^0.0.8"
 
+"@kubb/fs@2.28.4":
+  version "2.28.4"
+  resolved "https://registry.yarnpkg.com/@kubb/fs/-/fs-2.28.4.tgz#c827d13ded307560dec9499414c6debe0d38a508"
+  integrity sha512-r14Opu6BbRfbovGRph2vK30H6vI4KkGQVG/qEY4ZrGKenoQhsLqDllkLYTUbZc77E6ncpBlw5m17mE0N2EyXbw==
+  dependencies:
+    fs-extra "^11.2.0"
+    js-runtime "^0.0.8"
+
 "@kubb/oas@2.28.3":
   version "2.28.3"
   resolved "https://registry.yarnpkg.com/@kubb/oas/-/oas-2.28.3.tgz#a99e76b8fd35c30f4052e3c24d8285762dd0b587"
   integrity sha512-sthQTqz/ICTwwRNEkKbZo7oWazHVtivs3bfT+v40+Qk45ZsKgXkWI5x5cpAwn/elDLQMXmtKCOEy6i1AMJZmjA==
+  dependencies:
+    "@redocly/openapi-core" "^1.25.3"
+    hotscript "^1.0.13"
+    json-schema-to-ts "^3.1.1"
+    jsonpointer "^5.0.1"
+    oas "^25.0.1"
+    oas-normalize "^11.1.2"
+    openapi-types "^12.1.3"
+    remeda "^2.14.0"
+    swagger2openapi "^7.0.8"
+    ts-toolbelt "^9.6.0"
+
+"@kubb/oas@2.28.4":
+  version "2.28.4"
+  resolved "https://registry.yarnpkg.com/@kubb/oas/-/oas-2.28.4.tgz#51c083ac7753d086183b19f3a771e6a01cf3308a"
+  integrity sha512-uxb1L4iiAXbvZRhovm1MfuqVgYik6fxnlinVTHxr/gOEC/VKFchsW5Nd6WIMGS/DSAmQroQH6bz2Imn9z1QAKw==
   dependencies:
     "@redocly/openapi-core" "^1.25.3"
     hotscript "^1.0.13"
@@ -737,7 +779,16 @@
     ts-morph "^23.0.0"
     typescript "^5.6.2"
 
-"@kubb/plugin-oas@2.28.3", "@kubb/plugin-oas@^2.28.3":
+"@kubb/parser-ts@2.28.4":
+  version "2.28.4"
+  resolved "https://registry.yarnpkg.com/@kubb/parser-ts/-/parser-ts-2.28.4.tgz#aa838e6db13555791209401aa5c91b097898c440"
+  integrity sha512-YQHTBMzMMJzVvNFRXzUSLmjIAXVXVyvWVApOHgoRWgvO3vDCLbGij3fdKoiMIsaLg2R8BB9IcGubCfLgjkkj4w==
+  dependencies:
+    remeda "^2.14.0"
+    ts-morph "^23.0.0"
+    typescript "^5.6.2"
+
+"@kubb/plugin-oas@2.28.3":
   version "2.28.3"
   resolved "https://registry.yarnpkg.com/@kubb/plugin-oas/-/plugin-oas-2.28.3.tgz#b2f267f3a8782dae7ce75eb5b3634e624bcd9526"
   integrity sha512-hmq347iy32bpEeD8XGepAyBjdhPlaMNFjShpm/SPigWlis3oWILdrAWFpOXk9lONJuFyMH+5bS5mGD3TPN0JUA==
@@ -746,6 +797,18 @@
     "@kubb/fs" "2.28.3"
     "@kubb/oas" "2.28.3"
     "@kubb/react" "2.28.3"
+    "@stoplight/yaml" "^4.3.0"
+    remeda "^2.14.0"
+
+"@kubb/plugin-oas@2.28.4", "@kubb/plugin-oas@^2.28.3":
+  version "2.28.4"
+  resolved "https://registry.yarnpkg.com/@kubb/plugin-oas/-/plugin-oas-2.28.4.tgz#eb6d4d619de2867b819c4f97c51239bf538931de"
+  integrity sha512-0sHNP0TY7kaiQdvLOm8LVPB4eLFJLJ/Zs1aECOZj7U2NkEbseIZKGDCBjG2vVWPtCEn0lomHLeQimJxFgrCAsw==
+  dependencies:
+    "@kubb/core" "2.28.4"
+    "@kubb/fs" "2.28.4"
+    "@kubb/oas" "2.28.4"
+    "@kubb/react" "2.28.4"
     "@stoplight/yaml" "^4.3.0"
     remeda "^2.14.0"
 
@@ -774,6 +837,16 @@
     "@kubb/parser-ts" "2.28.3"
     natural-orderby "^3.0.2"
 
+"@kubb/react@2.28.4":
+  version "2.28.4"
+  resolved "https://registry.yarnpkg.com/@kubb/react/-/react-2.28.4.tgz#368f75bdd2b44f126a2a68d9c71096faa0ef78d9"
+  integrity sha512-sj8VAQ7k8bYQ9ZPyLb4WoUGPQT61L1hNE5YHPTDW4ZEhbZ1HbWr7DgqPOIUksL3KvJ0lqukeii1Lb0Tj98zjFg==
+  dependencies:
+    "@kubb/core" "2.28.4"
+    "@kubb/fs" "2.28.4"
+    "@kubb/parser-ts" "2.28.4"
+    natural-orderby "^3.0.2"
+
 "@kubb/swagger-client@2.28.3", "@kubb/swagger-client@^2.28.3":
   version "2.28.3"
   resolved "https://registry.yarnpkg.com/@kubb/swagger-client/-/swagger-client-2.28.3.tgz#a30028f6e1095a1d6b07263020820390eaafa5b3"
@@ -787,32 +860,32 @@
     "@kubb/react" "2.28.3"
     "@kubb/swagger-ts" "2.28.3"
 
-"@kubb/swagger-faker@2.28.3", "@kubb/swagger-faker@^2.28.3":
-  version "2.28.3"
-  resolved "https://registry.yarnpkg.com/@kubb/swagger-faker/-/swagger-faker-2.28.3.tgz#684e31245ffc40becc14d8ec25386a43d4975259"
-  integrity sha512-Yz0mxL0sa3fbRsuac7AdKoH+GfoZZXUKoK8rOoU+ynnyl1ZG9RGGfCenBBcxPzb0j4fym2QqpwG0sFdIq/XpYQ==
+"@kubb/swagger-faker@2.28.4", "@kubb/swagger-faker@^2.28.3":
+  version "2.28.4"
+  resolved "https://registry.yarnpkg.com/@kubb/swagger-faker/-/swagger-faker-2.28.4.tgz#2308dd63f092a0c604f017d681aad28176170958"
+  integrity sha512-HBWa1SVjiQYBpJTVa02L0PLgodZktz/pxyUXPm0yeCBRYWAw5nzNDroU87N49W6VqM5blj+Mqf21k0+asueRbg==
   dependencies:
-    "@kubb/core" "2.28.3"
-    "@kubb/fs" "2.28.3"
-    "@kubb/oas" "2.28.3"
-    "@kubb/parser-ts" "2.28.3"
-    "@kubb/plugin-oas" "2.28.3"
-    "@kubb/react" "2.28.3"
-    "@kubb/swagger-ts" "2.28.3"
+    "@kubb/core" "2.28.4"
+    "@kubb/fs" "2.28.4"
+    "@kubb/oas" "2.28.4"
+    "@kubb/parser-ts" "2.28.4"
+    "@kubb/plugin-oas" "2.28.4"
+    "@kubb/react" "2.28.4"
+    "@kubb/swagger-ts" "2.28.4"
 
-"@kubb/swagger-msw@^2.28.3":
-  version "2.28.3"
-  resolved "https://registry.yarnpkg.com/@kubb/swagger-msw/-/swagger-msw-2.28.3.tgz#41ee8278a3cd9022c0b4a490b0af0c25e0daa099"
-  integrity sha512-7+V625lGtN8jXxkhWSV5S7o2DCMaha2Kgk8W+XzSExb0C30a7Qs7157dbhZMqy+uZ/jrSfTltRpUYx7YSHPxjg==
+"@kubb/swagger-msw@^2.28.4":
+  version "2.28.4"
+  resolved "https://registry.yarnpkg.com/@kubb/swagger-msw/-/swagger-msw-2.28.4.tgz#cb89c9238bfb1e8196766d5351739d000c984897"
+  integrity sha512-Qh8VcY/g8XjeByrvfOuUWvbAb/srsH/6rq9ClMJItWldGzVYAFnkU+z0zvaEoWLBU2N4CVtk0XmnsBWd7cYOtA==
   dependencies:
-    "@kubb/core" "2.28.3"
-    "@kubb/fs" "2.28.3"
-    "@kubb/oas" "2.28.3"
-    "@kubb/parser-ts" "2.28.3"
-    "@kubb/plugin-oas" "2.28.3"
-    "@kubb/react" "2.28.3"
-    "@kubb/swagger-faker" "2.28.3"
-    "@kubb/swagger-ts" "2.28.3"
+    "@kubb/core" "2.28.4"
+    "@kubb/fs" "2.28.4"
+    "@kubb/oas" "2.28.4"
+    "@kubb/parser-ts" "2.28.4"
+    "@kubb/plugin-oas" "2.28.4"
+    "@kubb/react" "2.28.4"
+    "@kubb/swagger-faker" "2.28.4"
+    "@kubb/swagger-ts" "2.28.4"
 
 "@kubb/swagger-tanstack-query@^2.28.3":
   version "2.28.3"
@@ -829,7 +902,7 @@
     "@kubb/swagger-ts" "2.28.3"
     "@kubb/swagger-zod" "2.28.3"
 
-"@kubb/swagger-ts@2.28.3", "@kubb/swagger-ts@^2.28.3":
+"@kubb/swagger-ts@2.28.3":
   version "2.28.3"
   resolved "https://registry.yarnpkg.com/@kubb/swagger-ts/-/swagger-ts-2.28.3.tgz#17af6a60f70ccc25ffeb1a41b56f911425a3ca26"
   integrity sha512-8RgjiVgpYuyoUdUMmxja1yA1vYvHT3o12fOP96ekmlKsjdF26oQQ3qXsLlLkpT8isKNpffpqBcYlPnFR66w5Wg==
@@ -841,6 +914,19 @@
     "@kubb/plugin-oas" "2.28.3"
     "@kubb/react" "2.28.3"
     "@kubb/types" "2.28.3"
+
+"@kubb/swagger-ts@2.28.4", "@kubb/swagger-ts@^2.28.3":
+  version "2.28.4"
+  resolved "https://registry.yarnpkg.com/@kubb/swagger-ts/-/swagger-ts-2.28.4.tgz#dee3115dd44b2d8d22455bd26def778ee50dbe54"
+  integrity sha512-ChH8D6Mpk7ILhZc8FzApnk4aeyYupyUJDgXLHsJD9d2+CwxE3Kxi/mW5rj4WHr0rL106VtucoL+syfSnAkefQQ==
+  dependencies:
+    "@kubb/core" "2.28.4"
+    "@kubb/fs" "2.28.4"
+    "@kubb/oas" "2.28.4"
+    "@kubb/parser-ts" "2.28.4"
+    "@kubb/plugin-oas" "2.28.4"
+    "@kubb/react" "2.28.4"
+    "@kubb/types" "2.28.4"
 
 "@kubb/swagger-zod@2.28.3":
   version "2.28.3"
@@ -859,6 +945,11 @@
   version "2.28.3"
   resolved "https://registry.yarnpkg.com/@kubb/types/-/types-2.28.3.tgz#b5a56e5ea62072cf9328d267a338de61c3ecb4f9"
   integrity sha512-NJU/bKb6aFrIk9npT7Hc0NSUPxJZWRWVQXwXD+Q2N8ZRujQ6CpPFjvF/mVa3HDSTP1ugpXNL+emneykDDQFmgQ==
+
+"@kubb/types@2.28.4":
+  version "2.28.4"
+  resolved "https://registry.yarnpkg.com/@kubb/types/-/types-2.28.4.tgz#65095b2b6fce05040213d25906de02c489e0ce45"
+  integrity sha512-UVNIFptS6iwLYKi78HqpbMzr+1FWJ9hn9mVQjYH4U1uwWbCV5QHchII0MqhOgJpdwjnkuCq57oqRMBm668D7zw==
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"

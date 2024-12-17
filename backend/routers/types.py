@@ -2,7 +2,7 @@ import re
 from datetime import datetime
 from enum import Enum
 from typing import Annotated, Literal, Optional
-
+from fastapi import HTTPException
 from pydantic import (
     BaseModel,
     ByteSize,
@@ -93,15 +93,25 @@ PasswordType = Annotated[
 class UserCreate(UserBase):
     password: PasswordType
 
-    @classmethod
+    # don't know why the field_validator should before classmethod
+    # if not, this validator will not run
     @field_validator("password")
-    def validate_password(cls, value):
+    @classmethod
+    def validate_password(cls, value: str) -> str:
         if not re.search(r"[A-Z]", value):
-            raise ValueError("Password must contain at least one uppercase letter")
+            raise HTTPException(
+                status_code=422,
+                detail="Password must contain at least one uppercase letter",
+            )
         if not re.search(r"[a-z]", value):
-            raise ValueError("Password must contain at least one lowercase letter")
+            raise HTTPException(
+                status_code=422,
+                detail="Password must contain at least one lowercase letter",
+            )
         if not re.search(r"[0-9]", value):
-            raise ValueError("Password must contain at least one digit")
+            raise HTTPException(
+                status_code=422, detail="Password must contain at least one digit"
+            )
         return value
 
 

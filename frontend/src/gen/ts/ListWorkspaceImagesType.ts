@@ -1,5 +1,11 @@
 import type { PaginatedListImageType } from "./PaginatedListImageType";
-import type { ErrorType } from "./ErrorType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
+import type { ErrorInternalType } from "./ErrorInternalType";
 
  export type ListWorkspaceImagesPathParamsType = {
     /**
@@ -30,31 +36,31 @@ export type ListWorkspaceImages200Type = PaginatedListImageType;
 /**
  * @description Request error
 */
-export type ListWorkspaceImages400Type = ErrorType;
+export type ListWorkspaceImages400Type = ErrorInvalidArgumentType;
 /**
  * @description Unauthorized
 */
-export type ListWorkspaceImages401Type = ErrorType;
+export type ListWorkspaceImages401Type = ErrorUnauthorizedType;
 /**
  * @description Not found
 */
-export type ListWorkspaceImages404Type = ErrorType;
+export type ListWorkspaceImages404Type = ErrorResourceNotFoundType;
+/**
+ * @description Resource conflict
+*/
+export type ListWorkspaceImages409Type = ErrorResourceConflictType;
+/**
+ * @description Precondition failed
+*/
+export type ListWorkspaceImages412Type = ErrorPreconditionFailedType;
 /**
  * @description Validation error
 */
-export type ListWorkspaceImages422Type = ErrorType;
-/**
- * @description Rate limit exceeded
-*/
-export type ListWorkspaceImages429Type = ErrorType;
+export type ListWorkspaceImages422Type = ErrorValidationFailedType;
 /**
  * @description Internal server error
 */
-export type ListWorkspaceImages500Type = ErrorType;
-/**
- * @description Service unavailable
-*/
-export type ListWorkspaceImages503Type = ErrorType;
+export type ListWorkspaceImages500Type = ErrorInternalType;
 /**
  * @description Successful Response
 */
@@ -63,5 +69,5 @@ export type ListWorkspaceImagesTypeQuery = {
     Response: ListWorkspaceImagesQueryResponseType;
     PathParams: ListWorkspaceImagesPathParamsType;
     QueryParams: ListWorkspaceImagesQueryParamsType;
-    Errors: ListWorkspaceImages400Type | ListWorkspaceImages401Type | ListWorkspaceImages404Type | ListWorkspaceImages422Type | ListWorkspaceImages429Type | ListWorkspaceImages500Type | ListWorkspaceImages503Type;
+    Errors: ListWorkspaceImages400Type | ListWorkspaceImages401Type | ListWorkspaceImages404Type | ListWorkspaceImages409Type | ListWorkspaceImages412Type | ListWorkspaceImages422Type | ListWorkspaceImages500Type;
 };

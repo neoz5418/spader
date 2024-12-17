@@ -1,7 +1,13 @@
 import type { ListInstancesSortOptionsType } from "./ListInstancesSortOptionsType";
 import type { SortOrderType } from "./SortOrderType";
 import type { PaginatedListInstancePublicType } from "./PaginatedListInstancePublicType";
-import type { ErrorType } from "./ErrorType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
+import type { ErrorInternalType } from "./ErrorInternalType";
 
  export type ListInstancesQueryParamsType = {
     /**
@@ -38,31 +44,31 @@ export type ListInstances200Type = PaginatedListInstancePublicType;
 /**
  * @description Request error
 */
-export type ListInstances400Type = ErrorType;
+export type ListInstances400Type = ErrorInvalidArgumentType;
 /**
  * @description Unauthorized
 */
-export type ListInstances401Type = ErrorType;
+export type ListInstances401Type = ErrorUnauthorizedType;
 /**
  * @description Not found
 */
-export type ListInstances404Type = ErrorType;
+export type ListInstances404Type = ErrorResourceNotFoundType;
+/**
+ * @description Resource conflict
+*/
+export type ListInstances409Type = ErrorResourceConflictType;
+/**
+ * @description Precondition failed
+*/
+export type ListInstances412Type = ErrorPreconditionFailedType;
 /**
  * @description Validation error
 */
-export type ListInstances422Type = ErrorType;
-/**
- * @description Rate limit exceeded
-*/
-export type ListInstances429Type = ErrorType;
+export type ListInstances422Type = ErrorValidationFailedType;
 /**
  * @description Internal server error
 */
-export type ListInstances500Type = ErrorType;
-/**
- * @description Service unavailable
-*/
-export type ListInstances503Type = ErrorType;
+export type ListInstances500Type = ErrorInternalType;
 /**
  * @description Successful Response
 */
@@ -70,5 +76,5 @@ export type ListInstancesQueryResponseType = PaginatedListInstancePublicType;
 export type ListInstancesTypeQuery = {
     Response: ListInstancesQueryResponseType;
     QueryParams: ListInstancesQueryParamsType;
-    Errors: ListInstances400Type | ListInstances401Type | ListInstances404Type | ListInstances422Type | ListInstances429Type | ListInstances500Type | ListInstances503Type;
+    Errors: ListInstances400Type | ListInstances401Type | ListInstances404Type | ListInstances409Type | ListInstances412Type | ListInstances422Type | ListInstances500Type;
 };

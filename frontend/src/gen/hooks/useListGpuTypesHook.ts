@@ -1,12 +1,12 @@
 import client from "@/utils/client.ts";
 import { useQuery, queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import type { ListGpuTypesQueryResponseType, ListGpuTypesPathParamsType, ListGpuTypesQueryParamsType, ListGpuTypes400Type, ListGpuTypes401Type, ListGpuTypes404Type, ListGpuTypes422Type, ListGpuTypes429Type, ListGpuTypes500Type, ListGpuTypes503Type } from "../ts/ListGpuTypesType";
+import type { ListGpuTypesQueryResponseType, ListGpuTypesPathParamsType, ListGpuTypesQueryParamsType, ListGpuTypes400Type, ListGpuTypes401Type, ListGpuTypes404Type, ListGpuTypes409Type, ListGpuTypes412Type, ListGpuTypes422Type, ListGpuTypes500Type } from "../ts/ListGpuTypesType";
 import type { QueryObserverOptions, UseQueryResult, QueryKey, UseSuspenseQueryOptions, UseSuspenseQueryResult } from "@tanstack/react-query";
 
- type ListGpuTypesClient = typeof client<ListGpuTypesQueryResponseType, ListGpuTypes400Type | ListGpuTypes401Type | ListGpuTypes404Type | ListGpuTypes422Type | ListGpuTypes429Type | ListGpuTypes500Type | ListGpuTypes503Type, never>;
+ type ListGpuTypesClient = typeof client<ListGpuTypesQueryResponseType, ListGpuTypes400Type | ListGpuTypes401Type | ListGpuTypes404Type | ListGpuTypes409Type | ListGpuTypes412Type | ListGpuTypes422Type | ListGpuTypes500Type, never>;
 type ListGpuTypes = {
     data: ListGpuTypesQueryResponseType;
-    error: ListGpuTypes400Type | ListGpuTypes401Type | ListGpuTypes404Type | ListGpuTypes422Type | ListGpuTypes429Type | ListGpuTypes500Type | ListGpuTypes503Type;
+    error: ListGpuTypes400Type | ListGpuTypes401Type | ListGpuTypes404Type | ListGpuTypes409Type | ListGpuTypes412Type | ListGpuTypes422Type | ListGpuTypes500Type;
     request: never;
     pathParams: ListGpuTypesPathParamsType;
     queryParams: ListGpuTypesQueryParamsType;

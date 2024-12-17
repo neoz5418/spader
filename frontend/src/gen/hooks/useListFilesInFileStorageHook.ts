@@ -1,12 +1,12 @@
 import client from "@/utils/client.ts";
 import { useQuery, queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import type { ListFilesInFileStorageQueryResponseType, ListFilesInFileStoragePathParamsType, ListFilesInFileStorageQueryParamsType, ListFilesInFileStorage400Type, ListFilesInFileStorage401Type, ListFilesInFileStorage404Type, ListFilesInFileStorage422Type, ListFilesInFileStorage429Type, ListFilesInFileStorage500Type, ListFilesInFileStorage503Type } from "../ts/ListFilesInFileStorageType";
+import type { ListFilesInFileStorageQueryResponseType, ListFilesInFileStoragePathParamsType, ListFilesInFileStorageQueryParamsType, ListFilesInFileStorage400Type, ListFilesInFileStorage401Type, ListFilesInFileStorage404Type, ListFilesInFileStorage409Type, ListFilesInFileStorage412Type, ListFilesInFileStorage422Type, ListFilesInFileStorage500Type } from "../ts/ListFilesInFileStorageType";
 import type { QueryObserverOptions, UseQueryResult, QueryKey, UseSuspenseQueryOptions, UseSuspenseQueryResult } from "@tanstack/react-query";
 
- type ListFilesInFileStorageClient = typeof client<ListFilesInFileStorageQueryResponseType, ListFilesInFileStorage400Type | ListFilesInFileStorage401Type | ListFilesInFileStorage404Type | ListFilesInFileStorage422Type | ListFilesInFileStorage429Type | ListFilesInFileStorage500Type | ListFilesInFileStorage503Type, never>;
+ type ListFilesInFileStorageClient = typeof client<ListFilesInFileStorageQueryResponseType, ListFilesInFileStorage400Type | ListFilesInFileStorage401Type | ListFilesInFileStorage404Type | ListFilesInFileStorage409Type | ListFilesInFileStorage412Type | ListFilesInFileStorage422Type | ListFilesInFileStorage500Type, never>;
 type ListFilesInFileStorage = {
     data: ListFilesInFileStorageQueryResponseType;
-    error: ListFilesInFileStorage400Type | ListFilesInFileStorage401Type | ListFilesInFileStorage404Type | ListFilesInFileStorage422Type | ListFilesInFileStorage429Type | ListFilesInFileStorage500Type | ListFilesInFileStorage503Type;
+    error: ListFilesInFileStorage400Type | ListFilesInFileStorage401Type | ListFilesInFileStorage404Type | ListFilesInFileStorage409Type | ListFilesInFileStorage412Type | ListFilesInFileStorage422Type | ListFilesInFileStorage500Type;
     request: never;
     pathParams: ListFilesInFileStoragePathParamsType;
     queryParams: ListFilesInFileStorageQueryParamsType;

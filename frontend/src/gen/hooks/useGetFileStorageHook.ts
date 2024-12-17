@@ -1,12 +1,12 @@
 import client from "@/utils/client.ts";
 import { useQuery, queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import type { GetFileStorageQueryResponseType, GetFileStoragePathParamsType, GetFileStorage400Type, GetFileStorage401Type, GetFileStorage404Type, GetFileStorage422Type, GetFileStorage429Type, GetFileStorage500Type, GetFileStorage503Type } from "../ts/GetFileStorageType";
+import type { GetFileStorageQueryResponseType, GetFileStoragePathParamsType, GetFileStorage400Type, GetFileStorage401Type, GetFileStorage404Type, GetFileStorage409Type, GetFileStorage412Type, GetFileStorage422Type, GetFileStorage500Type } from "../ts/GetFileStorageType";
 import type { QueryObserverOptions, UseQueryResult, QueryKey, UseSuspenseQueryOptions, UseSuspenseQueryResult } from "@tanstack/react-query";
 
- type GetFileStorageClient = typeof client<GetFileStorageQueryResponseType, GetFileStorage400Type | GetFileStorage401Type | GetFileStorage404Type | GetFileStorage422Type | GetFileStorage429Type | GetFileStorage500Type | GetFileStorage503Type, never>;
+ type GetFileStorageClient = typeof client<GetFileStorageQueryResponseType, GetFileStorage400Type | GetFileStorage401Type | GetFileStorage404Type | GetFileStorage409Type | GetFileStorage412Type | GetFileStorage422Type | GetFileStorage500Type, never>;
 type GetFileStorage = {
     data: GetFileStorageQueryResponseType;
-    error: GetFileStorage400Type | GetFileStorage401Type | GetFileStorage404Type | GetFileStorage422Type | GetFileStorage429Type | GetFileStorage500Type | GetFileStorage503Type;
+    error: GetFileStorage400Type | GetFileStorage401Type | GetFileStorage404Type | GetFileStorage409Type | GetFileStorage412Type | GetFileStorage422Type | GetFileStorage500Type;
     request: never;
     pathParams: GetFileStoragePathParamsType;
     queryParams: never;

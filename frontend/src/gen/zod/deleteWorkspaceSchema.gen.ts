@@ -1,5 +1,11 @@
 import { z } from "@/utils/zod.ts";
-import { errorSchema } from "./errorSchema.gen";
+import { errorInvalidArgumentSchema } from "./errorInvalidArgumentSchema.gen";
+import { errorUnauthorizedSchema } from "./errorUnauthorizedSchema.gen";
+import { errorResourceNotFoundSchema } from "./errorResourceNotFoundSchema.gen";
+import { errorResourceConflictSchema } from "./errorResourceConflictSchema.gen";
+import { errorPreconditionFailedSchema } from "./errorPreconditionFailedSchema.gen";
+import { errorValidationFailedSchema } from "./errorValidationFailedSchema.gen";
+import { errorInternalSchema } from "./errorInternalSchema.gen";
 
 
 export const deleteWorkspacePathParamsSchema = z.object({ "workspace": z.string() });
@@ -12,38 +18,38 @@ export type DeleteWorkspace204Schema = z.infer<typeof deleteWorkspace204Schema>;
 /**
  * @description Request error
  */
-export const deleteWorkspace400Schema = z.lazy(() => errorSchema);
+export const deleteWorkspace400Schema = z.lazy(() => errorInvalidArgumentSchema);
 export type DeleteWorkspace400Schema = z.infer<typeof deleteWorkspace400Schema>;
 /**
  * @description Unauthorized
  */
-export const deleteWorkspace401Schema = z.lazy(() => errorSchema);
+export const deleteWorkspace401Schema = z.lazy(() => errorUnauthorizedSchema);
 export type DeleteWorkspace401Schema = z.infer<typeof deleteWorkspace401Schema>;
 /**
  * @description Not found
  */
-export const deleteWorkspace404Schema = z.lazy(() => errorSchema);
+export const deleteWorkspace404Schema = z.lazy(() => errorResourceNotFoundSchema);
 export type DeleteWorkspace404Schema = z.infer<typeof deleteWorkspace404Schema>;
+/**
+ * @description Resource conflict
+ */
+export const deleteWorkspace409Schema = z.lazy(() => errorResourceConflictSchema);
+export type DeleteWorkspace409Schema = z.infer<typeof deleteWorkspace409Schema>;
+/**
+ * @description Precondition failed
+ */
+export const deleteWorkspace412Schema = z.lazy(() => errorPreconditionFailedSchema);
+export type DeleteWorkspace412Schema = z.infer<typeof deleteWorkspace412Schema>;
 /**
  * @description Validation error
  */
-export const deleteWorkspace422Schema = z.lazy(() => errorSchema);
+export const deleteWorkspace422Schema = z.lazy(() => errorValidationFailedSchema);
 export type DeleteWorkspace422Schema = z.infer<typeof deleteWorkspace422Schema>;
-/**
- * @description Rate limit exceeded
- */
-export const deleteWorkspace429Schema = z.lazy(() => errorSchema);
-export type DeleteWorkspace429Schema = z.infer<typeof deleteWorkspace429Schema>;
 /**
  * @description Internal server error
  */
-export const deleteWorkspace500Schema = z.lazy(() => errorSchema);
+export const deleteWorkspace500Schema = z.lazy(() => errorInternalSchema);
 export type DeleteWorkspace500Schema = z.infer<typeof deleteWorkspace500Schema>;
-/**
- * @description Service unavailable
- */
-export const deleteWorkspace503Schema = z.lazy(() => errorSchema);
-export type DeleteWorkspace503Schema = z.infer<typeof deleteWorkspace503Schema>;
 
  export const deleteWorkspaceMutationResponseSchema = z.any();
 export type DeleteWorkspaceMutationResponseSchema = z.infer<typeof deleteWorkspaceMutationResponseSchema>;

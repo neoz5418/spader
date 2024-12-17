@@ -1,12 +1,12 @@
 import client from "@/utils/client.ts";
 import { useQuery, queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import type { GetCurrentUserQueryResponseType, GetCurrentUser400Type, GetCurrentUser401Type, GetCurrentUser404Type, GetCurrentUser422Type, GetCurrentUser429Type, GetCurrentUser500Type, GetCurrentUser503Type } from "../ts/GetCurrentUserType";
+import type { GetCurrentUserQueryResponseType, GetCurrentUser400Type, GetCurrentUser401Type, GetCurrentUser404Type, GetCurrentUser409Type, GetCurrentUser412Type, GetCurrentUser422Type, GetCurrentUser500Type } from "../ts/GetCurrentUserType";
 import type { QueryObserverOptions, UseQueryResult, QueryKey, UseSuspenseQueryOptions, UseSuspenseQueryResult } from "@tanstack/react-query";
 
- type GetCurrentUserClient = typeof client<GetCurrentUserQueryResponseType, GetCurrentUser400Type | GetCurrentUser401Type | GetCurrentUser404Type | GetCurrentUser422Type | GetCurrentUser429Type | GetCurrentUser500Type | GetCurrentUser503Type, never>;
+ type GetCurrentUserClient = typeof client<GetCurrentUserQueryResponseType, GetCurrentUser400Type | GetCurrentUser401Type | GetCurrentUser404Type | GetCurrentUser409Type | GetCurrentUser412Type | GetCurrentUser422Type | GetCurrentUser500Type, never>;
 type GetCurrentUser = {
     data: GetCurrentUserQueryResponseType;
-    error: GetCurrentUser400Type | GetCurrentUser401Type | GetCurrentUser404Type | GetCurrentUser422Type | GetCurrentUser429Type | GetCurrentUser500Type | GetCurrentUser503Type;
+    error: GetCurrentUser400Type | GetCurrentUser401Type | GetCurrentUser404Type | GetCurrentUser409Type | GetCurrentUser412Type | GetCurrentUser422Type | GetCurrentUser500Type;
     request: never;
     pathParams: never;
     queryParams: never;

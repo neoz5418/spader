@@ -1,5 +1,11 @@
 import { z } from "@/utils/zod.ts";
-import { errorSchema } from "./errorSchema.gen";
+import { errorInvalidArgumentSchema } from "./errorInvalidArgumentSchema.gen";
+import { errorUnauthorizedSchema } from "./errorUnauthorizedSchema.gen";
+import { errorResourceNotFoundSchema } from "./errorResourceNotFoundSchema.gen";
+import { errorResourceConflictSchema } from "./errorResourceConflictSchema.gen";
+import { errorPreconditionFailedSchema } from "./errorPreconditionFailedSchema.gen";
+import { errorValidationFailedSchema } from "./errorValidationFailedSchema.gen";
+import { errorInternalSchema } from "./errorInternalSchema.gen";
 import { bodyTokenApisOidcV1TokenPostSchema } from "./bodyTokenApisOidcV1TokenPostSchema.gen";
 
 
@@ -14,38 +20,38 @@ export type Token200Schema = z.infer<typeof token200Schema>;
 /**
  * @description Request error
  */
-export const token400Schema = z.lazy(() => errorSchema);
+export const token400Schema = z.lazy(() => errorInvalidArgumentSchema);
 export type Token400Schema = z.infer<typeof token400Schema>;
 /**
  * @description Unauthorized
  */
-export const token401Schema = z.lazy(() => errorSchema);
+export const token401Schema = z.lazy(() => errorUnauthorizedSchema);
 export type Token401Schema = z.infer<typeof token401Schema>;
 /**
  * @description Not found
  */
-export const token404Schema = z.lazy(() => errorSchema);
+export const token404Schema = z.lazy(() => errorResourceNotFoundSchema);
 export type Token404Schema = z.infer<typeof token404Schema>;
+/**
+ * @description Resource conflict
+ */
+export const token409Schema = z.lazy(() => errorResourceConflictSchema);
+export type Token409Schema = z.infer<typeof token409Schema>;
+/**
+ * @description Precondition failed
+ */
+export const token412Schema = z.lazy(() => errorPreconditionFailedSchema);
+export type Token412Schema = z.infer<typeof token412Schema>;
 /**
  * @description Validation error
  */
-export const token422Schema = z.lazy(() => errorSchema);
+export const token422Schema = z.lazy(() => errorValidationFailedSchema);
 export type Token422Schema = z.infer<typeof token422Schema>;
-/**
- * @description Rate limit exceeded
- */
-export const token429Schema = z.lazy(() => errorSchema);
-export type Token429Schema = z.infer<typeof token429Schema>;
 /**
  * @description Internal server error
  */
-export const token500Schema = z.lazy(() => errorSchema);
+export const token500Schema = z.lazy(() => errorInternalSchema);
 export type Token500Schema = z.infer<typeof token500Schema>;
-/**
- * @description Service unavailable
- */
-export const token503Schema = z.lazy(() => errorSchema);
-export type Token503Schema = z.infer<typeof token503Schema>;
 
  export const tokenMutationRequestSchema = z.lazy(() => bodyTokenApisOidcV1TokenPostSchema);
 export type TokenMutationRequestSchema = z.infer<typeof tokenMutationRequestSchema>;

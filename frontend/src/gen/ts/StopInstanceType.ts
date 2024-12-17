@@ -1,5 +1,11 @@
 import type { OperationType } from "./OperationType";
-import type { ErrorType } from "./ErrorType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
+import type { ErrorInternalType } from "./ErrorInternalType";
 
  export type StopInstancePathParamsType = {
     /**
@@ -22,31 +28,31 @@ export type StopInstance200Type = OperationType;
 /**
  * @description Request error
 */
-export type StopInstance400Type = ErrorType;
+export type StopInstance400Type = ErrorInvalidArgumentType;
 /**
  * @description Unauthorized
 */
-export type StopInstance401Type = ErrorType;
+export type StopInstance401Type = ErrorUnauthorizedType;
 /**
  * @description Not found
 */
-export type StopInstance404Type = ErrorType;
+export type StopInstance404Type = ErrorResourceNotFoundType;
+/**
+ * @description Resource conflict
+*/
+export type StopInstance409Type = ErrorResourceConflictType;
+/**
+ * @description Precondition failed
+*/
+export type StopInstance412Type = ErrorPreconditionFailedType;
 /**
  * @description Validation error
 */
-export type StopInstance422Type = ErrorType;
-/**
- * @description Rate limit exceeded
-*/
-export type StopInstance429Type = ErrorType;
+export type StopInstance422Type = ErrorValidationFailedType;
 /**
  * @description Internal server error
 */
-export type StopInstance500Type = ErrorType;
-/**
- * @description Service unavailable
-*/
-export type StopInstance503Type = ErrorType;
+export type StopInstance500Type = ErrorInternalType;
 /**
  * @description Successful Response
 */
@@ -54,5 +60,5 @@ export type StopInstanceMutationResponseType = OperationType;
 export type StopInstanceTypeMutation = {
     Response: StopInstanceMutationResponseType;
     PathParams: StopInstancePathParamsType;
-    Errors: StopInstance400Type | StopInstance401Type | StopInstance404Type | StopInstance422Type | StopInstance429Type | StopInstance500Type | StopInstance503Type;
+    Errors: StopInstance400Type | StopInstance401Type | StopInstance404Type | StopInstance409Type | StopInstance412Type | StopInstance422Type | StopInstance500Type;
 };

@@ -1,12 +1,12 @@
 import client from "@/utils/client.ts";
 import { useQuery, queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import type { ListWorkspacesQueryResponseType, ListWorkspacesQueryParamsType, ListWorkspaces400Type, ListWorkspaces401Type, ListWorkspaces404Type, ListWorkspaces422Type, ListWorkspaces429Type, ListWorkspaces500Type, ListWorkspaces503Type } from "../ts/ListWorkspacesType";
+import type { ListWorkspacesQueryResponseType, ListWorkspacesQueryParamsType, ListWorkspaces400Type, ListWorkspaces401Type, ListWorkspaces404Type, ListWorkspaces409Type, ListWorkspaces412Type, ListWorkspaces422Type, ListWorkspaces500Type } from "../ts/ListWorkspacesType";
 import type { QueryObserverOptions, UseQueryResult, QueryKey, UseSuspenseQueryOptions, UseSuspenseQueryResult } from "@tanstack/react-query";
 
- type ListWorkspacesClient = typeof client<ListWorkspacesQueryResponseType, ListWorkspaces400Type | ListWorkspaces401Type | ListWorkspaces404Type | ListWorkspaces422Type | ListWorkspaces429Type | ListWorkspaces500Type | ListWorkspaces503Type, never>;
+ type ListWorkspacesClient = typeof client<ListWorkspacesQueryResponseType, ListWorkspaces400Type | ListWorkspaces401Type | ListWorkspaces404Type | ListWorkspaces409Type | ListWorkspaces412Type | ListWorkspaces422Type | ListWorkspaces500Type, never>;
 type ListWorkspaces = {
     data: ListWorkspacesQueryResponseType;
-    error: ListWorkspaces400Type | ListWorkspaces401Type | ListWorkspaces404Type | ListWorkspaces422Type | ListWorkspaces429Type | ListWorkspaces500Type | ListWorkspaces503Type;
+    error: ListWorkspaces400Type | ListWorkspaces401Type | ListWorkspaces404Type | ListWorkspaces409Type | ListWorkspaces412Type | ListWorkspaces422Type | ListWorkspaces500Type;
     request: never;
     pathParams: never;
     queryParams: ListWorkspacesQueryParamsType;

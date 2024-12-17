@@ -1,5 +1,11 @@
 import type { PaginatedListWorkspaceInvitationType } from "./PaginatedListWorkspaceInvitationType";
-import type { ErrorType } from "./ErrorType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
+import type { ErrorInternalType } from "./ErrorInternalType";
 
  export type GetWorkspaceInvitationsPathParamsType = {
     /**
@@ -14,31 +20,31 @@ export type GetWorkspaceInvitations200Type = PaginatedListWorkspaceInvitationTyp
 /**
  * @description Request error
 */
-export type GetWorkspaceInvitations400Type = ErrorType;
+export type GetWorkspaceInvitations400Type = ErrorInvalidArgumentType;
 /**
  * @description Unauthorized
 */
-export type GetWorkspaceInvitations401Type = ErrorType;
+export type GetWorkspaceInvitations401Type = ErrorUnauthorizedType;
 /**
  * @description Not found
 */
-export type GetWorkspaceInvitations404Type = ErrorType;
+export type GetWorkspaceInvitations404Type = ErrorResourceNotFoundType;
+/**
+ * @description Resource conflict
+*/
+export type GetWorkspaceInvitations409Type = ErrorResourceConflictType;
+/**
+ * @description Precondition failed
+*/
+export type GetWorkspaceInvitations412Type = ErrorPreconditionFailedType;
 /**
  * @description Validation error
 */
-export type GetWorkspaceInvitations422Type = ErrorType;
-/**
- * @description Rate limit exceeded
-*/
-export type GetWorkspaceInvitations429Type = ErrorType;
+export type GetWorkspaceInvitations422Type = ErrorValidationFailedType;
 /**
  * @description Internal server error
 */
-export type GetWorkspaceInvitations500Type = ErrorType;
-/**
- * @description Service unavailable
-*/
-export type GetWorkspaceInvitations503Type = ErrorType;
+export type GetWorkspaceInvitations500Type = ErrorInternalType;
 /**
  * @description Successful Response
 */
@@ -46,5 +52,5 @@ export type GetWorkspaceInvitationsQueryResponseType = PaginatedListWorkspaceInv
 export type GetWorkspaceInvitationsTypeQuery = {
     Response: GetWorkspaceInvitationsQueryResponseType;
     PathParams: GetWorkspaceInvitationsPathParamsType;
-    Errors: GetWorkspaceInvitations400Type | GetWorkspaceInvitations401Type | GetWorkspaceInvitations404Type | GetWorkspaceInvitations422Type | GetWorkspaceInvitations429Type | GetWorkspaceInvitations500Type | GetWorkspaceInvitations503Type;
+    Errors: GetWorkspaceInvitations400Type | GetWorkspaceInvitations401Type | GetWorkspaceInvitations404Type | GetWorkspaceInvitations409Type | GetWorkspaceInvitations412Type | GetWorkspaceInvitations422Type | GetWorkspaceInvitations500Type;
 };

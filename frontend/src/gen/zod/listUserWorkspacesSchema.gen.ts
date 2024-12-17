@@ -1,6 +1,12 @@
 import { z } from "@/utils/zod.ts";
 import { paginatedListWorkspaceSchema } from "./paginatedListWorkspaceSchema.gen";
-import { errorSchema } from "./errorSchema.gen";
+import { errorInvalidArgumentSchema } from "./errorInvalidArgumentSchema.gen";
+import { errorUnauthorizedSchema } from "./errorUnauthorizedSchema.gen";
+import { errorResourceNotFoundSchema } from "./errorResourceNotFoundSchema.gen";
+import { errorResourceConflictSchema } from "./errorResourceConflictSchema.gen";
+import { errorPreconditionFailedSchema } from "./errorPreconditionFailedSchema.gen";
+import { errorValidationFailedSchema } from "./errorValidationFailedSchema.gen";
+import { errorInternalSchema } from "./errorInternalSchema.gen";
 
 
 export const listUserWorkspacesPathParamsSchema = z.object({ "username": z.string() });
@@ -16,38 +22,38 @@ export type ListUserWorkspaces200Schema = z.infer<typeof listUserWorkspaces200Sc
 /**
  * @description Request error
  */
-export const listUserWorkspaces400Schema = z.lazy(() => errorSchema);
+export const listUserWorkspaces400Schema = z.lazy(() => errorInvalidArgumentSchema);
 export type ListUserWorkspaces400Schema = z.infer<typeof listUserWorkspaces400Schema>;
 /**
  * @description Unauthorized
  */
-export const listUserWorkspaces401Schema = z.lazy(() => errorSchema);
+export const listUserWorkspaces401Schema = z.lazy(() => errorUnauthorizedSchema);
 export type ListUserWorkspaces401Schema = z.infer<typeof listUserWorkspaces401Schema>;
 /**
  * @description Not found
  */
-export const listUserWorkspaces404Schema = z.lazy(() => errorSchema);
+export const listUserWorkspaces404Schema = z.lazy(() => errorResourceNotFoundSchema);
 export type ListUserWorkspaces404Schema = z.infer<typeof listUserWorkspaces404Schema>;
+/**
+ * @description Resource conflict
+ */
+export const listUserWorkspaces409Schema = z.lazy(() => errorResourceConflictSchema);
+export type ListUserWorkspaces409Schema = z.infer<typeof listUserWorkspaces409Schema>;
+/**
+ * @description Precondition failed
+ */
+export const listUserWorkspaces412Schema = z.lazy(() => errorPreconditionFailedSchema);
+export type ListUserWorkspaces412Schema = z.infer<typeof listUserWorkspaces412Schema>;
 /**
  * @description Validation error
  */
-export const listUserWorkspaces422Schema = z.lazy(() => errorSchema);
+export const listUserWorkspaces422Schema = z.lazy(() => errorValidationFailedSchema);
 export type ListUserWorkspaces422Schema = z.infer<typeof listUserWorkspaces422Schema>;
-/**
- * @description Rate limit exceeded
- */
-export const listUserWorkspaces429Schema = z.lazy(() => errorSchema);
-export type ListUserWorkspaces429Schema = z.infer<typeof listUserWorkspaces429Schema>;
 /**
  * @description Internal server error
  */
-export const listUserWorkspaces500Schema = z.lazy(() => errorSchema);
+export const listUserWorkspaces500Schema = z.lazy(() => errorInternalSchema);
 export type ListUserWorkspaces500Schema = z.infer<typeof listUserWorkspaces500Schema>;
-/**
- * @description Service unavailable
- */
-export const listUserWorkspaces503Schema = z.lazy(() => errorSchema);
-export type ListUserWorkspaces503Schema = z.infer<typeof listUserWorkspaces503Schema>;
 /**
  * @description Successful Response
  */

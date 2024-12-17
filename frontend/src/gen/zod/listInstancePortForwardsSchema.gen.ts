@@ -1,6 +1,12 @@
 import { z } from "@/utils/zod.ts";
 import { portForwardSchema } from "./portForwardSchema.gen";
-import { errorSchema } from "./errorSchema.gen";
+import { errorInvalidArgumentSchema } from "./errorInvalidArgumentSchema.gen";
+import { errorUnauthorizedSchema } from "./errorUnauthorizedSchema.gen";
+import { errorResourceNotFoundSchema } from "./errorResourceNotFoundSchema.gen";
+import { errorResourceConflictSchema } from "./errorResourceConflictSchema.gen";
+import { errorPreconditionFailedSchema } from "./errorPreconditionFailedSchema.gen";
+import { errorValidationFailedSchema } from "./errorValidationFailedSchema.gen";
+import { errorInternalSchema } from "./errorInternalSchema.gen";
 
 
 export const listInstancePortForwardsPathParamsSchema = z.object({ "workspace": z.string(), "zone": z.string(), "name": z.string() });
@@ -13,38 +19,38 @@ export type ListInstancePortForwards200Schema = z.infer<typeof listInstancePortF
 /**
  * @description Request error
  */
-export const listInstancePortForwards400Schema = z.lazy(() => errorSchema);
+export const listInstancePortForwards400Schema = z.lazy(() => errorInvalidArgumentSchema);
 export type ListInstancePortForwards400Schema = z.infer<typeof listInstancePortForwards400Schema>;
 /**
  * @description Unauthorized
  */
-export const listInstancePortForwards401Schema = z.lazy(() => errorSchema);
+export const listInstancePortForwards401Schema = z.lazy(() => errorUnauthorizedSchema);
 export type ListInstancePortForwards401Schema = z.infer<typeof listInstancePortForwards401Schema>;
 /**
  * @description Not found
  */
-export const listInstancePortForwards404Schema = z.lazy(() => errorSchema);
+export const listInstancePortForwards404Schema = z.lazy(() => errorResourceNotFoundSchema);
 export type ListInstancePortForwards404Schema = z.infer<typeof listInstancePortForwards404Schema>;
+/**
+ * @description Resource conflict
+ */
+export const listInstancePortForwards409Schema = z.lazy(() => errorResourceConflictSchema);
+export type ListInstancePortForwards409Schema = z.infer<typeof listInstancePortForwards409Schema>;
+/**
+ * @description Precondition failed
+ */
+export const listInstancePortForwards412Schema = z.lazy(() => errorPreconditionFailedSchema);
+export type ListInstancePortForwards412Schema = z.infer<typeof listInstancePortForwards412Schema>;
 /**
  * @description Validation error
  */
-export const listInstancePortForwards422Schema = z.lazy(() => errorSchema);
+export const listInstancePortForwards422Schema = z.lazy(() => errorValidationFailedSchema);
 export type ListInstancePortForwards422Schema = z.infer<typeof listInstancePortForwards422Schema>;
-/**
- * @description Rate limit exceeded
- */
-export const listInstancePortForwards429Schema = z.lazy(() => errorSchema);
-export type ListInstancePortForwards429Schema = z.infer<typeof listInstancePortForwards429Schema>;
 /**
  * @description Internal server error
  */
-export const listInstancePortForwards500Schema = z.lazy(() => errorSchema);
+export const listInstancePortForwards500Schema = z.lazy(() => errorInternalSchema);
 export type ListInstancePortForwards500Schema = z.infer<typeof listInstancePortForwards500Schema>;
-/**
- * @description Service unavailable
- */
-export const listInstancePortForwards503Schema = z.lazy(() => errorSchema);
-export type ListInstancePortForwards503Schema = z.infer<typeof listInstancePortForwards503Schema>;
 /**
  * @description Successful Response
  */

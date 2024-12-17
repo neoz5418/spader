@@ -1,5 +1,11 @@
 import type { PortForwardType } from "./PortForwardType";
-import type { ErrorType } from "./ErrorType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
+import type { ErrorInternalType } from "./ErrorInternalType";
 
  export type CreateInstancePortForwardPathParamsType = {
     /**
@@ -22,31 +28,31 @@ export type CreateInstancePortForward201Type = PortForwardType;
 /**
  * @description Request error
 */
-export type CreateInstancePortForward400Type = ErrorType;
+export type CreateInstancePortForward400Type = ErrorInvalidArgumentType;
 /**
  * @description Unauthorized
 */
-export type CreateInstancePortForward401Type = ErrorType;
+export type CreateInstancePortForward401Type = ErrorUnauthorizedType;
 /**
  * @description Not found
 */
-export type CreateInstancePortForward404Type = ErrorType;
+export type CreateInstancePortForward404Type = ErrorResourceNotFoundType;
+/**
+ * @description Resource conflict
+*/
+export type CreateInstancePortForward409Type = ErrorResourceConflictType;
+/**
+ * @description Precondition failed
+*/
+export type CreateInstancePortForward412Type = ErrorPreconditionFailedType;
 /**
  * @description Validation error
 */
-export type CreateInstancePortForward422Type = ErrorType;
-/**
- * @description Rate limit exceeded
-*/
-export type CreateInstancePortForward429Type = ErrorType;
+export type CreateInstancePortForward422Type = ErrorValidationFailedType;
 /**
  * @description Internal server error
 */
-export type CreateInstancePortForward500Type = ErrorType;
-/**
- * @description Service unavailable
-*/
-export type CreateInstancePortForward503Type = ErrorType;
+export type CreateInstancePortForward500Type = ErrorInternalType;
 export type CreateInstancePortForwardMutationRequestType = PortForwardType;
 /**
  * @description Successful Response
@@ -56,5 +62,5 @@ export type CreateInstancePortForwardTypeMutation = {
     Response: CreateInstancePortForwardMutationResponseType;
     Request: CreateInstancePortForwardMutationRequestType;
     PathParams: CreateInstancePortForwardPathParamsType;
-    Errors: CreateInstancePortForward400Type | CreateInstancePortForward401Type | CreateInstancePortForward404Type | CreateInstancePortForward422Type | CreateInstancePortForward429Type | CreateInstancePortForward500Type | CreateInstancePortForward503Type;
+    Errors: CreateInstancePortForward400Type | CreateInstancePortForward401Type | CreateInstancePortForward404Type | CreateInstancePortForward409Type | CreateInstancePortForward412Type | CreateInstancePortForward422Type | CreateInstancePortForward500Type;
 };

@@ -1,12 +1,12 @@
 import client from "@/utils/client.ts";
 import { useQuery, queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import type { ListWorkspaceAccountRechargesQueryResponseType, ListWorkspaceAccountRechargesPathParamsType, ListWorkspaceAccountRechargesQueryParamsType, ListWorkspaceAccountRecharges400Type, ListWorkspaceAccountRecharges401Type, ListWorkspaceAccountRecharges404Type, ListWorkspaceAccountRecharges422Type, ListWorkspaceAccountRecharges429Type, ListWorkspaceAccountRecharges500Type, ListWorkspaceAccountRecharges503Type } from "../ts/ListWorkspaceAccountRechargesType";
+import type { ListWorkspaceAccountRechargesQueryResponseType, ListWorkspaceAccountRechargesPathParamsType, ListWorkspaceAccountRechargesQueryParamsType, ListWorkspaceAccountRecharges400Type, ListWorkspaceAccountRecharges401Type, ListWorkspaceAccountRecharges404Type, ListWorkspaceAccountRecharges409Type, ListWorkspaceAccountRecharges412Type, ListWorkspaceAccountRecharges422Type, ListWorkspaceAccountRecharges500Type } from "../ts/ListWorkspaceAccountRechargesType";
 import type { QueryObserverOptions, UseQueryResult, QueryKey, UseSuspenseQueryOptions, UseSuspenseQueryResult } from "@tanstack/react-query";
 
- type ListWorkspaceAccountRechargesClient = typeof client<ListWorkspaceAccountRechargesQueryResponseType, ListWorkspaceAccountRecharges400Type | ListWorkspaceAccountRecharges401Type | ListWorkspaceAccountRecharges404Type | ListWorkspaceAccountRecharges422Type | ListWorkspaceAccountRecharges429Type | ListWorkspaceAccountRecharges500Type | ListWorkspaceAccountRecharges503Type, never>;
+ type ListWorkspaceAccountRechargesClient = typeof client<ListWorkspaceAccountRechargesQueryResponseType, ListWorkspaceAccountRecharges400Type | ListWorkspaceAccountRecharges401Type | ListWorkspaceAccountRecharges404Type | ListWorkspaceAccountRecharges409Type | ListWorkspaceAccountRecharges412Type | ListWorkspaceAccountRecharges422Type | ListWorkspaceAccountRecharges500Type, never>;
 type ListWorkspaceAccountRecharges = {
     data: ListWorkspaceAccountRechargesQueryResponseType;
-    error: ListWorkspaceAccountRecharges400Type | ListWorkspaceAccountRecharges401Type | ListWorkspaceAccountRecharges404Type | ListWorkspaceAccountRecharges422Type | ListWorkspaceAccountRecharges429Type | ListWorkspaceAccountRecharges500Type | ListWorkspaceAccountRecharges503Type;
+    error: ListWorkspaceAccountRecharges400Type | ListWorkspaceAccountRecharges401Type | ListWorkspaceAccountRecharges404Type | ListWorkspaceAccountRecharges409Type | ListWorkspaceAccountRecharges412Type | ListWorkspaceAccountRecharges422Type | ListWorkspaceAccountRecharges500Type;
     request: never;
     pathParams: ListWorkspaceAccountRechargesPathParamsType;
     queryParams: ListWorkspaceAccountRechargesQueryParamsType;

@@ -1,13 +1,13 @@
 import client from "@/utils/client.ts";
 import { useMutation } from "@tanstack/react-query";
 import { useInvalidationForMutation } from "../../useInvalidationForMutation";
-import type { DeleteFileStorageMutationResponseType, DeleteFileStoragePathParamsType, DeleteFileStorage400Type, DeleteFileStorage401Type, DeleteFileStorage404Type, DeleteFileStorage422Type, DeleteFileStorage429Type, DeleteFileStorage500Type, DeleteFileStorage503Type } from "../ts/DeleteFileStorageType";
+import type { DeleteFileStorageMutationResponseType, DeleteFileStoragePathParamsType, DeleteFileStorage400Type, DeleteFileStorage401Type, DeleteFileStorage404Type, DeleteFileStorage409Type, DeleteFileStorage412Type, DeleteFileStorage422Type, DeleteFileStorage500Type } from "../ts/DeleteFileStorageType";
 import type { UseMutationOptions } from "@tanstack/react-query";
 
- type DeleteFileStorageClient = typeof client<DeleteFileStorageMutationResponseType, DeleteFileStorage400Type | DeleteFileStorage401Type | DeleteFileStorage404Type | DeleteFileStorage422Type | DeleteFileStorage429Type | DeleteFileStorage500Type | DeleteFileStorage503Type, never>;
+ type DeleteFileStorageClient = typeof client<DeleteFileStorageMutationResponseType, DeleteFileStorage400Type | DeleteFileStorage401Type | DeleteFileStorage404Type | DeleteFileStorage409Type | DeleteFileStorage412Type | DeleteFileStorage422Type | DeleteFileStorage500Type, never>;
 type DeleteFileStorage = {
     data: DeleteFileStorageMutationResponseType;
-    error: DeleteFileStorage400Type | DeleteFileStorage401Type | DeleteFileStorage404Type | DeleteFileStorage422Type | DeleteFileStorage429Type | DeleteFileStorage500Type | DeleteFileStorage503Type;
+    error: DeleteFileStorage400Type | DeleteFileStorage401Type | DeleteFileStorage404Type | DeleteFileStorage409Type | DeleteFileStorage412Type | DeleteFileStorage422Type | DeleteFileStorage500Type;
     request: never;
     pathParams: DeleteFileStoragePathParamsType;
     queryParams: never;

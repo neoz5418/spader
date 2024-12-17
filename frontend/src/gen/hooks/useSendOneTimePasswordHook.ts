@@ -1,13 +1,13 @@
 import client from "@/utils/client.ts";
 import { useMutation } from "@tanstack/react-query";
 import { useInvalidationForMutation } from "../../useInvalidationForMutation";
-import type { SendOneTimePasswordMutationRequestType, SendOneTimePasswordMutationResponseType, SendOneTimePassword400Type, SendOneTimePassword401Type, SendOneTimePassword404Type, SendOneTimePassword422Type, SendOneTimePassword429Type, SendOneTimePassword500Type, SendOneTimePassword503Type } from "../ts/SendOneTimePasswordType";
+import type { SendOneTimePasswordMutationRequestType, SendOneTimePasswordMutationResponseType, SendOneTimePassword400Type, SendOneTimePassword401Type, SendOneTimePassword404Type, SendOneTimePassword409Type, SendOneTimePassword412Type, SendOneTimePassword422Type, SendOneTimePassword500Type } from "../ts/SendOneTimePasswordType";
 import type { UseMutationOptions } from "@tanstack/react-query";
 
- type SendOneTimePasswordClient = typeof client<SendOneTimePasswordMutationResponseType, SendOneTimePassword400Type | SendOneTimePassword401Type | SendOneTimePassword404Type | SendOneTimePassword422Type | SendOneTimePassword429Type | SendOneTimePassword500Type | SendOneTimePassword503Type, SendOneTimePasswordMutationRequestType>;
+ type SendOneTimePasswordClient = typeof client<SendOneTimePasswordMutationResponseType, SendOneTimePassword400Type | SendOneTimePassword401Type | SendOneTimePassword404Type | SendOneTimePassword409Type | SendOneTimePassword412Type | SendOneTimePassword422Type | SendOneTimePassword500Type, SendOneTimePasswordMutationRequestType>;
 type SendOneTimePassword = {
     data: SendOneTimePasswordMutationResponseType;
-    error: SendOneTimePassword400Type | SendOneTimePassword401Type | SendOneTimePassword404Type | SendOneTimePassword422Type | SendOneTimePassword429Type | SendOneTimePassword500Type | SendOneTimePassword503Type;
+    error: SendOneTimePassword400Type | SendOneTimePassword401Type | SendOneTimePassword404Type | SendOneTimePassword409Type | SendOneTimePassword412Type | SendOneTimePassword422Type | SendOneTimePassword500Type;
     request: SendOneTimePasswordMutationRequestType;
     pathParams: never;
     queryParams: never;

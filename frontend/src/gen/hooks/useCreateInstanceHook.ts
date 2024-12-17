@@ -1,13 +1,13 @@
 import client from "@/utils/client.ts";
 import { useMutation } from "@tanstack/react-query";
 import { useInvalidationForMutation } from "../../useInvalidationForMutation";
-import type { CreateInstanceMutationRequestType, CreateInstanceMutationResponseType, CreateInstancePathParamsType, CreateInstance400Type, CreateInstance401Type, CreateInstance404Type, CreateInstance422Type, CreateInstance429Type, CreateInstance500Type, CreateInstance503Type } from "../ts/CreateInstanceType";
+import type { CreateInstanceMutationRequestType, CreateInstanceMutationResponseType, CreateInstancePathParamsType, CreateInstance400Type, CreateInstance401Type, CreateInstance404Type, CreateInstance409Type, CreateInstance412Type, CreateInstance422Type, CreateInstance500Type } from "../ts/CreateInstanceType";
 import type { UseMutationOptions } from "@tanstack/react-query";
 
- type CreateInstanceClient = typeof client<CreateInstanceMutationResponseType, CreateInstance400Type | CreateInstance401Type | CreateInstance404Type | CreateInstance422Type | CreateInstance429Type | CreateInstance500Type | CreateInstance503Type, CreateInstanceMutationRequestType>;
+ type CreateInstanceClient = typeof client<CreateInstanceMutationResponseType, CreateInstance400Type | CreateInstance401Type | CreateInstance404Type | CreateInstance409Type | CreateInstance412Type | CreateInstance422Type | CreateInstance500Type, CreateInstanceMutationRequestType>;
 type CreateInstance = {
     data: CreateInstanceMutationResponseType;
-    error: CreateInstance400Type | CreateInstance401Type | CreateInstance404Type | CreateInstance422Type | CreateInstance429Type | CreateInstance500Type | CreateInstance503Type;
+    error: CreateInstance400Type | CreateInstance401Type | CreateInstance404Type | CreateInstance409Type | CreateInstance412Type | CreateInstance422Type | CreateInstance500Type;
     request: CreateInstanceMutationRequestType;
     pathParams: CreateInstancePathParamsType;
     queryParams: never;

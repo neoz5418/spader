@@ -1,12 +1,12 @@
 import client from "@/utils/client.ts";
 import { useQuery, queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import type { GetWorkspaceZoneQuotaQueryResponseType, GetWorkspaceZoneQuotaPathParamsType, GetWorkspaceZoneQuota400Type, GetWorkspaceZoneQuota401Type, GetWorkspaceZoneQuota404Type, GetWorkspaceZoneQuota422Type, GetWorkspaceZoneQuota429Type, GetWorkspaceZoneQuota500Type, GetWorkspaceZoneQuota503Type } from "../ts/GetWorkspaceZoneQuotaType";
+import type { GetWorkspaceZoneQuotaQueryResponseType, GetWorkspaceZoneQuotaPathParamsType, GetWorkspaceZoneQuota400Type, GetWorkspaceZoneQuota401Type, GetWorkspaceZoneQuota404Type, GetWorkspaceZoneQuota409Type, GetWorkspaceZoneQuota412Type, GetWorkspaceZoneQuota422Type, GetWorkspaceZoneQuota500Type } from "../ts/GetWorkspaceZoneQuotaType";
 import type { QueryObserverOptions, UseQueryResult, QueryKey, UseSuspenseQueryOptions, UseSuspenseQueryResult } from "@tanstack/react-query";
 
- type GetWorkspaceZoneQuotaClient = typeof client<GetWorkspaceZoneQuotaQueryResponseType, GetWorkspaceZoneQuota400Type | GetWorkspaceZoneQuota401Type | GetWorkspaceZoneQuota404Type | GetWorkspaceZoneQuota422Type | GetWorkspaceZoneQuota429Type | GetWorkspaceZoneQuota500Type | GetWorkspaceZoneQuota503Type, never>;
+ type GetWorkspaceZoneQuotaClient = typeof client<GetWorkspaceZoneQuotaQueryResponseType, GetWorkspaceZoneQuota400Type | GetWorkspaceZoneQuota401Type | GetWorkspaceZoneQuota404Type | GetWorkspaceZoneQuota409Type | GetWorkspaceZoneQuota412Type | GetWorkspaceZoneQuota422Type | GetWorkspaceZoneQuota500Type, never>;
 type GetWorkspaceZoneQuota = {
     data: GetWorkspaceZoneQuotaQueryResponseType;
-    error: GetWorkspaceZoneQuota400Type | GetWorkspaceZoneQuota401Type | GetWorkspaceZoneQuota404Type | GetWorkspaceZoneQuota422Type | GetWorkspaceZoneQuota429Type | GetWorkspaceZoneQuota500Type | GetWorkspaceZoneQuota503Type;
+    error: GetWorkspaceZoneQuota400Type | GetWorkspaceZoneQuota401Type | GetWorkspaceZoneQuota404Type | GetWorkspaceZoneQuota409Type | GetWorkspaceZoneQuota412Type | GetWorkspaceZoneQuota422Type | GetWorkspaceZoneQuota500Type;
     request: never;
     pathParams: GetWorkspaceZoneQuotaPathParamsType;
     queryParams: never;

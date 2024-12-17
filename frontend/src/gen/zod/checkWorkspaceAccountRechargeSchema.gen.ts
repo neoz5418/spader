@@ -1,6 +1,12 @@
 import { z } from "@/utils/zod.ts";
 import { workspaceAccountRechargeSchema } from "./workspaceAccountRechargeSchema.gen";
-import { errorSchema } from "./errorSchema.gen";
+import { errorInvalidArgumentSchema } from "./errorInvalidArgumentSchema.gen";
+import { errorUnauthorizedSchema } from "./errorUnauthorizedSchema.gen";
+import { errorResourceNotFoundSchema } from "./errorResourceNotFoundSchema.gen";
+import { errorResourceConflictSchema } from "./errorResourceConflictSchema.gen";
+import { errorPreconditionFailedSchema } from "./errorPreconditionFailedSchema.gen";
+import { errorValidationFailedSchema } from "./errorValidationFailedSchema.gen";
+import { errorInternalSchema } from "./errorInternalSchema.gen";
 
 
 export const checkWorkspaceAccountRechargePathParamsSchema = z.object({ "recharge_id": z.string().uuid() });
@@ -13,38 +19,38 @@ export type CheckWorkspaceAccountRecharge200Schema = z.infer<typeof checkWorkspa
 /**
  * @description Request error
  */
-export const checkWorkspaceAccountRecharge400Schema = z.lazy(() => errorSchema);
+export const checkWorkspaceAccountRecharge400Schema = z.lazy(() => errorInvalidArgumentSchema);
 export type CheckWorkspaceAccountRecharge400Schema = z.infer<typeof checkWorkspaceAccountRecharge400Schema>;
 /**
  * @description Unauthorized
  */
-export const checkWorkspaceAccountRecharge401Schema = z.lazy(() => errorSchema);
+export const checkWorkspaceAccountRecharge401Schema = z.lazy(() => errorUnauthorizedSchema);
 export type CheckWorkspaceAccountRecharge401Schema = z.infer<typeof checkWorkspaceAccountRecharge401Schema>;
 /**
  * @description Not found
  */
-export const checkWorkspaceAccountRecharge404Schema = z.lazy(() => errorSchema);
+export const checkWorkspaceAccountRecharge404Schema = z.lazy(() => errorResourceNotFoundSchema);
 export type CheckWorkspaceAccountRecharge404Schema = z.infer<typeof checkWorkspaceAccountRecharge404Schema>;
+/**
+ * @description Resource conflict
+ */
+export const checkWorkspaceAccountRecharge409Schema = z.lazy(() => errorResourceConflictSchema);
+export type CheckWorkspaceAccountRecharge409Schema = z.infer<typeof checkWorkspaceAccountRecharge409Schema>;
+/**
+ * @description Precondition failed
+ */
+export const checkWorkspaceAccountRecharge412Schema = z.lazy(() => errorPreconditionFailedSchema);
+export type CheckWorkspaceAccountRecharge412Schema = z.infer<typeof checkWorkspaceAccountRecharge412Schema>;
 /**
  * @description Validation error
  */
-export const checkWorkspaceAccountRecharge422Schema = z.lazy(() => errorSchema);
+export const checkWorkspaceAccountRecharge422Schema = z.lazy(() => errorValidationFailedSchema);
 export type CheckWorkspaceAccountRecharge422Schema = z.infer<typeof checkWorkspaceAccountRecharge422Schema>;
-/**
- * @description Rate limit exceeded
- */
-export const checkWorkspaceAccountRecharge429Schema = z.lazy(() => errorSchema);
-export type CheckWorkspaceAccountRecharge429Schema = z.infer<typeof checkWorkspaceAccountRecharge429Schema>;
 /**
  * @description Internal server error
  */
-export const checkWorkspaceAccountRecharge500Schema = z.lazy(() => errorSchema);
+export const checkWorkspaceAccountRecharge500Schema = z.lazy(() => errorInternalSchema);
 export type CheckWorkspaceAccountRecharge500Schema = z.infer<typeof checkWorkspaceAccountRecharge500Schema>;
-/**
- * @description Service unavailable
- */
-export const checkWorkspaceAccountRecharge503Schema = z.lazy(() => errorSchema);
-export type CheckWorkspaceAccountRecharge503Schema = z.infer<typeof checkWorkspaceAccountRecharge503Schema>;
 /**
  * @description Successful Response
  */

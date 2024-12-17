@@ -5,7 +5,7 @@ from datetime import timedelta
 from enum import Enum
 
 from email_validator import EmailNotValidError, validate_email
-from fastapi import APIRouter, BackgroundTasks, HTTPException, status
+from fastapi import APIRouter, BackgroundTasks, status
 from pydantic import EmailStr
 from pydantic_extra_types.phone_numbers import PhoneNumber
 from sqlmodel import select
@@ -18,7 +18,6 @@ from dependencies import (
     SessionDep,
 )
 from routers.types import (
-    OneTimePasswordValidateType,
     RegisterUserRequest,
     Role,
     SendOneTimePasswordRequest,
@@ -31,6 +30,10 @@ from routers.types import (
 from services.cache import get_redis
 from services.common import (
     Direction,
+    ErrorInvalidArgument,
+    ErrorResourceConflict,
+    ErrorValidationFailed,
+    ArgumentDetail,
 )
 from services.notification import send_one_time_password_email
 from services.security import get_secret_hash
@@ -123,9 +126,6 @@ async def send_one_time_password(
     send_one_time_password_request: SendOneTimePasswordRequest,
     background_tasks: BackgroundTasks,
 ) -> SendOneTimePasswordResponse:
-    if send_one_time_password_request.type != OneTimePasswordValidateType.email:
-        raise HTTPException(status_code=400, detail="invalid type")
-
     await check_user_register_info(
         session,
         send_one_time_password_request.email,
@@ -157,24 +157,38 @@ async def check_user_register_info(
         # Check that the email address is valid. Turn on check_deliverability
         # for first-time validations like on account creation pages (but not
         # login pages).
-        emailinfo = validate_email(email, check_deliverability=True)
+        email_info = validate_email(email, check_deliverability=True)
 
         # After this point, use only the normalized form of the email address,
         # especially before going to a database query.
-        email = emailinfo.normalized
+        email = email_info.normalized
 
-    except EmailNotValidError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except EmailNotValidError:
+        raise ErrorValidationFailed(
+            details=[
+                ArgumentDetail(
+                    type="email_invalid",
+                    msg="",
+                    loc=["body", "email"],
+                    input=email,
+                    i18n=None,
+                )
+            ]
+        ).to_exception()
 
     # check user exists
     statement = select(User).where(User.email == email)
     db_user = (await session.exec(statement)).first()
     if db_user is not None:
-        raise HTTPException(status_code=400, detail="email already exists")
+        raise ErrorResourceConflict(
+            input=email, loc=["body", "email"], resource_name="user"
+        ).to_exception()
     statement = select(User).where(User.name == name)
     db_user = (await session.exec(statement)).first()
     if db_user is not None:
-        raise HTTPException(status_code=400, detail="username already exists")
+        raise ErrorResourceConflict(
+            input=name, loc=["body", "name"], resource_name="user"
+        ).to_exception()
 
 
 @router.post("/users/")
@@ -196,7 +210,10 @@ async def register_user(
         register_user_request.one_time_password,
     )
     if not otp or otp != str(register_user_request.one_time_password):
-        raise HTTPException(status_code=400, detail="invalid one time password")
+        raise ErrorInvalidArgument(
+            input=register_user_request.one_time_password,
+            loc=["body", "one_time_password"],
+        ).to_exception()
 
     db_user = User.model_validate(
         register_user_request,

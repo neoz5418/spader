@@ -1,5 +1,11 @@
 import type { CursorListOperationType } from "./CursorListOperationType";
-import type { ErrorType } from "./ErrorType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
+import type { ErrorInternalType } from "./ErrorInternalType";
 
  export type GetWorkspaceOperationPathParamsType = {
     /**
@@ -22,31 +28,31 @@ export type GetWorkspaceOperation200Type = CursorListOperationType;
 /**
  * @description Request error
 */
-export type GetWorkspaceOperation400Type = ErrorType;
+export type GetWorkspaceOperation400Type = ErrorInvalidArgumentType;
 /**
  * @description Unauthorized
 */
-export type GetWorkspaceOperation401Type = ErrorType;
+export type GetWorkspaceOperation401Type = ErrorUnauthorizedType;
 /**
  * @description Not found
 */
-export type GetWorkspaceOperation404Type = ErrorType;
+export type GetWorkspaceOperation404Type = ErrorResourceNotFoundType;
+/**
+ * @description Resource conflict
+*/
+export type GetWorkspaceOperation409Type = ErrorResourceConflictType;
+/**
+ * @description Precondition failed
+*/
+export type GetWorkspaceOperation412Type = ErrorPreconditionFailedType;
 /**
  * @description Validation error
 */
-export type GetWorkspaceOperation422Type = ErrorType;
-/**
- * @description Rate limit exceeded
-*/
-export type GetWorkspaceOperation429Type = ErrorType;
+export type GetWorkspaceOperation422Type = ErrorValidationFailedType;
 /**
  * @description Internal server error
 */
-export type GetWorkspaceOperation500Type = ErrorType;
-/**
- * @description Service unavailable
-*/
-export type GetWorkspaceOperation503Type = ErrorType;
+export type GetWorkspaceOperation500Type = ErrorInternalType;
 /**
  * @description Successful Response
 */
@@ -54,5 +60,5 @@ export type GetWorkspaceOperationQueryResponseType = CursorListOperationType;
 export type GetWorkspaceOperationTypeQuery = {
     Response: GetWorkspaceOperationQueryResponseType;
     PathParams: GetWorkspaceOperationPathParamsType;
-    Errors: GetWorkspaceOperation400Type | GetWorkspaceOperation401Type | GetWorkspaceOperation404Type | GetWorkspaceOperation422Type | GetWorkspaceOperation429Type | GetWorkspaceOperation500Type | GetWorkspaceOperation503Type;
+    Errors: GetWorkspaceOperation400Type | GetWorkspaceOperation401Type | GetWorkspaceOperation404Type | GetWorkspaceOperation409Type | GetWorkspaceOperation412Type | GetWorkspaceOperation422Type | GetWorkspaceOperation500Type;
 };

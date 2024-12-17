@@ -1,7 +1,13 @@
 import type { ListUsersSortOptionsType } from "./ListUsersSortOptionsType";
 import type { DirectionType } from "./DirectionType";
 import type { PaginatedListUserType } from "./PaginatedListUserType";
-import type { ErrorType } from "./ErrorType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
+import type { ErrorInternalType } from "./ErrorInternalType";
 
  export type ListUsersQueryParamsType = {
     /**
@@ -46,31 +52,31 @@ export type ListUsers200Type = PaginatedListUserType;
 /**
  * @description Request error
 */
-export type ListUsers400Type = ErrorType;
+export type ListUsers400Type = ErrorInvalidArgumentType;
 /**
  * @description Unauthorized
 */
-export type ListUsers401Type = ErrorType;
+export type ListUsers401Type = ErrorUnauthorizedType;
 /**
  * @description Not found
 */
-export type ListUsers404Type = ErrorType;
+export type ListUsers404Type = ErrorResourceNotFoundType;
+/**
+ * @description Resource conflict
+*/
+export type ListUsers409Type = ErrorResourceConflictType;
+/**
+ * @description Precondition failed
+*/
+export type ListUsers412Type = ErrorPreconditionFailedType;
 /**
  * @description Validation error
 */
-export type ListUsers422Type = ErrorType;
-/**
- * @description Rate limit exceeded
-*/
-export type ListUsers429Type = ErrorType;
+export type ListUsers422Type = ErrorValidationFailedType;
 /**
  * @description Internal server error
 */
-export type ListUsers500Type = ErrorType;
-/**
- * @description Service unavailable
-*/
-export type ListUsers503Type = ErrorType;
+export type ListUsers500Type = ErrorInternalType;
 /**
  * @description Successful Response
 */
@@ -78,5 +84,5 @@ export type ListUsersQueryResponseType = PaginatedListUserType;
 export type ListUsersTypeQuery = {
     Response: ListUsersQueryResponseType;
     QueryParams: ListUsersQueryParamsType;
-    Errors: ListUsers400Type | ListUsers401Type | ListUsers404Type | ListUsers422Type | ListUsers429Type | ListUsers500Type | ListUsers503Type;
+    Errors: ListUsers400Type | ListUsers401Type | ListUsers404Type | ListUsers409Type | ListUsers412Type | ListUsers422Type | ListUsers500Type;
 };

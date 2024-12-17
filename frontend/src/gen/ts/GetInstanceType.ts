@@ -1,5 +1,11 @@
 import type { InstanceType } from "./InstanceType";
-import type { ErrorType } from "./ErrorType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
+import type { ErrorInternalType } from "./ErrorInternalType";
 
  export type GetInstancePathParamsType = {
     /**
@@ -22,31 +28,31 @@ export type GetInstance200Type = InstanceType;
 /**
  * @description Request error
 */
-export type GetInstance400Type = ErrorType;
+export type GetInstance400Type = ErrorInvalidArgumentType;
 /**
  * @description Unauthorized
 */
-export type GetInstance401Type = ErrorType;
+export type GetInstance401Type = ErrorUnauthorizedType;
 /**
  * @description Not found
 */
-export type GetInstance404Type = ErrorType;
+export type GetInstance404Type = ErrorResourceNotFoundType;
+/**
+ * @description Resource conflict
+*/
+export type GetInstance409Type = ErrorResourceConflictType;
+/**
+ * @description Precondition failed
+*/
+export type GetInstance412Type = ErrorPreconditionFailedType;
 /**
  * @description Validation error
 */
-export type GetInstance422Type = ErrorType;
-/**
- * @description Rate limit exceeded
-*/
-export type GetInstance429Type = ErrorType;
+export type GetInstance422Type = ErrorValidationFailedType;
 /**
  * @description Internal server error
 */
-export type GetInstance500Type = ErrorType;
-/**
- * @description Service unavailable
-*/
-export type GetInstance503Type = ErrorType;
+export type GetInstance500Type = ErrorInternalType;
 /**
  * @description Successful Response
 */
@@ -54,5 +60,5 @@ export type GetInstanceQueryResponseType = InstanceType;
 export type GetInstanceTypeQuery = {
     Response: GetInstanceQueryResponseType;
     PathParams: GetInstancePathParamsType;
-    Errors: GetInstance400Type | GetInstance401Type | GetInstance404Type | GetInstance422Type | GetInstance429Type | GetInstance500Type | GetInstance503Type;
+    Errors: GetInstance400Type | GetInstance401Type | GetInstance404Type | GetInstance409Type | GetInstance412Type | GetInstance422Type | GetInstance500Type;
 };

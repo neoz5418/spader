@@ -1,6 +1,12 @@
 import { z } from "@/utils/zod.ts";
 import { paginatedListFileStorageSchema } from "./paginatedListFileStorageSchema.gen";
-import { errorSchema } from "./errorSchema.gen";
+import { errorInvalidArgumentSchema } from "./errorInvalidArgumentSchema.gen";
+import { errorUnauthorizedSchema } from "./errorUnauthorizedSchema.gen";
+import { errorResourceNotFoundSchema } from "./errorResourceNotFoundSchema.gen";
+import { errorResourceConflictSchema } from "./errorResourceConflictSchema.gen";
+import { errorPreconditionFailedSchema } from "./errorPreconditionFailedSchema.gen";
+import { errorValidationFailedSchema } from "./errorValidationFailedSchema.gen";
+import { errorInternalSchema } from "./errorInternalSchema.gen";
 
 
 export const listWorkspaceFileStoragesPathParamsSchema = z.object({ "workspace": z.string(), "zone": z.string() });
@@ -16,38 +22,38 @@ export type ListWorkspaceFileStorages200Schema = z.infer<typeof listWorkspaceFil
 /**
  * @description Request error
  */
-export const listWorkspaceFileStorages400Schema = z.lazy(() => errorSchema);
+export const listWorkspaceFileStorages400Schema = z.lazy(() => errorInvalidArgumentSchema);
 export type ListWorkspaceFileStorages400Schema = z.infer<typeof listWorkspaceFileStorages400Schema>;
 /**
  * @description Unauthorized
  */
-export const listWorkspaceFileStorages401Schema = z.lazy(() => errorSchema);
+export const listWorkspaceFileStorages401Schema = z.lazy(() => errorUnauthorizedSchema);
 export type ListWorkspaceFileStorages401Schema = z.infer<typeof listWorkspaceFileStorages401Schema>;
 /**
  * @description Not found
  */
-export const listWorkspaceFileStorages404Schema = z.lazy(() => errorSchema);
+export const listWorkspaceFileStorages404Schema = z.lazy(() => errorResourceNotFoundSchema);
 export type ListWorkspaceFileStorages404Schema = z.infer<typeof listWorkspaceFileStorages404Schema>;
+/**
+ * @description Resource conflict
+ */
+export const listWorkspaceFileStorages409Schema = z.lazy(() => errorResourceConflictSchema);
+export type ListWorkspaceFileStorages409Schema = z.infer<typeof listWorkspaceFileStorages409Schema>;
+/**
+ * @description Precondition failed
+ */
+export const listWorkspaceFileStorages412Schema = z.lazy(() => errorPreconditionFailedSchema);
+export type ListWorkspaceFileStorages412Schema = z.infer<typeof listWorkspaceFileStorages412Schema>;
 /**
  * @description Validation error
  */
-export const listWorkspaceFileStorages422Schema = z.lazy(() => errorSchema);
+export const listWorkspaceFileStorages422Schema = z.lazy(() => errorValidationFailedSchema);
 export type ListWorkspaceFileStorages422Schema = z.infer<typeof listWorkspaceFileStorages422Schema>;
-/**
- * @description Rate limit exceeded
- */
-export const listWorkspaceFileStorages429Schema = z.lazy(() => errorSchema);
-export type ListWorkspaceFileStorages429Schema = z.infer<typeof listWorkspaceFileStorages429Schema>;
 /**
  * @description Internal server error
  */
-export const listWorkspaceFileStorages500Schema = z.lazy(() => errorSchema);
+export const listWorkspaceFileStorages500Schema = z.lazy(() => errorInternalSchema);
 export type ListWorkspaceFileStorages500Schema = z.infer<typeof listWorkspaceFileStorages500Schema>;
-/**
- * @description Service unavailable
- */
-export const listWorkspaceFileStorages503Schema = z.lazy(() => errorSchema);
-export type ListWorkspaceFileStorages503Schema = z.infer<typeof listWorkspaceFileStorages503Schema>;
 /**
  * @description Successful Response
  */

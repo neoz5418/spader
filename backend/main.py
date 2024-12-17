@@ -1,19 +1,34 @@
 from contextlib import asynccontextmanager
+
 from starlette.middleware.cors import CORSMiddleware
 import uvicorn
 from fastapi.routing import APIRoute
 from fastapi.middleware.gzip import GZipMiddleware
+from fastapi.exceptions import RequestValidationError
 from starlette.responses import JSONResponse
 from starlette.types import Message
-from fastapi import FastAPI, status, Depends, Request, Response
+from fastapi import (
+    FastAPI,
+    Depends,
+    Request,
+    Response,
+    HTTPException,
+    status,
+)
 from fastapi.encoders import jsonable_encoder
-from fastapi.exceptions import RequestValidationError
-from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.background import BackgroundTask
-
 from dependencies import active_connections_set
 from routers import workspaces, users, instances, oidc
-from services.common import Error
+from services.common import (
+    error_from_exception,
+    ErrorInternal,
+    ErrorInvalidArgument,
+    ErrorPreconditionFailed,
+    ErrorResourceConflict,
+    ErrorResourceNotFound,
+    ErrorUnauthorized,
+    ErrorValidationFailed,
+)
 from services.logger import setup_logging
 from services.db import get_session, create_db_and_tables, init_admin_user, init_data
 import logging
@@ -40,31 +55,39 @@ app = FastAPI(
     description="Spader API",
     responses={
         status.HTTP_400_BAD_REQUEST: {
-            "model": Error,
+            "model": ErrorInvalidArgument,
             "description": "Request error",
         },
         status.HTTP_422_UNPROCESSABLE_ENTITY: {
-            "model": Error,
+            "model": ErrorValidationFailed,
             "description": "Validation error",
         },
-        status.HTTP_429_TOO_MANY_REQUESTS: {
-            "model": Error,
-            "description": "Rate limit exceeded",
+        status.HTTP_409_CONFLICT: {
+            "model": ErrorResourceConflict,
+            "description": "Resource conflict",
         },
-        status.HTTP_503_SERVICE_UNAVAILABLE: {
-            "model": Error,
-            "description": "Service unavailable",
+        status.HTTP_412_PRECONDITION_FAILED: {
+            "model": ErrorPreconditionFailed,
+            "description": "Precondition failed",
         },
+        # status.HTTP_429_TOO_MANY_REQUESTS: {
+        #     "model": Error,
+        #     "description": "Rate limit exceeded",
+        # },
+        # status.HTTP_503_SERVICE_UNAVAILABLE: {
+        #     "model": Error,
+        #     "description": "Service unavailable",
+        # },
         status.HTTP_401_UNAUTHORIZED: {
-            "model": Error,
+            "model": ErrorUnauthorized,
             "description": "Unauthorized",
         },
         status.HTTP_404_NOT_FOUND: {
-            "model": Error,
+            "model": ErrorResourceNotFound,
             "description": "Not found",
         },
         status.HTTP_500_INTERNAL_SERVER_ERROR: {
-            "model": Error,
+            "model": ErrorInternal,
             "description": "Internal server error",
         },
     },
@@ -73,14 +96,22 @@ app = FastAPI(
 )
 
 
-@app.exception_handler(StarletteHTTPException)
-async def http_exception_handler(request, exc):
-    return JSONResponse(jsonable_encoder(exc.detail), status_code=exc.status_code)
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request: Request, exc: HTTPException):
+    err = error_from_exception(request, exc)
+    return JSONResponse(jsonable_encoder(err), status_code=err.status_code)
 
 
 @app.exception_handler(RequestValidationError)
-async def validation_exception_handler(request, exc):
-    return JSONResponse(jsonable_encoder(Error.from_exception(exc)), status_code=400)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    err = error_from_exception(request, exc)
+    return JSONResponse(jsonable_encoder(err), status_code=err.status_code)
+
+
+@app.exception_handler(Exception)
+async def exception_handler(request: Request, exc: Exception):
+    err = error_from_exception(request, exc)
+    return JSONResponse(jsonable_encoder(err), status_code=err.status_code)
 
 
 async def set_body(request: Request, body: bytes):

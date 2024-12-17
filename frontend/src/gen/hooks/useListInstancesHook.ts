@@ -1,12 +1,12 @@
 import client from "@/utils/client.ts";
 import { useQuery, queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import type { ListInstancesQueryResponseType, ListInstancesQueryParamsType, ListInstances400Type, ListInstances401Type, ListInstances404Type, ListInstances422Type, ListInstances429Type, ListInstances500Type, ListInstances503Type } from "../ts/ListInstancesType";
+import type { ListInstancesQueryResponseType, ListInstancesQueryParamsType, ListInstances400Type, ListInstances401Type, ListInstances404Type, ListInstances409Type, ListInstances412Type, ListInstances422Type, ListInstances500Type } from "../ts/ListInstancesType";
 import type { QueryObserverOptions, UseQueryResult, QueryKey, UseSuspenseQueryOptions, UseSuspenseQueryResult } from "@tanstack/react-query";
 
- type ListInstancesClient = typeof client<ListInstancesQueryResponseType, ListInstances400Type | ListInstances401Type | ListInstances404Type | ListInstances422Type | ListInstances429Type | ListInstances500Type | ListInstances503Type, never>;
+ type ListInstancesClient = typeof client<ListInstancesQueryResponseType, ListInstances400Type | ListInstances401Type | ListInstances404Type | ListInstances409Type | ListInstances412Type | ListInstances422Type | ListInstances500Type, never>;
 type ListInstances = {
     data: ListInstancesQueryResponseType;
-    error: ListInstances400Type | ListInstances401Type | ListInstances404Type | ListInstances422Type | ListInstances429Type | ListInstances500Type | ListInstances503Type;
+    error: ListInstances400Type | ListInstances401Type | ListInstances404Type | ListInstances409Type | ListInstances412Type | ListInstances422Type | ListInstances500Type;
     request: never;
     pathParams: never;
     queryParams: ListInstancesQueryParamsType;

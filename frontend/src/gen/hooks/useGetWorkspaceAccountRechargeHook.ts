@@ -1,12 +1,12 @@
 import client from "@/utils/client.ts";
 import { useQuery, queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import type { GetWorkspaceAccountRechargeQueryResponseType, GetWorkspaceAccountRechargePathParamsType, GetWorkspaceAccountRecharge400Type, GetWorkspaceAccountRecharge401Type, GetWorkspaceAccountRecharge404Type, GetWorkspaceAccountRecharge422Type, GetWorkspaceAccountRecharge429Type, GetWorkspaceAccountRecharge500Type, GetWorkspaceAccountRecharge503Type } from "../ts/GetWorkspaceAccountRechargeType";
+import type { GetWorkspaceAccountRechargeQueryResponseType, GetWorkspaceAccountRechargePathParamsType, GetWorkspaceAccountRecharge400Type, GetWorkspaceAccountRecharge401Type, GetWorkspaceAccountRecharge404Type, GetWorkspaceAccountRecharge409Type, GetWorkspaceAccountRecharge412Type, GetWorkspaceAccountRecharge422Type, GetWorkspaceAccountRecharge500Type } from "../ts/GetWorkspaceAccountRechargeType";
 import type { QueryObserverOptions, UseQueryResult, QueryKey, UseSuspenseQueryOptions, UseSuspenseQueryResult } from "@tanstack/react-query";
 
- type GetWorkspaceAccountRechargeClient = typeof client<GetWorkspaceAccountRechargeQueryResponseType, GetWorkspaceAccountRecharge400Type | GetWorkspaceAccountRecharge401Type | GetWorkspaceAccountRecharge404Type | GetWorkspaceAccountRecharge422Type | GetWorkspaceAccountRecharge429Type | GetWorkspaceAccountRecharge500Type | GetWorkspaceAccountRecharge503Type, never>;
+ type GetWorkspaceAccountRechargeClient = typeof client<GetWorkspaceAccountRechargeQueryResponseType, GetWorkspaceAccountRecharge400Type | GetWorkspaceAccountRecharge401Type | GetWorkspaceAccountRecharge404Type | GetWorkspaceAccountRecharge409Type | GetWorkspaceAccountRecharge412Type | GetWorkspaceAccountRecharge422Type | GetWorkspaceAccountRecharge500Type, never>;
 type GetWorkspaceAccountRecharge = {
     data: GetWorkspaceAccountRechargeQueryResponseType;
-    error: GetWorkspaceAccountRecharge400Type | GetWorkspaceAccountRecharge401Type | GetWorkspaceAccountRecharge404Type | GetWorkspaceAccountRecharge422Type | GetWorkspaceAccountRecharge429Type | GetWorkspaceAccountRecharge500Type | GetWorkspaceAccountRecharge503Type;
+    error: GetWorkspaceAccountRecharge400Type | GetWorkspaceAccountRecharge401Type | GetWorkspaceAccountRecharge404Type | GetWorkspaceAccountRecharge409Type | GetWorkspaceAccountRecharge412Type | GetWorkspaceAccountRecharge422Type | GetWorkspaceAccountRecharge500Type;
     request: never;
     pathParams: GetWorkspaceAccountRechargePathParamsType;
     queryParams: never;

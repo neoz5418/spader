@@ -1,13 +1,13 @@
 import client from "@/utils/client.ts";
 import { useMutation } from "@tanstack/react-query";
 import { useInvalidationForMutation } from "../../useInvalidationForMutation";
-import type { CreateWorkspaceMutationRequestType, CreateWorkspaceMutationResponseType, CreateWorkspacePathParamsType, CreateWorkspace400Type, CreateWorkspace401Type, CreateWorkspace404Type, CreateWorkspace422Type, CreateWorkspace429Type, CreateWorkspace500Type, CreateWorkspace503Type } from "../ts/CreateWorkspaceType";
+import type { CreateWorkspaceMutationRequestType, CreateWorkspaceMutationResponseType, CreateWorkspacePathParamsType, CreateWorkspace400Type, CreateWorkspace401Type, CreateWorkspace404Type, CreateWorkspace409Type, CreateWorkspace412Type, CreateWorkspace422Type, CreateWorkspace500Type } from "../ts/CreateWorkspaceType";
 import type { UseMutationOptions } from "@tanstack/react-query";
 
- type CreateWorkspaceClient = typeof client<CreateWorkspaceMutationResponseType, CreateWorkspace400Type | CreateWorkspace401Type | CreateWorkspace404Type | CreateWorkspace422Type | CreateWorkspace429Type | CreateWorkspace500Type | CreateWorkspace503Type, CreateWorkspaceMutationRequestType>;
+ type CreateWorkspaceClient = typeof client<CreateWorkspaceMutationResponseType, CreateWorkspace400Type | CreateWorkspace401Type | CreateWorkspace404Type | CreateWorkspace409Type | CreateWorkspace412Type | CreateWorkspace422Type | CreateWorkspace500Type, CreateWorkspaceMutationRequestType>;
 type CreateWorkspace = {
     data: CreateWorkspaceMutationResponseType;
-    error: CreateWorkspace400Type | CreateWorkspace401Type | CreateWorkspace404Type | CreateWorkspace422Type | CreateWorkspace429Type | CreateWorkspace500Type | CreateWorkspace503Type;
+    error: CreateWorkspace400Type | CreateWorkspace401Type | CreateWorkspace404Type | CreateWorkspace409Type | CreateWorkspace412Type | CreateWorkspace422Type | CreateWorkspace500Type;
     request: CreateWorkspaceMutationRequestType;
     pathParams: CreateWorkspacePathParamsType;
     queryParams: never;

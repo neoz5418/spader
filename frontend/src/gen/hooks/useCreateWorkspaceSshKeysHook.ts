@@ -1,13 +1,13 @@
 import client from "@/utils/client.ts";
 import { useMutation } from "@tanstack/react-query";
 import { useInvalidationForMutation } from "../../useInvalidationForMutation";
-import type { CreateWorkspaceSshKeysMutationResponseType, CreateWorkspaceSshKeysPathParamsType, CreateWorkspaceSshKeys400Type, CreateWorkspaceSshKeys401Type, CreateWorkspaceSshKeys404Type, CreateWorkspaceSshKeys422Type, CreateWorkspaceSshKeys429Type, CreateWorkspaceSshKeys500Type, CreateWorkspaceSshKeys503Type } from "../ts/CreateWorkspaceSshKeysType";
+import type { CreateWorkspaceSshKeysMutationResponseType, CreateWorkspaceSshKeysPathParamsType, CreateWorkspaceSshKeys400Type, CreateWorkspaceSshKeys401Type, CreateWorkspaceSshKeys404Type, CreateWorkspaceSshKeys409Type, CreateWorkspaceSshKeys412Type, CreateWorkspaceSshKeys422Type, CreateWorkspaceSshKeys500Type } from "../ts/CreateWorkspaceSshKeysType";
 import type { UseMutationOptions } from "@tanstack/react-query";
 
- type CreateWorkspaceSshKeysClient = typeof client<CreateWorkspaceSshKeysMutationResponseType, CreateWorkspaceSshKeys400Type | CreateWorkspaceSshKeys401Type | CreateWorkspaceSshKeys404Type | CreateWorkspaceSshKeys422Type | CreateWorkspaceSshKeys429Type | CreateWorkspaceSshKeys500Type | CreateWorkspaceSshKeys503Type, never>;
+ type CreateWorkspaceSshKeysClient = typeof client<CreateWorkspaceSshKeysMutationResponseType, CreateWorkspaceSshKeys400Type | CreateWorkspaceSshKeys401Type | CreateWorkspaceSshKeys404Type | CreateWorkspaceSshKeys409Type | CreateWorkspaceSshKeys412Type | CreateWorkspaceSshKeys422Type | CreateWorkspaceSshKeys500Type, never>;
 type CreateWorkspaceSshKeys = {
     data: CreateWorkspaceSshKeysMutationResponseType;
-    error: CreateWorkspaceSshKeys400Type | CreateWorkspaceSshKeys401Type | CreateWorkspaceSshKeys404Type | CreateWorkspaceSshKeys422Type | CreateWorkspaceSshKeys429Type | CreateWorkspaceSshKeys500Type | CreateWorkspaceSshKeys503Type;
+    error: CreateWorkspaceSshKeys400Type | CreateWorkspaceSshKeys401Type | CreateWorkspaceSshKeys404Type | CreateWorkspaceSshKeys409Type | CreateWorkspaceSshKeys412Type | CreateWorkspaceSshKeys422Type | CreateWorkspaceSshKeys500Type;
     request: never;
     pathParams: CreateWorkspaceSshKeysPathParamsType;
     queryParams: never;

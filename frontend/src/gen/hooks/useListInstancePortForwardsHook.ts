@@ -1,12 +1,12 @@
 import client from "@/utils/client.ts";
 import { useQuery, queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import type { ListInstancePortForwardsQueryResponseType, ListInstancePortForwardsPathParamsType, ListInstancePortForwards400Type, ListInstancePortForwards401Type, ListInstancePortForwards404Type, ListInstancePortForwards422Type, ListInstancePortForwards429Type, ListInstancePortForwards500Type, ListInstancePortForwards503Type } from "../ts/ListInstancePortForwardsType";
+import type { ListInstancePortForwardsQueryResponseType, ListInstancePortForwardsPathParamsType, ListInstancePortForwards400Type, ListInstancePortForwards401Type, ListInstancePortForwards404Type, ListInstancePortForwards409Type, ListInstancePortForwards412Type, ListInstancePortForwards422Type, ListInstancePortForwards500Type } from "../ts/ListInstancePortForwardsType";
 import type { QueryObserverOptions, UseQueryResult, QueryKey, UseSuspenseQueryOptions, UseSuspenseQueryResult } from "@tanstack/react-query";
 
- type ListInstancePortForwardsClient = typeof client<ListInstancePortForwardsQueryResponseType, ListInstancePortForwards400Type | ListInstancePortForwards401Type | ListInstancePortForwards404Type | ListInstancePortForwards422Type | ListInstancePortForwards429Type | ListInstancePortForwards500Type | ListInstancePortForwards503Type, never>;
+ type ListInstancePortForwardsClient = typeof client<ListInstancePortForwardsQueryResponseType, ListInstancePortForwards400Type | ListInstancePortForwards401Type | ListInstancePortForwards404Type | ListInstancePortForwards409Type | ListInstancePortForwards412Type | ListInstancePortForwards422Type | ListInstancePortForwards500Type, never>;
 type ListInstancePortForwards = {
     data: ListInstancePortForwardsQueryResponseType;
-    error: ListInstancePortForwards400Type | ListInstancePortForwards401Type | ListInstancePortForwards404Type | ListInstancePortForwards422Type | ListInstancePortForwards429Type | ListInstancePortForwards500Type | ListInstancePortForwards503Type;
+    error: ListInstancePortForwards400Type | ListInstancePortForwards401Type | ListInstancePortForwards404Type | ListInstancePortForwards409Type | ListInstancePortForwards412Type | ListInstancePortForwards422Type | ListInstancePortForwards500Type;
     request: never;
     pathParams: ListInstancePortForwardsPathParamsType;
     queryParams: never;

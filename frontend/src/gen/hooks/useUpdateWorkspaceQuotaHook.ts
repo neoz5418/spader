@@ -1,13 +1,13 @@
 import client from "@/utils/client.ts";
 import { useMutation } from "@tanstack/react-query";
 import { useInvalidationForMutation } from "../../useInvalidationForMutation";
-import type { UpdateWorkspaceQuotaMutationRequestType, UpdateWorkspaceQuotaMutationResponseType, UpdateWorkspaceQuotaPathParamsType, UpdateWorkspaceQuota400Type, UpdateWorkspaceQuota401Type, UpdateWorkspaceQuota404Type, UpdateWorkspaceQuota422Type, UpdateWorkspaceQuota429Type, UpdateWorkspaceQuota500Type, UpdateWorkspaceQuota503Type } from "../ts/UpdateWorkspaceQuotaType";
+import type { UpdateWorkspaceQuotaMutationRequestType, UpdateWorkspaceQuotaMutationResponseType, UpdateWorkspaceQuotaPathParamsType, UpdateWorkspaceQuota400Type, UpdateWorkspaceQuota401Type, UpdateWorkspaceQuota404Type, UpdateWorkspaceQuota409Type, UpdateWorkspaceQuota412Type, UpdateWorkspaceQuota422Type, UpdateWorkspaceQuota500Type } from "../ts/UpdateWorkspaceQuotaType";
 import type { UseMutationOptions } from "@tanstack/react-query";
 
- type UpdateWorkspaceQuotaClient = typeof client<UpdateWorkspaceQuotaMutationResponseType, UpdateWorkspaceQuota400Type | UpdateWorkspaceQuota401Type | UpdateWorkspaceQuota404Type | UpdateWorkspaceQuota422Type | UpdateWorkspaceQuota429Type | UpdateWorkspaceQuota500Type | UpdateWorkspaceQuota503Type, UpdateWorkspaceQuotaMutationRequestType>;
+ type UpdateWorkspaceQuotaClient = typeof client<UpdateWorkspaceQuotaMutationResponseType, UpdateWorkspaceQuota400Type | UpdateWorkspaceQuota401Type | UpdateWorkspaceQuota404Type | UpdateWorkspaceQuota409Type | UpdateWorkspaceQuota412Type | UpdateWorkspaceQuota422Type | UpdateWorkspaceQuota500Type, UpdateWorkspaceQuotaMutationRequestType>;
 type UpdateWorkspaceQuota = {
     data: UpdateWorkspaceQuotaMutationResponseType;
-    error: UpdateWorkspaceQuota400Type | UpdateWorkspaceQuota401Type | UpdateWorkspaceQuota404Type | UpdateWorkspaceQuota422Type | UpdateWorkspaceQuota429Type | UpdateWorkspaceQuota500Type | UpdateWorkspaceQuota503Type;
+    error: UpdateWorkspaceQuota400Type | UpdateWorkspaceQuota401Type | UpdateWorkspaceQuota404Type | UpdateWorkspaceQuota409Type | UpdateWorkspaceQuota412Type | UpdateWorkspaceQuota422Type | UpdateWorkspaceQuota500Type;
     request: UpdateWorkspaceQuotaMutationRequestType;
     pathParams: UpdateWorkspaceQuotaPathParamsType;
     queryParams: never;

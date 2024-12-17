@@ -1,7 +1,13 @@
 import type { ListWorkspacesSortOptionsType } from "./ListWorkspacesSortOptionsType";
 import type { DirectionType } from "./DirectionType";
 import type { PaginatedListWorkspaceType } from "./PaginatedListWorkspaceType";
-import type { ErrorType } from "./ErrorType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
+import type { ErrorInternalType } from "./ErrorInternalType";
 
  export type ListWorkspacesQueryParamsType = {
     /**
@@ -30,31 +36,31 @@ export type ListWorkspaces200Type = PaginatedListWorkspaceType;
 /**
  * @description Request error
 */
-export type ListWorkspaces400Type = ErrorType;
+export type ListWorkspaces400Type = ErrorInvalidArgumentType;
 /**
  * @description Unauthorized
 */
-export type ListWorkspaces401Type = ErrorType;
+export type ListWorkspaces401Type = ErrorUnauthorizedType;
 /**
  * @description Not found
 */
-export type ListWorkspaces404Type = ErrorType;
+export type ListWorkspaces404Type = ErrorResourceNotFoundType;
+/**
+ * @description Resource conflict
+*/
+export type ListWorkspaces409Type = ErrorResourceConflictType;
+/**
+ * @description Precondition failed
+*/
+export type ListWorkspaces412Type = ErrorPreconditionFailedType;
 /**
  * @description Validation error
 */
-export type ListWorkspaces422Type = ErrorType;
-/**
- * @description Rate limit exceeded
-*/
-export type ListWorkspaces429Type = ErrorType;
+export type ListWorkspaces422Type = ErrorValidationFailedType;
 /**
  * @description Internal server error
 */
-export type ListWorkspaces500Type = ErrorType;
-/**
- * @description Service unavailable
-*/
-export type ListWorkspaces503Type = ErrorType;
+export type ListWorkspaces500Type = ErrorInternalType;
 /**
  * @description Successful Response
 */
@@ -62,5 +68,5 @@ export type ListWorkspacesQueryResponseType = PaginatedListWorkspaceType;
 export type ListWorkspacesTypeQuery = {
     Response: ListWorkspacesQueryResponseType;
     QueryParams: ListWorkspacesQueryParamsType;
-    Errors: ListWorkspaces400Type | ListWorkspaces401Type | ListWorkspaces404Type | ListWorkspaces422Type | ListWorkspaces429Type | ListWorkspaces500Type | ListWorkspaces503Type;
+    Errors: ListWorkspaces400Type | ListWorkspaces401Type | ListWorkspaces404Type | ListWorkspaces409Type | ListWorkspaces412Type | ListWorkspaces422Type | ListWorkspaces500Type;
 };

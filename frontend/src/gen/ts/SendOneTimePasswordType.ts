@@ -1,5 +1,11 @@
 import type { SendOneTimePasswordResponseType } from "./SendOneTimePasswordResponseType";
-import type { ErrorType } from "./ErrorType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
+import type { ErrorInternalType } from "./ErrorInternalType";
 import type { SendOneTimePasswordRequestType } from "./SendOneTimePasswordRequestType";
 
  /**
@@ -9,31 +15,31 @@ export type SendOneTimePassword201Type = SendOneTimePasswordResponseType;
 /**
  * @description Request error
 */
-export type SendOneTimePassword400Type = ErrorType;
+export type SendOneTimePassword400Type = ErrorInvalidArgumentType;
 /**
  * @description Unauthorized
 */
-export type SendOneTimePassword401Type = ErrorType;
+export type SendOneTimePassword401Type = ErrorUnauthorizedType;
 /**
  * @description Not found
 */
-export type SendOneTimePassword404Type = ErrorType;
+export type SendOneTimePassword404Type = ErrorResourceNotFoundType;
+/**
+ * @description Resource conflict
+*/
+export type SendOneTimePassword409Type = ErrorResourceConflictType;
+/**
+ * @description Precondition failed
+*/
+export type SendOneTimePassword412Type = ErrorPreconditionFailedType;
 /**
  * @description Validation error
 */
-export type SendOneTimePassword422Type = ErrorType;
-/**
- * @description Rate limit exceeded
-*/
-export type SendOneTimePassword429Type = ErrorType;
+export type SendOneTimePassword422Type = ErrorValidationFailedType;
 /**
  * @description Internal server error
 */
-export type SendOneTimePassword500Type = ErrorType;
-/**
- * @description Service unavailable
-*/
-export type SendOneTimePassword503Type = ErrorType;
+export type SendOneTimePassword500Type = ErrorInternalType;
 export type SendOneTimePasswordMutationRequestType = SendOneTimePasswordRequestType;
 /**
  * @description Successful Response
@@ -42,5 +48,5 @@ export type SendOneTimePasswordMutationResponseType = SendOneTimePasswordRespons
 export type SendOneTimePasswordTypeMutation = {
     Response: SendOneTimePasswordMutationResponseType;
     Request: SendOneTimePasswordMutationRequestType;
-    Errors: SendOneTimePassword400Type | SendOneTimePassword401Type | SendOneTimePassword404Type | SendOneTimePassword422Type | SendOneTimePassword429Type | SendOneTimePassword500Type | SendOneTimePassword503Type;
+    Errors: SendOneTimePassword400Type | SendOneTimePassword401Type | SendOneTimePassword404Type | SendOneTimePassword409Type | SendOneTimePassword412Type | SendOneTimePassword422Type | SendOneTimePassword500Type;
 };

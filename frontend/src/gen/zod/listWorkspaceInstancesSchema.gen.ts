@@ -2,7 +2,13 @@ import { z } from "@/utils/zod.ts";
 import { listInstancesSortOptionsSchema } from "./listInstancesSortOptionsSchema.gen";
 import { sortOrderSchema } from "./sortOrderSchema.gen";
 import { paginatedListInstancePublicSchema } from "./paginatedListInstancePublicSchema.gen";
-import { errorSchema } from "./errorSchema.gen";
+import { errorInvalidArgumentSchema } from "./errorInvalidArgumentSchema.gen";
+import { errorUnauthorizedSchema } from "./errorUnauthorizedSchema.gen";
+import { errorResourceNotFoundSchema } from "./errorResourceNotFoundSchema.gen";
+import { errorResourceConflictSchema } from "./errorResourceConflictSchema.gen";
+import { errorPreconditionFailedSchema } from "./errorPreconditionFailedSchema.gen";
+import { errorValidationFailedSchema } from "./errorValidationFailedSchema.gen";
+import { errorInternalSchema } from "./errorInternalSchema.gen";
 
 
 export const listWorkspaceInstancesPathParamsSchema = z.object({ "workspace": z.string() });
@@ -18,38 +24,38 @@ export type ListWorkspaceInstances200Schema = z.infer<typeof listWorkspaceInstan
 /**
  * @description Request error
  */
-export const listWorkspaceInstances400Schema = z.lazy(() => errorSchema);
+export const listWorkspaceInstances400Schema = z.lazy(() => errorInvalidArgumentSchema);
 export type ListWorkspaceInstances400Schema = z.infer<typeof listWorkspaceInstances400Schema>;
 /**
  * @description Unauthorized
  */
-export const listWorkspaceInstances401Schema = z.lazy(() => errorSchema);
+export const listWorkspaceInstances401Schema = z.lazy(() => errorUnauthorizedSchema);
 export type ListWorkspaceInstances401Schema = z.infer<typeof listWorkspaceInstances401Schema>;
 /**
  * @description Not found
  */
-export const listWorkspaceInstances404Schema = z.lazy(() => errorSchema);
+export const listWorkspaceInstances404Schema = z.lazy(() => errorResourceNotFoundSchema);
 export type ListWorkspaceInstances404Schema = z.infer<typeof listWorkspaceInstances404Schema>;
+/**
+ * @description Resource conflict
+ */
+export const listWorkspaceInstances409Schema = z.lazy(() => errorResourceConflictSchema);
+export type ListWorkspaceInstances409Schema = z.infer<typeof listWorkspaceInstances409Schema>;
+/**
+ * @description Precondition failed
+ */
+export const listWorkspaceInstances412Schema = z.lazy(() => errorPreconditionFailedSchema);
+export type ListWorkspaceInstances412Schema = z.infer<typeof listWorkspaceInstances412Schema>;
 /**
  * @description Validation error
  */
-export const listWorkspaceInstances422Schema = z.lazy(() => errorSchema);
+export const listWorkspaceInstances422Schema = z.lazy(() => errorValidationFailedSchema);
 export type ListWorkspaceInstances422Schema = z.infer<typeof listWorkspaceInstances422Schema>;
-/**
- * @description Rate limit exceeded
- */
-export const listWorkspaceInstances429Schema = z.lazy(() => errorSchema);
-export type ListWorkspaceInstances429Schema = z.infer<typeof listWorkspaceInstances429Schema>;
 /**
  * @description Internal server error
  */
-export const listWorkspaceInstances500Schema = z.lazy(() => errorSchema);
+export const listWorkspaceInstances500Schema = z.lazy(() => errorInternalSchema);
 export type ListWorkspaceInstances500Schema = z.infer<typeof listWorkspaceInstances500Schema>;
-/**
- * @description Service unavailable
- */
-export const listWorkspaceInstances503Schema = z.lazy(() => errorSchema);
-export type ListWorkspaceInstances503Schema = z.infer<typeof listWorkspaceInstances503Schema>;
 /**
  * @description Successful Response
  */

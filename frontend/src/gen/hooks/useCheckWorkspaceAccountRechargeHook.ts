@@ -1,13 +1,13 @@
 import client from "@/utils/client.ts";
 import { useMutation } from "@tanstack/react-query";
 import { useInvalidationForMutation } from "../../useInvalidationForMutation";
-import type { CheckWorkspaceAccountRechargeMutationResponseType, CheckWorkspaceAccountRechargePathParamsType, CheckWorkspaceAccountRecharge400Type, CheckWorkspaceAccountRecharge401Type, CheckWorkspaceAccountRecharge404Type, CheckWorkspaceAccountRecharge422Type, CheckWorkspaceAccountRecharge429Type, CheckWorkspaceAccountRecharge500Type, CheckWorkspaceAccountRecharge503Type } from "../ts/CheckWorkspaceAccountRechargeType";
+import type { CheckWorkspaceAccountRechargeMutationResponseType, CheckWorkspaceAccountRechargePathParamsType, CheckWorkspaceAccountRecharge400Type, CheckWorkspaceAccountRecharge401Type, CheckWorkspaceAccountRecharge404Type, CheckWorkspaceAccountRecharge409Type, CheckWorkspaceAccountRecharge412Type, CheckWorkspaceAccountRecharge422Type, CheckWorkspaceAccountRecharge500Type } from "../ts/CheckWorkspaceAccountRechargeType";
 import type { UseMutationOptions } from "@tanstack/react-query";
 
- type CheckWorkspaceAccountRechargeClient = typeof client<CheckWorkspaceAccountRechargeMutationResponseType, CheckWorkspaceAccountRecharge400Type | CheckWorkspaceAccountRecharge401Type | CheckWorkspaceAccountRecharge404Type | CheckWorkspaceAccountRecharge422Type | CheckWorkspaceAccountRecharge429Type | CheckWorkspaceAccountRecharge500Type | CheckWorkspaceAccountRecharge503Type, never>;
+ type CheckWorkspaceAccountRechargeClient = typeof client<CheckWorkspaceAccountRechargeMutationResponseType, CheckWorkspaceAccountRecharge400Type | CheckWorkspaceAccountRecharge401Type | CheckWorkspaceAccountRecharge404Type | CheckWorkspaceAccountRecharge409Type | CheckWorkspaceAccountRecharge412Type | CheckWorkspaceAccountRecharge422Type | CheckWorkspaceAccountRecharge500Type, never>;
 type CheckWorkspaceAccountRecharge = {
     data: CheckWorkspaceAccountRechargeMutationResponseType;
-    error: CheckWorkspaceAccountRecharge400Type | CheckWorkspaceAccountRecharge401Type | CheckWorkspaceAccountRecharge404Type | CheckWorkspaceAccountRecharge422Type | CheckWorkspaceAccountRecharge429Type | CheckWorkspaceAccountRecharge500Type | CheckWorkspaceAccountRecharge503Type;
+    error: CheckWorkspaceAccountRecharge400Type | CheckWorkspaceAccountRecharge401Type | CheckWorkspaceAccountRecharge404Type | CheckWorkspaceAccountRecharge409Type | CheckWorkspaceAccountRecharge412Type | CheckWorkspaceAccountRecharge422Type | CheckWorkspaceAccountRecharge500Type;
     request: never;
     pathParams: CheckWorkspaceAccountRechargePathParamsType;
     queryParams: never;

@@ -1,12 +1,12 @@
 import client from "@/utils/client.ts";
 import { useQuery, queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import type { GetWorkspaceAccountQueryResponseType, GetWorkspaceAccountPathParamsType, GetWorkspaceAccount400Type, GetWorkspaceAccount401Type, GetWorkspaceAccount404Type, GetWorkspaceAccount422Type, GetWorkspaceAccount429Type, GetWorkspaceAccount500Type, GetWorkspaceAccount503Type } from "../ts/GetWorkspaceAccountType";
+import type { GetWorkspaceAccountQueryResponseType, GetWorkspaceAccountPathParamsType, GetWorkspaceAccount400Type, GetWorkspaceAccount401Type, GetWorkspaceAccount404Type, GetWorkspaceAccount409Type, GetWorkspaceAccount412Type, GetWorkspaceAccount422Type, GetWorkspaceAccount500Type } from "../ts/GetWorkspaceAccountType";
 import type { QueryObserverOptions, UseQueryResult, QueryKey, UseSuspenseQueryOptions, UseSuspenseQueryResult } from "@tanstack/react-query";
 
- type GetWorkspaceAccountClient = typeof client<GetWorkspaceAccountQueryResponseType, GetWorkspaceAccount400Type | GetWorkspaceAccount401Type | GetWorkspaceAccount404Type | GetWorkspaceAccount422Type | GetWorkspaceAccount429Type | GetWorkspaceAccount500Type | GetWorkspaceAccount503Type, never>;
+ type GetWorkspaceAccountClient = typeof client<GetWorkspaceAccountQueryResponseType, GetWorkspaceAccount400Type | GetWorkspaceAccount401Type | GetWorkspaceAccount404Type | GetWorkspaceAccount409Type | GetWorkspaceAccount412Type | GetWorkspaceAccount422Type | GetWorkspaceAccount500Type, never>;
 type GetWorkspaceAccount = {
     data: GetWorkspaceAccountQueryResponseType;
-    error: GetWorkspaceAccount400Type | GetWorkspaceAccount401Type | GetWorkspaceAccount404Type | GetWorkspaceAccount422Type | GetWorkspaceAccount429Type | GetWorkspaceAccount500Type | GetWorkspaceAccount503Type;
+    error: GetWorkspaceAccount400Type | GetWorkspaceAccount401Type | GetWorkspaceAccount404Type | GetWorkspaceAccount409Type | GetWorkspaceAccount412Type | GetWorkspaceAccount422Type | GetWorkspaceAccount500Type;
     request: never;
     pathParams: GetWorkspaceAccountPathParamsType;
     queryParams: never;

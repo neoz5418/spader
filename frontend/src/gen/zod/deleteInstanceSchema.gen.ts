@@ -1,6 +1,12 @@
 import { z } from "@/utils/zod.ts";
 import { operationSchema } from "./operationSchema.gen";
-import { errorSchema } from "./errorSchema.gen";
+import { errorInvalidArgumentSchema } from "./errorInvalidArgumentSchema.gen";
+import { errorUnauthorizedSchema } from "./errorUnauthorizedSchema.gen";
+import { errorResourceNotFoundSchema } from "./errorResourceNotFoundSchema.gen";
+import { errorResourceConflictSchema } from "./errorResourceConflictSchema.gen";
+import { errorPreconditionFailedSchema } from "./errorPreconditionFailedSchema.gen";
+import { errorValidationFailedSchema } from "./errorValidationFailedSchema.gen";
+import { errorInternalSchema } from "./errorInternalSchema.gen";
 
 
 export const deleteInstancePathParamsSchema = z.object({ "workspace": z.string(), "zone": z.string(), "name": z.string() });
@@ -13,38 +19,38 @@ export type DeleteInstance200Schema = z.infer<typeof deleteInstance200Schema>;
 /**
  * @description Request error
  */
-export const deleteInstance400Schema = z.lazy(() => errorSchema);
+export const deleteInstance400Schema = z.lazy(() => errorInvalidArgumentSchema);
 export type DeleteInstance400Schema = z.infer<typeof deleteInstance400Schema>;
 /**
  * @description Unauthorized
  */
-export const deleteInstance401Schema = z.lazy(() => errorSchema);
+export const deleteInstance401Schema = z.lazy(() => errorUnauthorizedSchema);
 export type DeleteInstance401Schema = z.infer<typeof deleteInstance401Schema>;
 /**
  * @description Not found
  */
-export const deleteInstance404Schema = z.lazy(() => errorSchema);
+export const deleteInstance404Schema = z.lazy(() => errorResourceNotFoundSchema);
 export type DeleteInstance404Schema = z.infer<typeof deleteInstance404Schema>;
+/**
+ * @description Resource conflict
+ */
+export const deleteInstance409Schema = z.lazy(() => errorResourceConflictSchema);
+export type DeleteInstance409Schema = z.infer<typeof deleteInstance409Schema>;
+/**
+ * @description Precondition failed
+ */
+export const deleteInstance412Schema = z.lazy(() => errorPreconditionFailedSchema);
+export type DeleteInstance412Schema = z.infer<typeof deleteInstance412Schema>;
 /**
  * @description Validation error
  */
-export const deleteInstance422Schema = z.lazy(() => errorSchema);
+export const deleteInstance422Schema = z.lazy(() => errorValidationFailedSchema);
 export type DeleteInstance422Schema = z.infer<typeof deleteInstance422Schema>;
-/**
- * @description Rate limit exceeded
- */
-export const deleteInstance429Schema = z.lazy(() => errorSchema);
-export type DeleteInstance429Schema = z.infer<typeof deleteInstance429Schema>;
 /**
  * @description Internal server error
  */
-export const deleteInstance500Schema = z.lazy(() => errorSchema);
+export const deleteInstance500Schema = z.lazy(() => errorInternalSchema);
 export type DeleteInstance500Schema = z.infer<typeof deleteInstance500Schema>;
-/**
- * @description Service unavailable
- */
-export const deleteInstance503Schema = z.lazy(() => errorSchema);
-export type DeleteInstance503Schema = z.infer<typeof deleteInstance503Schema>;
 /**
  * @description Successful Response
  */

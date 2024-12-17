@@ -1,5 +1,11 @@
 import type { PaginatedListGpuTypeType } from "./PaginatedListGpuTypeType";
-import type { ErrorType } from "./ErrorType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
+import type { ErrorInternalType } from "./ErrorInternalType";
 
  export type ListWorkspaceZoneGpuTypesPathParamsType = {
     /**
@@ -30,31 +36,31 @@ export type ListWorkspaceZoneGpuTypes200Type = PaginatedListGpuTypeType;
 /**
  * @description Request error
 */
-export type ListWorkspaceZoneGpuTypes400Type = ErrorType;
+export type ListWorkspaceZoneGpuTypes400Type = ErrorInvalidArgumentType;
 /**
  * @description Unauthorized
 */
-export type ListWorkspaceZoneGpuTypes401Type = ErrorType;
+export type ListWorkspaceZoneGpuTypes401Type = ErrorUnauthorizedType;
 /**
  * @description Not found
 */
-export type ListWorkspaceZoneGpuTypes404Type = ErrorType;
+export type ListWorkspaceZoneGpuTypes404Type = ErrorResourceNotFoundType;
+/**
+ * @description Resource conflict
+*/
+export type ListWorkspaceZoneGpuTypes409Type = ErrorResourceConflictType;
+/**
+ * @description Precondition failed
+*/
+export type ListWorkspaceZoneGpuTypes412Type = ErrorPreconditionFailedType;
 /**
  * @description Validation error
 */
-export type ListWorkspaceZoneGpuTypes422Type = ErrorType;
-/**
- * @description Rate limit exceeded
-*/
-export type ListWorkspaceZoneGpuTypes429Type = ErrorType;
+export type ListWorkspaceZoneGpuTypes422Type = ErrorValidationFailedType;
 /**
  * @description Internal server error
 */
-export type ListWorkspaceZoneGpuTypes500Type = ErrorType;
-/**
- * @description Service unavailable
-*/
-export type ListWorkspaceZoneGpuTypes503Type = ErrorType;
+export type ListWorkspaceZoneGpuTypes500Type = ErrorInternalType;
 /**
  * @description Successful Response
 */
@@ -63,5 +69,5 @@ export type ListWorkspaceZoneGpuTypesTypeQuery = {
     Response: ListWorkspaceZoneGpuTypesQueryResponseType;
     PathParams: ListWorkspaceZoneGpuTypesPathParamsType;
     QueryParams: ListWorkspaceZoneGpuTypesQueryParamsType;
-    Errors: ListWorkspaceZoneGpuTypes400Type | ListWorkspaceZoneGpuTypes401Type | ListWorkspaceZoneGpuTypes404Type | ListWorkspaceZoneGpuTypes422Type | ListWorkspaceZoneGpuTypes429Type | ListWorkspaceZoneGpuTypes500Type | ListWorkspaceZoneGpuTypes503Type;
+    Errors: ListWorkspaceZoneGpuTypes400Type | ListWorkspaceZoneGpuTypes401Type | ListWorkspaceZoneGpuTypes404Type | ListWorkspaceZoneGpuTypes409Type | ListWorkspaceZoneGpuTypes412Type | ListWorkspaceZoneGpuTypes422Type | ListWorkspaceZoneGpuTypes500Type;
 };

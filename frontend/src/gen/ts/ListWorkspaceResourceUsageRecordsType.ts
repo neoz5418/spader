@@ -1,5 +1,11 @@
 import type { PaginatedListResourceUsageRecordType } from "./PaginatedListResourceUsageRecordType";
-import type { ErrorType } from "./ErrorType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
+import type { ErrorInternalType } from "./ErrorInternalType";
 
  export type ListWorkspaceResourceUsageRecordsPathParamsType = {
     /**
@@ -30,31 +36,31 @@ export type ListWorkspaceResourceUsageRecords200Type = PaginatedListResourceUsag
 /**
  * @description Request error
 */
-export type ListWorkspaceResourceUsageRecords400Type = ErrorType;
+export type ListWorkspaceResourceUsageRecords400Type = ErrorInvalidArgumentType;
 /**
  * @description Unauthorized
 */
-export type ListWorkspaceResourceUsageRecords401Type = ErrorType;
+export type ListWorkspaceResourceUsageRecords401Type = ErrorUnauthorizedType;
 /**
  * @description Not found
 */
-export type ListWorkspaceResourceUsageRecords404Type = ErrorType;
+export type ListWorkspaceResourceUsageRecords404Type = ErrorResourceNotFoundType;
+/**
+ * @description Resource conflict
+*/
+export type ListWorkspaceResourceUsageRecords409Type = ErrorResourceConflictType;
+/**
+ * @description Precondition failed
+*/
+export type ListWorkspaceResourceUsageRecords412Type = ErrorPreconditionFailedType;
 /**
  * @description Validation error
 */
-export type ListWorkspaceResourceUsageRecords422Type = ErrorType;
-/**
- * @description Rate limit exceeded
-*/
-export type ListWorkspaceResourceUsageRecords429Type = ErrorType;
+export type ListWorkspaceResourceUsageRecords422Type = ErrorValidationFailedType;
 /**
  * @description Internal server error
 */
-export type ListWorkspaceResourceUsageRecords500Type = ErrorType;
-/**
- * @description Service unavailable
-*/
-export type ListWorkspaceResourceUsageRecords503Type = ErrorType;
+export type ListWorkspaceResourceUsageRecords500Type = ErrorInternalType;
 /**
  * @description Successful Response
 */
@@ -63,5 +69,5 @@ export type ListWorkspaceResourceUsageRecordsTypeQuery = {
     Response: ListWorkspaceResourceUsageRecordsQueryResponseType;
     PathParams: ListWorkspaceResourceUsageRecordsPathParamsType;
     QueryParams: ListWorkspaceResourceUsageRecordsQueryParamsType;
-    Errors: ListWorkspaceResourceUsageRecords400Type | ListWorkspaceResourceUsageRecords401Type | ListWorkspaceResourceUsageRecords404Type | ListWorkspaceResourceUsageRecords422Type | ListWorkspaceResourceUsageRecords429Type | ListWorkspaceResourceUsageRecords500Type | ListWorkspaceResourceUsageRecords503Type;
+    Errors: ListWorkspaceResourceUsageRecords400Type | ListWorkspaceResourceUsageRecords401Type | ListWorkspaceResourceUsageRecords404Type | ListWorkspaceResourceUsageRecords409Type | ListWorkspaceResourceUsageRecords412Type | ListWorkspaceResourceUsageRecords422Type | ListWorkspaceResourceUsageRecords500Type;
 };

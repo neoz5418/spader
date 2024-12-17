@@ -1,12 +1,12 @@
 import client from "@/utils/client.ts";
 import { useQuery, queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import type { GetUserQuotaQueryResponseType, GetUserQuotaPathParamsType, GetUserQuota400Type, GetUserQuota401Type, GetUserQuota404Type, GetUserQuota422Type, GetUserQuota429Type, GetUserQuota500Type, GetUserQuota503Type } from "../ts/GetUserQuotaType";
+import type { GetUserQuotaQueryResponseType, GetUserQuotaPathParamsType, GetUserQuota400Type, GetUserQuota401Type, GetUserQuota404Type, GetUserQuota409Type, GetUserQuota412Type, GetUserQuota422Type, GetUserQuota500Type } from "../ts/GetUserQuotaType";
 import type { QueryObserverOptions, UseQueryResult, QueryKey, UseSuspenseQueryOptions, UseSuspenseQueryResult } from "@tanstack/react-query";
 
- type GetUserQuotaClient = typeof client<GetUserQuotaQueryResponseType, GetUserQuota400Type | GetUserQuota401Type | GetUserQuota404Type | GetUserQuota422Type | GetUserQuota429Type | GetUserQuota500Type | GetUserQuota503Type, never>;
+ type GetUserQuotaClient = typeof client<GetUserQuotaQueryResponseType, GetUserQuota400Type | GetUserQuota401Type | GetUserQuota404Type | GetUserQuota409Type | GetUserQuota412Type | GetUserQuota422Type | GetUserQuota500Type, never>;
 type GetUserQuota = {
     data: GetUserQuotaQueryResponseType;
-    error: GetUserQuota400Type | GetUserQuota401Type | GetUserQuota404Type | GetUserQuota422Type | GetUserQuota429Type | GetUserQuota500Type | GetUserQuota503Type;
+    error: GetUserQuota400Type | GetUserQuota401Type | GetUserQuota404Type | GetUserQuota409Type | GetUserQuota412Type | GetUserQuota422Type | GetUserQuota500Type;
     request: never;
     pathParams: GetUserQuotaPathParamsType;
     queryParams: never;

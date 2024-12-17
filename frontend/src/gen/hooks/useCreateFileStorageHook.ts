@@ -1,13 +1,13 @@
 import client from "@/utils/client.ts";
 import { useMutation } from "@tanstack/react-query";
 import { useInvalidationForMutation } from "../../useInvalidationForMutation";
-import type { CreateFileStorageMutationRequestType, CreateFileStorageMutationResponseType, CreateFileStoragePathParamsType, CreateFileStorage400Type, CreateFileStorage401Type, CreateFileStorage404Type, CreateFileStorage422Type, CreateFileStorage429Type, CreateFileStorage500Type, CreateFileStorage503Type } from "../ts/CreateFileStorageType";
+import type { CreateFileStorageMutationRequestType, CreateFileStorageMutationResponseType, CreateFileStoragePathParamsType, CreateFileStorage400Type, CreateFileStorage401Type, CreateFileStorage404Type, CreateFileStorage409Type, CreateFileStorage412Type, CreateFileStorage422Type, CreateFileStorage500Type } from "../ts/CreateFileStorageType";
 import type { UseMutationOptions } from "@tanstack/react-query";
 
- type CreateFileStorageClient = typeof client<CreateFileStorageMutationResponseType, CreateFileStorage400Type | CreateFileStorage401Type | CreateFileStorage404Type | CreateFileStorage422Type | CreateFileStorage429Type | CreateFileStorage500Type | CreateFileStorage503Type, CreateFileStorageMutationRequestType>;
+ type CreateFileStorageClient = typeof client<CreateFileStorageMutationResponseType, CreateFileStorage400Type | CreateFileStorage401Type | CreateFileStorage404Type | CreateFileStorage409Type | CreateFileStorage412Type | CreateFileStorage422Type | CreateFileStorage500Type, CreateFileStorageMutationRequestType>;
 type CreateFileStorage = {
     data: CreateFileStorageMutationResponseType;
-    error: CreateFileStorage400Type | CreateFileStorage401Type | CreateFileStorage404Type | CreateFileStorage422Type | CreateFileStorage429Type | CreateFileStorage500Type | CreateFileStorage503Type;
+    error: CreateFileStorage400Type | CreateFileStorage401Type | CreateFileStorage404Type | CreateFileStorage409Type | CreateFileStorage412Type | CreateFileStorage422Type | CreateFileStorage500Type;
     request: CreateFileStorageMutationRequestType;
     pathParams: CreateFileStoragePathParamsType;
     queryParams: never;

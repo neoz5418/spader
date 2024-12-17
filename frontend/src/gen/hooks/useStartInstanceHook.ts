@@ -1,13 +1,13 @@
 import client from "@/utils/client.ts";
 import { useMutation } from "@tanstack/react-query";
 import { useInvalidationForMutation } from "../../useInvalidationForMutation";
-import type { StartInstanceMutationResponseType, StartInstancePathParamsType, StartInstance400Type, StartInstance401Type, StartInstance404Type, StartInstance422Type, StartInstance429Type, StartInstance500Type, StartInstance503Type } from "../ts/StartInstanceType";
+import type { StartInstanceMutationResponseType, StartInstancePathParamsType, StartInstance400Type, StartInstance401Type, StartInstance404Type, StartInstance409Type, StartInstance412Type, StartInstance422Type, StartInstance500Type } from "../ts/StartInstanceType";
 import type { UseMutationOptions } from "@tanstack/react-query";
 
- type StartInstanceClient = typeof client<StartInstanceMutationResponseType, StartInstance400Type | StartInstance401Type | StartInstance404Type | StartInstance422Type | StartInstance429Type | StartInstance500Type | StartInstance503Type, never>;
+ type StartInstanceClient = typeof client<StartInstanceMutationResponseType, StartInstance400Type | StartInstance401Type | StartInstance404Type | StartInstance409Type | StartInstance412Type | StartInstance422Type | StartInstance500Type, never>;
 type StartInstance = {
     data: StartInstanceMutationResponseType;
-    error: StartInstance400Type | StartInstance401Type | StartInstance404Type | StartInstance422Type | StartInstance429Type | StartInstance500Type | StartInstance503Type;
+    error: StartInstance400Type | StartInstance401Type | StartInstance404Type | StartInstance409Type | StartInstance412Type | StartInstance422Type | StartInstance500Type;
     request: never;
     pathParams: StartInstancePathParamsType;
     queryParams: never;

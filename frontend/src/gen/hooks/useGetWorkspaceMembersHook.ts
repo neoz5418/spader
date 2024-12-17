@@ -1,12 +1,12 @@
 import client from "@/utils/client.ts";
 import { useQuery, queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import type { GetWorkspaceMembersQueryResponseType, GetWorkspaceMembersPathParamsType, GetWorkspaceMembers400Type, GetWorkspaceMembers401Type, GetWorkspaceMembers404Type, GetWorkspaceMembers422Type, GetWorkspaceMembers429Type, GetWorkspaceMembers500Type, GetWorkspaceMembers503Type } from "../ts/GetWorkspaceMembersType";
+import type { GetWorkspaceMembersQueryResponseType, GetWorkspaceMembersPathParamsType, GetWorkspaceMembers400Type, GetWorkspaceMembers401Type, GetWorkspaceMembers404Type, GetWorkspaceMembers409Type, GetWorkspaceMembers412Type, GetWorkspaceMembers422Type, GetWorkspaceMembers500Type } from "../ts/GetWorkspaceMembersType";
 import type { QueryObserverOptions, UseQueryResult, QueryKey, UseSuspenseQueryOptions, UseSuspenseQueryResult } from "@tanstack/react-query";
 
- type GetWorkspaceMembersClient = typeof client<GetWorkspaceMembersQueryResponseType, GetWorkspaceMembers400Type | GetWorkspaceMembers401Type | GetWorkspaceMembers404Type | GetWorkspaceMembers422Type | GetWorkspaceMembers429Type | GetWorkspaceMembers500Type | GetWorkspaceMembers503Type, never>;
+ type GetWorkspaceMembersClient = typeof client<GetWorkspaceMembersQueryResponseType, GetWorkspaceMembers400Type | GetWorkspaceMembers401Type | GetWorkspaceMembers404Type | GetWorkspaceMembers409Type | GetWorkspaceMembers412Type | GetWorkspaceMembers422Type | GetWorkspaceMembers500Type, never>;
 type GetWorkspaceMembers = {
     data: GetWorkspaceMembersQueryResponseType;
-    error: GetWorkspaceMembers400Type | GetWorkspaceMembers401Type | GetWorkspaceMembers404Type | GetWorkspaceMembers422Type | GetWorkspaceMembers429Type | GetWorkspaceMembers500Type | GetWorkspaceMembers503Type;
+    error: GetWorkspaceMembers400Type | GetWorkspaceMembers401Type | GetWorkspaceMembers404Type | GetWorkspaceMembers409Type | GetWorkspaceMembers412Type | GetWorkspaceMembers422Type | GetWorkspaceMembers500Type;
     request: never;
     pathParams: GetWorkspaceMembersPathParamsType;
     queryParams: never;

@@ -26,7 +26,7 @@ interface UserAuthFormProps extends HTMLAttributes<HTMLDivElement> {}
 
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
-  const { loginMutation, error, resetError } = useAuth()
+  const { loginMutation, error: loginError, resetError } = useAuth()
   const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate()
 
@@ -41,7 +41,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 
 
   async function onSubmit(data: BodyLoginLoginAccessTokenSchema) {
-    console.log("onSubmit",error)
+    console.log("onSubmit", loginError)
     if (isLoading) return
 
     resetError()
@@ -51,8 +51,10 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 
     try {
       await loginMutation.mutateAsync(data)
+      console.log("loginMutation")
     } catch {
       // error is handled by useAuth hook
+      console.log("loginMutation error")
     }
 
     setIsLoading(false)
@@ -101,7 +103,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
             <Button className='mt-2' loading={isLoading}>
               登录
             </Button>
-           {error && <FormMessage>{error}</FormMessage>}
+           {loginError && <FormMessage>{loginError}</FormMessage>}
             <div className='relative my-2'>
               <div className='absolute inset-0 flex items-center'>
                 <span className='w-full border-t' />

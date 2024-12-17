@@ -80,33 +80,32 @@ const useAuth = () => {
       })
       setRefreshToken(response.refresh_token)
       setAccessToken(response.access_token)
+      showToast("登录成功", "You have been logged in successfully.", "success")
+      navigate( "/" )
     }catch(err) {
       const error = err as ApiError ;
-      setError(error.message)
+      showToast("登录失败", error.message, "error")
+      setError("登录失败, 请检查邮箱和密码")
     }
   }
 
   const loginMutation = useMutation({
     mutationFn: login,
-    onSuccess: () => {
-      showToast("登录成功", "You have been logged in successfully.", "success")
-      navigate( "/" )
-    },
-    onError: (err: AxiosError) => {
-      let data = err.response?.data
-      let errDetail = (data as any)?.detail
+    // onError: (err: AxiosError) => {
+    //   let data = err.response?.data
+    //   let errDetail = (data as any)?.detail
 
-      if (err instanceof AxiosError) {
-        errDetail = err.response?.data
-      }
+    //   if (err instanceof AxiosError) {
+    //     errDetail = err.response?.data
+    //   }
 
-      if (Array.isArray(errDetail)) {
-        errDetail = "Something went wrong"
-      }
+    //   if (Array.isArray(errDetail)) {
+    //     errDetail = "Something went wrong"
+    //   }
 
-      showToast("登录失败", errDetail, "error")
-      setError(errDetail)
-    },
+    //   showToast("登录失败", errDetail, "error")
+    //   setError(errDetail)
+    // },
   })
 
   const refreshToken = async () => {
@@ -147,7 +146,7 @@ const useAuth = () => {
           if (e.status !== 200) {
               localStorage.removeItem('access_token')
               localStorage.removeItem('refresh_token')
-              navigate("/login")
+              navigate("/sign-in")
               return
           }
       }

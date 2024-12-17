@@ -11,7 +11,7 @@ export default function Loading() {
     if (currentUser) {
     navigate(`/workspaces/`)
   } else {
-    navigate('/login')
+    navigate('/sign-in')
   }
   }, [currentUser, navigate, isLoading])
   if (isLoading) {

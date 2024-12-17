@@ -1,11 +1,18 @@
 import type { OperationType } from "./OperationType";
-import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
-import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType } from "./ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType";
 import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
-import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
-import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
-import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 import type { ErrorInternalType } from "./ErrorInternalType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorPasswordMismatchType } from "./ErrorPasswordMismatchType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorRefreshTokenCannotBeEmptyType } from "./ErrorRefreshTokenCannotBeEmptyType";
+import type { ErrorRefreshTokenExpiredType } from "./ErrorRefreshTokenExpiredType";
+import type { ErrorRefreshTokenInvalidType } from "./ErrorRefreshTokenInvalidType";
+import type { ErrorRequestValidationFailedType } from "./ErrorRequestValidationFailedType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorUsernameOrEmailCannotBeEmptyType } from "./ErrorUsernameOrEmailCannotBeEmptyType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 
  export type DeleteInstancePathParamsType = {
     /**
@@ -26,33 +33,9 @@ import type { ErrorInternalType } from "./ErrorInternalType";
 */
 export type DeleteInstance200Type = OperationType;
 /**
- * @description Request error
+ * @description Unprocessable Entity
 */
-export type DeleteInstance400Type = ErrorInvalidArgumentType;
-/**
- * @description Unauthorized
-*/
-export type DeleteInstance401Type = ErrorUnauthorizedType;
-/**
- * @description Not found
-*/
-export type DeleteInstance404Type = ErrorResourceNotFoundType;
-/**
- * @description Resource conflict
-*/
-export type DeleteInstance409Type = ErrorResourceConflictType;
-/**
- * @description Precondition failed
-*/
-export type DeleteInstance412Type = ErrorPreconditionFailedType;
-/**
- * @description Validation error
-*/
-export type DeleteInstance422Type = ErrorValidationFailedType;
-/**
- * @description Internal server error
-*/
-export type DeleteInstance500Type = ErrorInternalType;
+export type DeleteInstance422Type = (ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType | ErrorResourceNotFoundType | ErrorInternalType | ErrorInvalidArgumentType | ErrorPasswordMismatchType | ErrorPreconditionFailedType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorRequestValidationFailedType | ErrorResourceConflictType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
 /**
  * @description Successful Response
 */
@@ -60,5 +43,5 @@ export type DeleteInstanceMutationResponseType = OperationType;
 export type DeleteInstanceTypeMutation = {
     Response: DeleteInstanceMutationResponseType;
     PathParams: DeleteInstancePathParamsType;
-    Errors: DeleteInstance400Type | DeleteInstance401Type | DeleteInstance404Type | DeleteInstance409Type | DeleteInstance412Type | DeleteInstance422Type | DeleteInstance500Type;
+    Errors: DeleteInstance422Type;
 };

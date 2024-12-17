@@ -1,12 +1,19 @@
 import { z } from "@/utils/zod.ts";
 import { operationSchema } from "./operationSchema.gen";
-import { errorInvalidArgumentSchema } from "./errorInvalidArgumentSchema.gen";
-import { errorUnauthorizedSchema } from "./errorUnauthorizedSchema.gen";
+import { errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema } from "./errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema.gen";
 import { errorResourceNotFoundSchema } from "./errorResourceNotFoundSchema.gen";
-import { errorResourceConflictSchema } from "./errorResourceConflictSchema.gen";
-import { errorPreconditionFailedSchema } from "./errorPreconditionFailedSchema.gen";
-import { errorValidationFailedSchema } from "./errorValidationFailedSchema.gen";
 import { errorInternalSchema } from "./errorInternalSchema.gen";
+import { errorInvalidArgumentSchema } from "./errorInvalidArgumentSchema.gen";
+import { errorPasswordMismatchSchema } from "./errorPasswordMismatchSchema.gen";
+import { errorPreconditionFailedSchema } from "./errorPreconditionFailedSchema.gen";
+import { errorRefreshTokenCannotBeEmptySchema } from "./errorRefreshTokenCannotBeEmptySchema.gen";
+import { errorRefreshTokenExpiredSchema } from "./errorRefreshTokenExpiredSchema.gen";
+import { errorRefreshTokenInvalidSchema } from "./errorRefreshTokenInvalidSchema.gen";
+import { errorRequestValidationFailedSchema } from "./errorRequestValidationFailedSchema.gen";
+import { errorResourceConflictSchema } from "./errorResourceConflictSchema.gen";
+import { errorUnauthorizedSchema } from "./errorUnauthorizedSchema.gen";
+import { errorUsernameOrEmailCannotBeEmptySchema } from "./errorUsernameOrEmailCannotBeEmptySchema.gen";
+import { errorValidationFailedSchema } from "./errorValidationFailedSchema.gen";
 import { createInstanceRequestSchema } from "./createInstanceRequestSchema.gen";
 
 
@@ -18,40 +25,10 @@ export type CreateInstancePathParamsSchema = z.infer<typeof createInstancePathPa
 export const createInstance201Schema = z.lazy(() => operationSchema);
 export type CreateInstance201Schema = z.infer<typeof createInstance201Schema>;
 /**
- * @description Request error
+ * @description Unprocessable Entity
  */
-export const createInstance400Schema = z.lazy(() => errorInvalidArgumentSchema);
-export type CreateInstance400Schema = z.infer<typeof createInstance400Schema>;
-/**
- * @description Unauthorized
- */
-export const createInstance401Schema = z.lazy(() => errorUnauthorizedSchema);
-export type CreateInstance401Schema = z.infer<typeof createInstance401Schema>;
-/**
- * @description Not found
- */
-export const createInstance404Schema = z.lazy(() => errorResourceNotFoundSchema);
-export type CreateInstance404Schema = z.infer<typeof createInstance404Schema>;
-/**
- * @description Resource conflict
- */
-export const createInstance409Schema = z.lazy(() => errorResourceConflictSchema);
-export type CreateInstance409Schema = z.infer<typeof createInstance409Schema>;
-/**
- * @description Precondition failed
- */
-export const createInstance412Schema = z.lazy(() => errorPreconditionFailedSchema);
-export type CreateInstance412Schema = z.infer<typeof createInstance412Schema>;
-/**
- * @description Validation error
- */
-export const createInstance422Schema = z.lazy(() => errorValidationFailedSchema);
+export const createInstance422Schema = z.union([z.lazy(() => errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema), z.lazy(() => errorResourceNotFoundSchema), z.lazy(() => errorInternalSchema), z.lazy(() => errorInvalidArgumentSchema), z.lazy(() => errorPasswordMismatchSchema), z.lazy(() => errorPreconditionFailedSchema), z.lazy(() => errorRefreshTokenCannotBeEmptySchema), z.lazy(() => errorRefreshTokenExpiredSchema), z.lazy(() => errorRefreshTokenInvalidSchema), z.lazy(() => errorRequestValidationFailedSchema), z.lazy(() => errorResourceConflictSchema), z.lazy(() => errorUnauthorizedSchema), z.lazy(() => errorUsernameOrEmailCannotBeEmptySchema), z.lazy(() => errorValidationFailedSchema)]);
 export type CreateInstance422Schema = z.infer<typeof createInstance422Schema>;
-/**
- * @description Internal server error
- */
-export const createInstance500Schema = z.lazy(() => errorInternalSchema);
-export type CreateInstance500Schema = z.infer<typeof createInstance500Schema>;
 
  export const createInstanceMutationRequestSchema = z.lazy(() => createInstanceRequestSchema);
 export type CreateInstanceMutationRequestSchema = z.infer<typeof createInstanceMutationRequestSchema>;

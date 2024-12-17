@@ -1,38 +1,15 @@
-import type { LocalizedMessageType } from "./LocalizedMessageType";
-
- export type ErrorInvalidArgumentType = {
+export const errorInvalidArgumentType = {
+    "InvalidArgument": "InvalidArgument"
+} as const;
+export type ErrorInvalidArgumentTypeType = (typeof errorInvalidArgumentType)[keyof typeof errorInvalidArgumentType];
+export type ErrorInvalidArgumentType = {
     /**
-     * @default "invalid_argument"
-     * @type string | undefined
+     * @type string
     */
-    type?: string;
+    type: ErrorInvalidArgumentTypeType;
     /**
-     * @default [object Object]
-     * @type object | undefined
+     * @type string
     */
-    metadata?: object;
-    /**
-     * @default "Invalid argument"
-     * @type string | undefined
-    */
-    msg?: string;
-    /**
-     * @type array
-    */
-    loc: (string | number)[];
-    input: (string | object | number);
-    /**
-     * @type object | undefined
-    */
-    i18n?: LocalizedMessageType;
-    /**
-     * @default 400
-     * @type integer | undefined
-    */
-    status_code?: number;
-    /**
-     * @default "invalid_argument"
-     * @type string | undefined
-    */
-    message?: string;
+    loc: string;
+    input: any;
 };

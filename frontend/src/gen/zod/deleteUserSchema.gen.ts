@@ -1,11 +1,18 @@
 import { z } from "@/utils/zod.ts";
-import { errorInvalidArgumentSchema } from "./errorInvalidArgumentSchema.gen";
-import { errorUnauthorizedSchema } from "./errorUnauthorizedSchema.gen";
+import { errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema } from "./errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema.gen";
 import { errorResourceNotFoundSchema } from "./errorResourceNotFoundSchema.gen";
-import { errorResourceConflictSchema } from "./errorResourceConflictSchema.gen";
-import { errorPreconditionFailedSchema } from "./errorPreconditionFailedSchema.gen";
-import { errorValidationFailedSchema } from "./errorValidationFailedSchema.gen";
 import { errorInternalSchema } from "./errorInternalSchema.gen";
+import { errorInvalidArgumentSchema } from "./errorInvalidArgumentSchema.gen";
+import { errorPasswordMismatchSchema } from "./errorPasswordMismatchSchema.gen";
+import { errorPreconditionFailedSchema } from "./errorPreconditionFailedSchema.gen";
+import { errorRefreshTokenCannotBeEmptySchema } from "./errorRefreshTokenCannotBeEmptySchema.gen";
+import { errorRefreshTokenExpiredSchema } from "./errorRefreshTokenExpiredSchema.gen";
+import { errorRefreshTokenInvalidSchema } from "./errorRefreshTokenInvalidSchema.gen";
+import { errorRequestValidationFailedSchema } from "./errorRequestValidationFailedSchema.gen";
+import { errorResourceConflictSchema } from "./errorResourceConflictSchema.gen";
+import { errorUnauthorizedSchema } from "./errorUnauthorizedSchema.gen";
+import { errorUsernameOrEmailCannotBeEmptySchema } from "./errorUsernameOrEmailCannotBeEmptySchema.gen";
+import { errorValidationFailedSchema } from "./errorValidationFailedSchema.gen";
 
 
 export const deleteUserPathParamsSchema = z.object({ "username": z.string() });
@@ -16,40 +23,10 @@ export type DeleteUserPathParamsSchema = z.infer<typeof deleteUserPathParamsSche
 export const deleteUser204Schema = z.any();
 export type DeleteUser204Schema = z.infer<typeof deleteUser204Schema>;
 /**
- * @description Request error
+ * @description Unprocessable Entity
  */
-export const deleteUser400Schema = z.lazy(() => errorInvalidArgumentSchema);
-export type DeleteUser400Schema = z.infer<typeof deleteUser400Schema>;
-/**
- * @description Unauthorized
- */
-export const deleteUser401Schema = z.lazy(() => errorUnauthorizedSchema);
-export type DeleteUser401Schema = z.infer<typeof deleteUser401Schema>;
-/**
- * @description Not found
- */
-export const deleteUser404Schema = z.lazy(() => errorResourceNotFoundSchema);
-export type DeleteUser404Schema = z.infer<typeof deleteUser404Schema>;
-/**
- * @description Resource conflict
- */
-export const deleteUser409Schema = z.lazy(() => errorResourceConflictSchema);
-export type DeleteUser409Schema = z.infer<typeof deleteUser409Schema>;
-/**
- * @description Precondition failed
- */
-export const deleteUser412Schema = z.lazy(() => errorPreconditionFailedSchema);
-export type DeleteUser412Schema = z.infer<typeof deleteUser412Schema>;
-/**
- * @description Validation error
- */
-export const deleteUser422Schema = z.lazy(() => errorValidationFailedSchema);
+export const deleteUser422Schema = z.union([z.lazy(() => errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema), z.lazy(() => errorResourceNotFoundSchema), z.lazy(() => errorInternalSchema), z.lazy(() => errorInvalidArgumentSchema), z.lazy(() => errorPasswordMismatchSchema), z.lazy(() => errorPreconditionFailedSchema), z.lazy(() => errorRefreshTokenCannotBeEmptySchema), z.lazy(() => errorRefreshTokenExpiredSchema), z.lazy(() => errorRefreshTokenInvalidSchema), z.lazy(() => errorRequestValidationFailedSchema), z.lazy(() => errorResourceConflictSchema), z.lazy(() => errorUnauthorizedSchema), z.lazy(() => errorUsernameOrEmailCannotBeEmptySchema), z.lazy(() => errorValidationFailedSchema)]);
 export type DeleteUser422Schema = z.infer<typeof deleteUser422Schema>;
-/**
- * @description Internal server error
- */
-export const deleteUser500Schema = z.lazy(() => errorInternalSchema);
-export type DeleteUser500Schema = z.infer<typeof deleteUser500Schema>;
 
  export const deleteUserMutationResponseSchema = z.any();
 export type DeleteUserMutationResponseSchema = z.infer<typeof deleteUserMutationResponseSchema>;

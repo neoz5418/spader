@@ -1,13 +1,13 @@
 import client from "@/utils/client.ts";
 import { useMutation } from "@tanstack/react-query";
 import { useInvalidationForMutation } from "../../useInvalidationForMutation";
-import type { DeleteWorkspaceMutationResponseType, DeleteWorkspacePathParamsType, DeleteWorkspace400Type, DeleteWorkspace401Type, DeleteWorkspace404Type, DeleteWorkspace409Type, DeleteWorkspace412Type, DeleteWorkspace422Type, DeleteWorkspace500Type } from "../ts/DeleteWorkspaceType";
+import type { DeleteWorkspaceMutationResponseType, DeleteWorkspacePathParamsType, DeleteWorkspace422Type } from "../ts/DeleteWorkspaceType";
 import type { UseMutationOptions } from "@tanstack/react-query";
 
- type DeleteWorkspaceClient = typeof client<DeleteWorkspaceMutationResponseType, DeleteWorkspace400Type | DeleteWorkspace401Type | DeleteWorkspace404Type | DeleteWorkspace409Type | DeleteWorkspace412Type | DeleteWorkspace422Type | DeleteWorkspace500Type, never>;
+ type DeleteWorkspaceClient = typeof client<DeleteWorkspaceMutationResponseType, DeleteWorkspace422Type, never>;
 type DeleteWorkspace = {
     data: DeleteWorkspaceMutationResponseType;
-    error: DeleteWorkspace400Type | DeleteWorkspace401Type | DeleteWorkspace404Type | DeleteWorkspace409Type | DeleteWorkspace412Type | DeleteWorkspace422Type | DeleteWorkspace500Type;
+    error: DeleteWorkspace422Type;
     request: never;
     pathParams: DeleteWorkspacePathParamsType;
     queryParams: never;

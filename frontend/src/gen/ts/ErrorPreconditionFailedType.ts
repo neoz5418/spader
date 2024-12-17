@@ -1,18 +1,10 @@
-import type { TypeType } from "./TypeType";
-
- export type ErrorPreconditionFailedType = {
-    /**
-     * @default 412
-     * @type integer | undefined
-    */
-    status_code?: number;
-    /**
-     * @default "precondition_failed"
-     * @type string | undefined
-    */
-    message?: string;
+export const errorPreconditionFailedType = {
+    "PreconditionFailed": "PreconditionFailed"
+} as const;
+export type ErrorPreconditionFailedTypeType = (typeof errorPreconditionFailedType)[keyof typeof errorPreconditionFailedType];
+export type ErrorPreconditionFailedType = {
     /**
      * @type string
     */
-    type: TypeType;
+    type: ErrorPreconditionFailedTypeType;
 };

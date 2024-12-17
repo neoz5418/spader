@@ -1,13 +1,20 @@
 import type { ListWorkspacesSortOptionsType } from "./ListWorkspacesSortOptionsType";
 import type { DirectionType } from "./DirectionType";
 import type { PaginatedListWorkspaceType } from "./PaginatedListWorkspaceType";
-import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
-import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType } from "./ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType";
 import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
-import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
-import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
-import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 import type { ErrorInternalType } from "./ErrorInternalType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorPasswordMismatchType } from "./ErrorPasswordMismatchType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorRefreshTokenCannotBeEmptyType } from "./ErrorRefreshTokenCannotBeEmptyType";
+import type { ErrorRefreshTokenExpiredType } from "./ErrorRefreshTokenExpiredType";
+import type { ErrorRefreshTokenInvalidType } from "./ErrorRefreshTokenInvalidType";
+import type { ErrorRequestValidationFailedType } from "./ErrorRequestValidationFailedType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorUsernameOrEmailCannotBeEmptyType } from "./ErrorUsernameOrEmailCannotBeEmptyType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 
  export type ListWorkspacesQueryParamsType = {
     /**
@@ -34,33 +41,9 @@ import type { ErrorInternalType } from "./ErrorInternalType";
 */
 export type ListWorkspaces200Type = PaginatedListWorkspaceType;
 /**
- * @description Request error
+ * @description Unprocessable Entity
 */
-export type ListWorkspaces400Type = ErrorInvalidArgumentType;
-/**
- * @description Unauthorized
-*/
-export type ListWorkspaces401Type = ErrorUnauthorizedType;
-/**
- * @description Not found
-*/
-export type ListWorkspaces404Type = ErrorResourceNotFoundType;
-/**
- * @description Resource conflict
-*/
-export type ListWorkspaces409Type = ErrorResourceConflictType;
-/**
- * @description Precondition failed
-*/
-export type ListWorkspaces412Type = ErrorPreconditionFailedType;
-/**
- * @description Validation error
-*/
-export type ListWorkspaces422Type = ErrorValidationFailedType;
-/**
- * @description Internal server error
-*/
-export type ListWorkspaces500Type = ErrorInternalType;
+export type ListWorkspaces422Type = (ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType | ErrorResourceNotFoundType | ErrorInternalType | ErrorInvalidArgumentType | ErrorPasswordMismatchType | ErrorPreconditionFailedType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorRequestValidationFailedType | ErrorResourceConflictType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
 /**
  * @description Successful Response
 */
@@ -68,5 +51,5 @@ export type ListWorkspacesQueryResponseType = PaginatedListWorkspaceType;
 export type ListWorkspacesTypeQuery = {
     Response: ListWorkspacesQueryResponseType;
     QueryParams: ListWorkspacesQueryParamsType;
-    Errors: ListWorkspaces400Type | ListWorkspaces401Type | ListWorkspaces404Type | ListWorkspaces409Type | ListWorkspaces412Type | ListWorkspaces422Type | ListWorkspaces500Type;
+    Errors: ListWorkspaces422Type;
 };

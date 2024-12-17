@@ -1,13 +1,13 @@
 import client from "@/utils/client.ts";
 import { useMutation } from "@tanstack/react-query";
 import { useInvalidationForMutation } from "../../useInvalidationForMutation";
-import type { CreateInstancePortForwardMutationRequestType, CreateInstancePortForwardMutationResponseType, CreateInstancePortForwardPathParamsType, CreateInstancePortForward400Type, CreateInstancePortForward401Type, CreateInstancePortForward404Type, CreateInstancePortForward409Type, CreateInstancePortForward412Type, CreateInstancePortForward422Type, CreateInstancePortForward500Type } from "../ts/CreateInstancePortForwardType";
+import type { CreateInstancePortForwardMutationRequestType, CreateInstancePortForwardMutationResponseType, CreateInstancePortForwardPathParamsType, CreateInstancePortForward422Type } from "../ts/CreateInstancePortForwardType";
 import type { UseMutationOptions } from "@tanstack/react-query";
 
- type CreateInstancePortForwardClient = typeof client<CreateInstancePortForwardMutationResponseType, CreateInstancePortForward400Type | CreateInstancePortForward401Type | CreateInstancePortForward404Type | CreateInstancePortForward409Type | CreateInstancePortForward412Type | CreateInstancePortForward422Type | CreateInstancePortForward500Type, CreateInstancePortForwardMutationRequestType>;
+ type CreateInstancePortForwardClient = typeof client<CreateInstancePortForwardMutationResponseType, CreateInstancePortForward422Type, CreateInstancePortForwardMutationRequestType>;
 type CreateInstancePortForward = {
     data: CreateInstancePortForwardMutationResponseType;
-    error: CreateInstancePortForward400Type | CreateInstancePortForward401Type | CreateInstancePortForward404Type | CreateInstancePortForward409Type | CreateInstancePortForward412Type | CreateInstancePortForward422Type | CreateInstancePortForward500Type;
+    error: CreateInstancePortForward422Type;
     request: CreateInstancePortForwardMutationRequestType;
     pathParams: CreateInstancePortForwardPathParamsType;
     queryParams: never;

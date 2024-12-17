@@ -1,14 +1,12 @@
+export const errorResourceConflictType = {
+    "ResourceConflict": "ResourceConflict"
+} as const;
+export type ErrorResourceConflictTypeType = (typeof errorResourceConflictType)[keyof typeof errorResourceConflictType];
 export type ErrorResourceConflictType = {
     /**
-     * @default 409
-     * @type integer | undefined
+     * @type string
     */
-    status_code?: number;
-    /**
-     * @default "resource_conflict"
-     * @type string | undefined
-    */
-    message?: string;
+    type: ErrorResourceConflictTypeType;
     input: (string | object | number);
     /**
      * @type array

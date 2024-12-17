@@ -1,14 +1,12 @@
+export const errorResourceNotFoundType = {
+    "ResourceNotFound": "ResourceNotFound"
+} as const;
+export type ErrorResourceNotFoundTypeType = (typeof errorResourceNotFoundType)[keyof typeof errorResourceNotFoundType];
 export type ErrorResourceNotFoundType = {
     /**
-     * @default 404
-     * @type integer | undefined
+     * @type string
     */
-    status_code?: number;
-    /**
-     * @default "resource_not_found"
-     * @type string | undefined
-    */
-    message?: string;
+    type: ErrorResourceNotFoundTypeType;
     /**
      * @type string
     */

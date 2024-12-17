@@ -165,6 +165,7 @@ async def check_user_register_info(
 
     except EmailNotValidError:
         raise ErrorValidationFailed(
+            type="ValidationFailed",
             details=[
                 ArgumentDetail(
                     type="email_invalid",
@@ -173,7 +174,7 @@ async def check_user_register_info(
                     input=email,
                     i18n=None,
                 )
-            ]
+            ],
         ).to_exception()
 
     # check user exists
@@ -181,13 +182,19 @@ async def check_user_register_info(
     db_user = (await session.exec(statement)).first()
     if db_user is not None:
         raise ErrorResourceConflict(
-            input=email, loc=["body", "email"], resource_name="user"
+            type="ResourceConflict",
+            input=email,
+            loc=["body", "email"],
+            resource_name="user",
         ).to_exception()
     statement = select(User).where(User.name == name)
     db_user = (await session.exec(statement)).first()
     if db_user is not None:
         raise ErrorResourceConflict(
-            input=name, loc=["body", "name"], resource_name="user"
+            type="ResourceConflict",
+            input=name,
+            loc=["body", "name"],
+            resource_name="user",
         ).to_exception()
 
 
@@ -211,6 +218,7 @@ async def register_user(
     )
     if not otp or otp != str(register_user_request.one_time_password):
         raise ErrorInvalidArgument(
+            type="InvalidArgument",
             input=register_user_request.one_time_password,
             loc=["body", "one_time_password"],
         ).to_exception()

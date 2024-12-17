@@ -1,11 +1,18 @@
 import { z } from "@/utils/zod.ts";
-import { errorInvalidArgumentSchema } from "./errorInvalidArgumentSchema.gen";
-import { errorUnauthorizedSchema } from "./errorUnauthorizedSchema.gen";
+import { errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema } from "./errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema.gen";
 import { errorResourceNotFoundSchema } from "./errorResourceNotFoundSchema.gen";
-import { errorResourceConflictSchema } from "./errorResourceConflictSchema.gen";
-import { errorPreconditionFailedSchema } from "./errorPreconditionFailedSchema.gen";
-import { errorValidationFailedSchema } from "./errorValidationFailedSchema.gen";
 import { errorInternalSchema } from "./errorInternalSchema.gen";
+import { errorInvalidArgumentSchema } from "./errorInvalidArgumentSchema.gen";
+import { errorPasswordMismatchSchema } from "./errorPasswordMismatchSchema.gen";
+import { errorPreconditionFailedSchema } from "./errorPreconditionFailedSchema.gen";
+import { errorRefreshTokenCannotBeEmptySchema } from "./errorRefreshTokenCannotBeEmptySchema.gen";
+import { errorRefreshTokenExpiredSchema } from "./errorRefreshTokenExpiredSchema.gen";
+import { errorRefreshTokenInvalidSchema } from "./errorRefreshTokenInvalidSchema.gen";
+import { errorRequestValidationFailedSchema } from "./errorRequestValidationFailedSchema.gen";
+import { errorResourceConflictSchema } from "./errorResourceConflictSchema.gen";
+import { errorUnauthorizedSchema } from "./errorUnauthorizedSchema.gen";
+import { errorUsernameOrEmailCannotBeEmptySchema } from "./errorUsernameOrEmailCannotBeEmptySchema.gen";
+import { errorValidationFailedSchema } from "./errorValidationFailedSchema.gen";
 
 
 export const deleteWorkspaceSshKeysPathParamsSchema = z.object({ "workspace": z.string(), "name": z.string() });
@@ -16,40 +23,10 @@ export type DeleteWorkspaceSshKeysPathParamsSchema = z.infer<typeof deleteWorksp
 export const deleteWorkspaceSshKeys204Schema = z.any();
 export type DeleteWorkspaceSshKeys204Schema = z.infer<typeof deleteWorkspaceSshKeys204Schema>;
 /**
- * @description Request error
+ * @description Unprocessable Entity
  */
-export const deleteWorkspaceSshKeys400Schema = z.lazy(() => errorInvalidArgumentSchema);
-export type DeleteWorkspaceSshKeys400Schema = z.infer<typeof deleteWorkspaceSshKeys400Schema>;
-/**
- * @description Unauthorized
- */
-export const deleteWorkspaceSshKeys401Schema = z.lazy(() => errorUnauthorizedSchema);
-export type DeleteWorkspaceSshKeys401Schema = z.infer<typeof deleteWorkspaceSshKeys401Schema>;
-/**
- * @description Not found
- */
-export const deleteWorkspaceSshKeys404Schema = z.lazy(() => errorResourceNotFoundSchema);
-export type DeleteWorkspaceSshKeys404Schema = z.infer<typeof deleteWorkspaceSshKeys404Schema>;
-/**
- * @description Resource conflict
- */
-export const deleteWorkspaceSshKeys409Schema = z.lazy(() => errorResourceConflictSchema);
-export type DeleteWorkspaceSshKeys409Schema = z.infer<typeof deleteWorkspaceSshKeys409Schema>;
-/**
- * @description Precondition failed
- */
-export const deleteWorkspaceSshKeys412Schema = z.lazy(() => errorPreconditionFailedSchema);
-export type DeleteWorkspaceSshKeys412Schema = z.infer<typeof deleteWorkspaceSshKeys412Schema>;
-/**
- * @description Validation error
- */
-export const deleteWorkspaceSshKeys422Schema = z.lazy(() => errorValidationFailedSchema);
+export const deleteWorkspaceSshKeys422Schema = z.union([z.lazy(() => errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema), z.lazy(() => errorResourceNotFoundSchema), z.lazy(() => errorInternalSchema), z.lazy(() => errorInvalidArgumentSchema), z.lazy(() => errorPasswordMismatchSchema), z.lazy(() => errorPreconditionFailedSchema), z.lazy(() => errorRefreshTokenCannotBeEmptySchema), z.lazy(() => errorRefreshTokenExpiredSchema), z.lazy(() => errorRefreshTokenInvalidSchema), z.lazy(() => errorRequestValidationFailedSchema), z.lazy(() => errorResourceConflictSchema), z.lazy(() => errorUnauthorizedSchema), z.lazy(() => errorUsernameOrEmailCannotBeEmptySchema), z.lazy(() => errorValidationFailedSchema)]);
 export type DeleteWorkspaceSshKeys422Schema = z.infer<typeof deleteWorkspaceSshKeys422Schema>;
-/**
- * @description Internal server error
- */
-export const deleteWorkspaceSshKeys500Schema = z.lazy(() => errorInternalSchema);
-export type DeleteWorkspaceSshKeys500Schema = z.infer<typeof deleteWorkspaceSshKeys500Schema>;
 
  export const deleteWorkspaceSshKeysMutationResponseSchema = z.any();
 export type DeleteWorkspaceSshKeysMutationResponseSchema = z.infer<typeof deleteWorkspaceSshKeysMutationResponseSchema>;

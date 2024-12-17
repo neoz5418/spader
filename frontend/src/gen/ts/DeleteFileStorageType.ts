@@ -1,11 +1,18 @@
 import type { OperationType } from "./OperationType";
-import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
-import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType } from "./ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType";
 import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
-import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
-import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
-import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 import type { ErrorInternalType } from "./ErrorInternalType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorPasswordMismatchType } from "./ErrorPasswordMismatchType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorRefreshTokenCannotBeEmptyType } from "./ErrorRefreshTokenCannotBeEmptyType";
+import type { ErrorRefreshTokenExpiredType } from "./ErrorRefreshTokenExpiredType";
+import type { ErrorRefreshTokenInvalidType } from "./ErrorRefreshTokenInvalidType";
+import type { ErrorRequestValidationFailedType } from "./ErrorRequestValidationFailedType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorUsernameOrEmailCannotBeEmptyType } from "./ErrorUsernameOrEmailCannotBeEmptyType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 
  export type DeleteFileStoragePathParamsType = {
     /**
@@ -26,33 +33,9 @@ import type { ErrorInternalType } from "./ErrorInternalType";
 */
 export type DeleteFileStorage200Type = OperationType;
 /**
- * @description Request error
+ * @description Unprocessable Entity
 */
-export type DeleteFileStorage400Type = ErrorInvalidArgumentType;
-/**
- * @description Unauthorized
-*/
-export type DeleteFileStorage401Type = ErrorUnauthorizedType;
-/**
- * @description Not found
-*/
-export type DeleteFileStorage404Type = ErrorResourceNotFoundType;
-/**
- * @description Resource conflict
-*/
-export type DeleteFileStorage409Type = ErrorResourceConflictType;
-/**
- * @description Precondition failed
-*/
-export type DeleteFileStorage412Type = ErrorPreconditionFailedType;
-/**
- * @description Validation error
-*/
-export type DeleteFileStorage422Type = ErrorValidationFailedType;
-/**
- * @description Internal server error
-*/
-export type DeleteFileStorage500Type = ErrorInternalType;
+export type DeleteFileStorage422Type = (ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType | ErrorResourceNotFoundType | ErrorInternalType | ErrorInvalidArgumentType | ErrorPasswordMismatchType | ErrorPreconditionFailedType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorRequestValidationFailedType | ErrorResourceConflictType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
 /**
  * @description Successful Response
 */
@@ -60,5 +43,5 @@ export type DeleteFileStorageMutationResponseType = OperationType;
 export type DeleteFileStorageTypeMutation = {
     Response: DeleteFileStorageMutationResponseType;
     PathParams: DeleteFileStoragePathParamsType;
-    Errors: DeleteFileStorage400Type | DeleteFileStorage401Type | DeleteFileStorage404Type | DeleteFileStorage409Type | DeleteFileStorage412Type | DeleteFileStorage422Type | DeleteFileStorage500Type;
+    Errors: DeleteFileStorage422Type;
 };

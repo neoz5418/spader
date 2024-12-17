@@ -1,13 +1,13 @@
 import client from "@/utils/client.ts";
 import { useMutation } from "@tanstack/react-query";
 import { useInvalidationForMutation } from "../../useInvalidationForMutation";
-import type { DeleteInstancePortForwardMutationResponseType, DeleteInstancePortForwardPathParamsType, DeleteInstancePortForward400Type, DeleteInstancePortForward401Type, DeleteInstancePortForward404Type, DeleteInstancePortForward409Type, DeleteInstancePortForward412Type, DeleteInstancePortForward422Type, DeleteInstancePortForward500Type } from "../ts/DeleteInstancePortForwardType";
+import type { DeleteInstancePortForwardMutationResponseType, DeleteInstancePortForwardPathParamsType, DeleteInstancePortForward422Type } from "../ts/DeleteInstancePortForwardType";
 import type { UseMutationOptions } from "@tanstack/react-query";
 
- type DeleteInstancePortForwardClient = typeof client<DeleteInstancePortForwardMutationResponseType, DeleteInstancePortForward400Type | DeleteInstancePortForward401Type | DeleteInstancePortForward404Type | DeleteInstancePortForward409Type | DeleteInstancePortForward412Type | DeleteInstancePortForward422Type | DeleteInstancePortForward500Type, never>;
+ type DeleteInstancePortForwardClient = typeof client<DeleteInstancePortForwardMutationResponseType, DeleteInstancePortForward422Type, never>;
 type DeleteInstancePortForward = {
     data: DeleteInstancePortForwardMutationResponseType;
-    error: DeleteInstancePortForward400Type | DeleteInstancePortForward401Type | DeleteInstancePortForward404Type | DeleteInstancePortForward409Type | DeleteInstancePortForward412Type | DeleteInstancePortForward422Type | DeleteInstancePortForward500Type;
+    error: DeleteInstancePortForward422Type;
     request: never;
     pathParams: DeleteInstancePortForwardPathParamsType;
     queryParams: never;

@@ -1,12 +1,19 @@
 import { z } from "@/utils/zod.ts";
 import { sendOneTimePasswordResponseSchema } from "./sendOneTimePasswordResponseSchema.gen";
-import { errorInvalidArgumentSchema } from "./errorInvalidArgumentSchema.gen";
-import { errorUnauthorizedSchema } from "./errorUnauthorizedSchema.gen";
+import { errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema } from "./errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema.gen";
 import { errorResourceNotFoundSchema } from "./errorResourceNotFoundSchema.gen";
-import { errorResourceConflictSchema } from "./errorResourceConflictSchema.gen";
-import { errorPreconditionFailedSchema } from "./errorPreconditionFailedSchema.gen";
-import { errorValidationFailedSchema } from "./errorValidationFailedSchema.gen";
 import { errorInternalSchema } from "./errorInternalSchema.gen";
+import { errorInvalidArgumentSchema } from "./errorInvalidArgumentSchema.gen";
+import { errorPasswordMismatchSchema } from "./errorPasswordMismatchSchema.gen";
+import { errorPreconditionFailedSchema } from "./errorPreconditionFailedSchema.gen";
+import { errorRefreshTokenCannotBeEmptySchema } from "./errorRefreshTokenCannotBeEmptySchema.gen";
+import { errorRefreshTokenExpiredSchema } from "./errorRefreshTokenExpiredSchema.gen";
+import { errorRefreshTokenInvalidSchema } from "./errorRefreshTokenInvalidSchema.gen";
+import { errorRequestValidationFailedSchema } from "./errorRequestValidationFailedSchema.gen";
+import { errorResourceConflictSchema } from "./errorResourceConflictSchema.gen";
+import { errorUnauthorizedSchema } from "./errorUnauthorizedSchema.gen";
+import { errorUsernameOrEmailCannotBeEmptySchema } from "./errorUsernameOrEmailCannotBeEmptySchema.gen";
+import { errorValidationFailedSchema } from "./errorValidationFailedSchema.gen";
 import { sendOneTimePasswordRequestSchema } from "./sendOneTimePasswordRequestSchema.gen";
 
  /**
@@ -15,40 +22,10 @@ import { sendOneTimePasswordRequestSchema } from "./sendOneTimePasswordRequestSc
 export const sendOneTimePassword201Schema = z.lazy(() => sendOneTimePasswordResponseSchema);
 export type SendOneTimePassword201Schema = z.infer<typeof sendOneTimePassword201Schema>;
 /**
- * @description Request error
+ * @description Unprocessable Entity
  */
-export const sendOneTimePassword400Schema = z.lazy(() => errorInvalidArgumentSchema);
-export type SendOneTimePassword400Schema = z.infer<typeof sendOneTimePassword400Schema>;
-/**
- * @description Unauthorized
- */
-export const sendOneTimePassword401Schema = z.lazy(() => errorUnauthorizedSchema);
-export type SendOneTimePassword401Schema = z.infer<typeof sendOneTimePassword401Schema>;
-/**
- * @description Not found
- */
-export const sendOneTimePassword404Schema = z.lazy(() => errorResourceNotFoundSchema);
-export type SendOneTimePassword404Schema = z.infer<typeof sendOneTimePassword404Schema>;
-/**
- * @description Resource conflict
- */
-export const sendOneTimePassword409Schema = z.lazy(() => errorResourceConflictSchema);
-export type SendOneTimePassword409Schema = z.infer<typeof sendOneTimePassword409Schema>;
-/**
- * @description Precondition failed
- */
-export const sendOneTimePassword412Schema = z.lazy(() => errorPreconditionFailedSchema);
-export type SendOneTimePassword412Schema = z.infer<typeof sendOneTimePassword412Schema>;
-/**
- * @description Validation error
- */
-export const sendOneTimePassword422Schema = z.lazy(() => errorValidationFailedSchema);
+export const sendOneTimePassword422Schema = z.union([z.lazy(() => errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema), z.lazy(() => errorResourceNotFoundSchema), z.lazy(() => errorInternalSchema), z.lazy(() => errorInvalidArgumentSchema), z.lazy(() => errorPasswordMismatchSchema), z.lazy(() => errorPreconditionFailedSchema), z.lazy(() => errorRefreshTokenCannotBeEmptySchema), z.lazy(() => errorRefreshTokenExpiredSchema), z.lazy(() => errorRefreshTokenInvalidSchema), z.lazy(() => errorRequestValidationFailedSchema), z.lazy(() => errorResourceConflictSchema), z.lazy(() => errorUnauthorizedSchema), z.lazy(() => errorUsernameOrEmailCannotBeEmptySchema), z.lazy(() => errorValidationFailedSchema)]);
 export type SendOneTimePassword422Schema = z.infer<typeof sendOneTimePassword422Schema>;
-/**
- * @description Internal server error
- */
-export const sendOneTimePassword500Schema = z.lazy(() => errorInternalSchema);
-export type SendOneTimePassword500Schema = z.infer<typeof sendOneTimePassword500Schema>;
 
  export const sendOneTimePasswordMutationRequestSchema = z.lazy(() => sendOneTimePasswordRequestSchema);
 export type SendOneTimePasswordMutationRequestSchema = z.infer<typeof sendOneTimePasswordMutationRequestSchema>;

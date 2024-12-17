@@ -1,12 +1,19 @@
 import { z } from "@/utils/zod.ts";
 import { paginatedListZoneSchema } from "./paginatedListZoneSchema.gen";
-import { errorInvalidArgumentSchema } from "./errorInvalidArgumentSchema.gen";
-import { errorUnauthorizedSchema } from "./errorUnauthorizedSchema.gen";
+import { errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema } from "./errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema.gen";
 import { errorResourceNotFoundSchema } from "./errorResourceNotFoundSchema.gen";
-import { errorResourceConflictSchema } from "./errorResourceConflictSchema.gen";
-import { errorPreconditionFailedSchema } from "./errorPreconditionFailedSchema.gen";
-import { errorValidationFailedSchema } from "./errorValidationFailedSchema.gen";
 import { errorInternalSchema } from "./errorInternalSchema.gen";
+import { errorInvalidArgumentSchema } from "./errorInvalidArgumentSchema.gen";
+import { errorPasswordMismatchSchema } from "./errorPasswordMismatchSchema.gen";
+import { errorPreconditionFailedSchema } from "./errorPreconditionFailedSchema.gen";
+import { errorRefreshTokenCannotBeEmptySchema } from "./errorRefreshTokenCannotBeEmptySchema.gen";
+import { errorRefreshTokenExpiredSchema } from "./errorRefreshTokenExpiredSchema.gen";
+import { errorRefreshTokenInvalidSchema } from "./errorRefreshTokenInvalidSchema.gen";
+import { errorRequestValidationFailedSchema } from "./errorRequestValidationFailedSchema.gen";
+import { errorResourceConflictSchema } from "./errorResourceConflictSchema.gen";
+import { errorUnauthorizedSchema } from "./errorUnauthorizedSchema.gen";
+import { errorUsernameOrEmailCannotBeEmptySchema } from "./errorUsernameOrEmailCannotBeEmptySchema.gen";
+import { errorValidationFailedSchema } from "./errorValidationFailedSchema.gen";
 
 
 export const listWorkspaceZonesPathParamsSchema = z.object({ "workspace": z.string() });
@@ -20,40 +27,10 @@ export type ListWorkspaceZonesQueryParamsSchema = z.infer<typeof listWorkspaceZo
 export const listWorkspaceZones200Schema = z.lazy(() => paginatedListZoneSchema);
 export type ListWorkspaceZones200Schema = z.infer<typeof listWorkspaceZones200Schema>;
 /**
- * @description Request error
+ * @description Unprocessable Entity
  */
-export const listWorkspaceZones400Schema = z.lazy(() => errorInvalidArgumentSchema);
-export type ListWorkspaceZones400Schema = z.infer<typeof listWorkspaceZones400Schema>;
-/**
- * @description Unauthorized
- */
-export const listWorkspaceZones401Schema = z.lazy(() => errorUnauthorizedSchema);
-export type ListWorkspaceZones401Schema = z.infer<typeof listWorkspaceZones401Schema>;
-/**
- * @description Not found
- */
-export const listWorkspaceZones404Schema = z.lazy(() => errorResourceNotFoundSchema);
-export type ListWorkspaceZones404Schema = z.infer<typeof listWorkspaceZones404Schema>;
-/**
- * @description Resource conflict
- */
-export const listWorkspaceZones409Schema = z.lazy(() => errorResourceConflictSchema);
-export type ListWorkspaceZones409Schema = z.infer<typeof listWorkspaceZones409Schema>;
-/**
- * @description Precondition failed
- */
-export const listWorkspaceZones412Schema = z.lazy(() => errorPreconditionFailedSchema);
-export type ListWorkspaceZones412Schema = z.infer<typeof listWorkspaceZones412Schema>;
-/**
- * @description Validation error
- */
-export const listWorkspaceZones422Schema = z.lazy(() => errorValidationFailedSchema);
+export const listWorkspaceZones422Schema = z.union([z.lazy(() => errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema), z.lazy(() => errorResourceNotFoundSchema), z.lazy(() => errorInternalSchema), z.lazy(() => errorInvalidArgumentSchema), z.lazy(() => errorPasswordMismatchSchema), z.lazy(() => errorPreconditionFailedSchema), z.lazy(() => errorRefreshTokenCannotBeEmptySchema), z.lazy(() => errorRefreshTokenExpiredSchema), z.lazy(() => errorRefreshTokenInvalidSchema), z.lazy(() => errorRequestValidationFailedSchema), z.lazy(() => errorResourceConflictSchema), z.lazy(() => errorUnauthorizedSchema), z.lazy(() => errorUsernameOrEmailCannotBeEmptySchema), z.lazy(() => errorValidationFailedSchema)]);
 export type ListWorkspaceZones422Schema = z.infer<typeof listWorkspaceZones422Schema>;
-/**
- * @description Internal server error
- */
-export const listWorkspaceZones500Schema = z.lazy(() => errorInternalSchema);
-export type ListWorkspaceZones500Schema = z.infer<typeof listWorkspaceZones500Schema>;
 /**
  * @description Successful Response
  */

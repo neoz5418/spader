@@ -1,12 +1,12 @@
 import client from "@/utils/client.ts";
 import { useQuery, queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import type { GetWorkspaceQuotaQueryResponseType, GetWorkspaceQuotaPathParamsType, GetWorkspaceQuota400Type, GetWorkspaceQuota401Type, GetWorkspaceQuota404Type, GetWorkspaceQuota409Type, GetWorkspaceQuota412Type, GetWorkspaceQuota422Type, GetWorkspaceQuota500Type } from "../ts/GetWorkspaceQuotaType";
+import type { GetWorkspaceQuotaQueryResponseType, GetWorkspaceQuotaPathParamsType, GetWorkspaceQuota422Type } from "../ts/GetWorkspaceQuotaType";
 import type { QueryObserverOptions, UseQueryResult, QueryKey, UseSuspenseQueryOptions, UseSuspenseQueryResult } from "@tanstack/react-query";
 
- type GetWorkspaceQuotaClient = typeof client<GetWorkspaceQuotaQueryResponseType, GetWorkspaceQuota400Type | GetWorkspaceQuota401Type | GetWorkspaceQuota404Type | GetWorkspaceQuota409Type | GetWorkspaceQuota412Type | GetWorkspaceQuota422Type | GetWorkspaceQuota500Type, never>;
+ type GetWorkspaceQuotaClient = typeof client<GetWorkspaceQuotaQueryResponseType, GetWorkspaceQuota422Type, never>;
 type GetWorkspaceQuota = {
     data: GetWorkspaceQuotaQueryResponseType;
-    error: GetWorkspaceQuota400Type | GetWorkspaceQuota401Type | GetWorkspaceQuota404Type | GetWorkspaceQuota409Type | GetWorkspaceQuota412Type | GetWorkspaceQuota422Type | GetWorkspaceQuota500Type;
+    error: GetWorkspaceQuota422Type;
     request: never;
     pathParams: GetWorkspaceQuotaPathParamsType;
     queryParams: never;

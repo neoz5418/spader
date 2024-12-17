@@ -1,16 +1,14 @@
 import type { ArgumentDetailType } from "./ArgumentDetailType";
 
- export type ErrorValidationFailedType = {
+ export const errorValidationFailedType = {
+    "ValidationFailed": "ValidationFailed"
+} as const;
+export type ErrorValidationFailedTypeType = (typeof errorValidationFailedType)[keyof typeof errorValidationFailedType];
+export type ErrorValidationFailedType = {
     /**
-     * @default 422
-     * @type integer | undefined
+     * @type string
     */
-    status_code?: number;
-    /**
-     * @default "request_validation_failed"
-     * @type string | undefined
-    */
-    message?: string;
+    type: ErrorValidationFailedTypeType;
     /**
      * @type array
     */

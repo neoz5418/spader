@@ -1,11 +1,18 @@
 import type { PaginatedListZoneType } from "./PaginatedListZoneType";
-import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
-import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType } from "./ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType";
 import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
-import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
-import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
-import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 import type { ErrorInternalType } from "./ErrorInternalType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorPasswordMismatchType } from "./ErrorPasswordMismatchType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorRefreshTokenCannotBeEmptyType } from "./ErrorRefreshTokenCannotBeEmptyType";
+import type { ErrorRefreshTokenExpiredType } from "./ErrorRefreshTokenExpiredType";
+import type { ErrorRefreshTokenInvalidType } from "./ErrorRefreshTokenInvalidType";
+import type { ErrorRequestValidationFailedType } from "./ErrorRequestValidationFailedType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorUsernameOrEmailCannotBeEmptyType } from "./ErrorUsernameOrEmailCannotBeEmptyType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 
  export type ListZonesQueryParamsType = {
     /**
@@ -24,33 +31,9 @@ import type { ErrorInternalType } from "./ErrorInternalType";
 */
 export type ListZones200Type = PaginatedListZoneType;
 /**
- * @description Request error
+ * @description Unprocessable Entity
 */
-export type ListZones400Type = ErrorInvalidArgumentType;
-/**
- * @description Unauthorized
-*/
-export type ListZones401Type = ErrorUnauthorizedType;
-/**
- * @description Not found
-*/
-export type ListZones404Type = ErrorResourceNotFoundType;
-/**
- * @description Resource conflict
-*/
-export type ListZones409Type = ErrorResourceConflictType;
-/**
- * @description Precondition failed
-*/
-export type ListZones412Type = ErrorPreconditionFailedType;
-/**
- * @description Validation error
-*/
-export type ListZones422Type = ErrorValidationFailedType;
-/**
- * @description Internal server error
-*/
-export type ListZones500Type = ErrorInternalType;
+export type ListZones422Type = (ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType | ErrorResourceNotFoundType | ErrorInternalType | ErrorInvalidArgumentType | ErrorPasswordMismatchType | ErrorPreconditionFailedType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorRequestValidationFailedType | ErrorResourceConflictType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
 /**
  * @description Successful Response
 */
@@ -58,5 +41,5 @@ export type ListZonesQueryResponseType = PaginatedListZoneType;
 export type ListZonesTypeQuery = {
     Response: ListZonesQueryResponseType;
     QueryParams: ListZonesQueryParamsType;
-    Errors: ListZones400Type | ListZones401Type | ListZones404Type | ListZones409Type | ListZones412Type | ListZones422Type | ListZones500Type;
+    Errors: ListZones422Type;
 };

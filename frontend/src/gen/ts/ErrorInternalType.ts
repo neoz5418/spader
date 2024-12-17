@@ -1,12 +1,10 @@
+export const errorInternalType = {
+    "Internal": "Internal"
+} as const;
+export type ErrorInternalTypeType = (typeof errorInternalType)[keyof typeof errorInternalType];
 export type ErrorInternalType = {
     /**
-     * @default 500
-     * @type integer | undefined
+     * @type string
     */
-    status_code?: number;
-    /**
-     * @default "Internal Error"
-     * @type string | undefined
-    */
-    message?: string;
+    type: ErrorInternalTypeType;
 };

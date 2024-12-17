@@ -1,11 +1,18 @@
 import type { UserQuotaType } from "./UserQuotaType";
-import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
-import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType } from "./ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType";
 import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
-import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
-import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
-import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 import type { ErrorInternalType } from "./ErrorInternalType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorPasswordMismatchType } from "./ErrorPasswordMismatchType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorRefreshTokenCannotBeEmptyType } from "./ErrorRefreshTokenCannotBeEmptyType";
+import type { ErrorRefreshTokenExpiredType } from "./ErrorRefreshTokenExpiredType";
+import type { ErrorRefreshTokenInvalidType } from "./ErrorRefreshTokenInvalidType";
+import type { ErrorRequestValidationFailedType } from "./ErrorRequestValidationFailedType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorUsernameOrEmailCannotBeEmptyType } from "./ErrorUsernameOrEmailCannotBeEmptyType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 
  export type UpdateUserQuotaPathParamsType = {
     /**
@@ -18,33 +25,9 @@ import type { ErrorInternalType } from "./ErrorInternalType";
 */
 export type UpdateUserQuota200Type = UserQuotaType;
 /**
- * @description Request error
+ * @description Unprocessable Entity
 */
-export type UpdateUserQuota400Type = ErrorInvalidArgumentType;
-/**
- * @description Unauthorized
-*/
-export type UpdateUserQuota401Type = ErrorUnauthorizedType;
-/**
- * @description Not found
-*/
-export type UpdateUserQuota404Type = ErrorResourceNotFoundType;
-/**
- * @description Resource conflict
-*/
-export type UpdateUserQuota409Type = ErrorResourceConflictType;
-/**
- * @description Precondition failed
-*/
-export type UpdateUserQuota412Type = ErrorPreconditionFailedType;
-/**
- * @description Validation error
-*/
-export type UpdateUserQuota422Type = ErrorValidationFailedType;
-/**
- * @description Internal server error
-*/
-export type UpdateUserQuota500Type = ErrorInternalType;
+export type UpdateUserQuota422Type = (ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType | ErrorResourceNotFoundType | ErrorInternalType | ErrorInvalidArgumentType | ErrorPasswordMismatchType | ErrorPreconditionFailedType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorRequestValidationFailedType | ErrorResourceConflictType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
 /**
  * @description Successful Response
 */
@@ -52,5 +35,5 @@ export type UpdateUserQuotaMutationResponseType = UserQuotaType;
 export type UpdateUserQuotaTypeMutation = {
     Response: UpdateUserQuotaMutationResponseType;
     PathParams: UpdateUserQuotaPathParamsType;
-    Errors: UpdateUserQuota400Type | UpdateUserQuota401Type | UpdateUserQuota404Type | UpdateUserQuota409Type | UpdateUserQuota412Type | UpdateUserQuota422Type | UpdateUserQuota500Type;
+    Errors: UpdateUserQuota422Type;
 };

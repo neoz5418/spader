@@ -1,12 +1,12 @@
 import client from "@/utils/client.ts";
 import { useQuery, queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import type { GetInstanceQueryResponseType, GetInstancePathParamsType, GetInstance400Type, GetInstance401Type, GetInstance404Type, GetInstance409Type, GetInstance412Type, GetInstance422Type, GetInstance500Type } from "../ts/GetInstanceType";
+import type { GetInstanceQueryResponseType, GetInstancePathParamsType, GetInstance422Type } from "../ts/GetInstanceType";
 import type { QueryObserverOptions, UseQueryResult, QueryKey, UseSuspenseQueryOptions, UseSuspenseQueryResult } from "@tanstack/react-query";
 
- type GetInstanceClient = typeof client<GetInstanceQueryResponseType, GetInstance400Type | GetInstance401Type | GetInstance404Type | GetInstance409Type | GetInstance412Type | GetInstance422Type | GetInstance500Type, never>;
+ type GetInstanceClient = typeof client<GetInstanceQueryResponseType, GetInstance422Type, never>;
 type GetInstance = {
     data: GetInstanceQueryResponseType;
-    error: GetInstance400Type | GetInstance401Type | GetInstance404Type | GetInstance409Type | GetInstance412Type | GetInstance422Type | GetInstance500Type;
+    error: GetInstance422Type;
     request: never;
     pathParams: GetInstancePathParamsType;
     queryParams: never;

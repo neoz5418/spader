@@ -1,11 +1,18 @@
 import type { PaginatedListResourceUsageRecordType } from "./PaginatedListResourceUsageRecordType";
-import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
-import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType } from "./ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType";
 import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
-import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
-import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
-import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 import type { ErrorInternalType } from "./ErrorInternalType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorPasswordMismatchType } from "./ErrorPasswordMismatchType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorRefreshTokenCannotBeEmptyType } from "./ErrorRefreshTokenCannotBeEmptyType";
+import type { ErrorRefreshTokenExpiredType } from "./ErrorRefreshTokenExpiredType";
+import type { ErrorRefreshTokenInvalidType } from "./ErrorRefreshTokenInvalidType";
+import type { ErrorRequestValidationFailedType } from "./ErrorRequestValidationFailedType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorUsernameOrEmailCannotBeEmptyType } from "./ErrorUsernameOrEmailCannotBeEmptyType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 
  export type ListWorkspaceResourceUsageRecordsPathParamsType = {
     /**
@@ -34,33 +41,9 @@ export type ListWorkspaceResourceUsageRecordsQueryParamsType = {
 */
 export type ListWorkspaceResourceUsageRecords200Type = PaginatedListResourceUsageRecordType;
 /**
- * @description Request error
+ * @description Unprocessable Entity
 */
-export type ListWorkspaceResourceUsageRecords400Type = ErrorInvalidArgumentType;
-/**
- * @description Unauthorized
-*/
-export type ListWorkspaceResourceUsageRecords401Type = ErrorUnauthorizedType;
-/**
- * @description Not found
-*/
-export type ListWorkspaceResourceUsageRecords404Type = ErrorResourceNotFoundType;
-/**
- * @description Resource conflict
-*/
-export type ListWorkspaceResourceUsageRecords409Type = ErrorResourceConflictType;
-/**
- * @description Precondition failed
-*/
-export type ListWorkspaceResourceUsageRecords412Type = ErrorPreconditionFailedType;
-/**
- * @description Validation error
-*/
-export type ListWorkspaceResourceUsageRecords422Type = ErrorValidationFailedType;
-/**
- * @description Internal server error
-*/
-export type ListWorkspaceResourceUsageRecords500Type = ErrorInternalType;
+export type ListWorkspaceResourceUsageRecords422Type = (ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType | ErrorResourceNotFoundType | ErrorInternalType | ErrorInvalidArgumentType | ErrorPasswordMismatchType | ErrorPreconditionFailedType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorRequestValidationFailedType | ErrorResourceConflictType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
 /**
  * @description Successful Response
 */
@@ -69,5 +52,5 @@ export type ListWorkspaceResourceUsageRecordsTypeQuery = {
     Response: ListWorkspaceResourceUsageRecordsQueryResponseType;
     PathParams: ListWorkspaceResourceUsageRecordsPathParamsType;
     QueryParams: ListWorkspaceResourceUsageRecordsQueryParamsType;
-    Errors: ListWorkspaceResourceUsageRecords400Type | ListWorkspaceResourceUsageRecords401Type | ListWorkspaceResourceUsageRecords404Type | ListWorkspaceResourceUsageRecords409Type | ListWorkspaceResourceUsageRecords412Type | ListWorkspaceResourceUsageRecords422Type | ListWorkspaceResourceUsageRecords500Type;
+    Errors: ListWorkspaceResourceUsageRecords422Type;
 };

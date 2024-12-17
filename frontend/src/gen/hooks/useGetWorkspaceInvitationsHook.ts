@@ -1,12 +1,12 @@
 import client from "@/utils/client.ts";
 import { useQuery, queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import type { GetWorkspaceInvitationsQueryResponseType, GetWorkspaceInvitationsPathParamsType, GetWorkspaceInvitations400Type, GetWorkspaceInvitations401Type, GetWorkspaceInvitations404Type, GetWorkspaceInvitations409Type, GetWorkspaceInvitations412Type, GetWorkspaceInvitations422Type, GetWorkspaceInvitations500Type } from "../ts/GetWorkspaceInvitationsType";
+import type { GetWorkspaceInvitationsQueryResponseType, GetWorkspaceInvitationsPathParamsType, GetWorkspaceInvitations422Type } from "../ts/GetWorkspaceInvitationsType";
 import type { QueryObserverOptions, UseQueryResult, QueryKey, UseSuspenseQueryOptions, UseSuspenseQueryResult } from "@tanstack/react-query";
 
- type GetWorkspaceInvitationsClient = typeof client<GetWorkspaceInvitationsQueryResponseType, GetWorkspaceInvitations400Type | GetWorkspaceInvitations401Type | GetWorkspaceInvitations404Type | GetWorkspaceInvitations409Type | GetWorkspaceInvitations412Type | GetWorkspaceInvitations422Type | GetWorkspaceInvitations500Type, never>;
+ type GetWorkspaceInvitationsClient = typeof client<GetWorkspaceInvitationsQueryResponseType, GetWorkspaceInvitations422Type, never>;
 type GetWorkspaceInvitations = {
     data: GetWorkspaceInvitationsQueryResponseType;
-    error: GetWorkspaceInvitations400Type | GetWorkspaceInvitations401Type | GetWorkspaceInvitations404Type | GetWorkspaceInvitations409Type | GetWorkspaceInvitations412Type | GetWorkspaceInvitations422Type | GetWorkspaceInvitations500Type;
+    error: GetWorkspaceInvitations422Type;
     request: never;
     pathParams: GetWorkspaceInvitationsPathParamsType;
     queryParams: never;

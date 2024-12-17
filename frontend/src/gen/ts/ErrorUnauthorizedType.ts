@@ -1,13 +1,10 @@
-import type { MessageType } from "./MessageType";
-
- export type ErrorUnauthorizedType = {
+export const errorUnauthorizedType = {
+    "Unauthorized": "Unauthorized"
+} as const;
+export type ErrorUnauthorizedTypeType = (typeof errorUnauthorizedType)[keyof typeof errorUnauthorizedType];
+export type ErrorUnauthorizedType = {
     /**
-     * @default 401
-     * @type integer | undefined
+     * @type string
     */
-    status_code?: number;
-    /**
-     * @type string | undefined
-    */
-    message?: MessageType;
+    type: ErrorUnauthorizedTypeType;
 };

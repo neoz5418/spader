@@ -1,13 +1,13 @@
 import client from "@/utils/client.ts";
 import { useMutation } from "@tanstack/react-query";
 import { useInvalidationForMutation } from "../../useInvalidationForMutation";
-import type { TokenMutationRequestType, TokenMutationResponseType, Token400Type, Token401Type, Token404Type, Token409Type, Token412Type, Token422Type, Token500Type } from "../ts/TokenType";
+import type { TokenMutationRequestType, TokenMutationResponseType, Token422Type } from "../ts/TokenType";
 import type { UseMutationOptions } from "@tanstack/react-query";
 
- type TokenClient = typeof client<TokenMutationResponseType, Token400Type | Token401Type | Token404Type | Token409Type | Token412Type | Token422Type | Token500Type, TokenMutationRequestType>;
+ type TokenClient = typeof client<TokenMutationResponseType, Token422Type, TokenMutationRequestType>;
 type Token = {
     data: TokenMutationResponseType;
-    error: Token400Type | Token401Type | Token404Type | Token409Type | Token412Type | Token422Type | Token500Type;
+    error: Token422Type;
     request: TokenMutationRequestType;
     pathParams: never;
     queryParams: never;

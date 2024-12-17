@@ -1,11 +1,18 @@
 import type { PaginatedListZoneType } from "./PaginatedListZoneType";
-import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
-import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType } from "./ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType";
 import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
-import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
-import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
-import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 import type { ErrorInternalType } from "./ErrorInternalType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorPasswordMismatchType } from "./ErrorPasswordMismatchType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorRefreshTokenCannotBeEmptyType } from "./ErrorRefreshTokenCannotBeEmptyType";
+import type { ErrorRefreshTokenExpiredType } from "./ErrorRefreshTokenExpiredType";
+import type { ErrorRefreshTokenInvalidType } from "./ErrorRefreshTokenInvalidType";
+import type { ErrorRequestValidationFailedType } from "./ErrorRequestValidationFailedType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorUsernameOrEmailCannotBeEmptyType } from "./ErrorUsernameOrEmailCannotBeEmptyType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 
  export type ListWorkspaceZonesPathParamsType = {
     /**
@@ -30,33 +37,9 @@ export type ListWorkspaceZonesQueryParamsType = {
 */
 export type ListWorkspaceZones200Type = PaginatedListZoneType;
 /**
- * @description Request error
+ * @description Unprocessable Entity
 */
-export type ListWorkspaceZones400Type = ErrorInvalidArgumentType;
-/**
- * @description Unauthorized
-*/
-export type ListWorkspaceZones401Type = ErrorUnauthorizedType;
-/**
- * @description Not found
-*/
-export type ListWorkspaceZones404Type = ErrorResourceNotFoundType;
-/**
- * @description Resource conflict
-*/
-export type ListWorkspaceZones409Type = ErrorResourceConflictType;
-/**
- * @description Precondition failed
-*/
-export type ListWorkspaceZones412Type = ErrorPreconditionFailedType;
-/**
- * @description Validation error
-*/
-export type ListWorkspaceZones422Type = ErrorValidationFailedType;
-/**
- * @description Internal server error
-*/
-export type ListWorkspaceZones500Type = ErrorInternalType;
+export type ListWorkspaceZones422Type = (ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType | ErrorResourceNotFoundType | ErrorInternalType | ErrorInvalidArgumentType | ErrorPasswordMismatchType | ErrorPreconditionFailedType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorRequestValidationFailedType | ErrorResourceConflictType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
 /**
  * @description Successful Response
 */
@@ -65,5 +48,5 @@ export type ListWorkspaceZonesTypeQuery = {
     Response: ListWorkspaceZonesQueryResponseType;
     PathParams: ListWorkspaceZonesPathParamsType;
     QueryParams: ListWorkspaceZonesQueryParamsType;
-    Errors: ListWorkspaceZones400Type | ListWorkspaceZones401Type | ListWorkspaceZones404Type | ListWorkspaceZones409Type | ListWorkspaceZones412Type | ListWorkspaceZones422Type | ListWorkspaceZones500Type;
+    Errors: ListWorkspaceZones422Type;
 };

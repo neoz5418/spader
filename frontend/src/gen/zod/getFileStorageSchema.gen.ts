@@ -1,12 +1,19 @@
 import { z } from "@/utils/zod.ts";
 import { fileStorageSchema } from "./fileStorageSchema.gen";
-import { errorInvalidArgumentSchema } from "./errorInvalidArgumentSchema.gen";
-import { errorUnauthorizedSchema } from "./errorUnauthorizedSchema.gen";
+import { errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema } from "./errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema.gen";
 import { errorResourceNotFoundSchema } from "./errorResourceNotFoundSchema.gen";
-import { errorResourceConflictSchema } from "./errorResourceConflictSchema.gen";
-import { errorPreconditionFailedSchema } from "./errorPreconditionFailedSchema.gen";
-import { errorValidationFailedSchema } from "./errorValidationFailedSchema.gen";
 import { errorInternalSchema } from "./errorInternalSchema.gen";
+import { errorInvalidArgumentSchema } from "./errorInvalidArgumentSchema.gen";
+import { errorPasswordMismatchSchema } from "./errorPasswordMismatchSchema.gen";
+import { errorPreconditionFailedSchema } from "./errorPreconditionFailedSchema.gen";
+import { errorRefreshTokenCannotBeEmptySchema } from "./errorRefreshTokenCannotBeEmptySchema.gen";
+import { errorRefreshTokenExpiredSchema } from "./errorRefreshTokenExpiredSchema.gen";
+import { errorRefreshTokenInvalidSchema } from "./errorRefreshTokenInvalidSchema.gen";
+import { errorRequestValidationFailedSchema } from "./errorRequestValidationFailedSchema.gen";
+import { errorResourceConflictSchema } from "./errorResourceConflictSchema.gen";
+import { errorUnauthorizedSchema } from "./errorUnauthorizedSchema.gen";
+import { errorUsernameOrEmailCannotBeEmptySchema } from "./errorUsernameOrEmailCannotBeEmptySchema.gen";
+import { errorValidationFailedSchema } from "./errorValidationFailedSchema.gen";
 
 
 export const getFileStoragePathParamsSchema = z.object({ "workspace": z.string(), "zone": z.string(), "name": z.string() });
@@ -17,40 +24,10 @@ export type GetFileStoragePathParamsSchema = z.infer<typeof getFileStoragePathPa
 export const getFileStorage200Schema = z.lazy(() => fileStorageSchema);
 export type GetFileStorage200Schema = z.infer<typeof getFileStorage200Schema>;
 /**
- * @description Request error
+ * @description Unprocessable Entity
  */
-export const getFileStorage400Schema = z.lazy(() => errorInvalidArgumentSchema);
-export type GetFileStorage400Schema = z.infer<typeof getFileStorage400Schema>;
-/**
- * @description Unauthorized
- */
-export const getFileStorage401Schema = z.lazy(() => errorUnauthorizedSchema);
-export type GetFileStorage401Schema = z.infer<typeof getFileStorage401Schema>;
-/**
- * @description Not found
- */
-export const getFileStorage404Schema = z.lazy(() => errorResourceNotFoundSchema);
-export type GetFileStorage404Schema = z.infer<typeof getFileStorage404Schema>;
-/**
- * @description Resource conflict
- */
-export const getFileStorage409Schema = z.lazy(() => errorResourceConflictSchema);
-export type GetFileStorage409Schema = z.infer<typeof getFileStorage409Schema>;
-/**
- * @description Precondition failed
- */
-export const getFileStorage412Schema = z.lazy(() => errorPreconditionFailedSchema);
-export type GetFileStorage412Schema = z.infer<typeof getFileStorage412Schema>;
-/**
- * @description Validation error
- */
-export const getFileStorage422Schema = z.lazy(() => errorValidationFailedSchema);
+export const getFileStorage422Schema = z.union([z.lazy(() => errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema), z.lazy(() => errorResourceNotFoundSchema), z.lazy(() => errorInternalSchema), z.lazy(() => errorInvalidArgumentSchema), z.lazy(() => errorPasswordMismatchSchema), z.lazy(() => errorPreconditionFailedSchema), z.lazy(() => errorRefreshTokenCannotBeEmptySchema), z.lazy(() => errorRefreshTokenExpiredSchema), z.lazy(() => errorRefreshTokenInvalidSchema), z.lazy(() => errorRequestValidationFailedSchema), z.lazy(() => errorResourceConflictSchema), z.lazy(() => errorUnauthorizedSchema), z.lazy(() => errorUsernameOrEmailCannotBeEmptySchema), z.lazy(() => errorValidationFailedSchema)]);
 export type GetFileStorage422Schema = z.infer<typeof getFileStorage422Schema>;
-/**
- * @description Internal server error
- */
-export const getFileStorage500Schema = z.lazy(() => errorInternalSchema);
-export type GetFileStorage500Schema = z.infer<typeof getFileStorage500Schema>;
 /**
  * @description Successful Response
  */

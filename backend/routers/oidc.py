@@ -10,10 +10,14 @@ from sqlmodel import select
 from dependencies import SessionDep
 from routers.types import Token, User
 from services.common import (
+    ErrorEmailAndUsernameCannotBeProvidedAtTheSameTime,
     ErrorInvalidArgument,
-    ErrorPreconditionFailed,
+    ErrorPasswordMismatch,
+    ErrorRefreshTokenCannotBeEmpty,
+    ErrorRefreshTokenExpired,
+    ErrorRefreshTokenInvalid,
     ErrorResourceNotFound,
-    ErrorUnauthorized,
+    ErrorUsernameOrEmailCannotBeEmpty,
 )
 from services.security import (
     jwt_manager,
@@ -69,16 +73,17 @@ async def token(
     if grant_type == GrantType.password:
         if not password:
             raise ErrorInvalidArgument(
+                type="InvalidArgument",
                 input=password,
-                loc=["password"],
+                loc="password",
             ).to_exception()
         if not email and not username:
-            raise ErrorPreconditionFailed(
-                type=ErrorPreconditionFailed.Type.username_or_email_cannot_be_empty
+            raise ErrorUsernameOrEmailCannotBeEmpty(
+                type="UsernameOrEmailCannotBeEmpty"
             ).to_exception()
         if email and username:
-            raise ErrorPreconditionFailed(
-                type=ErrorPreconditionFailed.Type.email_and_username_cannot_be_provided_at_the_same_time
+            raise ErrorEmailAndUsernameCannotBeProvidedAtTheSameTime(
+                type="EmailAndUsernameCannotBeProvidedAtTheSameTime"
             ).to_exception()
         if email:
             user = (await session.exec(select(User).where(User.email == email))).first()
@@ -90,30 +95,28 @@ async def token(
             raise Exception("should not run in there")
         logger.info("user: %s, username: %s, email: %s", user, username, email)
         if user is None:
-            raise ErrorResourceNotFound(resource_name="user").to_exception()
-        if verify_hashed_secret(user.hashed_password, password) is False:
-            raise ErrorUnauthorized(
-                message=ErrorUnauthorized.Message.password_mismatch
+            raise ErrorResourceNotFound(
+                type="ResourceNotFound", resource_name="user"
             ).to_exception()
+        if verify_hashed_secret(user.hashed_password, password) is False:
+            raise ErrorPasswordMismatch(type="PasswordMismatch").to_exception()
         username = user.name
     if grant_type == GrantType.refresh_token:
         if len(refresh_token) == 0:
-            raise ErrorPreconditionFailed(
-                type=ErrorPreconditionFailed.Type.refresh_token_cannot_be_empty
+            raise ErrorRefreshTokenCannotBeEmpty(
+                type="RefreshTokenCannotBeEmpty"
             ).to_exception()
 
         payload = jwt_manager.decode_jwt_token(refresh_token)
         if not payload:
-            raise ErrorPreconditionFailed(
-                type=ErrorPreconditionFailed.Type.refresh_token_invalid
-            ).to_exception()
+            raise ErrorRefreshTokenInvalid(type="RefreshTokenInvalid").to_exception()
         if payload["exp"] - time.time() < 0:
-            raise ErrorPreconditionFailed(
-                type=ErrorPreconditionFailed.Type.refresh_token_expired
-            ).to_exception()
+            raise ErrorRefreshTokenExpired(type="RefreshTokenExpired").to_exception()
         username = payload["sub"]
         if username == "":
-            raise ErrorResourceNotFound(resource_name="user").to_exception()
+            raise ErrorResourceNotFound(
+                type="ResourceNotFound", resource_name="user"
+            ).to_exception()
     access_token = jwt_manager.create_access_token(username=username)
     refresh_token = jwt_manager.create_refresh_token(username=username)
     logger.info("token %s", access_token)

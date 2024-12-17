@@ -1,13 +1,20 @@
 import type { CurrencyType } from "./CurrencyType";
 import type { RechargeTypeType } from "./RechargeTypeType";
 import type { WorkspaceAccountRechargeType } from "./WorkspaceAccountRechargeType";
-import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
-import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType } from "./ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType";
 import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
-import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
-import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
-import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 import type { ErrorInternalType } from "./ErrorInternalType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorPasswordMismatchType } from "./ErrorPasswordMismatchType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorRefreshTokenCannotBeEmptyType } from "./ErrorRefreshTokenCannotBeEmptyType";
+import type { ErrorRefreshTokenExpiredType } from "./ErrorRefreshTokenExpiredType";
+import type { ErrorRefreshTokenInvalidType } from "./ErrorRefreshTokenInvalidType";
+import type { ErrorRequestValidationFailedType } from "./ErrorRequestValidationFailedType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorUsernameOrEmailCannotBeEmptyType } from "./ErrorUsernameOrEmailCannotBeEmptyType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 
  export type RechargeWorkspaceAccountType = {
     /**
@@ -39,33 +46,9 @@ import type { ErrorInternalType } from "./ErrorInternalType";
 */
 export type RechargeWorkspaceAccount200Type = WorkspaceAccountRechargeType;
 /**
- * @description Request error
+ * @description Unprocessable Entity
 */
-export type RechargeWorkspaceAccount400Type = ErrorInvalidArgumentType;
-/**
- * @description Unauthorized
-*/
-export type RechargeWorkspaceAccount401Type = ErrorUnauthorizedType;
-/**
- * @description Not found
-*/
-export type RechargeWorkspaceAccount404Type = ErrorResourceNotFoundType;
-/**
- * @description Resource conflict
-*/
-export type RechargeWorkspaceAccount409Type = ErrorResourceConflictType;
-/**
- * @description Precondition failed
-*/
-export type RechargeWorkspaceAccount412Type = ErrorPreconditionFailedType;
-/**
- * @description Validation error
-*/
-export type RechargeWorkspaceAccount422Type = ErrorValidationFailedType;
-/**
- * @description Internal server error
-*/
-export type RechargeWorkspaceAccount500Type = ErrorInternalType;
+export type RechargeWorkspaceAccount422Type = (ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType | ErrorResourceNotFoundType | ErrorInternalType | ErrorInvalidArgumentType | ErrorPasswordMismatchType | ErrorPreconditionFailedType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorRequestValidationFailedType | ErrorResourceConflictType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
 export type RechargeWorkspaceAccountMutationRequestType = RechargeWorkspaceAccountType;
 /**
  * @description Successful Response
@@ -75,5 +58,5 @@ export type RechargeWorkspaceAccountTypeMutation = {
     Response: RechargeWorkspaceAccountMutationResponseType;
     Request: RechargeWorkspaceAccountMutationRequestType;
     PathParams: RechargeWorkspaceAccountPathParamsType;
-    Errors: RechargeWorkspaceAccount400Type | RechargeWorkspaceAccount401Type | RechargeWorkspaceAccount404Type | RechargeWorkspaceAccount409Type | RechargeWorkspaceAccount412Type | RechargeWorkspaceAccount422Type | RechargeWorkspaceAccount500Type;
+    Errors: RechargeWorkspaceAccount422Type;
 };

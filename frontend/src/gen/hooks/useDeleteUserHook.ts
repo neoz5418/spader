@@ -1,13 +1,13 @@
 import client from "@/utils/client.ts";
 import { useMutation } from "@tanstack/react-query";
 import { useInvalidationForMutation } from "../../useInvalidationForMutation";
-import type { DeleteUserMutationResponseType, DeleteUserPathParamsType, DeleteUser400Type, DeleteUser401Type, DeleteUser404Type, DeleteUser409Type, DeleteUser412Type, DeleteUser422Type, DeleteUser500Type } from "../ts/DeleteUserType";
+import type { DeleteUserMutationResponseType, DeleteUserPathParamsType, DeleteUser422Type } from "../ts/DeleteUserType";
 import type { UseMutationOptions } from "@tanstack/react-query";
 
- type DeleteUserClient = typeof client<DeleteUserMutationResponseType, DeleteUser400Type | DeleteUser401Type | DeleteUser404Type | DeleteUser409Type | DeleteUser412Type | DeleteUser422Type | DeleteUser500Type, never>;
+ type DeleteUserClient = typeof client<DeleteUserMutationResponseType, DeleteUser422Type, never>;
 type DeleteUser = {
     data: DeleteUserMutationResponseType;
-    error: DeleteUser400Type | DeleteUser401Type | DeleteUser404Type | DeleteUser409Type | DeleteUser412Type | DeleteUser422Type | DeleteUser500Type;
+    error: DeleteUser422Type;
     request: never;
     pathParams: DeleteUserPathParamsType;
     queryParams: never;

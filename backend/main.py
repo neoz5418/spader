@@ -13,7 +13,6 @@ from fastapi import (
     Request,
     Response,
     HTTPException,
-    status,
 )
 from fastapi.encoders import jsonable_encoder
 from starlette.background import BackgroundTask
@@ -21,13 +20,7 @@ from dependencies import active_connections_set
 from routers import workspaces, users, instances, oidc
 from services.common import (
     error_from_exception,
-    ErrorInternal,
-    ErrorInvalidArgument,
-    ErrorPreconditionFailed,
-    ErrorResourceConflict,
-    ErrorResourceNotFound,
-    ErrorUnauthorized,
-    ErrorValidationFailed,
+    Errors,
 )
 from services.logger import setup_logging
 from services.db import get_session, create_db_and_tables, init_admin_user, init_data
@@ -54,41 +47,8 @@ app = FastAPI(
     version="1.0.0",
     description="Spader API",
     responses={
-        status.HTTP_400_BAD_REQUEST: {
-            "model": ErrorInvalidArgument,
-            "description": "Request error",
-        },
-        status.HTTP_422_UNPROCESSABLE_ENTITY: {
-            "model": ErrorValidationFailed,
-            "description": "Validation error",
-        },
-        status.HTTP_409_CONFLICT: {
-            "model": ErrorResourceConflict,
-            "description": "Resource conflict",
-        },
-        status.HTTP_412_PRECONDITION_FAILED: {
-            "model": ErrorPreconditionFailed,
-            "description": "Precondition failed",
-        },
-        # status.HTTP_429_TOO_MANY_REQUESTS: {
-        #     "model": Error,
-        #     "description": "Rate limit exceeded",
-        # },
-        # status.HTTP_503_SERVICE_UNAVAILABLE: {
-        #     "model": Error,
-        #     "description": "Service unavailable",
-        # },
-        status.HTTP_401_UNAUTHORIZED: {
-            "model": ErrorUnauthorized,
-            "description": "Unauthorized",
-        },
-        status.HTTP_404_NOT_FOUND: {
-            "model": ErrorResourceNotFound,
-            "description": "Not found",
-        },
-        status.HTTP_500_INTERNAL_SERVER_ERROR: {
-            "model": ErrorInternal,
-            "description": "Internal server error",
+        "422": {
+            "model": Errors,
         },
     },
     dependencies=[Depends(get_session)],

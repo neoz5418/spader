@@ -1,12 +1,12 @@
 import client from "@/utils/client.ts";
 import { useQuery, queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import type { GetWorkspaceQueryResponseType, GetWorkspacePathParamsType, GetWorkspace400Type, GetWorkspace401Type, GetWorkspace404Type, GetWorkspace409Type, GetWorkspace412Type, GetWorkspace422Type, GetWorkspace500Type } from "../ts/GetWorkspaceType";
+import type { GetWorkspaceQueryResponseType, GetWorkspacePathParamsType, GetWorkspace422Type } from "../ts/GetWorkspaceType";
 import type { QueryObserverOptions, UseQueryResult, QueryKey, UseSuspenseQueryOptions, UseSuspenseQueryResult } from "@tanstack/react-query";
 
- type GetWorkspaceClient = typeof client<GetWorkspaceQueryResponseType, GetWorkspace400Type | GetWorkspace401Type | GetWorkspace404Type | GetWorkspace409Type | GetWorkspace412Type | GetWorkspace422Type | GetWorkspace500Type, never>;
+ type GetWorkspaceClient = typeof client<GetWorkspaceQueryResponseType, GetWorkspace422Type, never>;
 type GetWorkspace = {
     data: GetWorkspaceQueryResponseType;
-    error: GetWorkspace400Type | GetWorkspace401Type | GetWorkspace404Type | GetWorkspace409Type | GetWorkspace412Type | GetWorkspace422Type | GetWorkspace500Type;
+    error: GetWorkspace422Type;
     request: never;
     pathParams: GetWorkspacePathParamsType;
     queryParams: never;

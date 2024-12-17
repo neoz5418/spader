@@ -1,13 +1,13 @@
 import client from "@/utils/client.ts";
 import { useMutation } from "@tanstack/react-query";
 import { useInvalidationForMutation } from "../../useInvalidationForMutation";
-import type { CreateZoneMutationRequestType, CreateZoneMutationResponseType, CreateZone400Type, CreateZone401Type, CreateZone404Type, CreateZone409Type, CreateZone412Type, CreateZone422Type, CreateZone500Type } from "../ts/CreateZoneType";
+import type { CreateZoneMutationRequestType, CreateZoneMutationResponseType, CreateZone422Type } from "../ts/CreateZoneType";
 import type { UseMutationOptions } from "@tanstack/react-query";
 
- type CreateZoneClient = typeof client<CreateZoneMutationResponseType, CreateZone400Type | CreateZone401Type | CreateZone404Type | CreateZone409Type | CreateZone412Type | CreateZone422Type | CreateZone500Type, CreateZoneMutationRequestType>;
+ type CreateZoneClient = typeof client<CreateZoneMutationResponseType, CreateZone422Type, CreateZoneMutationRequestType>;
 type CreateZone = {
     data: CreateZoneMutationResponseType;
-    error: CreateZone400Type | CreateZone401Type | CreateZone404Type | CreateZone409Type | CreateZone412Type | CreateZone422Type | CreateZone500Type;
+    error: CreateZone422Type;
     request: CreateZoneMutationRequestType;
     pathParams: never;
     queryParams: never;

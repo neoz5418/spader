@@ -1,11 +1,18 @@
 import { z } from "@/utils/zod.ts";
-import { errorInvalidArgumentSchema } from "./errorInvalidArgumentSchema.gen";
-import { errorUnauthorizedSchema } from "./errorUnauthorizedSchema.gen";
+import { errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema } from "./errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema.gen";
 import { errorResourceNotFoundSchema } from "./errorResourceNotFoundSchema.gen";
-import { errorResourceConflictSchema } from "./errorResourceConflictSchema.gen";
-import { errorPreconditionFailedSchema } from "./errorPreconditionFailedSchema.gen";
-import { errorValidationFailedSchema } from "./errorValidationFailedSchema.gen";
 import { errorInternalSchema } from "./errorInternalSchema.gen";
+import { errorInvalidArgumentSchema } from "./errorInvalidArgumentSchema.gen";
+import { errorPasswordMismatchSchema } from "./errorPasswordMismatchSchema.gen";
+import { errorPreconditionFailedSchema } from "./errorPreconditionFailedSchema.gen";
+import { errorRefreshTokenCannotBeEmptySchema } from "./errorRefreshTokenCannotBeEmptySchema.gen";
+import { errorRefreshTokenExpiredSchema } from "./errorRefreshTokenExpiredSchema.gen";
+import { errorRefreshTokenInvalidSchema } from "./errorRefreshTokenInvalidSchema.gen";
+import { errorRequestValidationFailedSchema } from "./errorRequestValidationFailedSchema.gen";
+import { errorResourceConflictSchema } from "./errorResourceConflictSchema.gen";
+import { errorUnauthorizedSchema } from "./errorUnauthorizedSchema.gen";
+import { errorUsernameOrEmailCannotBeEmptySchema } from "./errorUsernameOrEmailCannotBeEmptySchema.gen";
+import { errorValidationFailedSchema } from "./errorValidationFailedSchema.gen";
 import { bodyTokenApisOidcV1TokenPostSchema } from "./bodyTokenApisOidcV1TokenPostSchema.gen";
 
 
@@ -18,40 +25,10 @@ export type TokenSchema = z.infer<typeof tokenSchema>;
 export const token200Schema = z.lazy(() => tokenSchema);
 export type Token200Schema = z.infer<typeof token200Schema>;
 /**
- * @description Request error
+ * @description Unprocessable Entity
  */
-export const token400Schema = z.lazy(() => errorInvalidArgumentSchema);
-export type Token400Schema = z.infer<typeof token400Schema>;
-/**
- * @description Unauthorized
- */
-export const token401Schema = z.lazy(() => errorUnauthorizedSchema);
-export type Token401Schema = z.infer<typeof token401Schema>;
-/**
- * @description Not found
- */
-export const token404Schema = z.lazy(() => errorResourceNotFoundSchema);
-export type Token404Schema = z.infer<typeof token404Schema>;
-/**
- * @description Resource conflict
- */
-export const token409Schema = z.lazy(() => errorResourceConflictSchema);
-export type Token409Schema = z.infer<typeof token409Schema>;
-/**
- * @description Precondition failed
- */
-export const token412Schema = z.lazy(() => errorPreconditionFailedSchema);
-export type Token412Schema = z.infer<typeof token412Schema>;
-/**
- * @description Validation error
- */
-export const token422Schema = z.lazy(() => errorValidationFailedSchema);
+export const token422Schema = z.union([z.lazy(() => errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema), z.lazy(() => errorResourceNotFoundSchema), z.lazy(() => errorInternalSchema), z.lazy(() => errorInvalidArgumentSchema), z.lazy(() => errorPasswordMismatchSchema), z.lazy(() => errorPreconditionFailedSchema), z.lazy(() => errorRefreshTokenCannotBeEmptySchema), z.lazy(() => errorRefreshTokenExpiredSchema), z.lazy(() => errorRefreshTokenInvalidSchema), z.lazy(() => errorRequestValidationFailedSchema), z.lazy(() => errorResourceConflictSchema), z.lazy(() => errorUnauthorizedSchema), z.lazy(() => errorUsernameOrEmailCannotBeEmptySchema), z.lazy(() => errorValidationFailedSchema)]);
 export type Token422Schema = z.infer<typeof token422Schema>;
-/**
- * @description Internal server error
- */
-export const token500Schema = z.lazy(() => errorInternalSchema);
-export type Token500Schema = z.infer<typeof token500Schema>;
 
  export const tokenMutationRequestSchema = z.lazy(() => bodyTokenApisOidcV1TokenPostSchema);
 export type TokenMutationRequestSchema = z.infer<typeof tokenMutationRequestSchema>;

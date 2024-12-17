@@ -1,13 +1,13 @@
 import client from "@/utils/client.ts";
 import { useMutation } from "@tanstack/react-query";
 import { useInvalidationForMutation } from "../../useInvalidationForMutation";
-import type { ReplaceUserQuotaMutationResponseType, ReplaceUserQuotaPathParamsType, ReplaceUserQuota400Type, ReplaceUserQuota401Type, ReplaceUserQuota404Type, ReplaceUserQuota409Type, ReplaceUserQuota412Type, ReplaceUserQuota422Type, ReplaceUserQuota500Type } from "../ts/ReplaceUserQuotaType";
+import type { ReplaceUserQuotaMutationResponseType, ReplaceUserQuotaPathParamsType, ReplaceUserQuota422Type } from "../ts/ReplaceUserQuotaType";
 import type { UseMutationOptions } from "@tanstack/react-query";
 
- type ReplaceUserQuotaClient = typeof client<ReplaceUserQuotaMutationResponseType, ReplaceUserQuota400Type | ReplaceUserQuota401Type | ReplaceUserQuota404Type | ReplaceUserQuota409Type | ReplaceUserQuota412Type | ReplaceUserQuota422Type | ReplaceUserQuota500Type, never>;
+ type ReplaceUserQuotaClient = typeof client<ReplaceUserQuotaMutationResponseType, ReplaceUserQuota422Type, never>;
 type ReplaceUserQuota = {
     data: ReplaceUserQuotaMutationResponseType;
-    error: ReplaceUserQuota400Type | ReplaceUserQuota401Type | ReplaceUserQuota404Type | ReplaceUserQuota409Type | ReplaceUserQuota412Type | ReplaceUserQuota422Type | ReplaceUserQuota500Type;
+    error: ReplaceUserQuota422Type;
     request: never;
     pathParams: ReplaceUserQuotaPathParamsType;
     queryParams: never;

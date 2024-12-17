@@ -1,12 +1,12 @@
 import client from "@/utils/client.ts";
 import { useQuery, queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import type { ListWorkspaceAccountRechargesQueryResponseType, ListWorkspaceAccountRechargesPathParamsType, ListWorkspaceAccountRechargesQueryParamsType, ListWorkspaceAccountRecharges400Type, ListWorkspaceAccountRecharges401Type, ListWorkspaceAccountRecharges404Type, ListWorkspaceAccountRecharges409Type, ListWorkspaceAccountRecharges412Type, ListWorkspaceAccountRecharges422Type, ListWorkspaceAccountRecharges500Type } from "../ts/ListWorkspaceAccountRechargesType";
+import type { ListWorkspaceAccountRechargesQueryResponseType, ListWorkspaceAccountRechargesPathParamsType, ListWorkspaceAccountRechargesQueryParamsType, ListWorkspaceAccountRecharges422Type } from "../ts/ListWorkspaceAccountRechargesType";
 import type { QueryObserverOptions, UseQueryResult, QueryKey, UseSuspenseQueryOptions, UseSuspenseQueryResult } from "@tanstack/react-query";
 
- type ListWorkspaceAccountRechargesClient = typeof client<ListWorkspaceAccountRechargesQueryResponseType, ListWorkspaceAccountRecharges400Type | ListWorkspaceAccountRecharges401Type | ListWorkspaceAccountRecharges404Type | ListWorkspaceAccountRecharges409Type | ListWorkspaceAccountRecharges412Type | ListWorkspaceAccountRecharges422Type | ListWorkspaceAccountRecharges500Type, never>;
+ type ListWorkspaceAccountRechargesClient = typeof client<ListWorkspaceAccountRechargesQueryResponseType, ListWorkspaceAccountRecharges422Type, never>;
 type ListWorkspaceAccountRecharges = {
     data: ListWorkspaceAccountRechargesQueryResponseType;
-    error: ListWorkspaceAccountRecharges400Type | ListWorkspaceAccountRecharges401Type | ListWorkspaceAccountRecharges404Type | ListWorkspaceAccountRecharges409Type | ListWorkspaceAccountRecharges412Type | ListWorkspaceAccountRecharges422Type | ListWorkspaceAccountRecharges500Type;
+    error: ListWorkspaceAccountRecharges422Type;
     request: never;
     pathParams: ListWorkspaceAccountRechargesPathParamsType;
     queryParams: ListWorkspaceAccountRechargesQueryParamsType;

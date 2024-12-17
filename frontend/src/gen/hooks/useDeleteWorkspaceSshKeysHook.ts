@@ -1,13 +1,13 @@
 import client from "@/utils/client.ts";
 import { useMutation } from "@tanstack/react-query";
 import { useInvalidationForMutation } from "../../useInvalidationForMutation";
-import type { DeleteWorkspaceSshKeysMutationResponseType, DeleteWorkspaceSshKeysPathParamsType, DeleteWorkspaceSshKeys400Type, DeleteWorkspaceSshKeys401Type, DeleteWorkspaceSshKeys404Type, DeleteWorkspaceSshKeys409Type, DeleteWorkspaceSshKeys412Type, DeleteWorkspaceSshKeys422Type, DeleteWorkspaceSshKeys500Type } from "../ts/DeleteWorkspaceSshKeysType";
+import type { DeleteWorkspaceSshKeysMutationResponseType, DeleteWorkspaceSshKeysPathParamsType, DeleteWorkspaceSshKeys422Type } from "../ts/DeleteWorkspaceSshKeysType";
 import type { UseMutationOptions } from "@tanstack/react-query";
 
- type DeleteWorkspaceSshKeysClient = typeof client<DeleteWorkspaceSshKeysMutationResponseType, DeleteWorkspaceSshKeys400Type | DeleteWorkspaceSshKeys401Type | DeleteWorkspaceSshKeys404Type | DeleteWorkspaceSshKeys409Type | DeleteWorkspaceSshKeys412Type | DeleteWorkspaceSshKeys422Type | DeleteWorkspaceSshKeys500Type, never>;
+ type DeleteWorkspaceSshKeysClient = typeof client<DeleteWorkspaceSshKeysMutationResponseType, DeleteWorkspaceSshKeys422Type, never>;
 type DeleteWorkspaceSshKeys = {
     data: DeleteWorkspaceSshKeysMutationResponseType;
-    error: DeleteWorkspaceSshKeys400Type | DeleteWorkspaceSshKeys401Type | DeleteWorkspaceSshKeys404Type | DeleteWorkspaceSshKeys409Type | DeleteWorkspaceSshKeys412Type | DeleteWorkspaceSshKeys422Type | DeleteWorkspaceSshKeys500Type;
+    error: DeleteWorkspaceSshKeys422Type;
     request: never;
     pathParams: DeleteWorkspaceSshKeysPathParamsType;
     queryParams: never;

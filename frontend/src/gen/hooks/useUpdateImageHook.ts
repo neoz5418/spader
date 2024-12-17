@@ -1,13 +1,13 @@
 import client from "@/utils/client.ts";
 import { useMutation } from "@tanstack/react-query";
 import { useInvalidationForMutation } from "../../useInvalidationForMutation";
-import type { UpdateImageMutationResponseType, UpdateImagePathParamsType, UpdateImage400Type, UpdateImage401Type, UpdateImage404Type, UpdateImage409Type, UpdateImage412Type, UpdateImage422Type, UpdateImage500Type } from "../ts/UpdateImageType";
+import type { UpdateImageMutationResponseType, UpdateImagePathParamsType, UpdateImage422Type } from "../ts/UpdateImageType";
 import type { UseMutationOptions } from "@tanstack/react-query";
 
- type UpdateImageClient = typeof client<UpdateImageMutationResponseType, UpdateImage400Type | UpdateImage401Type | UpdateImage404Type | UpdateImage409Type | UpdateImage412Type | UpdateImage422Type | UpdateImage500Type, never>;
+ type UpdateImageClient = typeof client<UpdateImageMutationResponseType, UpdateImage422Type, never>;
 type UpdateImage = {
     data: UpdateImageMutationResponseType;
-    error: UpdateImage400Type | UpdateImage401Type | UpdateImage404Type | UpdateImage409Type | UpdateImage412Type | UpdateImage422Type | UpdateImage500Type;
+    error: UpdateImage422Type;
     request: never;
     pathParams: UpdateImagePathParamsType;
     queryParams: never;

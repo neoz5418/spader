@@ -1,13 +1,13 @@
 import client from "@/utils/client.ts";
 import { useMutation } from "@tanstack/react-query";
 import { useInvalidationForMutation } from "../../useInvalidationForMutation";
-import type { StopInstanceMutationResponseType, StopInstancePathParamsType, StopInstance400Type, StopInstance401Type, StopInstance404Type, StopInstance409Type, StopInstance412Type, StopInstance422Type, StopInstance500Type } from "../ts/StopInstanceType";
+import type { StopInstanceMutationResponseType, StopInstancePathParamsType, StopInstance422Type } from "../ts/StopInstanceType";
 import type { UseMutationOptions } from "@tanstack/react-query";
 
- type StopInstanceClient = typeof client<StopInstanceMutationResponseType, StopInstance400Type | StopInstance401Type | StopInstance404Type | StopInstance409Type | StopInstance412Type | StopInstance422Type | StopInstance500Type, never>;
+ type StopInstanceClient = typeof client<StopInstanceMutationResponseType, StopInstance422Type, never>;
 type StopInstance = {
     data: StopInstanceMutationResponseType;
-    error: StopInstance400Type | StopInstance401Type | StopInstance404Type | StopInstance409Type | StopInstance412Type | StopInstance422Type | StopInstance500Type;
+    error: StopInstance422Type;
     request: never;
     pathParams: StopInstancePathParamsType;
     queryParams: never;

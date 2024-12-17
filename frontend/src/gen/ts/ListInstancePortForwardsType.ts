@@ -1,11 +1,18 @@
 import type { PortForwardType } from "./PortForwardType";
-import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
-import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType } from "./ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType";
 import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
-import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
-import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
-import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 import type { ErrorInternalType } from "./ErrorInternalType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorPasswordMismatchType } from "./ErrorPasswordMismatchType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorRefreshTokenCannotBeEmptyType } from "./ErrorRefreshTokenCannotBeEmptyType";
+import type { ErrorRefreshTokenExpiredType } from "./ErrorRefreshTokenExpiredType";
+import type { ErrorRefreshTokenInvalidType } from "./ErrorRefreshTokenInvalidType";
+import type { ErrorRequestValidationFailedType } from "./ErrorRequestValidationFailedType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorUsernameOrEmailCannotBeEmptyType } from "./ErrorUsernameOrEmailCannotBeEmptyType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 
  export type ListInstancePortForwardsPathParamsType = {
     /**
@@ -26,33 +33,9 @@ import type { ErrorInternalType } from "./ErrorInternalType";
 */
 export type ListInstancePortForwards200Type = PortForwardType[];
 /**
- * @description Request error
+ * @description Unprocessable Entity
 */
-export type ListInstancePortForwards400Type = ErrorInvalidArgumentType;
-/**
- * @description Unauthorized
-*/
-export type ListInstancePortForwards401Type = ErrorUnauthorizedType;
-/**
- * @description Not found
-*/
-export type ListInstancePortForwards404Type = ErrorResourceNotFoundType;
-/**
- * @description Resource conflict
-*/
-export type ListInstancePortForwards409Type = ErrorResourceConflictType;
-/**
- * @description Precondition failed
-*/
-export type ListInstancePortForwards412Type = ErrorPreconditionFailedType;
-/**
- * @description Validation error
-*/
-export type ListInstancePortForwards422Type = ErrorValidationFailedType;
-/**
- * @description Internal server error
-*/
-export type ListInstancePortForwards500Type = ErrorInternalType;
+export type ListInstancePortForwards422Type = (ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType | ErrorResourceNotFoundType | ErrorInternalType | ErrorInvalidArgumentType | ErrorPasswordMismatchType | ErrorPreconditionFailedType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorRequestValidationFailedType | ErrorResourceConflictType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
 /**
  * @description Successful Response
 */
@@ -60,5 +43,5 @@ export type ListInstancePortForwardsQueryResponseType = PortForwardType[];
 export type ListInstancePortForwardsTypeQuery = {
     Response: ListInstancePortForwardsQueryResponseType;
     PathParams: ListInstancePortForwardsPathParamsType;
-    Errors: ListInstancePortForwards400Type | ListInstancePortForwards401Type | ListInstancePortForwards404Type | ListInstancePortForwards409Type | ListInstancePortForwards412Type | ListInstancePortForwards422Type | ListInstancePortForwards500Type;
+    Errors: ListInstancePortForwards422Type;
 };

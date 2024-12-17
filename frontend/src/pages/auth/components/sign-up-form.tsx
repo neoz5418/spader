@@ -18,7 +18,7 @@ import { Card } from '@/components/ui/card'
 import { PhoneInput } from '@/components/phone-input.tsx'
 import * as validator from 'validator'
 import { z } from 'zod'
-import { RegisterUserRequestType, SendOneTimePasswordRequestType } from '@/gen'
+import { ErrorResourceConflictType, RegisterUserRequestType, SendOneTimePasswordRequestType } from '@/gen'
 
 export function SignUpForm({ className, ...props }) {
   const [disableVerifyBtn, setDisableVerifyBtn] = useState(true)
@@ -139,7 +139,7 @@ export function SignUpForm({ className, ...props }) {
                            type={'hidden'} {...verifyForm.register('password')} />
                     <input value={'email'}
                            type={'hidden'} {...verifyForm.register('one_time_password_validate_type')} />
-                    {verifyError && <div>{verifyError.message}</div>}
+                    {verifyError && <div>{verifyError.message.type}</div>}
                     <Button
                       className="mt-2"
                       disabled={disableVerifyBtn}
@@ -253,7 +253,7 @@ export function SignUpForm({ className, ...props }) {
                       </FormItem>
                     )}
                   />
-                  {registerError && <div>{registerError.message}</div>}
+                  {registerError && <div>{registerError.message.type}</div>}
                   <input value={'email'} type={'hidden'} {...registerForm.register('type')} />
                   <Button className="mt-2" loading={isRegisterPending}
                           type="submit">

@@ -1,12 +1,12 @@
 import client from "@/utils/client.ts";
 import { useQuery, queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import type { ListWorkspaceZonesQueryResponseType, ListWorkspaceZonesPathParamsType, ListWorkspaceZonesQueryParamsType, ListWorkspaceZones400Type, ListWorkspaceZones401Type, ListWorkspaceZones404Type, ListWorkspaceZones409Type, ListWorkspaceZones412Type, ListWorkspaceZones422Type, ListWorkspaceZones500Type } from "../ts/ListWorkspaceZonesType";
+import type { ListWorkspaceZonesQueryResponseType, ListWorkspaceZonesPathParamsType, ListWorkspaceZonesQueryParamsType, ListWorkspaceZones422Type } from "../ts/ListWorkspaceZonesType";
 import type { QueryObserverOptions, UseQueryResult, QueryKey, UseSuspenseQueryOptions, UseSuspenseQueryResult } from "@tanstack/react-query";
 
- type ListWorkspaceZonesClient = typeof client<ListWorkspaceZonesQueryResponseType, ListWorkspaceZones400Type | ListWorkspaceZones401Type | ListWorkspaceZones404Type | ListWorkspaceZones409Type | ListWorkspaceZones412Type | ListWorkspaceZones422Type | ListWorkspaceZones500Type, never>;
+ type ListWorkspaceZonesClient = typeof client<ListWorkspaceZonesQueryResponseType, ListWorkspaceZones422Type, never>;
 type ListWorkspaceZones = {
     data: ListWorkspaceZonesQueryResponseType;
-    error: ListWorkspaceZones400Type | ListWorkspaceZones401Type | ListWorkspaceZones404Type | ListWorkspaceZones409Type | ListWorkspaceZones412Type | ListWorkspaceZones422Type | ListWorkspaceZones500Type;
+    error: ListWorkspaceZones422Type;
     request: never;
     pathParams: ListWorkspaceZonesPathParamsType;
     queryParams: ListWorkspaceZonesQueryParamsType;

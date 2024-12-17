@@ -1,13 +1,20 @@
 import type { ListUsersSortOptionsType } from "./ListUsersSortOptionsType";
 import type { DirectionType } from "./DirectionType";
 import type { PaginatedListUserType } from "./PaginatedListUserType";
-import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
-import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType } from "./ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType";
 import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
-import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
-import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
-import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 import type { ErrorInternalType } from "./ErrorInternalType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorPasswordMismatchType } from "./ErrorPasswordMismatchType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorRefreshTokenCannotBeEmptyType } from "./ErrorRefreshTokenCannotBeEmptyType";
+import type { ErrorRefreshTokenExpiredType } from "./ErrorRefreshTokenExpiredType";
+import type { ErrorRefreshTokenInvalidType } from "./ErrorRefreshTokenInvalidType";
+import type { ErrorRequestValidationFailedType } from "./ErrorRequestValidationFailedType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorUsernameOrEmailCannotBeEmptyType } from "./ErrorUsernameOrEmailCannotBeEmptyType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 
  export type ListUsersQueryParamsType = {
     /**
@@ -50,33 +57,9 @@ import type { ErrorInternalType } from "./ErrorInternalType";
 */
 export type ListUsers200Type = PaginatedListUserType;
 /**
- * @description Request error
+ * @description Unprocessable Entity
 */
-export type ListUsers400Type = ErrorInvalidArgumentType;
-/**
- * @description Unauthorized
-*/
-export type ListUsers401Type = ErrorUnauthorizedType;
-/**
- * @description Not found
-*/
-export type ListUsers404Type = ErrorResourceNotFoundType;
-/**
- * @description Resource conflict
-*/
-export type ListUsers409Type = ErrorResourceConflictType;
-/**
- * @description Precondition failed
-*/
-export type ListUsers412Type = ErrorPreconditionFailedType;
-/**
- * @description Validation error
-*/
-export type ListUsers422Type = ErrorValidationFailedType;
-/**
- * @description Internal server error
-*/
-export type ListUsers500Type = ErrorInternalType;
+export type ListUsers422Type = (ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType | ErrorResourceNotFoundType | ErrorInternalType | ErrorInvalidArgumentType | ErrorPasswordMismatchType | ErrorPreconditionFailedType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorRequestValidationFailedType | ErrorResourceConflictType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
 /**
  * @description Successful Response
 */
@@ -84,5 +67,5 @@ export type ListUsersQueryResponseType = PaginatedListUserType;
 export type ListUsersTypeQuery = {
     Response: ListUsersQueryResponseType;
     QueryParams: ListUsersQueryParamsType;
-    Errors: ListUsers400Type | ListUsers401Type | ListUsers404Type | ListUsers409Type | ListUsers412Type | ListUsers422Type | ListUsers500Type;
+    Errors: ListUsers422Type;
 };

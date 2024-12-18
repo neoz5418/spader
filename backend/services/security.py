@@ -21,8 +21,7 @@ logger = logging.getLogger(__name__)
 def verify_hashed_secret(hashed: Union[str, bytes], plain: Union[str, bytes]) -> bool:
     try:
         return ph.verify(hashed, plain)
-    except Exception as e:
-        logger.exception(e)
+    except Exception:
         return False
 
 

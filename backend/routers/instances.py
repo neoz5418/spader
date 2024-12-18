@@ -253,7 +253,13 @@ async def create_instance(
     instance_in: CreateInstanceRequest,
     user: CurrentUserDepAnnotated,
 ) -> Operation:
-    existing = await Instance.one_by_field(session, "name", instance_in.name)
+    existing = await Instance.one_by_fields(
+        session,
+        {
+            "name": instance_in.name,
+            "workspace": workspace,
+        },
+    )
     if existing:
         raise ErrorResourceConflict(
             type="ResourceConflict",

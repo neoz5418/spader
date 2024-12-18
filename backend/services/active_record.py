@@ -79,7 +79,9 @@ class ActiveRecordMixin:
         return result.first()
 
     @classmethod
-    async def all_by_field(cls, session: AsyncSession, field: str, value: Any):
+    async def all_by_field(
+        cls: Type[T], session: AsyncSession, field: str, value: Any
+    ) -> list[T]:
         """
         Return all objects with the given field and value.
         Return an empty list if not found.

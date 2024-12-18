@@ -12,6 +12,7 @@ from routers.types import (
     InstanceStatus,
     Operation,
     OperationStatus,
+    SSHKey,
     Zone,
 )
 from ecloudsdkecs.v1.client import Client
@@ -139,6 +140,14 @@ def generate_cloud_init(jupyter_password: str, public_key: str) -> str:
       -e JUPYTER_PASSWORD=%s \
       runpod/pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04
     """ % (public_key, jupyter_password)
+
+
+async def get_public_key(session: SessionDep, workspace: str):
+    ssh_key_list = await SSHKey.all_by_field(session, "workspace", workspace)
+    public_key = []
+    for ssh_key in ssh_key_list:
+        public_key.append(ssh_key.public_key)
+    return "\n".join(public_key)
 
 
 class ProviderEcloud(ProviderInterface):
@@ -319,10 +328,11 @@ class ProviderEcloud(ProviderInterface):
             vm_rebuild_body=VmRebuildBody(
                 server_id=server_id,
                 image_id=zone.ecloud.default_image_id,
-                # TODO: get ssh key from workspace config
                 user_data=generate_cloud_init(
                     jupyter_password=jupyter_password,
-                    public_key="",
+                    public_key=await get_public_key(
+                        session, workspace=instance.workspace
+                    ),
                 ),
             )
         )

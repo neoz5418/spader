@@ -17,7 +17,6 @@ from uuid import UUID
 
 from services.active_record import ActiveRecordMixin
 from services.common import (
-    CursorList,
     DisplayName,
     Name,
     PaginatedList,
@@ -144,14 +143,16 @@ class WorkspaceQuota(BaseModel):
     status: dict[str, int]
 
 
-class SSHKey(SQLModel, table=True):
+class SSHKeyCreate(BaseModel):
+    name: Name
+    public_key: str
+
+
+class SSHKey(SQLModel, BaseModelMixin, table=True):
     workspace: str
     name: Name
     uid: UUID = UID
     public_key: str
-
-    create_time: Optional[datetime] = None
-    delete_time: Optional[datetime] = None
 
 
 SSHKeyList = PaginatedList[SSHKey]
@@ -390,7 +391,8 @@ class Operation(SQLModel, ActiveRecordMixin, table=True):
     zone: str  # empty string if the operation is not related to a zone
 
 
-OperationList = CursorList[Operation]
+# OperationList = CursorList[Operation]
+OperationList = PaginatedList[Operation]
 
 
 class InstanceStatus(Enum):

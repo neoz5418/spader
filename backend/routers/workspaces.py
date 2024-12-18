@@ -21,6 +21,9 @@ from routers.types import (
     RechargeWorkspaceAccount,
     ResourceUsageRecord,
     ResourceUsageRecordList,
+    SortOrder,
+    SSHKey,
+    SSHKeyCreate,
     SSHKeyList,
     Workspace,
     WorkspaceAccount,
@@ -342,10 +345,37 @@ async def list_workspace_resource_usage_records(
 @router.get(
     "/workspaces/{workspace}/ssh_keys",
     dependencies=[CurrentUserDep],
-    response_model=SSHKeyList,
 )
-def get_workspace_ssh_keys(workspace: str):
-    return
+async def list_workspace_ssh_keys(session: SessionDep, workspace: str) -> SSHKeyList:
+    fields = {}
+    if workspace:
+        fields["workspace"] = workspace
+
+    return await SSHKey.paginated_by_query(
+        session=session,
+        fields=fields,
+    )
+
+
+async def get_ssh_key(
+    session: SessionDep,
+    workspace: str,
+    name: str,
+) -> SSHKey:
+    ssh_key = await SSHKey.one_by_fields(
+        session,
+        {
+            "name": name,
+            "workspace": workspace,
+        },
+    )
+    if not ssh_key:
+        raise ErrorResourceNotFound(
+            type="ResourceNotFound",
+            resource_name="ssh_key",
+            input=name,
+        ).to_exception()
+    return ssh_key
 
 
 @router.post(
@@ -353,8 +383,32 @@ def get_workspace_ssh_keys(workspace: str):
     dependencies=[CurrentUserDep],
     status_code=status.HTTP_201_CREATED,
 )
-def create_workspace_ssh_keys(workspace: str):
-    return
+async def create_workspace_ssh_keys(
+    session: SessionDep, workspace: str, ssh_key_in: SSHKeyCreate
+) -> SSHKey:
+    existing = await SSHKey.one_by_fields(
+        session,
+        {
+            "name": ssh_key_in.name,
+            "workspace": workspace,
+        },
+    )
+    if existing:
+        raise ErrorResourceConflict(
+            type="ResourceConflict",
+            input=ssh_key_in.name,
+            location="name",
+            resource_name="ssh_key",
+        ).to_exception()
+    # TODO: validate ssh key
+    to_create = SSHKey.model_validate(
+        ssh_key_in,
+        update={
+            "workspace": workspace,
+        },
+    )
+    await to_create.save(session)
+    return to_create
 
 
 @router.delete(
@@ -362,7 +416,17 @@ def create_workspace_ssh_keys(workspace: str):
     dependencies=[CurrentUserDep],
     status_code=status.HTTP_204_NO_CONTENT,
 )
-def delete_workspace_ssh_keys(workspace: str, name: str):
+async def delete_workspace_ssh_keys(session: SessionDep, workspace: str, name: str):
+    ssh_key = SSHKey.one_by_fields(
+        session,
+        {
+            "workspace": workspace,
+            "name": name,
+        },
+    )
+    if ssh_key:
+        session.delete(ssh_key)
+        await session.commit()
     return
 
 
@@ -423,6 +487,12 @@ async def watch_workspace(
         active_connections_set.discard(websocket)
 
 
+class ListOperationsSortOptions(Enum):
+    create_time = "create_time"
+    start_time = "start_time"
+    end_time = "end_time"
+
+
 @router.get(
     "/workspaces/{workspace}/operations",
     dependencies=[CurrentUserDep],
@@ -431,6 +501,9 @@ async def get_workspace_operations(
     session: SessionDep,
     workspace: str,
     params: ListParamsDep,
+    search: str = None,
+    sort: ListOperationsSortOptions = ListOperationsSortOptions.create_time,
+    sort_order: SortOrder = SortOrder.DESC,
 ) -> OperationList:
     fields = {}
     if workspace:

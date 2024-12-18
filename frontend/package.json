@@ -4,7 +4,8 @@
 	"version": "1.0.0-beta.2",
 	"type": "module",
 	"scripts": {
-		"dev": "bun vite",
+		"dev": "vite",
+		"dev:bun": "bun vite",
 		"build": "tsc && vite build",
 		"lint": "eslint .",
 		"preview": "vite preview",
@@ -48,6 +49,7 @@
 		"@tanstack/react-table": "^8.20.5",
 		"@types/validator": "^13.12.2",
 		"axios": "1.7.4",
+		"biome": "0.3.3",
 		"class-variance-authority": "^0.7.0",
 		"clsx": "^2.1.0",
 		"cmdk": "^1.0.4",

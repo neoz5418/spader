@@ -75,7 +75,7 @@ async def token(
             raise ErrorInvalidArgument(
                 type="InvalidArgument",
                 input=password,
-                loc="password",
+                location="password",
             ).to_exception()
         if not email and not username:
             raise ErrorUsernameOrEmailCannotBeEmpty(
@@ -96,7 +96,7 @@ async def token(
         logger.info("user: %s, username: %s, email: %s", user, username, email)
         if user is None:
             raise ErrorResourceNotFound(
-                type="ResourceNotFound", resource_name="user"
+                type="ResourceNotFound", resource_name="user", input=email or username
             ).to_exception()
         if verify_hashed_secret(user.hashed_password, password) is False:
             raise ErrorPasswordMismatch(type="PasswordMismatch").to_exception()
@@ -115,7 +115,7 @@ async def token(
         username = payload["sub"]
         if username == "":
             raise ErrorResourceNotFound(
-                type="ResourceNotFound", resource_name="user"
+                type="ResourceNotFound", resource_name="user", input=""
             ).to_exception()
     access_token = jwt_manager.create_access_token(username=username)
     refresh_token = jwt_manager.create_refresh_token(username=username)

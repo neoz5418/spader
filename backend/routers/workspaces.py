@@ -32,6 +32,8 @@ from routers.types import (
     WorkspaceMember,
     WorkspaceMemberList,
     WorkspaceQuota,
+    Operation,
+    OperationList,
 )
 from services.cache import get_redis
 from services.common import Direction, PaginatedList, Pagination
@@ -423,3 +425,30 @@ async def watch_workspace(
         await websocket.close()
     finally:
         active_connections_set.discard(websocket)
+
+
+@router.get(
+    "/workspaces/{workspace}/operations",
+    dependencies=[CurrentUserDep],
+)
+async def get_workspace_operations(
+    session: SessionDep,
+    workspace: str,
+    params: ListParamsDep,
+) -> OperationList:
+    fields = {}
+    if workspace:
+        fields["workspace"] = workspace
+    fuzzy_fields = {}
+    if search:
+        fuzzy_fields = {"name": search, "display_name": search}
+
+    operation_list = await Operation.paginated_by_query(
+        session=session,
+        fields=fields,
+        fuzzy_fields=fuzzy_fields,
+        offset=params.offset,
+        limit=params.limit,
+        order_by=(sort, sort_order),
+    )
+    return operation_list

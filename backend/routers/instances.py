@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Annotated
+from typing import Annotated, Optional
 from fastapi import APIRouter, Depends
 from uuid import UUID
 
@@ -17,7 +17,8 @@ from routers.types import (
     FileStorage,
     FileStorageList,
     GPUType,
-    GPUTypeList,
+    GPUTypePublic,
+    GPUTypePublicList,
     Image,
     ImageList,
     Instance,
@@ -84,17 +85,17 @@ async def list_zones(
     )
 
 
-@router.get("/zones/{zone}/gpu_types", dependencies=[CurrentAdminUserDep])
+@router.get(
+    "/gpu_types",
+    dependencies=[CurrentAdminUserDep],
+)
 async def list_gpu_types(
     session: SessionDep,
     params: ListParamsDep,
-    zone: str,
-) -> GPUTypeList:
-    return await GPUType.paginated_by_query(
-        session=session,
-        fields={"zone": zone},
-        offset=params.offset,
-        limit=params.limit,
+    zone: Optional[str],
+) -> GPUTypePublicList:
+    return await list_workspace_zone_gpu_types(
+        session, params=params, zone=zone, workspace=""
     )
 
 
@@ -111,21 +112,29 @@ async def list_workspace_zones(
 
 
 @router.get(
-    "/workspaces/{workspace}/zones/{zone}/gpu_types",
+    "/workspaces/{workspace}/gpu_types",
     dependencies=[CurrentUserDep],
 )
 async def list_workspace_zone_gpu_types(
     session: SessionDep,
     workspace: str,
-    zone: str,
     params: ListParamsDep,
-) -> GPUTypeList:
-    return await GPUType.paginated_by_query(
+    zone: str | None = None,
+) -> GPUTypePublicList:
+    fields = {}
+    if zone:
+        fields["zone"] = zone
+    gpu_type_list = await GPUType.paginated_by_query(
         session=session,
-        fields={"zone": zone},
+        fields=fields,
         offset=params.offset,
         limit=params.limit,
     )
+    public_list = GPUTypePublicList(pagination=gpu_type_list.pagination, items=[])
+    for gpu_type in gpu_type_list.items:
+        g = GPUTypePublic.model_validate(gpu_type)
+        public_list.items.append(g)
+    return public_list
 
 
 @router.get(
@@ -151,10 +160,10 @@ class ListInstancesSortOptions(Enum):
 async def list_instances(
     session: SessionDep,
     params: ListParamsDep,
-    zone: str = None,
     search: str = None,
     sort: ListInstancesSortOptions = ListInstancesSortOptions.create_time,
     sort_order: SortOrder = SortOrder.DESC,
+    zone: str | None = None,
 ) -> InstancePublicList:
     return await list_workspace_instances(
         session=session,

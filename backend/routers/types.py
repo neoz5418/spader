@@ -1,13 +1,12 @@
 import re
 from datetime import datetime
-from enum import auto, Enum
+from enum import auto, Enum, StrEnum
 from typing import Annotated, Literal, Optional
 from pydantic import (
     BaseModel,
     ByteSize,
     EmailStr,
     field_validator,
-    computed_field,
 )
 from pydantic_extra_types.phone_numbers import PhoneNumber
 from sqlalchemy import Column, DateTime, JSON
@@ -231,13 +230,13 @@ class DiskType(Enum):
     HDD = "HDD"
 
 
-class BillingPeriod(Enum):
-    ONE_HOUR = "ONE_HOUR"
-    ONE_WEEK = "ONE_WEEK"
-    ONE_DAY = "ONE_DAY"
-    TWO_WEEK = "TWO_WEEK"
-    ONE_MONTH = "ONE_MONTH"
-    THREE_MONTH = "THREE_MONTH"
+class BillingPeriod(StrEnum):
+    one_hour = "one_hour"
+    one_day = "one_day"
+    one_week = "one_week"
+    two_week = "two_week"
+    one_month = "one_month"
+    three_month = "three_month"
 
 
 class Price(BaseModel):
@@ -288,18 +287,26 @@ class GPUTypeBase(SQLModel):
     name: str = Field(primary_key=True, nullable=False)
     display_name: DisplayName
     description: Optional[str] = None
-    gpuMemory: ByteSize
+    gpu_memory: ByteSize
     memory: ByteSize
     cpu: int
     disk_size: ByteSize
     disk_type: DiskType
-    zone: str
+    zones: list[str] = Field(sa_column=Column(JSON))
+
+
+class GPUTypePublic(GPUTypeBase):
+    prices: list[Price]
 
 
 class GPUType(GPUTypeBase, BaseModelMixin, table=True):
     provider_config: dict = Field(sa_column=Column(JSON))
+    price_config: list = Field(sa_column=Column(JSON))
 
-    @computed_field
+    @property
+    def prices(self) -> list[Price]:
+        return self.price_config
+
     @property
     def ecloud(self) -> GPUProviderConfigEcloud:
         return GPUProviderConfigEcloud(**self.provider_config)
@@ -307,10 +314,6 @@ class GPUType(GPUTypeBase, BaseModelMixin, table=True):
     @ecloud.setter
     def ecloud(self, value):
         self.provider_config = value
-
-
-class GPUTypePublic(GPUTypeBase):
-    pass
 
 
 GPUTypeList = PaginatedList[GPUType]
@@ -340,7 +343,6 @@ class Zone(ZoneBase, BaseModelMixin, table=True):
     provider: Provider
     provider_config: dict = Field(sa_column=Column(JSON))
 
-    @computed_field
     @property
     def ecloud(self) -> ProviderZoneConfigEcloud:
         return ProviderZoneConfigEcloud(**self.provider_config)

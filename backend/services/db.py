@@ -2,7 +2,16 @@ from sqlalchemy.ext.asyncio import create_async_engine
 from sqlmodel import select, SQLModel
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from routers.types import GPUType, Provider, Role, User, Workspace, Zone
+from routers.types import (
+    BillingPeriod,
+    Currency,
+    GPUType,
+    Provider,
+    Role,
+    User,
+    Workspace,
+    Zone,
+)
 from services.security import get_secret_hash
 from settings import get_settings
 
@@ -82,12 +91,29 @@ async def init_data():
             name="beijing_v100",
             display_name="NVIDIA Tesla V100",
             description="",
-            gpuMemory="32GB",
+            gpu_memory="32GB",
             memory="64GB",
             cpu=8,
             disk_size="100GB",
             disk_type="SSD",
-            zone="beijing",
+            zones=["beijing"],
+            price_config=[
+                {
+                    "currency": Currency.CNY,
+                    "price": 10000,
+                    "period": BillingPeriod.one_hour,
+                },
+                {
+                    "currency": Currency.CNY,
+                    "price": 240000,
+                    "period": BillingPeriod.one_day,
+                },
+                {
+                    "currency": Currency.CNY,
+                    "price": 7200000,
+                    "period": BillingPeriod.one_month,
+                },
+            ],
             provider_config={
                 "provider": "ecloud",
                 "boot_volume_type": "highPerformance",
@@ -103,12 +129,29 @@ async def init_data():
             name="beijing_cpu001",
             display_name="CPU Instance",
             description="",
-            gpuMemory="0",
+            gpu_memory="0",
             memory="16GB",
             cpu=8,
             disk_size="100GB",
             disk_type="SSD",
-            zone="beijing",
+            zones=["beijing"],
+            price_config=[
+                {
+                    "currency": Currency.CNY,
+                    "price": 3000,
+                    "period": BillingPeriod.one_hour,
+                },
+                {
+                    "currency": Currency.CNY,
+                    "price": 72000,
+                    "period": BillingPeriod.one_day,
+                },
+                {
+                    "currency": Currency.CNY,
+                    "price": 2160000,
+                    "period": BillingPeriod.one_month,
+                },
+            ],
             provider_config={
                 "provider": "ecloud",
                 "boot_volume_type": "highPerformance",

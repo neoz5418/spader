@@ -1,4 +1,4 @@
-import type { ArgumentDetailType } from "./ArgumentDetailType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
 
  export const errorValidationFailedType = {
     "ValidationFailed": "ValidationFailed"
@@ -12,5 +12,5 @@ export type ErrorValidationFailedType = {
     /**
      * @type array
     */
-    details: ArgumentDetailType[];
+    details: ErrorInvalidArgumentType[];
 };

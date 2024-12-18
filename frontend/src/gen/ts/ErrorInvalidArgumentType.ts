@@ -10,6 +10,6 @@ export type ErrorInvalidArgumentType = {
     /**
      * @type string
     */
-    loc: string;
+    location: string;
     input: any;
 };

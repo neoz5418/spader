@@ -7,11 +7,11 @@ export type ErrorResourceConflictType = {
      * @type string
     */
     type: ErrorResourceConflictTypeType;
-    input: (string | object | number);
+    input: any;
     /**
-     * @type array
+     * @type string
     */
-    loc: (string | number)[];
+    location: string;
     /**
      * @type string
     */

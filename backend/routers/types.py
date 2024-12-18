@@ -2,7 +2,6 @@ import re
 from datetime import datetime
 from enum import Enum
 from typing import Annotated, Literal, Optional
-from fastapi import HTTPException
 from pydantic import (
     BaseModel,
     ByteSize,
@@ -99,19 +98,11 @@ class UserCreate(UserBase):
     @classmethod
     def validate_password(cls, value: str) -> str:
         if not re.search(r"[A-Z]", value):
-            raise HTTPException(
-                status_code=422,
-                detail="Password must contain at least one uppercase letter",
-            )
+            raise ValueError("Password must contain at least one uppercase letter")
         if not re.search(r"[a-z]", value):
-            raise HTTPException(
-                status_code=422,
-                detail="Password must contain at least one lowercase letter",
-            )
+            raise ValueError("Password must contain at least one lowercase letter")
         if not re.search(r"[0-9]", value):
-            raise HTTPException(
-                status_code=422, detail="Password must contain at least one digit"
-            )
+            raise ValueError("Password must contain at least one digit")
         return value
 
 

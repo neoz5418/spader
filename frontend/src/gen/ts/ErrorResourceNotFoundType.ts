@@ -11,4 +11,5 @@ export type ErrorResourceNotFoundType = {
      * @type string
     */
     resource_name: string;
+    input: any;
 };

@@ -33,7 +33,6 @@ from services.common import (
     ErrorInvalidArgument,
     ErrorResourceConflict,
     ErrorValidationFailed,
-    ArgumentDetail,
 )
 from services.notification import send_one_time_password_email
 from services.security import get_secret_hash
@@ -167,12 +166,9 @@ async def check_user_register_info(
         raise ErrorValidationFailed(
             type="ValidationFailed",
             details=[
-                ArgumentDetail(
-                    type="email_invalid",
-                    msg="",
-                    loc=["body", "email"],
+                ErrorInvalidArgument(
+                    location="email",
                     input=email,
-                    i18n=None,
                 )
             ],
         ).to_exception()
@@ -184,7 +180,7 @@ async def check_user_register_info(
         raise ErrorResourceConflict(
             type="ResourceConflict",
             input=email,
-            loc=["body", "email"],
+            location="email",
             resource_name="user",
         ).to_exception()
     statement = select(User).where(User.name == name)
@@ -193,7 +189,7 @@ async def check_user_register_info(
         raise ErrorResourceConflict(
             type="ResourceConflict",
             input=name,
-            loc=["body", "name"],
+            location="name",
             resource_name="user",
         ).to_exception()
 

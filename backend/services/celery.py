@@ -99,6 +99,7 @@ async def delete_instance_operation(operation_id: UUID):
         provider = ProviderInterface.get_provider("ecloud")
         await provider.delete_instance(session, operation, instance)
         await instance.refresh(session)
+        await instance.delete(session)
         stmt = (
             select(ResourceUsageRecord)
             .where(ResourceUsageRecord.target_id == instance.uid)

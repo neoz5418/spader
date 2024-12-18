@@ -246,34 +246,14 @@ class ActiveRecordMixin:
     async def delete(self, session: AsyncSession):
         """Delete the object from the database."""
 
-        if self._has_cascade_delete():
-            if hasattr(self, "delete_time"):
-                self.delete_time = datetime.now(timezone.utc)
-                await self.save(session)
-            await self._handle_cascade_delete(session)
+        if hasattr(self, "delete_time"):
+            self.delete_time = datetime.now(timezone.utc)
+            await self.save(session)
+            await self._publish_event(EventType.MODIFIED, self)
 
         await session.delete(self)
         await session.commit()
         await self._publish_event(EventType.DELETED, self)
-
-    async def _handle_cascade_delete(self, session: AsyncSession):
-        """Handle cascading deletes for all defined relationships."""
-        for rel in self.__mapper__.relationships:
-            if rel.cascade.delete:
-                # Load the related objects
-                await session.refresh(self)
-                related_objects = getattr(self, rel.key)
-
-                # Delete each related object
-                if isinstance(related_objects, list):
-                    for related_object in related_objects:
-                        await related_object.delete(session)
-                elif related_objects:
-                    await related_objects.delete(session)
-
-    def _has_cascade_delete(self):
-        """Check if the model has cascade delete relationships."""
-        return any(rel.cascade.delete for rel in self.__mapper__.relationships)
 
     @classmethod
     async def all(cls, session: AsyncSession):

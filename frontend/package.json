@@ -19,7 +19,7 @@
     "@kubb/plugin-redoc": "^2.28.3",
     "@kubb/swagger-client": "^2.28.3",
     "@kubb/swagger-faker": "^2.28.3",
-    "@kubb/swagger-msw": "^2.28.3",
+    "@kubb/swagger-msw": "^2.28.4",
     "@kubb/swagger-tanstack-query": "^2.28.3",
     "@kubb/swagger-ts": "^2.28.3",
     "@radix-ui/react-avatar": "^1.0.4",

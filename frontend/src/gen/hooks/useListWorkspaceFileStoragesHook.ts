@@ -1,12 +1,12 @@
 import client from "@/utils/client.ts";
 import { useQuery, queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import type { ListWorkspaceFileStoragesQueryResponseType, ListWorkspaceFileStoragesPathParamsType, ListWorkspaceFileStoragesQueryParamsType, ListWorkspaceFileStorages400Type, ListWorkspaceFileStorages401Type, ListWorkspaceFileStorages404Type, ListWorkspaceFileStorages422Type, ListWorkspaceFileStorages429Type, ListWorkspaceFileStorages500Type, ListWorkspaceFileStorages503Type } from "../ts/ListWorkspaceFileStoragesType";
+import type { ListWorkspaceFileStoragesQueryResponseType, ListWorkspaceFileStoragesPathParamsType, ListWorkspaceFileStoragesQueryParamsType, ListWorkspaceFileStorages422Type } from "../ts/ListWorkspaceFileStoragesType";
 import type { QueryObserverOptions, UseQueryResult, QueryKey, UseSuspenseQueryOptions, UseSuspenseQueryResult } from "@tanstack/react-query";
 
- type ListWorkspaceFileStoragesClient = typeof client<ListWorkspaceFileStoragesQueryResponseType, ListWorkspaceFileStorages400Type | ListWorkspaceFileStorages401Type | ListWorkspaceFileStorages404Type | ListWorkspaceFileStorages422Type | ListWorkspaceFileStorages429Type | ListWorkspaceFileStorages500Type | ListWorkspaceFileStorages503Type, never>;
+ type ListWorkspaceFileStoragesClient = typeof client<ListWorkspaceFileStoragesQueryResponseType, ListWorkspaceFileStorages422Type, never>;
 type ListWorkspaceFileStorages = {
     data: ListWorkspaceFileStoragesQueryResponseType;
-    error: ListWorkspaceFileStorages400Type | ListWorkspaceFileStorages401Type | ListWorkspaceFileStorages404Type | ListWorkspaceFileStorages422Type | ListWorkspaceFileStorages429Type | ListWorkspaceFileStorages500Type | ListWorkspaceFileStorages503Type;
+    error: ListWorkspaceFileStorages422Type;
     request: never;
     pathParams: ListWorkspaceFileStoragesPathParamsType;
     queryParams: ListWorkspaceFileStoragesQueryParamsType;

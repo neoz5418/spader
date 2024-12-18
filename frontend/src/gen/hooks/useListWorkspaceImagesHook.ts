@@ -1,12 +1,12 @@
 import client from "@/utils/client.ts";
 import { useQuery, queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import type { ListWorkspaceImagesQueryResponseType, ListWorkspaceImagesPathParamsType, ListWorkspaceImagesQueryParamsType, ListWorkspaceImages400Type, ListWorkspaceImages401Type, ListWorkspaceImages404Type, ListWorkspaceImages422Type, ListWorkspaceImages429Type, ListWorkspaceImages500Type, ListWorkspaceImages503Type } from "../ts/ListWorkspaceImagesType";
+import type { ListWorkspaceImagesQueryResponseType, ListWorkspaceImagesPathParamsType, ListWorkspaceImagesQueryParamsType, ListWorkspaceImages422Type } from "../ts/ListWorkspaceImagesType";
 import type { QueryObserverOptions, UseQueryResult, QueryKey, UseSuspenseQueryOptions, UseSuspenseQueryResult } from "@tanstack/react-query";
 
- type ListWorkspaceImagesClient = typeof client<ListWorkspaceImagesQueryResponseType, ListWorkspaceImages400Type | ListWorkspaceImages401Type | ListWorkspaceImages404Type | ListWorkspaceImages422Type | ListWorkspaceImages429Type | ListWorkspaceImages500Type | ListWorkspaceImages503Type, never>;
+ type ListWorkspaceImagesClient = typeof client<ListWorkspaceImagesQueryResponseType, ListWorkspaceImages422Type, never>;
 type ListWorkspaceImages = {
     data: ListWorkspaceImagesQueryResponseType;
-    error: ListWorkspaceImages400Type | ListWorkspaceImages401Type | ListWorkspaceImages404Type | ListWorkspaceImages422Type | ListWorkspaceImages429Type | ListWorkspaceImages500Type | ListWorkspaceImages503Type;
+    error: ListWorkspaceImages422Type;
     request: never;
     pathParams: ListWorkspaceImagesPathParamsType;
     queryParams: ListWorkspaceImagesQueryParamsType;

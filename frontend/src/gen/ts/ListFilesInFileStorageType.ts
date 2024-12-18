@@ -1,5 +1,18 @@
 import type { PaginatedListFileInfoType } from "./PaginatedListFileInfoType";
-import type { ErrorType } from "./ErrorType";
+import type { ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType } from "./ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType";
+import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
+import type { ErrorInternalType } from "./ErrorInternalType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorPasswordMismatchType } from "./ErrorPasswordMismatchType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorRefreshTokenCannotBeEmptyType } from "./ErrorRefreshTokenCannotBeEmptyType";
+import type { ErrorRefreshTokenExpiredType } from "./ErrorRefreshTokenExpiredType";
+import type { ErrorRefreshTokenInvalidType } from "./ErrorRefreshTokenInvalidType";
+import type { ErrorRequestValidationFailedType } from "./ErrorRequestValidationFailedType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorUsernameOrEmailCannotBeEmptyType } from "./ErrorUsernameOrEmailCannotBeEmptyType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 
  export type ListFilesInFileStoragePathParamsType = {
     /**
@@ -27,33 +40,9 @@ export type ListFilesInFileStorageQueryParamsType = {
 */
 export type ListFilesInFileStorage200Type = PaginatedListFileInfoType;
 /**
- * @description Request error
+ * @description Unprocessable Entity
 */
-export type ListFilesInFileStorage400Type = ErrorType;
-/**
- * @description Unauthorized
-*/
-export type ListFilesInFileStorage401Type = ErrorType;
-/**
- * @description Not found
-*/
-export type ListFilesInFileStorage404Type = ErrorType;
-/**
- * @description Validation error
-*/
-export type ListFilesInFileStorage422Type = ErrorType;
-/**
- * @description Rate limit exceeded
-*/
-export type ListFilesInFileStorage429Type = ErrorType;
-/**
- * @description Internal server error
-*/
-export type ListFilesInFileStorage500Type = ErrorType;
-/**
- * @description Service unavailable
-*/
-export type ListFilesInFileStorage503Type = ErrorType;
+export type ListFilesInFileStorage422Type = (ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType | ErrorResourceNotFoundType | ErrorInternalType | ErrorInvalidArgumentType | ErrorPasswordMismatchType | ErrorPreconditionFailedType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorRequestValidationFailedType | ErrorResourceConflictType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
 /**
  * @description Successful Response
 */
@@ -62,5 +51,5 @@ export type ListFilesInFileStorageTypeQuery = {
     Response: ListFilesInFileStorageQueryResponseType;
     PathParams: ListFilesInFileStoragePathParamsType;
     QueryParams: ListFilesInFileStorageQueryParamsType;
-    Errors: ListFilesInFileStorage400Type | ListFilesInFileStorage401Type | ListFilesInFileStorage404Type | ListFilesInFileStorage422Type | ListFilesInFileStorage429Type | ListFilesInFileStorage500Type | ListFilesInFileStorage503Type;
+    Errors: ListFilesInFileStorage422Type;
 };

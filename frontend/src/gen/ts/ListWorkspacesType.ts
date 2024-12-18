@@ -1,7 +1,20 @@
 import type { ListWorkspacesSortOptionsType } from "./ListWorkspacesSortOptionsType";
 import type { DirectionType } from "./DirectionType";
 import type { PaginatedListWorkspaceType } from "./PaginatedListWorkspaceType";
-import type { ErrorType } from "./ErrorType";
+import type { ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType } from "./ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType";
+import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
+import type { ErrorInternalType } from "./ErrorInternalType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorPasswordMismatchType } from "./ErrorPasswordMismatchType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorRefreshTokenCannotBeEmptyType } from "./ErrorRefreshTokenCannotBeEmptyType";
+import type { ErrorRefreshTokenExpiredType } from "./ErrorRefreshTokenExpiredType";
+import type { ErrorRefreshTokenInvalidType } from "./ErrorRefreshTokenInvalidType";
+import type { ErrorRequestValidationFailedType } from "./ErrorRequestValidationFailedType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorUsernameOrEmailCannotBeEmptyType } from "./ErrorUsernameOrEmailCannotBeEmptyType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 
  export type ListWorkspacesQueryParamsType = {
     /**
@@ -28,33 +41,9 @@ import type { ErrorType } from "./ErrorType";
 */
 export type ListWorkspaces200Type = PaginatedListWorkspaceType;
 /**
- * @description Request error
+ * @description Unprocessable Entity
 */
-export type ListWorkspaces400Type = ErrorType;
-/**
- * @description Unauthorized
-*/
-export type ListWorkspaces401Type = ErrorType;
-/**
- * @description Not found
-*/
-export type ListWorkspaces404Type = ErrorType;
-/**
- * @description Validation error
-*/
-export type ListWorkspaces422Type = ErrorType;
-/**
- * @description Rate limit exceeded
-*/
-export type ListWorkspaces429Type = ErrorType;
-/**
- * @description Internal server error
-*/
-export type ListWorkspaces500Type = ErrorType;
-/**
- * @description Service unavailable
-*/
-export type ListWorkspaces503Type = ErrorType;
+export type ListWorkspaces422Type = (ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType | ErrorResourceNotFoundType | ErrorInternalType | ErrorInvalidArgumentType | ErrorPasswordMismatchType | ErrorPreconditionFailedType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorRequestValidationFailedType | ErrorResourceConflictType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
 /**
  * @description Successful Response
 */
@@ -62,5 +51,5 @@ export type ListWorkspacesQueryResponseType = PaginatedListWorkspaceType;
 export type ListWorkspacesTypeQuery = {
     Response: ListWorkspacesQueryResponseType;
     QueryParams: ListWorkspacesQueryParamsType;
-    Errors: ListWorkspaces400Type | ListWorkspaces401Type | ListWorkspaces404Type | ListWorkspaces422Type | ListWorkspaces429Type | ListWorkspaces500Type | ListWorkspaces503Type;
+    Errors: ListWorkspaces422Type;
 };

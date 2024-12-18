@@ -1,6 +1,19 @@
 import { z } from "@/utils/zod.ts";
 import { workspaceAccountSchema } from "./workspaceAccountSchema.gen";
-import { errorSchema } from "./errorSchema.gen";
+import { errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema } from "./errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema.gen";
+import { errorResourceNotFoundSchema } from "./errorResourceNotFoundSchema.gen";
+import { errorInternalSchema } from "./errorInternalSchema.gen";
+import { errorInvalidArgumentSchema } from "./errorInvalidArgumentSchema.gen";
+import { errorPasswordMismatchSchema } from "./errorPasswordMismatchSchema.gen";
+import { errorPreconditionFailedSchema } from "./errorPreconditionFailedSchema.gen";
+import { errorRefreshTokenCannotBeEmptySchema } from "./errorRefreshTokenCannotBeEmptySchema.gen";
+import { errorRefreshTokenExpiredSchema } from "./errorRefreshTokenExpiredSchema.gen";
+import { errorRefreshTokenInvalidSchema } from "./errorRefreshTokenInvalidSchema.gen";
+import { errorRequestValidationFailedSchema } from "./errorRequestValidationFailedSchema.gen";
+import { errorResourceConflictSchema } from "./errorResourceConflictSchema.gen";
+import { errorUnauthorizedSchema } from "./errorUnauthorizedSchema.gen";
+import { errorUsernameOrEmailCannotBeEmptySchema } from "./errorUsernameOrEmailCannotBeEmptySchema.gen";
+import { errorValidationFailedSchema } from "./errorValidationFailedSchema.gen";
 
 
 export const getWorkspaceAccountPathParamsSchema = z.object({ "workspace": z.string() });
@@ -11,40 +24,10 @@ export type GetWorkspaceAccountPathParamsSchema = z.infer<typeof getWorkspaceAcc
 export const getWorkspaceAccount200Schema = z.lazy(() => workspaceAccountSchema);
 export type GetWorkspaceAccount200Schema = z.infer<typeof getWorkspaceAccount200Schema>;
 /**
- * @description Request error
+ * @description Unprocessable Entity
  */
-export const getWorkspaceAccount400Schema = z.lazy(() => errorSchema);
-export type GetWorkspaceAccount400Schema = z.infer<typeof getWorkspaceAccount400Schema>;
-/**
- * @description Unauthorized
- */
-export const getWorkspaceAccount401Schema = z.lazy(() => errorSchema);
-export type GetWorkspaceAccount401Schema = z.infer<typeof getWorkspaceAccount401Schema>;
-/**
- * @description Not found
- */
-export const getWorkspaceAccount404Schema = z.lazy(() => errorSchema);
-export type GetWorkspaceAccount404Schema = z.infer<typeof getWorkspaceAccount404Schema>;
-/**
- * @description Validation error
- */
-export const getWorkspaceAccount422Schema = z.lazy(() => errorSchema);
+export const getWorkspaceAccount422Schema = z.union([z.lazy(() => errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema), z.lazy(() => errorResourceNotFoundSchema), z.lazy(() => errorInternalSchema), z.lazy(() => errorInvalidArgumentSchema), z.lazy(() => errorPasswordMismatchSchema), z.lazy(() => errorPreconditionFailedSchema), z.lazy(() => errorRefreshTokenCannotBeEmptySchema), z.lazy(() => errorRefreshTokenExpiredSchema), z.lazy(() => errorRefreshTokenInvalidSchema), z.lazy(() => errorRequestValidationFailedSchema), z.lazy(() => errorResourceConflictSchema), z.lazy(() => errorUnauthorizedSchema), z.lazy(() => errorUsernameOrEmailCannotBeEmptySchema), z.lazy(() => errorValidationFailedSchema)]);
 export type GetWorkspaceAccount422Schema = z.infer<typeof getWorkspaceAccount422Schema>;
-/**
- * @description Rate limit exceeded
- */
-export const getWorkspaceAccount429Schema = z.lazy(() => errorSchema);
-export type GetWorkspaceAccount429Schema = z.infer<typeof getWorkspaceAccount429Schema>;
-/**
- * @description Internal server error
- */
-export const getWorkspaceAccount500Schema = z.lazy(() => errorSchema);
-export type GetWorkspaceAccount500Schema = z.infer<typeof getWorkspaceAccount500Schema>;
-/**
- * @description Service unavailable
- */
-export const getWorkspaceAccount503Schema = z.lazy(() => errorSchema);
-export type GetWorkspaceAccount503Schema = z.infer<typeof getWorkspaceAccount503Schema>;
 /**
  * @description Successful Response
  */

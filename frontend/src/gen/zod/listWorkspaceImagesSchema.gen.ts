@@ -1,6 +1,19 @@
 import { z } from "@/utils/zod.ts";
 import { paginatedListImageSchema } from "./paginatedListImageSchema.gen";
-import { errorSchema } from "./errorSchema.gen";
+import { errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema } from "./errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema.gen";
+import { errorResourceNotFoundSchema } from "./errorResourceNotFoundSchema.gen";
+import { errorInternalSchema } from "./errorInternalSchema.gen";
+import { errorInvalidArgumentSchema } from "./errorInvalidArgumentSchema.gen";
+import { errorPasswordMismatchSchema } from "./errorPasswordMismatchSchema.gen";
+import { errorPreconditionFailedSchema } from "./errorPreconditionFailedSchema.gen";
+import { errorRefreshTokenCannotBeEmptySchema } from "./errorRefreshTokenCannotBeEmptySchema.gen";
+import { errorRefreshTokenExpiredSchema } from "./errorRefreshTokenExpiredSchema.gen";
+import { errorRefreshTokenInvalidSchema } from "./errorRefreshTokenInvalidSchema.gen";
+import { errorRequestValidationFailedSchema } from "./errorRequestValidationFailedSchema.gen";
+import { errorResourceConflictSchema } from "./errorResourceConflictSchema.gen";
+import { errorUnauthorizedSchema } from "./errorUnauthorizedSchema.gen";
+import { errorUsernameOrEmailCannotBeEmptySchema } from "./errorUsernameOrEmailCannotBeEmptySchema.gen";
+import { errorValidationFailedSchema } from "./errorValidationFailedSchema.gen";
 
 
 export const listWorkspaceImagesPathParamsSchema = z.object({ "workspace": z.string(), "zone": z.string() });
@@ -14,40 +27,10 @@ export type ListWorkspaceImagesQueryParamsSchema = z.infer<typeof listWorkspaceI
 export const listWorkspaceImages200Schema = z.lazy(() => paginatedListImageSchema);
 export type ListWorkspaceImages200Schema = z.infer<typeof listWorkspaceImages200Schema>;
 /**
- * @description Request error
+ * @description Unprocessable Entity
  */
-export const listWorkspaceImages400Schema = z.lazy(() => errorSchema);
-export type ListWorkspaceImages400Schema = z.infer<typeof listWorkspaceImages400Schema>;
-/**
- * @description Unauthorized
- */
-export const listWorkspaceImages401Schema = z.lazy(() => errorSchema);
-export type ListWorkspaceImages401Schema = z.infer<typeof listWorkspaceImages401Schema>;
-/**
- * @description Not found
- */
-export const listWorkspaceImages404Schema = z.lazy(() => errorSchema);
-export type ListWorkspaceImages404Schema = z.infer<typeof listWorkspaceImages404Schema>;
-/**
- * @description Validation error
- */
-export const listWorkspaceImages422Schema = z.lazy(() => errorSchema);
+export const listWorkspaceImages422Schema = z.union([z.lazy(() => errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema), z.lazy(() => errorResourceNotFoundSchema), z.lazy(() => errorInternalSchema), z.lazy(() => errorInvalidArgumentSchema), z.lazy(() => errorPasswordMismatchSchema), z.lazy(() => errorPreconditionFailedSchema), z.lazy(() => errorRefreshTokenCannotBeEmptySchema), z.lazy(() => errorRefreshTokenExpiredSchema), z.lazy(() => errorRefreshTokenInvalidSchema), z.lazy(() => errorRequestValidationFailedSchema), z.lazy(() => errorResourceConflictSchema), z.lazy(() => errorUnauthorizedSchema), z.lazy(() => errorUsernameOrEmailCannotBeEmptySchema), z.lazy(() => errorValidationFailedSchema)]);
 export type ListWorkspaceImages422Schema = z.infer<typeof listWorkspaceImages422Schema>;
-/**
- * @description Rate limit exceeded
- */
-export const listWorkspaceImages429Schema = z.lazy(() => errorSchema);
-export type ListWorkspaceImages429Schema = z.infer<typeof listWorkspaceImages429Schema>;
-/**
- * @description Internal server error
- */
-export const listWorkspaceImages500Schema = z.lazy(() => errorSchema);
-export type ListWorkspaceImages500Schema = z.infer<typeof listWorkspaceImages500Schema>;
-/**
- * @description Service unavailable
- */
-export const listWorkspaceImages503Schema = z.lazy(() => errorSchema);
-export type ListWorkspaceImages503Schema = z.infer<typeof listWorkspaceImages503Schema>;
 /**
  * @description Successful Response
  */

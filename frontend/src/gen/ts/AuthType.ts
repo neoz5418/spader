@@ -1,5 +1,18 @@
 import type { TokenType } from "./TokenType";
-import type { ErrorType } from "./ErrorType";
+import type { ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType } from "./ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType";
+import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
+import type { ErrorInternalType } from "./ErrorInternalType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorPasswordMismatchType } from "./ErrorPasswordMismatchType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorRefreshTokenCannotBeEmptyType } from "./ErrorRefreshTokenCannotBeEmptyType";
+import type { ErrorRefreshTokenExpiredType } from "./ErrorRefreshTokenExpiredType";
+import type { ErrorRefreshTokenInvalidType } from "./ErrorRefreshTokenInvalidType";
+import type { ErrorRequestValidationFailedType } from "./ErrorRequestValidationFailedType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorUsernameOrEmailCannotBeEmptyType } from "./ErrorUsernameOrEmailCannotBeEmptyType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 import type { BodyAuthApisOidcV1AuthPostType } from "./BodyAuthApisOidcV1AuthPostType";
 
  /**
@@ -7,33 +20,9 @@ import type { BodyAuthApisOidcV1AuthPostType } from "./BodyAuthApisOidcV1AuthPos
 */
 export type Auth200Type = TokenType;
 /**
- * @description Request error
+ * @description Unprocessable Entity
 */
-export type Auth400Type = ErrorType;
-/**
- * @description Unauthorized
-*/
-export type Auth401Type = ErrorType;
-/**
- * @description Not found
-*/
-export type Auth404Type = ErrorType;
-/**
- * @description Validation error
-*/
-export type Auth422Type = ErrorType;
-/**
- * @description Rate limit exceeded
-*/
-export type Auth429Type = ErrorType;
-/**
- * @description Internal server error
-*/
-export type Auth500Type = ErrorType;
-/**
- * @description Service unavailable
-*/
-export type Auth503Type = ErrorType;
+export type Auth422Type = (ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType | ErrorResourceNotFoundType | ErrorInternalType | ErrorInvalidArgumentType | ErrorPasswordMismatchType | ErrorPreconditionFailedType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorRequestValidationFailedType | ErrorResourceConflictType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
 export type AuthMutationRequestType = BodyAuthApisOidcV1AuthPostType;
 /**
  * @description Successful Response
@@ -42,5 +31,5 @@ export type AuthMutationResponseType = TokenType;
 export type AuthTypeMutation = {
     Response: AuthMutationResponseType;
     Request: AuthMutationRequestType;
-    Errors: Auth400Type | Auth401Type | Auth404Type | Auth422Type | Auth429Type | Auth500Type | Auth503Type;
+    Errors: Auth422Type;
 };

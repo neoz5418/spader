@@ -1,6 +1,19 @@
 import { z } from "@/utils/zod.ts";
 import { userSchema } from "./userSchema.gen";
-import { errorSchema } from "./errorSchema.gen";
+import { errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema } from "./errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema.gen";
+import { errorResourceNotFoundSchema } from "./errorResourceNotFoundSchema.gen";
+import { errorInternalSchema } from "./errorInternalSchema.gen";
+import { errorInvalidArgumentSchema } from "./errorInvalidArgumentSchema.gen";
+import { errorPasswordMismatchSchema } from "./errorPasswordMismatchSchema.gen";
+import { errorPreconditionFailedSchema } from "./errorPreconditionFailedSchema.gen";
+import { errorRefreshTokenCannotBeEmptySchema } from "./errorRefreshTokenCannotBeEmptySchema.gen";
+import { errorRefreshTokenExpiredSchema } from "./errorRefreshTokenExpiredSchema.gen";
+import { errorRefreshTokenInvalidSchema } from "./errorRefreshTokenInvalidSchema.gen";
+import { errorRequestValidationFailedSchema } from "./errorRequestValidationFailedSchema.gen";
+import { errorResourceConflictSchema } from "./errorResourceConflictSchema.gen";
+import { errorUnauthorizedSchema } from "./errorUnauthorizedSchema.gen";
+import { errorUsernameOrEmailCannotBeEmptySchema } from "./errorUsernameOrEmailCannotBeEmptySchema.gen";
+import { errorValidationFailedSchema } from "./errorValidationFailedSchema.gen";
 
  /**
  * @description Successful Response
@@ -8,40 +21,10 @@ import { errorSchema } from "./errorSchema.gen";
 export const getCurrentUser200Schema = z.lazy(() => userSchema);
 export type GetCurrentUser200Schema = z.infer<typeof getCurrentUser200Schema>;
 /**
- * @description Request error
+ * @description Unprocessable Entity
  */
-export const getCurrentUser400Schema = z.lazy(() => errorSchema);
-export type GetCurrentUser400Schema = z.infer<typeof getCurrentUser400Schema>;
-/**
- * @description Unauthorized
- */
-export const getCurrentUser401Schema = z.lazy(() => errorSchema);
-export type GetCurrentUser401Schema = z.infer<typeof getCurrentUser401Schema>;
-/**
- * @description Not found
- */
-export const getCurrentUser404Schema = z.lazy(() => errorSchema);
-export type GetCurrentUser404Schema = z.infer<typeof getCurrentUser404Schema>;
-/**
- * @description Validation error
- */
-export const getCurrentUser422Schema = z.lazy(() => errorSchema);
+export const getCurrentUser422Schema = z.union([z.lazy(() => errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema), z.lazy(() => errorResourceNotFoundSchema), z.lazy(() => errorInternalSchema), z.lazy(() => errorInvalidArgumentSchema), z.lazy(() => errorPasswordMismatchSchema), z.lazy(() => errorPreconditionFailedSchema), z.lazy(() => errorRefreshTokenCannotBeEmptySchema), z.lazy(() => errorRefreshTokenExpiredSchema), z.lazy(() => errorRefreshTokenInvalidSchema), z.lazy(() => errorRequestValidationFailedSchema), z.lazy(() => errorResourceConflictSchema), z.lazy(() => errorUnauthorizedSchema), z.lazy(() => errorUsernameOrEmailCannotBeEmptySchema), z.lazy(() => errorValidationFailedSchema)]);
 export type GetCurrentUser422Schema = z.infer<typeof getCurrentUser422Schema>;
-/**
- * @description Rate limit exceeded
- */
-export const getCurrentUser429Schema = z.lazy(() => errorSchema);
-export type GetCurrentUser429Schema = z.infer<typeof getCurrentUser429Schema>;
-/**
- * @description Internal server error
- */
-export const getCurrentUser500Schema = z.lazy(() => errorSchema);
-export type GetCurrentUser500Schema = z.infer<typeof getCurrentUser500Schema>;
-/**
- * @description Service unavailable
- */
-export const getCurrentUser503Schema = z.lazy(() => errorSchema);
-export type GetCurrentUser503Schema = z.infer<typeof getCurrentUser503Schema>;
 /**
  * @description Successful Response
  */

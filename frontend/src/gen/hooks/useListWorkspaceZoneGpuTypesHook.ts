@@ -1,12 +1,12 @@
 import client from "@/utils/client.ts";
 import { useQuery, queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import type { ListWorkspaceZoneGpuTypesQueryResponseType, ListWorkspaceZoneGpuTypesPathParamsType, ListWorkspaceZoneGpuTypesQueryParamsType, ListWorkspaceZoneGpuTypes400Type, ListWorkspaceZoneGpuTypes401Type, ListWorkspaceZoneGpuTypes404Type, ListWorkspaceZoneGpuTypes422Type, ListWorkspaceZoneGpuTypes429Type, ListWorkspaceZoneGpuTypes500Type, ListWorkspaceZoneGpuTypes503Type } from "../ts/ListWorkspaceZoneGpuTypesType";
+import type { ListWorkspaceZoneGpuTypesQueryResponseType, ListWorkspaceZoneGpuTypesPathParamsType, ListWorkspaceZoneGpuTypesQueryParamsType, ListWorkspaceZoneGpuTypes422Type } from "../ts/ListWorkspaceZoneGpuTypesType";
 import type { QueryObserverOptions, UseQueryResult, QueryKey, UseSuspenseQueryOptions, UseSuspenseQueryResult } from "@tanstack/react-query";
 
- type ListWorkspaceZoneGpuTypesClient = typeof client<ListWorkspaceZoneGpuTypesQueryResponseType, ListWorkspaceZoneGpuTypes400Type | ListWorkspaceZoneGpuTypes401Type | ListWorkspaceZoneGpuTypes404Type | ListWorkspaceZoneGpuTypes422Type | ListWorkspaceZoneGpuTypes429Type | ListWorkspaceZoneGpuTypes500Type | ListWorkspaceZoneGpuTypes503Type, never>;
+ type ListWorkspaceZoneGpuTypesClient = typeof client<ListWorkspaceZoneGpuTypesQueryResponseType, ListWorkspaceZoneGpuTypes422Type, never>;
 type ListWorkspaceZoneGpuTypes = {
     data: ListWorkspaceZoneGpuTypesQueryResponseType;
-    error: ListWorkspaceZoneGpuTypes400Type | ListWorkspaceZoneGpuTypes401Type | ListWorkspaceZoneGpuTypes404Type | ListWorkspaceZoneGpuTypes422Type | ListWorkspaceZoneGpuTypes429Type | ListWorkspaceZoneGpuTypes500Type | ListWorkspaceZoneGpuTypes503Type;
+    error: ListWorkspaceZoneGpuTypes422Type;
     request: never;
     pathParams: ListWorkspaceZoneGpuTypesPathParamsType;
     queryParams: ListWorkspaceZoneGpuTypesQueryParamsType;

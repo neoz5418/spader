@@ -1,5 +1,18 @@
 import type { WorkspaceAccountRechargeType } from "./WorkspaceAccountRechargeType";
-import type { ErrorType } from "./ErrorType";
+import type { ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType } from "./ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType";
+import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
+import type { ErrorInternalType } from "./ErrorInternalType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorPasswordMismatchType } from "./ErrorPasswordMismatchType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorRefreshTokenCannotBeEmptyType } from "./ErrorRefreshTokenCannotBeEmptyType";
+import type { ErrorRefreshTokenExpiredType } from "./ErrorRefreshTokenExpiredType";
+import type { ErrorRefreshTokenInvalidType } from "./ErrorRefreshTokenInvalidType";
+import type { ErrorRequestValidationFailedType } from "./ErrorRequestValidationFailedType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorUsernameOrEmailCannotBeEmptyType } from "./ErrorUsernameOrEmailCannotBeEmptyType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 
  export type CheckWorkspaceAccountRechargePathParamsType = {
     /**
@@ -12,33 +25,9 @@ import type { ErrorType } from "./ErrorType";
 */
 export type CheckWorkspaceAccountRecharge200Type = WorkspaceAccountRechargeType;
 /**
- * @description Request error
+ * @description Unprocessable Entity
 */
-export type CheckWorkspaceAccountRecharge400Type = ErrorType;
-/**
- * @description Unauthorized
-*/
-export type CheckWorkspaceAccountRecharge401Type = ErrorType;
-/**
- * @description Not found
-*/
-export type CheckWorkspaceAccountRecharge404Type = ErrorType;
-/**
- * @description Validation error
-*/
-export type CheckWorkspaceAccountRecharge422Type = ErrorType;
-/**
- * @description Rate limit exceeded
-*/
-export type CheckWorkspaceAccountRecharge429Type = ErrorType;
-/**
- * @description Internal server error
-*/
-export type CheckWorkspaceAccountRecharge500Type = ErrorType;
-/**
- * @description Service unavailable
-*/
-export type CheckWorkspaceAccountRecharge503Type = ErrorType;
+export type CheckWorkspaceAccountRecharge422Type = (ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType | ErrorResourceNotFoundType | ErrorInternalType | ErrorInvalidArgumentType | ErrorPasswordMismatchType | ErrorPreconditionFailedType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorRequestValidationFailedType | ErrorResourceConflictType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
 /**
  * @description Successful Response
 */
@@ -46,5 +35,5 @@ export type CheckWorkspaceAccountRechargeMutationResponseType = WorkspaceAccount
 export type CheckWorkspaceAccountRechargeTypeMutation = {
     Response: CheckWorkspaceAccountRechargeMutationResponseType;
     PathParams: CheckWorkspaceAccountRechargePathParamsType;
-    Errors: CheckWorkspaceAccountRecharge400Type | CheckWorkspaceAccountRecharge401Type | CheckWorkspaceAccountRecharge404Type | CheckWorkspaceAccountRecharge422Type | CheckWorkspaceAccountRecharge429Type | CheckWorkspaceAccountRecharge500Type | CheckWorkspaceAccountRecharge503Type;
+    Errors: CheckWorkspaceAccountRecharge422Type;
 };

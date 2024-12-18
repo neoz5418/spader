@@ -1,5 +1,18 @@
 import type { WorkspaceAccountRechargeType } from "./WorkspaceAccountRechargeType";
-import type { ErrorType } from "./ErrorType";
+import type { ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType } from "./ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType";
+import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
+import type { ErrorInternalType } from "./ErrorInternalType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorPasswordMismatchType } from "./ErrorPasswordMismatchType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorRefreshTokenCannotBeEmptyType } from "./ErrorRefreshTokenCannotBeEmptyType";
+import type { ErrorRefreshTokenExpiredType } from "./ErrorRefreshTokenExpiredType";
+import type { ErrorRefreshTokenInvalidType } from "./ErrorRefreshTokenInvalidType";
+import type { ErrorRequestValidationFailedType } from "./ErrorRequestValidationFailedType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorUsernameOrEmailCannotBeEmptyType } from "./ErrorUsernameOrEmailCannotBeEmptyType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 
  export type GetWorkspaceAccountRechargePathParamsType = {
     /**
@@ -16,33 +29,9 @@ import type { ErrorType } from "./ErrorType";
 */
 export type GetWorkspaceAccountRecharge200Type = WorkspaceAccountRechargeType;
 /**
- * @description Request error
+ * @description Unprocessable Entity
 */
-export type GetWorkspaceAccountRecharge400Type = ErrorType;
-/**
- * @description Unauthorized
-*/
-export type GetWorkspaceAccountRecharge401Type = ErrorType;
-/**
- * @description Not found
-*/
-export type GetWorkspaceAccountRecharge404Type = ErrorType;
-/**
- * @description Validation error
-*/
-export type GetWorkspaceAccountRecharge422Type = ErrorType;
-/**
- * @description Rate limit exceeded
-*/
-export type GetWorkspaceAccountRecharge429Type = ErrorType;
-/**
- * @description Internal server error
-*/
-export type GetWorkspaceAccountRecharge500Type = ErrorType;
-/**
- * @description Service unavailable
-*/
-export type GetWorkspaceAccountRecharge503Type = ErrorType;
+export type GetWorkspaceAccountRecharge422Type = (ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType | ErrorResourceNotFoundType | ErrorInternalType | ErrorInvalidArgumentType | ErrorPasswordMismatchType | ErrorPreconditionFailedType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorRequestValidationFailedType | ErrorResourceConflictType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
 /**
  * @description Successful Response
 */
@@ -50,5 +39,5 @@ export type GetWorkspaceAccountRechargeQueryResponseType = WorkspaceAccountRecha
 export type GetWorkspaceAccountRechargeTypeQuery = {
     Response: GetWorkspaceAccountRechargeQueryResponseType;
     PathParams: GetWorkspaceAccountRechargePathParamsType;
-    Errors: GetWorkspaceAccountRecharge400Type | GetWorkspaceAccountRecharge401Type | GetWorkspaceAccountRecharge404Type | GetWorkspaceAccountRecharge422Type | GetWorkspaceAccountRecharge429Type | GetWorkspaceAccountRecharge500Type | GetWorkspaceAccountRecharge503Type;
+    Errors: GetWorkspaceAccountRecharge422Type;
 };

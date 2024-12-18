@@ -1,6 +1,19 @@
 import { z } from "@/utils/zod.ts";
 import { imageSchema } from "./imageSchema.gen";
-import { errorSchema } from "./errorSchema.gen";
+import { errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema } from "./errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema.gen";
+import { errorResourceNotFoundSchema } from "./errorResourceNotFoundSchema.gen";
+import { errorInternalSchema } from "./errorInternalSchema.gen";
+import { errorInvalidArgumentSchema } from "./errorInvalidArgumentSchema.gen";
+import { errorPasswordMismatchSchema } from "./errorPasswordMismatchSchema.gen";
+import { errorPreconditionFailedSchema } from "./errorPreconditionFailedSchema.gen";
+import { errorRefreshTokenCannotBeEmptySchema } from "./errorRefreshTokenCannotBeEmptySchema.gen";
+import { errorRefreshTokenExpiredSchema } from "./errorRefreshTokenExpiredSchema.gen";
+import { errorRefreshTokenInvalidSchema } from "./errorRefreshTokenInvalidSchema.gen";
+import { errorRequestValidationFailedSchema } from "./errorRequestValidationFailedSchema.gen";
+import { errorResourceConflictSchema } from "./errorResourceConflictSchema.gen";
+import { errorUnauthorizedSchema } from "./errorUnauthorizedSchema.gen";
+import { errorUsernameOrEmailCannotBeEmptySchema } from "./errorUsernameOrEmailCannotBeEmptySchema.gen";
+import { errorValidationFailedSchema } from "./errorValidationFailedSchema.gen";
 
 
 export const createImagePathParamsSchema = z.object({ "zone": z.string() });
@@ -11,40 +24,10 @@ export type CreateImagePathParamsSchema = z.infer<typeof createImagePathParamsSc
 export const createImage201Schema = z.lazy(() => imageSchema);
 export type CreateImage201Schema = z.infer<typeof createImage201Schema>;
 /**
- * @description Request error
+ * @description Unprocessable Entity
  */
-export const createImage400Schema = z.lazy(() => errorSchema);
-export type CreateImage400Schema = z.infer<typeof createImage400Schema>;
-/**
- * @description Unauthorized
- */
-export const createImage401Schema = z.lazy(() => errorSchema);
-export type CreateImage401Schema = z.infer<typeof createImage401Schema>;
-/**
- * @description Not found
- */
-export const createImage404Schema = z.lazy(() => errorSchema);
-export type CreateImage404Schema = z.infer<typeof createImage404Schema>;
-/**
- * @description Validation error
- */
-export const createImage422Schema = z.lazy(() => errorSchema);
+export const createImage422Schema = z.union([z.lazy(() => errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema), z.lazy(() => errorResourceNotFoundSchema), z.lazy(() => errorInternalSchema), z.lazy(() => errorInvalidArgumentSchema), z.lazy(() => errorPasswordMismatchSchema), z.lazy(() => errorPreconditionFailedSchema), z.lazy(() => errorRefreshTokenCannotBeEmptySchema), z.lazy(() => errorRefreshTokenExpiredSchema), z.lazy(() => errorRefreshTokenInvalidSchema), z.lazy(() => errorRequestValidationFailedSchema), z.lazy(() => errorResourceConflictSchema), z.lazy(() => errorUnauthorizedSchema), z.lazy(() => errorUsernameOrEmailCannotBeEmptySchema), z.lazy(() => errorValidationFailedSchema)]);
 export type CreateImage422Schema = z.infer<typeof createImage422Schema>;
-/**
- * @description Rate limit exceeded
- */
-export const createImage429Schema = z.lazy(() => errorSchema);
-export type CreateImage429Schema = z.infer<typeof createImage429Schema>;
-/**
- * @description Internal server error
- */
-export const createImage500Schema = z.lazy(() => errorSchema);
-export type CreateImage500Schema = z.infer<typeof createImage500Schema>;
-/**
- * @description Service unavailable
- */
-export const createImage503Schema = z.lazy(() => errorSchema);
-export type CreateImage503Schema = z.infer<typeof createImage503Schema>;
 
  export const createImageMutationRequestSchema = z.lazy(() => imageSchema);
 export type CreateImageMutationRequestSchema = z.infer<typeof createImageMutationRequestSchema>;

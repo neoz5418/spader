@@ -1,5 +1,18 @@
 import type { PortForwardType } from "./PortForwardType";
-import type { ErrorType } from "./ErrorType";
+import type { ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType } from "./ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType";
+import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
+import type { ErrorInternalType } from "./ErrorInternalType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorPasswordMismatchType } from "./ErrorPasswordMismatchType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorRefreshTokenCannotBeEmptyType } from "./ErrorRefreshTokenCannotBeEmptyType";
+import type { ErrorRefreshTokenExpiredType } from "./ErrorRefreshTokenExpiredType";
+import type { ErrorRefreshTokenInvalidType } from "./ErrorRefreshTokenInvalidType";
+import type { ErrorRequestValidationFailedType } from "./ErrorRequestValidationFailedType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorUsernameOrEmailCannotBeEmptyType } from "./ErrorUsernameOrEmailCannotBeEmptyType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 
  export type CreateInstancePortForwardPathParamsType = {
     /**
@@ -20,33 +33,9 @@ import type { ErrorType } from "./ErrorType";
 */
 export type CreateInstancePortForward201Type = PortForwardType;
 /**
- * @description Request error
+ * @description Unprocessable Entity
 */
-export type CreateInstancePortForward400Type = ErrorType;
-/**
- * @description Unauthorized
-*/
-export type CreateInstancePortForward401Type = ErrorType;
-/**
- * @description Not found
-*/
-export type CreateInstancePortForward404Type = ErrorType;
-/**
- * @description Validation error
-*/
-export type CreateInstancePortForward422Type = ErrorType;
-/**
- * @description Rate limit exceeded
-*/
-export type CreateInstancePortForward429Type = ErrorType;
-/**
- * @description Internal server error
-*/
-export type CreateInstancePortForward500Type = ErrorType;
-/**
- * @description Service unavailable
-*/
-export type CreateInstancePortForward503Type = ErrorType;
+export type CreateInstancePortForward422Type = (ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType | ErrorResourceNotFoundType | ErrorInternalType | ErrorInvalidArgumentType | ErrorPasswordMismatchType | ErrorPreconditionFailedType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorRequestValidationFailedType | ErrorResourceConflictType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
 export type CreateInstancePortForwardMutationRequestType = PortForwardType;
 /**
  * @description Successful Response
@@ -56,5 +45,5 @@ export type CreateInstancePortForwardTypeMutation = {
     Response: CreateInstancePortForwardMutationResponseType;
     Request: CreateInstancePortForwardMutationRequestType;
     PathParams: CreateInstancePortForwardPathParamsType;
-    Errors: CreateInstancePortForward400Type | CreateInstancePortForward401Type | CreateInstancePortForward404Type | CreateInstancePortForward422Type | CreateInstancePortForward429Type | CreateInstancePortForward500Type | CreateInstancePortForward503Type;
+    Errors: CreateInstancePortForward422Type;
 };

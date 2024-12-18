@@ -1,5 +1,18 @@
 import type { OperationType } from "./OperationType";
-import type { ErrorType } from "./ErrorType";
+import type { ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType } from "./ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType";
+import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
+import type { ErrorInternalType } from "./ErrorInternalType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorPasswordMismatchType } from "./ErrorPasswordMismatchType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorRefreshTokenCannotBeEmptyType } from "./ErrorRefreshTokenCannotBeEmptyType";
+import type { ErrorRefreshTokenExpiredType } from "./ErrorRefreshTokenExpiredType";
+import type { ErrorRefreshTokenInvalidType } from "./ErrorRefreshTokenInvalidType";
+import type { ErrorRequestValidationFailedType } from "./ErrorRequestValidationFailedType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorUsernameOrEmailCannotBeEmptyType } from "./ErrorUsernameOrEmailCannotBeEmptyType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 
  export type StartInstancePathParamsType = {
     /**
@@ -20,33 +33,9 @@ import type { ErrorType } from "./ErrorType";
 */
 export type StartInstance200Type = OperationType;
 /**
- * @description Request error
+ * @description Unprocessable Entity
 */
-export type StartInstance400Type = ErrorType;
-/**
- * @description Unauthorized
-*/
-export type StartInstance401Type = ErrorType;
-/**
- * @description Not found
-*/
-export type StartInstance404Type = ErrorType;
-/**
- * @description Validation error
-*/
-export type StartInstance422Type = ErrorType;
-/**
- * @description Rate limit exceeded
-*/
-export type StartInstance429Type = ErrorType;
-/**
- * @description Internal server error
-*/
-export type StartInstance500Type = ErrorType;
-/**
- * @description Service unavailable
-*/
-export type StartInstance503Type = ErrorType;
+export type StartInstance422Type = (ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType | ErrorResourceNotFoundType | ErrorInternalType | ErrorInvalidArgumentType | ErrorPasswordMismatchType | ErrorPreconditionFailedType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorRequestValidationFailedType | ErrorResourceConflictType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
 /**
  * @description Successful Response
 */
@@ -54,5 +43,5 @@ export type StartInstanceMutationResponseType = OperationType;
 export type StartInstanceTypeMutation = {
     Response: StartInstanceMutationResponseType;
     PathParams: StartInstancePathParamsType;
-    Errors: StartInstance400Type | StartInstance401Type | StartInstance404Type | StartInstance422Type | StartInstance429Type | StartInstance500Type | StartInstance503Type;
+    Errors: StartInstance422Type;
 };

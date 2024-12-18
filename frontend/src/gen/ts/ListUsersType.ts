@@ -1,7 +1,20 @@
 import type { ListUsersSortOptionsType } from "./ListUsersSortOptionsType";
 import type { DirectionType } from "./DirectionType";
 import type { PaginatedListUserType } from "./PaginatedListUserType";
-import type { ErrorType } from "./ErrorType";
+import type { ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType } from "./ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType";
+import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
+import type { ErrorInternalType } from "./ErrorInternalType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorPasswordMismatchType } from "./ErrorPasswordMismatchType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorRefreshTokenCannotBeEmptyType } from "./ErrorRefreshTokenCannotBeEmptyType";
+import type { ErrorRefreshTokenExpiredType } from "./ErrorRefreshTokenExpiredType";
+import type { ErrorRefreshTokenInvalidType } from "./ErrorRefreshTokenInvalidType";
+import type { ErrorRequestValidationFailedType } from "./ErrorRequestValidationFailedType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorUsernameOrEmailCannotBeEmptyType } from "./ErrorUsernameOrEmailCannotBeEmptyType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 
  export type ListUsersQueryParamsType = {
     /**
@@ -44,33 +57,9 @@ import type { ErrorType } from "./ErrorType";
 */
 export type ListUsers200Type = PaginatedListUserType;
 /**
- * @description Request error
+ * @description Unprocessable Entity
 */
-export type ListUsers400Type = ErrorType;
-/**
- * @description Unauthorized
-*/
-export type ListUsers401Type = ErrorType;
-/**
- * @description Not found
-*/
-export type ListUsers404Type = ErrorType;
-/**
- * @description Validation error
-*/
-export type ListUsers422Type = ErrorType;
-/**
- * @description Rate limit exceeded
-*/
-export type ListUsers429Type = ErrorType;
-/**
- * @description Internal server error
-*/
-export type ListUsers500Type = ErrorType;
-/**
- * @description Service unavailable
-*/
-export type ListUsers503Type = ErrorType;
+export type ListUsers422Type = (ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType | ErrorResourceNotFoundType | ErrorInternalType | ErrorInvalidArgumentType | ErrorPasswordMismatchType | ErrorPreconditionFailedType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorRequestValidationFailedType | ErrorResourceConflictType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
 /**
  * @description Successful Response
 */
@@ -78,5 +67,5 @@ export type ListUsersQueryResponseType = PaginatedListUserType;
 export type ListUsersTypeQuery = {
     Response: ListUsersQueryResponseType;
     QueryParams: ListUsersQueryParamsType;
-    Errors: ListUsers400Type | ListUsers401Type | ListUsers404Type | ListUsers422Type | ListUsers429Type | ListUsers500Type | ListUsers503Type;
+    Errors: ListUsers422Type;
 };

@@ -1,13 +1,13 @@
 import client from "@/utils/client.ts";
 import { useMutation } from "@tanstack/react-query";
 import { useInvalidationForMutation } from "../../useInvalidationForMutation";
-import type { UpdateUserQuotaMutationResponseType, UpdateUserQuotaPathParamsType, UpdateUserQuota400Type, UpdateUserQuota401Type, UpdateUserQuota404Type, UpdateUserQuota422Type, UpdateUserQuota429Type, UpdateUserQuota500Type, UpdateUserQuota503Type } from "../ts/UpdateUserQuotaType";
+import type { UpdateUserQuotaMutationResponseType, UpdateUserQuotaPathParamsType, UpdateUserQuota422Type } from "../ts/UpdateUserQuotaType";
 import type { UseMutationOptions } from "@tanstack/react-query";
 
- type UpdateUserQuotaClient = typeof client<UpdateUserQuotaMutationResponseType, UpdateUserQuota400Type | UpdateUserQuota401Type | UpdateUserQuota404Type | UpdateUserQuota422Type | UpdateUserQuota429Type | UpdateUserQuota500Type | UpdateUserQuota503Type, never>;
+ type UpdateUserQuotaClient = typeof client<UpdateUserQuotaMutationResponseType, UpdateUserQuota422Type, never>;
 type UpdateUserQuota = {
     data: UpdateUserQuotaMutationResponseType;
-    error: UpdateUserQuota400Type | UpdateUserQuota401Type | UpdateUserQuota404Type | UpdateUserQuota422Type | UpdateUserQuota429Type | UpdateUserQuota500Type | UpdateUserQuota503Type;
+    error: UpdateUserQuota422Type;
     request: never;
     pathParams: UpdateUserQuotaPathParamsType;
     queryParams: never;

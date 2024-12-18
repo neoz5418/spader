@@ -1,5 +1,18 @@
 import type { PaginatedListImageType } from "./PaginatedListImageType";
-import type { ErrorType } from "./ErrorType";
+import type { ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType } from "./ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType";
+import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
+import type { ErrorInternalType } from "./ErrorInternalType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorPasswordMismatchType } from "./ErrorPasswordMismatchType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorRefreshTokenCannotBeEmptyType } from "./ErrorRefreshTokenCannotBeEmptyType";
+import type { ErrorRefreshTokenExpiredType } from "./ErrorRefreshTokenExpiredType";
+import type { ErrorRefreshTokenInvalidType } from "./ErrorRefreshTokenInvalidType";
+import type { ErrorRequestValidationFailedType } from "./ErrorRequestValidationFailedType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorUsernameOrEmailCannotBeEmptyType } from "./ErrorUsernameOrEmailCannotBeEmptyType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 
  export type ListWorkspaceImagesPathParamsType = {
     /**
@@ -28,33 +41,9 @@ export type ListWorkspaceImagesQueryParamsType = {
 */
 export type ListWorkspaceImages200Type = PaginatedListImageType;
 /**
- * @description Request error
+ * @description Unprocessable Entity
 */
-export type ListWorkspaceImages400Type = ErrorType;
-/**
- * @description Unauthorized
-*/
-export type ListWorkspaceImages401Type = ErrorType;
-/**
- * @description Not found
-*/
-export type ListWorkspaceImages404Type = ErrorType;
-/**
- * @description Validation error
-*/
-export type ListWorkspaceImages422Type = ErrorType;
-/**
- * @description Rate limit exceeded
-*/
-export type ListWorkspaceImages429Type = ErrorType;
-/**
- * @description Internal server error
-*/
-export type ListWorkspaceImages500Type = ErrorType;
-/**
- * @description Service unavailable
-*/
-export type ListWorkspaceImages503Type = ErrorType;
+export type ListWorkspaceImages422Type = (ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType | ErrorResourceNotFoundType | ErrorInternalType | ErrorInvalidArgumentType | ErrorPasswordMismatchType | ErrorPreconditionFailedType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorRequestValidationFailedType | ErrorResourceConflictType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
 /**
  * @description Successful Response
 */
@@ -63,5 +52,5 @@ export type ListWorkspaceImagesTypeQuery = {
     Response: ListWorkspaceImagesQueryResponseType;
     PathParams: ListWorkspaceImagesPathParamsType;
     QueryParams: ListWorkspaceImagesQueryParamsType;
-    Errors: ListWorkspaceImages400Type | ListWorkspaceImages401Type | ListWorkspaceImages404Type | ListWorkspaceImages422Type | ListWorkspaceImages429Type | ListWorkspaceImages500Type | ListWorkspaceImages503Type;
+    Errors: ListWorkspaceImages422Type;
 };

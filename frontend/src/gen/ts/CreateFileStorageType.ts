@@ -1,5 +1,18 @@
 import type { OperationType } from "./OperationType";
-import type { ErrorType } from "./ErrorType";
+import type { ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType } from "./ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType";
+import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
+import type { ErrorInternalType } from "./ErrorInternalType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorPasswordMismatchType } from "./ErrorPasswordMismatchType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorRefreshTokenCannotBeEmptyType } from "./ErrorRefreshTokenCannotBeEmptyType";
+import type { ErrorRefreshTokenExpiredType } from "./ErrorRefreshTokenExpiredType";
+import type { ErrorRefreshTokenInvalidType } from "./ErrorRefreshTokenInvalidType";
+import type { ErrorRequestValidationFailedType } from "./ErrorRequestValidationFailedType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorUsernameOrEmailCannotBeEmptyType } from "./ErrorUsernameOrEmailCannotBeEmptyType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 import type { CreateFileStorageRequestType } from "./CreateFileStorageRequestType";
 
  export type CreateFileStoragePathParamsType = {
@@ -17,33 +30,9 @@ import type { CreateFileStorageRequestType } from "./CreateFileStorageRequestTyp
 */
 export type CreateFileStorage201Type = OperationType;
 /**
- * @description Request error
+ * @description Unprocessable Entity
 */
-export type CreateFileStorage400Type = ErrorType;
-/**
- * @description Unauthorized
-*/
-export type CreateFileStorage401Type = ErrorType;
-/**
- * @description Not found
-*/
-export type CreateFileStorage404Type = ErrorType;
-/**
- * @description Validation error
-*/
-export type CreateFileStorage422Type = ErrorType;
-/**
- * @description Rate limit exceeded
-*/
-export type CreateFileStorage429Type = ErrorType;
-/**
- * @description Internal server error
-*/
-export type CreateFileStorage500Type = ErrorType;
-/**
- * @description Service unavailable
-*/
-export type CreateFileStorage503Type = ErrorType;
+export type CreateFileStorage422Type = (ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType | ErrorResourceNotFoundType | ErrorInternalType | ErrorInvalidArgumentType | ErrorPasswordMismatchType | ErrorPreconditionFailedType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorRequestValidationFailedType | ErrorResourceConflictType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
 export type CreateFileStorageMutationRequestType = CreateFileStorageRequestType;
 /**
  * @description Successful Response
@@ -53,5 +42,5 @@ export type CreateFileStorageTypeMutation = {
     Response: CreateFileStorageMutationResponseType;
     Request: CreateFileStorageMutationRequestType;
     PathParams: CreateFileStoragePathParamsType;
-    Errors: CreateFileStorage400Type | CreateFileStorage401Type | CreateFileStorage404Type | CreateFileStorage422Type | CreateFileStorage429Type | CreateFileStorage500Type | CreateFileStorage503Type;
+    Errors: CreateFileStorage422Type;
 };

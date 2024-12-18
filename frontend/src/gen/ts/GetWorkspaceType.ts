@@ -1,5 +1,18 @@
 import type { WorkspaceType } from "./WorkspaceType";
-import type { ErrorType } from "./ErrorType";
+import type { ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType } from "./ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType";
+import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
+import type { ErrorInternalType } from "./ErrorInternalType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorPasswordMismatchType } from "./ErrorPasswordMismatchType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorRefreshTokenCannotBeEmptyType } from "./ErrorRefreshTokenCannotBeEmptyType";
+import type { ErrorRefreshTokenExpiredType } from "./ErrorRefreshTokenExpiredType";
+import type { ErrorRefreshTokenInvalidType } from "./ErrorRefreshTokenInvalidType";
+import type { ErrorRequestValidationFailedType } from "./ErrorRequestValidationFailedType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorUsernameOrEmailCannotBeEmptyType } from "./ErrorUsernameOrEmailCannotBeEmptyType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 
  export type GetWorkspacePathParamsType = {
     /**
@@ -12,33 +25,9 @@ import type { ErrorType } from "./ErrorType";
 */
 export type GetWorkspace200Type = WorkspaceType;
 /**
- * @description Request error
+ * @description Unprocessable Entity
 */
-export type GetWorkspace400Type = ErrorType;
-/**
- * @description Unauthorized
-*/
-export type GetWorkspace401Type = ErrorType;
-/**
- * @description Not found
-*/
-export type GetWorkspace404Type = ErrorType;
-/**
- * @description Validation error
-*/
-export type GetWorkspace422Type = ErrorType;
-/**
- * @description Rate limit exceeded
-*/
-export type GetWorkspace429Type = ErrorType;
-/**
- * @description Internal server error
-*/
-export type GetWorkspace500Type = ErrorType;
-/**
- * @description Service unavailable
-*/
-export type GetWorkspace503Type = ErrorType;
+export type GetWorkspace422Type = (ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType | ErrorResourceNotFoundType | ErrorInternalType | ErrorInvalidArgumentType | ErrorPasswordMismatchType | ErrorPreconditionFailedType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorRequestValidationFailedType | ErrorResourceConflictType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
 /**
  * @description Successful Response
 */
@@ -46,5 +35,5 @@ export type GetWorkspaceQueryResponseType = WorkspaceType;
 export type GetWorkspaceTypeQuery = {
     Response: GetWorkspaceQueryResponseType;
     PathParams: GetWorkspacePathParamsType;
-    Errors: GetWorkspace400Type | GetWorkspace401Type | GetWorkspace404Type | GetWorkspace422Type | GetWorkspace429Type | GetWorkspace500Type | GetWorkspace503Type;
+    Errors: GetWorkspace422Type;
 };

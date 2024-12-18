@@ -1,4 +1,17 @@
-import type { ErrorType } from "./ErrorType";
+import type { ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType } from "./ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType";
+import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
+import type { ErrorInternalType } from "./ErrorInternalType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorPasswordMismatchType } from "./ErrorPasswordMismatchType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorRefreshTokenCannotBeEmptyType } from "./ErrorRefreshTokenCannotBeEmptyType";
+import type { ErrorRefreshTokenExpiredType } from "./ErrorRefreshTokenExpiredType";
+import type { ErrorRefreshTokenInvalidType } from "./ErrorRefreshTokenInvalidType";
+import type { ErrorRequestValidationFailedType } from "./ErrorRequestValidationFailedType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorUsernameOrEmailCannotBeEmptyType } from "./ErrorUsernameOrEmailCannotBeEmptyType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 
  export type DeleteInstancePortForwardPathParamsType = {
     /**
@@ -23,36 +36,12 @@ import type { ErrorType } from "./ErrorType";
 */
 export type DeleteInstancePortForward204Type = any;
 /**
- * @description Request error
+ * @description Unprocessable Entity
 */
-export type DeleteInstancePortForward400Type = ErrorType;
-/**
- * @description Unauthorized
-*/
-export type DeleteInstancePortForward401Type = ErrorType;
-/**
- * @description Not found
-*/
-export type DeleteInstancePortForward404Type = ErrorType;
-/**
- * @description Validation error
-*/
-export type DeleteInstancePortForward422Type = ErrorType;
-/**
- * @description Rate limit exceeded
-*/
-export type DeleteInstancePortForward429Type = ErrorType;
-/**
- * @description Internal server error
-*/
-export type DeleteInstancePortForward500Type = ErrorType;
-/**
- * @description Service unavailable
-*/
-export type DeleteInstancePortForward503Type = ErrorType;
+export type DeleteInstancePortForward422Type = (ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType | ErrorResourceNotFoundType | ErrorInternalType | ErrorInvalidArgumentType | ErrorPasswordMismatchType | ErrorPreconditionFailedType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorRequestValidationFailedType | ErrorResourceConflictType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
 export type DeleteInstancePortForwardMutationResponseType = any;
 export type DeleteInstancePortForwardTypeMutation = {
     Response: DeleteInstancePortForwardMutationResponseType;
     PathParams: DeleteInstancePortForwardPathParamsType;
-    Errors: DeleteInstancePortForward400Type | DeleteInstancePortForward401Type | DeleteInstancePortForward404Type | DeleteInstancePortForward422Type | DeleteInstancePortForward429Type | DeleteInstancePortForward500Type | DeleteInstancePortForward503Type;
+    Errors: DeleteInstancePortForward422Type;
 };

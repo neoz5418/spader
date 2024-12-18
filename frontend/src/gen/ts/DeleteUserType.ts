@@ -1,4 +1,17 @@
-import type { ErrorType } from "./ErrorType";
+import type { ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType } from "./ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType";
+import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
+import type { ErrorInternalType } from "./ErrorInternalType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorPasswordMismatchType } from "./ErrorPasswordMismatchType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorRefreshTokenCannotBeEmptyType } from "./ErrorRefreshTokenCannotBeEmptyType";
+import type { ErrorRefreshTokenExpiredType } from "./ErrorRefreshTokenExpiredType";
+import type { ErrorRefreshTokenInvalidType } from "./ErrorRefreshTokenInvalidType";
+import type { ErrorRequestValidationFailedType } from "./ErrorRequestValidationFailedType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorUsernameOrEmailCannotBeEmptyType } from "./ErrorUsernameOrEmailCannotBeEmptyType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 
  export type DeleteUserPathParamsType = {
     /**
@@ -11,36 +24,12 @@ import type { ErrorType } from "./ErrorType";
 */
 export type DeleteUser204Type = any;
 /**
- * @description Request error
+ * @description Unprocessable Entity
 */
-export type DeleteUser400Type = ErrorType;
-/**
- * @description Unauthorized
-*/
-export type DeleteUser401Type = ErrorType;
-/**
- * @description Not found
-*/
-export type DeleteUser404Type = ErrorType;
-/**
- * @description Validation error
-*/
-export type DeleteUser422Type = ErrorType;
-/**
- * @description Rate limit exceeded
-*/
-export type DeleteUser429Type = ErrorType;
-/**
- * @description Internal server error
-*/
-export type DeleteUser500Type = ErrorType;
-/**
- * @description Service unavailable
-*/
-export type DeleteUser503Type = ErrorType;
+export type DeleteUser422Type = (ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType | ErrorResourceNotFoundType | ErrorInternalType | ErrorInvalidArgumentType | ErrorPasswordMismatchType | ErrorPreconditionFailedType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorRequestValidationFailedType | ErrorResourceConflictType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
 export type DeleteUserMutationResponseType = any;
 export type DeleteUserTypeMutation = {
     Response: DeleteUserMutationResponseType;
     PathParams: DeleteUserPathParamsType;
-    Errors: DeleteUser400Type | DeleteUser401Type | DeleteUser404Type | DeleteUser422Type | DeleteUser429Type | DeleteUser500Type | DeleteUser503Type;
+    Errors: DeleteUser422Type;
 };

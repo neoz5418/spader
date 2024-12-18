@@ -1,5 +1,18 @@
 import type { PaginatedListSshKeyType } from "./PaginatedListSshKeyType";
-import type { ErrorType } from "./ErrorType";
+import type { ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType } from "./ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType";
+import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
+import type { ErrorInternalType } from "./ErrorInternalType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorPasswordMismatchType } from "./ErrorPasswordMismatchType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorRefreshTokenCannotBeEmptyType } from "./ErrorRefreshTokenCannotBeEmptyType";
+import type { ErrorRefreshTokenExpiredType } from "./ErrorRefreshTokenExpiredType";
+import type { ErrorRefreshTokenInvalidType } from "./ErrorRefreshTokenInvalidType";
+import type { ErrorRequestValidationFailedType } from "./ErrorRequestValidationFailedType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorUsernameOrEmailCannotBeEmptyType } from "./ErrorUsernameOrEmailCannotBeEmptyType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 
  export type GetWorkspaceSshKeysPathParamsType = {
     /**
@@ -12,33 +25,9 @@ import type { ErrorType } from "./ErrorType";
 */
 export type GetWorkspaceSshKeys200Type = PaginatedListSshKeyType;
 /**
- * @description Request error
+ * @description Unprocessable Entity
 */
-export type GetWorkspaceSshKeys400Type = ErrorType;
-/**
- * @description Unauthorized
-*/
-export type GetWorkspaceSshKeys401Type = ErrorType;
-/**
- * @description Not found
-*/
-export type GetWorkspaceSshKeys404Type = ErrorType;
-/**
- * @description Validation error
-*/
-export type GetWorkspaceSshKeys422Type = ErrorType;
-/**
- * @description Rate limit exceeded
-*/
-export type GetWorkspaceSshKeys429Type = ErrorType;
-/**
- * @description Internal server error
-*/
-export type GetWorkspaceSshKeys500Type = ErrorType;
-/**
- * @description Service unavailable
-*/
-export type GetWorkspaceSshKeys503Type = ErrorType;
+export type GetWorkspaceSshKeys422Type = (ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType | ErrorResourceNotFoundType | ErrorInternalType | ErrorInvalidArgumentType | ErrorPasswordMismatchType | ErrorPreconditionFailedType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorRequestValidationFailedType | ErrorResourceConflictType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
 /**
  * @description Successful Response
 */
@@ -46,5 +35,5 @@ export type GetWorkspaceSshKeysQueryResponseType = PaginatedListSshKeyType;
 export type GetWorkspaceSshKeysTypeQuery = {
     Response: GetWorkspaceSshKeysQueryResponseType;
     PathParams: GetWorkspaceSshKeysPathParamsType;
-    Errors: GetWorkspaceSshKeys400Type | GetWorkspaceSshKeys401Type | GetWorkspaceSshKeys404Type | GetWorkspaceSshKeys422Type | GetWorkspaceSshKeys429Type | GetWorkspaceSshKeys500Type | GetWorkspaceSshKeys503Type;
+    Errors: GetWorkspaceSshKeys422Type;
 };

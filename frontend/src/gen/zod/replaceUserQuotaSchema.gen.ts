@@ -1,6 +1,19 @@
 import { z } from "@/utils/zod.ts";
 import { userQuotaSchema } from "./userQuotaSchema.gen";
-import { errorSchema } from "./errorSchema.gen";
+import { errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema } from "./errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema.gen";
+import { errorResourceNotFoundSchema } from "./errorResourceNotFoundSchema.gen";
+import { errorInternalSchema } from "./errorInternalSchema.gen";
+import { errorInvalidArgumentSchema } from "./errorInvalidArgumentSchema.gen";
+import { errorPasswordMismatchSchema } from "./errorPasswordMismatchSchema.gen";
+import { errorPreconditionFailedSchema } from "./errorPreconditionFailedSchema.gen";
+import { errorRefreshTokenCannotBeEmptySchema } from "./errorRefreshTokenCannotBeEmptySchema.gen";
+import { errorRefreshTokenExpiredSchema } from "./errorRefreshTokenExpiredSchema.gen";
+import { errorRefreshTokenInvalidSchema } from "./errorRefreshTokenInvalidSchema.gen";
+import { errorRequestValidationFailedSchema } from "./errorRequestValidationFailedSchema.gen";
+import { errorResourceConflictSchema } from "./errorResourceConflictSchema.gen";
+import { errorUnauthorizedSchema } from "./errorUnauthorizedSchema.gen";
+import { errorUsernameOrEmailCannotBeEmptySchema } from "./errorUsernameOrEmailCannotBeEmptySchema.gen";
+import { errorValidationFailedSchema } from "./errorValidationFailedSchema.gen";
 
 
 export const replaceUserQuotaPathParamsSchema = z.object({ "username": z.string() });
@@ -11,40 +24,10 @@ export type ReplaceUserQuotaPathParamsSchema = z.infer<typeof replaceUserQuotaPa
 export const replaceUserQuota200Schema = z.lazy(() => userQuotaSchema);
 export type ReplaceUserQuota200Schema = z.infer<typeof replaceUserQuota200Schema>;
 /**
- * @description Request error
+ * @description Unprocessable Entity
  */
-export const replaceUserQuota400Schema = z.lazy(() => errorSchema);
-export type ReplaceUserQuota400Schema = z.infer<typeof replaceUserQuota400Schema>;
-/**
- * @description Unauthorized
- */
-export const replaceUserQuota401Schema = z.lazy(() => errorSchema);
-export type ReplaceUserQuota401Schema = z.infer<typeof replaceUserQuota401Schema>;
-/**
- * @description Not found
- */
-export const replaceUserQuota404Schema = z.lazy(() => errorSchema);
-export type ReplaceUserQuota404Schema = z.infer<typeof replaceUserQuota404Schema>;
-/**
- * @description Validation error
- */
-export const replaceUserQuota422Schema = z.lazy(() => errorSchema);
+export const replaceUserQuota422Schema = z.union([z.lazy(() => errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema), z.lazy(() => errorResourceNotFoundSchema), z.lazy(() => errorInternalSchema), z.lazy(() => errorInvalidArgumentSchema), z.lazy(() => errorPasswordMismatchSchema), z.lazy(() => errorPreconditionFailedSchema), z.lazy(() => errorRefreshTokenCannotBeEmptySchema), z.lazy(() => errorRefreshTokenExpiredSchema), z.lazy(() => errorRefreshTokenInvalidSchema), z.lazy(() => errorRequestValidationFailedSchema), z.lazy(() => errorResourceConflictSchema), z.lazy(() => errorUnauthorizedSchema), z.lazy(() => errorUsernameOrEmailCannotBeEmptySchema), z.lazy(() => errorValidationFailedSchema)]);
 export type ReplaceUserQuota422Schema = z.infer<typeof replaceUserQuota422Schema>;
-/**
- * @description Rate limit exceeded
- */
-export const replaceUserQuota429Schema = z.lazy(() => errorSchema);
-export type ReplaceUserQuota429Schema = z.infer<typeof replaceUserQuota429Schema>;
-/**
- * @description Internal server error
- */
-export const replaceUserQuota500Schema = z.lazy(() => errorSchema);
-export type ReplaceUserQuota500Schema = z.infer<typeof replaceUserQuota500Schema>;
-/**
- * @description Service unavailable
- */
-export const replaceUserQuota503Schema = z.lazy(() => errorSchema);
-export type ReplaceUserQuota503Schema = z.infer<typeof replaceUserQuota503Schema>;
 /**
  * @description Successful Response
  */

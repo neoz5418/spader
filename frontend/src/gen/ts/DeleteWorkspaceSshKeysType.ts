@@ -1,4 +1,17 @@
-import type { ErrorType } from "./ErrorType";
+import type { ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType } from "./ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType";
+import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
+import type { ErrorInternalType } from "./ErrorInternalType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorPasswordMismatchType } from "./ErrorPasswordMismatchType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorRefreshTokenCannotBeEmptyType } from "./ErrorRefreshTokenCannotBeEmptyType";
+import type { ErrorRefreshTokenExpiredType } from "./ErrorRefreshTokenExpiredType";
+import type { ErrorRefreshTokenInvalidType } from "./ErrorRefreshTokenInvalidType";
+import type { ErrorRequestValidationFailedType } from "./ErrorRequestValidationFailedType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorUsernameOrEmailCannotBeEmptyType } from "./ErrorUsernameOrEmailCannotBeEmptyType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 
  export type DeleteWorkspaceSshKeysPathParamsType = {
     /**
@@ -15,36 +28,12 @@ import type { ErrorType } from "./ErrorType";
 */
 export type DeleteWorkspaceSshKeys204Type = any;
 /**
- * @description Request error
+ * @description Unprocessable Entity
 */
-export type DeleteWorkspaceSshKeys400Type = ErrorType;
-/**
- * @description Unauthorized
-*/
-export type DeleteWorkspaceSshKeys401Type = ErrorType;
-/**
- * @description Not found
-*/
-export type DeleteWorkspaceSshKeys404Type = ErrorType;
-/**
- * @description Validation error
-*/
-export type DeleteWorkspaceSshKeys422Type = ErrorType;
-/**
- * @description Rate limit exceeded
-*/
-export type DeleteWorkspaceSshKeys429Type = ErrorType;
-/**
- * @description Internal server error
-*/
-export type DeleteWorkspaceSshKeys500Type = ErrorType;
-/**
- * @description Service unavailable
-*/
-export type DeleteWorkspaceSshKeys503Type = ErrorType;
+export type DeleteWorkspaceSshKeys422Type = (ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType | ErrorResourceNotFoundType | ErrorInternalType | ErrorInvalidArgumentType | ErrorPasswordMismatchType | ErrorPreconditionFailedType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorRequestValidationFailedType | ErrorResourceConflictType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
 export type DeleteWorkspaceSshKeysMutationResponseType = any;
 export type DeleteWorkspaceSshKeysTypeMutation = {
     Response: DeleteWorkspaceSshKeysMutationResponseType;
     PathParams: DeleteWorkspaceSshKeysPathParamsType;
-    Errors: DeleteWorkspaceSshKeys400Type | DeleteWorkspaceSshKeys401Type | DeleteWorkspaceSshKeys404Type | DeleteWorkspaceSshKeys422Type | DeleteWorkspaceSshKeys429Type | DeleteWorkspaceSshKeys500Type | DeleteWorkspaceSshKeys503Type;
+    Errors: DeleteWorkspaceSshKeys422Type;
 };

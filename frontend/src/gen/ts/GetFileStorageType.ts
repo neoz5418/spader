@@ -1,5 +1,18 @@
 import type { FileStorageType } from "./FileStorageType";
-import type { ErrorType } from "./ErrorType";
+import type { ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType } from "./ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType";
+import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
+import type { ErrorInternalType } from "./ErrorInternalType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorPasswordMismatchType } from "./ErrorPasswordMismatchType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorRefreshTokenCannotBeEmptyType } from "./ErrorRefreshTokenCannotBeEmptyType";
+import type { ErrorRefreshTokenExpiredType } from "./ErrorRefreshTokenExpiredType";
+import type { ErrorRefreshTokenInvalidType } from "./ErrorRefreshTokenInvalidType";
+import type { ErrorRequestValidationFailedType } from "./ErrorRequestValidationFailedType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorUsernameOrEmailCannotBeEmptyType } from "./ErrorUsernameOrEmailCannotBeEmptyType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 
  export type GetFileStoragePathParamsType = {
     /**
@@ -20,33 +33,9 @@ import type { ErrorType } from "./ErrorType";
 */
 export type GetFileStorage200Type = FileStorageType;
 /**
- * @description Request error
+ * @description Unprocessable Entity
 */
-export type GetFileStorage400Type = ErrorType;
-/**
- * @description Unauthorized
-*/
-export type GetFileStorage401Type = ErrorType;
-/**
- * @description Not found
-*/
-export type GetFileStorage404Type = ErrorType;
-/**
- * @description Validation error
-*/
-export type GetFileStorage422Type = ErrorType;
-/**
- * @description Rate limit exceeded
-*/
-export type GetFileStorage429Type = ErrorType;
-/**
- * @description Internal server error
-*/
-export type GetFileStorage500Type = ErrorType;
-/**
- * @description Service unavailable
-*/
-export type GetFileStorage503Type = ErrorType;
+export type GetFileStorage422Type = (ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType | ErrorResourceNotFoundType | ErrorInternalType | ErrorInvalidArgumentType | ErrorPasswordMismatchType | ErrorPreconditionFailedType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorRequestValidationFailedType | ErrorResourceConflictType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
 /**
  * @description Successful Response
 */
@@ -54,5 +43,5 @@ export type GetFileStorageQueryResponseType = FileStorageType;
 export type GetFileStorageTypeQuery = {
     Response: GetFileStorageQueryResponseType;
     PathParams: GetFileStoragePathParamsType;
-    Errors: GetFileStorage400Type | GetFileStorage401Type | GetFileStorage404Type | GetFileStorage422Type | GetFileStorage429Type | GetFileStorage500Type | GetFileStorage503Type;
+    Errors: GetFileStorage422Type;
 };

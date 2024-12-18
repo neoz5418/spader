@@ -1,6 +1,19 @@
 import { z } from "@/utils/zod.ts";
 import { paginatedListGpuTypeSchema } from "./paginatedListGpuTypeSchema.gen";
-import { errorSchema } from "./errorSchema.gen";
+import { errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema } from "./errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema.gen";
+import { errorResourceNotFoundSchema } from "./errorResourceNotFoundSchema.gen";
+import { errorInternalSchema } from "./errorInternalSchema.gen";
+import { errorInvalidArgumentSchema } from "./errorInvalidArgumentSchema.gen";
+import { errorPasswordMismatchSchema } from "./errorPasswordMismatchSchema.gen";
+import { errorPreconditionFailedSchema } from "./errorPreconditionFailedSchema.gen";
+import { errorRefreshTokenCannotBeEmptySchema } from "./errorRefreshTokenCannotBeEmptySchema.gen";
+import { errorRefreshTokenExpiredSchema } from "./errorRefreshTokenExpiredSchema.gen";
+import { errorRefreshTokenInvalidSchema } from "./errorRefreshTokenInvalidSchema.gen";
+import { errorRequestValidationFailedSchema } from "./errorRequestValidationFailedSchema.gen";
+import { errorResourceConflictSchema } from "./errorResourceConflictSchema.gen";
+import { errorUnauthorizedSchema } from "./errorUnauthorizedSchema.gen";
+import { errorUsernameOrEmailCannotBeEmptySchema } from "./errorUsernameOrEmailCannotBeEmptySchema.gen";
+import { errorValidationFailedSchema } from "./errorValidationFailedSchema.gen";
 
 
 export const listWorkspaceZoneGpuTypesPathParamsSchema = z.object({ "workspace": z.string(), "zone": z.string() });
@@ -14,40 +27,10 @@ export type ListWorkspaceZoneGpuTypesQueryParamsSchema = z.infer<typeof listWork
 export const listWorkspaceZoneGpuTypes200Schema = z.lazy(() => paginatedListGpuTypeSchema);
 export type ListWorkspaceZoneGpuTypes200Schema = z.infer<typeof listWorkspaceZoneGpuTypes200Schema>;
 /**
- * @description Request error
+ * @description Unprocessable Entity
  */
-export const listWorkspaceZoneGpuTypes400Schema = z.lazy(() => errorSchema);
-export type ListWorkspaceZoneGpuTypes400Schema = z.infer<typeof listWorkspaceZoneGpuTypes400Schema>;
-/**
- * @description Unauthorized
- */
-export const listWorkspaceZoneGpuTypes401Schema = z.lazy(() => errorSchema);
-export type ListWorkspaceZoneGpuTypes401Schema = z.infer<typeof listWorkspaceZoneGpuTypes401Schema>;
-/**
- * @description Not found
- */
-export const listWorkspaceZoneGpuTypes404Schema = z.lazy(() => errorSchema);
-export type ListWorkspaceZoneGpuTypes404Schema = z.infer<typeof listWorkspaceZoneGpuTypes404Schema>;
-/**
- * @description Validation error
- */
-export const listWorkspaceZoneGpuTypes422Schema = z.lazy(() => errorSchema);
+export const listWorkspaceZoneGpuTypes422Schema = z.union([z.lazy(() => errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema), z.lazy(() => errorResourceNotFoundSchema), z.lazy(() => errorInternalSchema), z.lazy(() => errorInvalidArgumentSchema), z.lazy(() => errorPasswordMismatchSchema), z.lazy(() => errorPreconditionFailedSchema), z.lazy(() => errorRefreshTokenCannotBeEmptySchema), z.lazy(() => errorRefreshTokenExpiredSchema), z.lazy(() => errorRefreshTokenInvalidSchema), z.lazy(() => errorRequestValidationFailedSchema), z.lazy(() => errorResourceConflictSchema), z.lazy(() => errorUnauthorizedSchema), z.lazy(() => errorUsernameOrEmailCannotBeEmptySchema), z.lazy(() => errorValidationFailedSchema)]);
 export type ListWorkspaceZoneGpuTypes422Schema = z.infer<typeof listWorkspaceZoneGpuTypes422Schema>;
-/**
- * @description Rate limit exceeded
- */
-export const listWorkspaceZoneGpuTypes429Schema = z.lazy(() => errorSchema);
-export type ListWorkspaceZoneGpuTypes429Schema = z.infer<typeof listWorkspaceZoneGpuTypes429Schema>;
-/**
- * @description Internal server error
- */
-export const listWorkspaceZoneGpuTypes500Schema = z.lazy(() => errorSchema);
-export type ListWorkspaceZoneGpuTypes500Schema = z.infer<typeof listWorkspaceZoneGpuTypes500Schema>;
-/**
- * @description Service unavailable
- */
-export const listWorkspaceZoneGpuTypes503Schema = z.lazy(() => errorSchema);
-export type ListWorkspaceZoneGpuTypes503Schema = z.infer<typeof listWorkspaceZoneGpuTypes503Schema>;
 /**
  * @description Successful Response
  */

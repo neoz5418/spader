@@ -1,5 +1,18 @@
 import type { CursorListOperationType } from "./CursorListOperationType";
-import type { ErrorType } from "./ErrorType";
+import type { ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType } from "./ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType";
+import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
+import type { ErrorInternalType } from "./ErrorInternalType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorPasswordMismatchType } from "./ErrorPasswordMismatchType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorRefreshTokenCannotBeEmptyType } from "./ErrorRefreshTokenCannotBeEmptyType";
+import type { ErrorRefreshTokenExpiredType } from "./ErrorRefreshTokenExpiredType";
+import type { ErrorRefreshTokenInvalidType } from "./ErrorRefreshTokenInvalidType";
+import type { ErrorRequestValidationFailedType } from "./ErrorRequestValidationFailedType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorUsernameOrEmailCannotBeEmptyType } from "./ErrorUsernameOrEmailCannotBeEmptyType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 
  export type GetWorkspaceOperationPathParamsType = {
     /**
@@ -20,33 +33,9 @@ import type { ErrorType } from "./ErrorType";
 */
 export type GetWorkspaceOperation200Type = CursorListOperationType;
 /**
- * @description Request error
+ * @description Unprocessable Entity
 */
-export type GetWorkspaceOperation400Type = ErrorType;
-/**
- * @description Unauthorized
-*/
-export type GetWorkspaceOperation401Type = ErrorType;
-/**
- * @description Not found
-*/
-export type GetWorkspaceOperation404Type = ErrorType;
-/**
- * @description Validation error
-*/
-export type GetWorkspaceOperation422Type = ErrorType;
-/**
- * @description Rate limit exceeded
-*/
-export type GetWorkspaceOperation429Type = ErrorType;
-/**
- * @description Internal server error
-*/
-export type GetWorkspaceOperation500Type = ErrorType;
-/**
- * @description Service unavailable
-*/
-export type GetWorkspaceOperation503Type = ErrorType;
+export type GetWorkspaceOperation422Type = (ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType | ErrorResourceNotFoundType | ErrorInternalType | ErrorInvalidArgumentType | ErrorPasswordMismatchType | ErrorPreconditionFailedType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorRequestValidationFailedType | ErrorResourceConflictType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
 /**
  * @description Successful Response
 */
@@ -54,5 +43,5 @@ export type GetWorkspaceOperationQueryResponseType = CursorListOperationType;
 export type GetWorkspaceOperationTypeQuery = {
     Response: GetWorkspaceOperationQueryResponseType;
     PathParams: GetWorkspaceOperationPathParamsType;
-    Errors: GetWorkspaceOperation400Type | GetWorkspaceOperation401Type | GetWorkspaceOperation404Type | GetWorkspaceOperation422Type | GetWorkspaceOperation429Type | GetWorkspaceOperation500Type | GetWorkspaceOperation503Type;
+    Errors: GetWorkspaceOperation422Type;
 };

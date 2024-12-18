@@ -1,5 +1,18 @@
 import type { WorkspaceQuotaType } from "./WorkspaceQuotaType";
-import type { ErrorType } from "./ErrorType";
+import type { ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType } from "./ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType";
+import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
+import type { ErrorInternalType } from "./ErrorInternalType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorPasswordMismatchType } from "./ErrorPasswordMismatchType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorRefreshTokenCannotBeEmptyType } from "./ErrorRefreshTokenCannotBeEmptyType";
+import type { ErrorRefreshTokenExpiredType } from "./ErrorRefreshTokenExpiredType";
+import type { ErrorRefreshTokenInvalidType } from "./ErrorRefreshTokenInvalidType";
+import type { ErrorRequestValidationFailedType } from "./ErrorRequestValidationFailedType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorUsernameOrEmailCannotBeEmptyType } from "./ErrorUsernameOrEmailCannotBeEmptyType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 
  export type ReplaceWorkspaceQuotaPathParamsType = {
     /**
@@ -12,33 +25,9 @@ import type { ErrorType } from "./ErrorType";
 */
 export type ReplaceWorkspaceQuota200Type = WorkspaceQuotaType;
 /**
- * @description Request error
+ * @description Unprocessable Entity
 */
-export type ReplaceWorkspaceQuota400Type = ErrorType;
-/**
- * @description Unauthorized
-*/
-export type ReplaceWorkspaceQuota401Type = ErrorType;
-/**
- * @description Not found
-*/
-export type ReplaceWorkspaceQuota404Type = ErrorType;
-/**
- * @description Validation error
-*/
-export type ReplaceWorkspaceQuota422Type = ErrorType;
-/**
- * @description Rate limit exceeded
-*/
-export type ReplaceWorkspaceQuota429Type = ErrorType;
-/**
- * @description Internal server error
-*/
-export type ReplaceWorkspaceQuota500Type = ErrorType;
-/**
- * @description Service unavailable
-*/
-export type ReplaceWorkspaceQuota503Type = ErrorType;
+export type ReplaceWorkspaceQuota422Type = (ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType | ErrorResourceNotFoundType | ErrorInternalType | ErrorInvalidArgumentType | ErrorPasswordMismatchType | ErrorPreconditionFailedType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorRequestValidationFailedType | ErrorResourceConflictType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
 export type ReplaceWorkspaceQuotaMutationRequestType = WorkspaceQuotaType;
 /**
  * @description Successful Response
@@ -48,5 +37,5 @@ export type ReplaceWorkspaceQuotaTypeMutation = {
     Response: ReplaceWorkspaceQuotaMutationResponseType;
     Request: ReplaceWorkspaceQuotaMutationRequestType;
     PathParams: ReplaceWorkspaceQuotaPathParamsType;
-    Errors: ReplaceWorkspaceQuota400Type | ReplaceWorkspaceQuota401Type | ReplaceWorkspaceQuota404Type | ReplaceWorkspaceQuota422Type | ReplaceWorkspaceQuota429Type | ReplaceWorkspaceQuota500Type | ReplaceWorkspaceQuota503Type;
+    Errors: ReplaceWorkspaceQuota422Type;
 };

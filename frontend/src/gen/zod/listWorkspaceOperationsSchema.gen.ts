@@ -1,6 +1,19 @@
 import { z } from "@/utils/zod.ts";
 import { cursorListOperationSchema } from "./cursorListOperationSchema.gen";
-import { errorSchema } from "./errorSchema.gen";
+import { errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema } from "./errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema.gen";
+import { errorResourceNotFoundSchema } from "./errorResourceNotFoundSchema.gen";
+import { errorInternalSchema } from "./errorInternalSchema.gen";
+import { errorInvalidArgumentSchema } from "./errorInvalidArgumentSchema.gen";
+import { errorPasswordMismatchSchema } from "./errorPasswordMismatchSchema.gen";
+import { errorPreconditionFailedSchema } from "./errorPreconditionFailedSchema.gen";
+import { errorRefreshTokenCannotBeEmptySchema } from "./errorRefreshTokenCannotBeEmptySchema.gen";
+import { errorRefreshTokenExpiredSchema } from "./errorRefreshTokenExpiredSchema.gen";
+import { errorRefreshTokenInvalidSchema } from "./errorRefreshTokenInvalidSchema.gen";
+import { errorRequestValidationFailedSchema } from "./errorRequestValidationFailedSchema.gen";
+import { errorResourceConflictSchema } from "./errorResourceConflictSchema.gen";
+import { errorUnauthorizedSchema } from "./errorUnauthorizedSchema.gen";
+import { errorUsernameOrEmailCannotBeEmptySchema } from "./errorUsernameOrEmailCannotBeEmptySchema.gen";
+import { errorValidationFailedSchema } from "./errorValidationFailedSchema.gen";
 
 
 export const listWorkspaceOperationsPathParamsSchema = z.object({ "workspace": z.string(), "zone": z.string() });
@@ -14,40 +27,10 @@ export type ListWorkspaceOperationsQueryParamsSchema = z.infer<typeof listWorksp
 export const listWorkspaceOperations200Schema = z.lazy(() => cursorListOperationSchema);
 export type ListWorkspaceOperations200Schema = z.infer<typeof listWorkspaceOperations200Schema>;
 /**
- * @description Request error
+ * @description Unprocessable Entity
  */
-export const listWorkspaceOperations400Schema = z.lazy(() => errorSchema);
-export type ListWorkspaceOperations400Schema = z.infer<typeof listWorkspaceOperations400Schema>;
-/**
- * @description Unauthorized
- */
-export const listWorkspaceOperations401Schema = z.lazy(() => errorSchema);
-export type ListWorkspaceOperations401Schema = z.infer<typeof listWorkspaceOperations401Schema>;
-/**
- * @description Not found
- */
-export const listWorkspaceOperations404Schema = z.lazy(() => errorSchema);
-export type ListWorkspaceOperations404Schema = z.infer<typeof listWorkspaceOperations404Schema>;
-/**
- * @description Validation error
- */
-export const listWorkspaceOperations422Schema = z.lazy(() => errorSchema);
+export const listWorkspaceOperations422Schema = z.union([z.lazy(() => errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema), z.lazy(() => errorResourceNotFoundSchema), z.lazy(() => errorInternalSchema), z.lazy(() => errorInvalidArgumentSchema), z.lazy(() => errorPasswordMismatchSchema), z.lazy(() => errorPreconditionFailedSchema), z.lazy(() => errorRefreshTokenCannotBeEmptySchema), z.lazy(() => errorRefreshTokenExpiredSchema), z.lazy(() => errorRefreshTokenInvalidSchema), z.lazy(() => errorRequestValidationFailedSchema), z.lazy(() => errorResourceConflictSchema), z.lazy(() => errorUnauthorizedSchema), z.lazy(() => errorUsernameOrEmailCannotBeEmptySchema), z.lazy(() => errorValidationFailedSchema)]);
 export type ListWorkspaceOperations422Schema = z.infer<typeof listWorkspaceOperations422Schema>;
-/**
- * @description Rate limit exceeded
- */
-export const listWorkspaceOperations429Schema = z.lazy(() => errorSchema);
-export type ListWorkspaceOperations429Schema = z.infer<typeof listWorkspaceOperations429Schema>;
-/**
- * @description Internal server error
- */
-export const listWorkspaceOperations500Schema = z.lazy(() => errorSchema);
-export type ListWorkspaceOperations500Schema = z.infer<typeof listWorkspaceOperations500Schema>;
-/**
- * @description Service unavailable
- */
-export const listWorkspaceOperations503Schema = z.lazy(() => errorSchema);
-export type ListWorkspaceOperations503Schema = z.infer<typeof listWorkspaceOperations503Schema>;
 /**
  * @description Successful Response
  */

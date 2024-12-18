@@ -1,17 +1,14 @@
-from datetime import datetime
-from datetime import timezone
+from datetime import datetime, timezone
 from enum import Enum
-from typing import Annotated, Any, Optional
+from typing import Annotated, Any, Literal, Optional, Union
 from typing import Generic, TypeVar
 
 import uuid6
-from fastapi import Query
-from fastapi.exceptions import RequestValidationError
+from fastapi import Query, Request
+from fastapi.exceptions import HTTPException, RequestValidationError
 from pydantic import BaseModel, SerializeAsAny
-from pydantic.dataclasses import dataclass
 from sqlalchemy import DateTime
 from sqlmodel import Field
-from starlette import status as starlette_status
 
 UTC = timezone.utc
 DEFAULT_LIMIT = 20
@@ -70,11 +67,6 @@ DisplayName = Annotated[
 ]
 
 
-class ErrorInfo(BaseModel):
-    reason: str
-    metadata: dict[str, Any]
-
-
 class LanguageCode(Enum):
     # follow the RFC5646
     EN_US = "en-US"
@@ -84,6 +76,12 @@ class LanguageCode(Enum):
 class LocalizedMessage(BaseModel):
     locale: LanguageCode
     message: str
+
+
+class ErrorInfo(BaseModel):
+    reason: str
+    metadata: dict[str, Any]
+    i18n: LocalizedMessage = None
 
 
 # Copy From The canonical error codes for gRPC APIs.
@@ -247,126 +245,270 @@ class ErrorCode(Enum):
     DATA_LOSS = 15
 
 
-ErrorCodeMapping = {
-    ErrorCode.CANCELLED: (499, "client closed request"),
-    ErrorCode.UNKNOWN: (
-        starlette_status.HTTP_500_INTERNAL_SERVER_ERROR,
-        "internal server error",
-    ),
-    ErrorCode.INVALID_ARGUMENT: (
-        starlette_status.HTTP_400_BAD_REQUEST,
-        "client specified an invalid argument",
-    ),
-    ErrorCode.DEADLINE_EXCEEDED: (
-        starlette_status.HTTP_504_GATEWAY_TIMEOUT,
-        "deadline exceeded",
-    ),
-    ErrorCode.NOT_FOUND: (starlette_status.HTTP_404_NOT_FOUND, "resource not found"),
-    ErrorCode.ALREADY_EXISTS: (
-        starlette_status.HTTP_409_CONFLICT,
-        "resource already exists",
-    ),
-    ErrorCode.PERMISSION_DENIED: (
-        starlette_status.HTTP_403_FORBIDDEN,
-        "permission denied",
-    ),
-    ErrorCode.UNAUTHENTICATED: (
-        starlette_status.HTTP_401_UNAUTHORIZED,
-        "unauthenticated",
-    ),
-    ErrorCode.RESOURCE_EXHAUSTED: (
-        starlette_status.HTTP_429_TOO_MANY_REQUESTS,
-        "some resources are exhausted",
-    ),
-    ErrorCode.FAILED_PRECONDITION: (
-        starlette_status.HTTP_400_BAD_REQUEST,
-        "some precondition is not met",
-    ),
-    ErrorCode.ABORTED: (starlette_status.HTTP_409_CONFLICT, "this action was aborted"),
-    ErrorCode.OUT_OF_RANGE: (
-        starlette_status.HTTP_400_BAD_REQUEST,
-        "this action is out of range",
-    ),
-    ErrorCode.UNIMPLEMENTED: (
-        starlette_status.HTTP_501_NOT_IMPLEMENTED,
-        "this action is not implemented",
-    ),
-    ErrorCode.INTERNAL: (
-        starlette_status.HTTP_500_INTERNAL_SERVER_ERROR,
-        "internal server error",
-    ),
-    ErrorCode.UNAVAILABLE: (
-        starlette_status.HTTP_503_SERVICE_UNAVAILABLE,
-        "service is unavailable",
-    ),
-    ErrorCode.DATA_LOSS: (
-        starlette_status.HTTP_500_INTERNAL_SERVER_ERROR,
-        "unrecoverable data loss or corruption",
-    ),
-}
+Loc = list[str | int]
+Input = str | dict | int
 
 
-@dataclass
-class Error(Exception):
-    http_code: int
-    message: str
-    details: list[ErrorInfo | LocalizedMessage | BaseModel]
+class ArgumentDetail(BaseModel):
+    type: str
+    metadata: dict[str, Any]
+    msg: str
+    loc: Loc
+    input: Input
+    i18n: LocalizedMessage = None
+
+
+i18n_mapping = {}
+
+
+def i18n(locale: LanguageCode, message: str):
+    def decorator(cls):
+        key = cls.__qualname__
+        if key not in i18n_mapping:
+            i18n_mapping[key] = {}
+        i18n_mapping[key][locale] = message
+        return cls
+
+    return decorator
+
+
+status_code_mapping = {}
+
+
+def status_code(code: int):
+    def decorator(cls):
+        status_code_mapping[cls.__qualname__] = code
+        return cls
+
+    return decorator
+
+
+class ErrorBase(BaseModel):
+    type: str
+
+    def to_exception(self) -> HTTPException:
+        return HTTPException(status_code=self.status_code, detail=self)
+
+    @property
+    def status_code(self) -> int:
+        return status_code_mapping[self.__class__.__qualname__]
+
+
+@i18n(LanguageCode.EN_US, "email and username cannot be provided at the same time")
+@status_code(412)
+class ErrorEmailAndUsernameCannotBeProvidedAtTheSameTime(ErrorBase):
+    type: Literal["EmailAndUsernameCannotBeProvidedAtTheSameTime"]
+
+
+@i18n(LanguageCode.EN_US, "resource not found")
+@status_code(404)
+class ErrorResourceNotFound(ErrorBase):
+    type: Literal["ResourceNotFound"]
+    resource_name: str
+
+
+@i18n(LanguageCode.EN_US, "internal")
+@status_code(500)
+class ErrorInternal(ErrorBase):
+    type: Literal["Internal"]
+
+
+@i18n(LanguageCode.EN_US, "invalid argument")
+@status_code(400)
+class ErrorInvalidArgument(ErrorBase):
+    type: Literal["InvalidArgument"]
+    loc: str
+    input: Any
+
+
+@i18n(LanguageCode.EN_US, "password mismatch")
+@status_code(401)
+class ErrorPasswordMismatch(ErrorBase):
+    type: Literal["PasswordMismatch"]
+
+
+@i18n(LanguageCode.EN_US, "precondition failed")
+@status_code(412)
+class ErrorPreconditionFailed(ErrorBase):
+    type: Literal["PreconditionFailed"]
+
+
+@i18n(LanguageCode.EN_US, "refresh token cannot be empty")
+@status_code(412)
+class ErrorRefreshTokenCannotBeEmpty(ErrorBase):
+    type: Literal["RefreshTokenCannotBeEmpty"]
+
+
+@i18n(LanguageCode.EN_US, "refresh token expired")
+@status_code(401)
+class ErrorRefreshTokenExpired(ErrorBase):
+    type: Literal["RefreshTokenExpired"]
+
+
+@i18n(LanguageCode.EN_US, "refresh token invalid")
+@status_code(401)
+class ErrorRefreshTokenInvalid(ErrorBase):
+    type: Literal["RefreshTokenInvalid"]
+
+
+@i18n(LanguageCode.EN_US, "request validation failed")
+@status_code(412)
+class ErrorRequestValidationFailed(ErrorBase):
+    type: Literal["RequestValidationFailed"]
+
+
+@i18n(LanguageCode.EN_US, "resource conflict")
+@i18n(LanguageCode.ZH_HANS, "资源已存在")
+@status_code(409)
+class ErrorResourceConflict(ErrorBase):
+    type: Literal["ResourceConflict"]
+    input: Input
+    loc: Loc
+    resource_name: str
+
+
+@i18n(LanguageCode.EN_US, "unauthorized")
+@status_code(401)
+class ErrorUnauthorized(ErrorBase):
+    type: Literal["Unauthorized"]
+    pass
+
+
+@i18n(LanguageCode.EN_US, "username or email cannot be empty")
+@status_code(412)
+class ErrorUsernameOrEmailCannotBeEmpty(ErrorBase):
+    type: Literal["UsernameOrEmailCannotBeEmpty"]
+    pass
+
+
+@i18n(LanguageCode.EN_US, "validation failed")
+@status_code(412)
+class ErrorValidationFailed(ErrorBase):
+    type: Literal["ValidationFailed"]
+    details: list[ArgumentDetail]
 
     @classmethod
-    def from_exception(cls, e: RequestValidationError) -> "Error":
+    def from_fastapi(cls, e: RequestValidationError) -> "ErrorValidationFailed":
         details = []
         for error in e.errors():
-            m = error.get("ctx", {})
-            m["loc"] = error.get("loc", [])
-            m["msg"] = error.get("msg", "")
-            m["input"] = error.get("input", "")
-            detail = ErrorInfo(reason=error.get("type"), metadata=m)
+            detail = ArgumentDetail(
+                type=error.get("type"),
+                metadata=error.get("ctx", {}),
+                loc=error.get("loc", []),
+                msg=error.get("msg", ""),
+                input=error.get("input", ""),
+            )
             details.append(detail)
-        return cls(
-            http_code=400,
-            message="request_validation_error",
-            details=details,
-        )
-
-    @classmethod
-    def from_error_code(
-        cls, code: ErrorCode, details: list[ErrorInfo | LocalizedMessage | BaseModel]
-    ) -> "Error":
-        return cls(
-            http_code=ErrorCodeMapping[code][0],
-            message=ErrorCodeMapping[code][1],
+        return ErrorValidationFailed(
             details=details,
         )
 
 
-# status.HTTP_400_BAD_REQUEST: {
-#     "model": types.Error,
-#     "description": "Request error",
-# },
-# status.HTTP_422_UNPROCESSABLE_ENTITY: {
-#     "model": types.Error,
-#     "description": "Validation error",
-# },
-# status.HTTP_429_TOO_MANY_REQUESTS: {
-#     "model": types.Error,
-#     "description": "Rate limit exceeded",
-# },
-# status.HTTP_503_SERVICE_UNAVAILABLE: {
-#     "model": types.Error,
-#     "description": "Service unavailable",
-# },
-# status.HTTP_401_UNAUTHORIZED: {
-#     "model": types.Error,
-#     "description": "Unauthorized",
-# },
-# status.HTTP_404_NOT_FOUND: {
-#     "model": types.Error,
-#     "description": "Not found",
-# },
-# status.HTTP_500_INTERNAL_SERVER_ERROR: {
-#     "model": types.Error,
-#     "description": "Internal server error",
-# },
+Errors = Annotated[
+    Union[
+        ErrorEmailAndUsernameCannotBeProvidedAtTheSameTime,
+        ErrorResourceNotFound,
+        ErrorInternal,
+        ErrorInvalidArgument,
+        ErrorPasswordMismatch,
+        ErrorPreconditionFailed,
+        ErrorRefreshTokenCannotBeEmpty,
+        ErrorRefreshTokenExpired,
+        ErrorRefreshTokenInvalid,
+        ErrorRequestValidationFailed,
+        ErrorResourceConflict,
+        ErrorUnauthorized,
+        ErrorUsernameOrEmailCannotBeEmpty,
+        ErrorValidationFailed,
+    ],
+    Field(discriminator="type"),
+]
+
+
+# @http_exception(404, "resource_not_found", "")
+# class ErrorResourceNotFound(ErrorBase):
+#     resource_name: str
+#
+#
+# @http_exception(401, "", "")
+# class ErrorUnauthorized(ErrorBase):
+#     class Message(StrEnum):
+#         unauthorized = auto()
+#         password_mismatch = auto()
+#
+#     status_code: int = 401
+#     message: Message = Message.unauthorized
+
+
+# class ErrorPreconditionFailed(ErrorBase):
+#     class Type(StrEnum):
+#         username_or_email_cannot_be_empty = auto()
+#         email_and_username_cannot_be_provided_at_the_same_time = auto()
+#         refresh_token_cannot_be_empty = auto()
+#         refresh_token_invalid = auto()
+#         refresh_token_expired = auto()
+#
+#     type: Type
+#     status_code: int = 412
+#     message: str = "precondition_failed"
+#
+#
+# class ErrorInvalidArgument(ErrorBase, ArgumentDetail):
+#     type: str = "invalid_argument"
+#     msg: str = "Invalid argument"
+#     metadata: dict = {}
+#
+#     status_code: int = 400
+#     message: str = "invalid_argument"
+#
+#
+# class ErrorValidationFailed(ErrorBase):
+#     details: list[ArgumentDetail]
+#
+#     status_code: int = 422
+#     message: str = "request_validation_failed"
+#
+#     @classmethod
+#     def from_fastapi(cls, e: RequestValidationError) -> "ErrorValidationFailed":
+#         details = []
+#         for error in e.errors():
+#             detail = ArgumentDetail(
+#                 type=error.get("type"),
+#                 metadata=error.get("ctx", {}),
+#                 loc=error.get("loc", []),
+#                 msg=error.get("msg", ""),
+#                 input=error.get("input", ""),
+#             )
+#             details.append(detail)
+#         return ErrorValidationFailed(
+#             details=details,
+#         )
+#
+#
+# class ErrorResourceConflict(ErrorBase):
+#     input: Input
+#     loc: Loc
+#     resource_name: str
+#
+#     status_code: int = 409
+#     message: str = "resource_conflict"
+#
+#
+# class ErrorInternal(ErrorBase):
+#     status_code: int = 500
+#     message: str = "Internal Error"
+
+
+def error_from_exception(request: Request, e: Exception) -> ErrorBase:
+    if isinstance(e, HTTPException):
+        if isinstance(e.detail, ErrorBase):
+            return e.detail
+    if isinstance(e, RequestValidationError):
+        return ErrorValidationFailed.from_fastapi(e)
+
+    print(e)
+    return ErrorInternal(type="Internal")
+
 
 T = TypeVar("T", bound=BaseModel)
 

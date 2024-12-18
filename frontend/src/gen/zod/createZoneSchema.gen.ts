@@ -1,6 +1,19 @@
 import { z } from "@/utils/zod.ts";
 import { zoneSchema } from "./zoneSchema.gen";
-import { errorSchema } from "./errorSchema.gen";
+import { errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema } from "./errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema.gen";
+import { errorResourceNotFoundSchema } from "./errorResourceNotFoundSchema.gen";
+import { errorInternalSchema } from "./errorInternalSchema.gen";
+import { errorInvalidArgumentSchema } from "./errorInvalidArgumentSchema.gen";
+import { errorPasswordMismatchSchema } from "./errorPasswordMismatchSchema.gen";
+import { errorPreconditionFailedSchema } from "./errorPreconditionFailedSchema.gen";
+import { errorRefreshTokenCannotBeEmptySchema } from "./errorRefreshTokenCannotBeEmptySchema.gen";
+import { errorRefreshTokenExpiredSchema } from "./errorRefreshTokenExpiredSchema.gen";
+import { errorRefreshTokenInvalidSchema } from "./errorRefreshTokenInvalidSchema.gen";
+import { errorRequestValidationFailedSchema } from "./errorRequestValidationFailedSchema.gen";
+import { errorResourceConflictSchema } from "./errorResourceConflictSchema.gen";
+import { errorUnauthorizedSchema } from "./errorUnauthorizedSchema.gen";
+import { errorUsernameOrEmailCannotBeEmptySchema } from "./errorUsernameOrEmailCannotBeEmptySchema.gen";
+import { errorValidationFailedSchema } from "./errorValidationFailedSchema.gen";
 import { zoneBaseSchema } from "./zoneBaseSchema.gen";
 
  /**
@@ -9,40 +22,10 @@ import { zoneBaseSchema } from "./zoneBaseSchema.gen";
 export const createZone201Schema = z.lazy(() => zoneSchema);
 export type CreateZone201Schema = z.infer<typeof createZone201Schema>;
 /**
- * @description Request error
+ * @description Unprocessable Entity
  */
-export const createZone400Schema = z.lazy(() => errorSchema);
-export type CreateZone400Schema = z.infer<typeof createZone400Schema>;
-/**
- * @description Unauthorized
- */
-export const createZone401Schema = z.lazy(() => errorSchema);
-export type CreateZone401Schema = z.infer<typeof createZone401Schema>;
-/**
- * @description Not found
- */
-export const createZone404Schema = z.lazy(() => errorSchema);
-export type CreateZone404Schema = z.infer<typeof createZone404Schema>;
-/**
- * @description Validation error
- */
-export const createZone422Schema = z.lazy(() => errorSchema);
+export const createZone422Schema = z.union([z.lazy(() => errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema), z.lazy(() => errorResourceNotFoundSchema), z.lazy(() => errorInternalSchema), z.lazy(() => errorInvalidArgumentSchema), z.lazy(() => errorPasswordMismatchSchema), z.lazy(() => errorPreconditionFailedSchema), z.lazy(() => errorRefreshTokenCannotBeEmptySchema), z.lazy(() => errorRefreshTokenExpiredSchema), z.lazy(() => errorRefreshTokenInvalidSchema), z.lazy(() => errorRequestValidationFailedSchema), z.lazy(() => errorResourceConflictSchema), z.lazy(() => errorUnauthorizedSchema), z.lazy(() => errorUsernameOrEmailCannotBeEmptySchema), z.lazy(() => errorValidationFailedSchema)]);
 export type CreateZone422Schema = z.infer<typeof createZone422Schema>;
-/**
- * @description Rate limit exceeded
- */
-export const createZone429Schema = z.lazy(() => errorSchema);
-export type CreateZone429Schema = z.infer<typeof createZone429Schema>;
-/**
- * @description Internal server error
- */
-export const createZone500Schema = z.lazy(() => errorSchema);
-export type CreateZone500Schema = z.infer<typeof createZone500Schema>;
-/**
- * @description Service unavailable
- */
-export const createZone503Schema = z.lazy(() => errorSchema);
-export type CreateZone503Schema = z.infer<typeof createZone503Schema>;
 
  export const createZoneMutationRequestSchema = z.lazy(() => zoneBaseSchema);
 export type CreateZoneMutationRequestSchema = z.infer<typeof createZoneMutationRequestSchema>;

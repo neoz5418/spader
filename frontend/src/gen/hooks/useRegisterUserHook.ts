@@ -1,13 +1,13 @@
 import client from "@/utils/client.ts";
 import { useMutation } from "@tanstack/react-query";
 import { useInvalidationForMutation } from "../../useInvalidationForMutation";
-import type { RegisterUserMutationRequestType, RegisterUserMutationResponseType, RegisterUser400Type, RegisterUser401Type, RegisterUser404Type, RegisterUser422Type, RegisterUser429Type, RegisterUser500Type, RegisterUser503Type } from "../ts/RegisterUserType";
+import type { RegisterUserMutationRequestType, RegisterUserMutationResponseType, RegisterUser422Type } from "../ts/RegisterUserType";
 import type { UseMutationOptions } from "@tanstack/react-query";
 
- type RegisterUserClient = typeof client<RegisterUserMutationResponseType, RegisterUser400Type | RegisterUser401Type | RegisterUser404Type | RegisterUser422Type | RegisterUser429Type | RegisterUser500Type | RegisterUser503Type, RegisterUserMutationRequestType>;
+ type RegisterUserClient = typeof client<RegisterUserMutationResponseType, RegisterUser422Type, RegisterUserMutationRequestType>;
 type RegisterUser = {
     data: RegisterUserMutationResponseType;
-    error: RegisterUser400Type | RegisterUser401Type | RegisterUser404Type | RegisterUser422Type | RegisterUser429Type | RegisterUser500Type | RegisterUser503Type;
+    error: RegisterUser422Type;
     request: RegisterUserMutationRequestType;
     pathParams: never;
     queryParams: never;

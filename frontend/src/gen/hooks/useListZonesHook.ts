@@ -1,12 +1,12 @@
 import client from "@/utils/client.ts";
 import { useQuery, queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import type { ListZonesQueryResponseType, ListZonesQueryParamsType, ListZones400Type, ListZones401Type, ListZones404Type, ListZones422Type, ListZones429Type, ListZones500Type, ListZones503Type } from "../ts/ListZonesType";
+import type { ListZonesQueryResponseType, ListZonesQueryParamsType, ListZones422Type } from "../ts/ListZonesType";
 import type { QueryObserverOptions, UseQueryResult, QueryKey, UseSuspenseQueryOptions, UseSuspenseQueryResult } from "@tanstack/react-query";
 
- type ListZonesClient = typeof client<ListZonesQueryResponseType, ListZones400Type | ListZones401Type | ListZones404Type | ListZones422Type | ListZones429Type | ListZones500Type | ListZones503Type, never>;
+ type ListZonesClient = typeof client<ListZonesQueryResponseType, ListZones422Type, never>;
 type ListZones = {
     data: ListZonesQueryResponseType;
-    error: ListZones400Type | ListZones401Type | ListZones404Type | ListZones422Type | ListZones429Type | ListZones500Type | ListZones503Type;
+    error: ListZones422Type;
     request: never;
     pathParams: never;
     queryParams: ListZonesQueryParamsType;

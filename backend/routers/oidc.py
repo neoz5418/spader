@@ -3,13 +3,22 @@ import time
 from enum import Enum
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Form, HTTPException
+from fastapi import APIRouter, Depends, Form
 from fastapi.security import OAuth2PasswordRequestForm
-from jwt import DecodeError, ExpiredSignatureError
 from sqlmodel import select
 
 from dependencies import SessionDep
-from routers.types import PasswordType, Token, User
+from routers.types import Token, User
+from services.common import (
+    ErrorEmailAndUsernameCannotBeProvidedAtTheSameTime,
+    ErrorInvalidArgument,
+    ErrorPasswordMismatch,
+    ErrorRefreshTokenCannotBeEmpty,
+    ErrorRefreshTokenExpired,
+    ErrorRefreshTokenInvalid,
+    ErrorResourceNotFound,
+    ErrorUsernameOrEmailCannotBeEmpty,
+)
 from services.security import (
     jwt_manager,
     JWT_TOKEN_EXPIRE_MINUTES,
@@ -63,48 +72,51 @@ async def token(
 ) -> Token:
     if grant_type == GrantType.password:
         if not password:
-            raise HTTPException(status_code=412, detail="password cannot be empty")
+            raise ErrorInvalidArgument(
+                type="InvalidArgument",
+                input=password,
+                loc="password",
+            ).to_exception()
         if not email and not username:
-            raise HTTPException(
-                status_code=412, detail="username or email cannot be empty"
-            )
+            raise ErrorUsernameOrEmailCannotBeEmpty(
+                type="UsernameOrEmailCannotBeEmpty"
+            ).to_exception()
         if email and username:
-            raise HTTPException(
-                status_code=412,
-                detail="email and username cannot be provided at the same time",
-            )
-        try:
-            if email:
-                user = (
-                    await session.exec(select(User).where(User.email == email))
-                ).first()
-            else:
-                user = (
-                    await session.exec(select(User).where(User.name == username))
-                ).first()
-            logger.info("user: %s, username: %s, email: %s", user, username, email)
-        except Exception as e:
-            logger.exception(e)
-            raise HTTPException(status_code=500, detail="internal server error")
+            raise ErrorEmailAndUsernameCannotBeProvidedAtTheSameTime(
+                type="EmailAndUsernameCannotBeProvidedAtTheSameTime"
+            ).to_exception()
+        if email:
+            user = (await session.exec(select(User).where(User.email == email))).first()
+        elif username:
+            user = (
+                await session.exec(select(User).where(User.name == username))
+            ).first()
+        else:
+            raise Exception("should not run in there")
+        logger.info("user: %s, username: %s, email: %s", user, username, email)
         if user is None:
-            raise HTTPException(status_code=404, detail="user not found")
+            raise ErrorResourceNotFound(
+                type="ResourceNotFound", resource_name="user"
+            ).to_exception()
         if verify_hashed_secret(user.hashed_password, password) is False:
-            raise HTTPException(status_code=401, detail="invalid username or password")
+            raise ErrorPasswordMismatch(type="PasswordMismatch").to_exception()
         username = user.name
     if grant_type == GrantType.refresh_token:
         if len(refresh_token) == 0:
-            raise HTTPException(status_code=412, detail="refresh_token cannot be empty")
-        try:
-            payload = jwt_manager.decode_jwt_token(refresh_token)
-            if not payload:
-                raise HTTPException(status_code=412, detail="refresh_token invalid")
-            if payload["exp"] - time.time() < 0:
-                raise HTTPException(status_code=401, detail="refresh_token expired")
-            username = payload["sub"]
-            if username == "":
-                raise HTTPException(status_code=401, detail="user not found")
-        except (ExpiredSignatureError, DecodeError) as e:
-            logger.exception(e)
+            raise ErrorRefreshTokenCannotBeEmpty(
+                type="RefreshTokenCannotBeEmpty"
+            ).to_exception()
+
+        payload = jwt_manager.decode_jwt_token(refresh_token)
+        if not payload:
+            raise ErrorRefreshTokenInvalid(type="RefreshTokenInvalid").to_exception()
+        if payload["exp"] - time.time() < 0:
+            raise ErrorRefreshTokenExpired(type="RefreshTokenExpired").to_exception()
+        username = payload["sub"]
+        if username == "":
+            raise ErrorResourceNotFound(
+                type="ResourceNotFound", resource_name="user"
+            ).to_exception()
     access_token = jwt_manager.create_access_token(username=username)
     refresh_token = jwt_manager.create_refresh_token(username=username)
     logger.info("token %s", access_token)

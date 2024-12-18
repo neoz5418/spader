@@ -1,5 +1,18 @@
 import type { UserType } from "./UserType";
-import type { ErrorType } from "./ErrorType";
+import type { ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType } from "./ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType";
+import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
+import type { ErrorInternalType } from "./ErrorInternalType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorPasswordMismatchType } from "./ErrorPasswordMismatchType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorRefreshTokenCannotBeEmptyType } from "./ErrorRefreshTokenCannotBeEmptyType";
+import type { ErrorRefreshTokenExpiredType } from "./ErrorRefreshTokenExpiredType";
+import type { ErrorRefreshTokenInvalidType } from "./ErrorRefreshTokenInvalidType";
+import type { ErrorRequestValidationFailedType } from "./ErrorRequestValidationFailedType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorUsernameOrEmailCannotBeEmptyType } from "./ErrorUsernameOrEmailCannotBeEmptyType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 
  export type GetUserPathParamsType = {
     /**
@@ -12,33 +25,9 @@ import type { ErrorType } from "./ErrorType";
 */
 export type GetUser200Type = UserType;
 /**
- * @description Request error
+ * @description Unprocessable Entity
 */
-export type GetUser400Type = ErrorType;
-/**
- * @description Unauthorized
-*/
-export type GetUser401Type = ErrorType;
-/**
- * @description Not found
-*/
-export type GetUser404Type = ErrorType;
-/**
- * @description Validation error
-*/
-export type GetUser422Type = ErrorType;
-/**
- * @description Rate limit exceeded
-*/
-export type GetUser429Type = ErrorType;
-/**
- * @description Internal server error
-*/
-export type GetUser500Type = ErrorType;
-/**
- * @description Service unavailable
-*/
-export type GetUser503Type = ErrorType;
+export type GetUser422Type = (ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType | ErrorResourceNotFoundType | ErrorInternalType | ErrorInvalidArgumentType | ErrorPasswordMismatchType | ErrorPreconditionFailedType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorRequestValidationFailedType | ErrorResourceConflictType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
 /**
  * @description Successful Response
 */
@@ -46,5 +35,5 @@ export type GetUserQueryResponseType = UserType;
 export type GetUserTypeQuery = {
     Response: GetUserQueryResponseType;
     PathParams: GetUserPathParamsType;
-    Errors: GetUser400Type | GetUser401Type | GetUser404Type | GetUser422Type | GetUser429Type | GetUser500Type | GetUser503Type;
+    Errors: GetUser422Type;
 };

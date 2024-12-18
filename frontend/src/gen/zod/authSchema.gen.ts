@@ -1,6 +1,19 @@
 import { z } from "@/utils/zod.ts";
 import { tokenSchema } from "./tokenSchema.gen";
-import { errorSchema } from "./errorSchema.gen";
+import { errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema } from "./errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema.gen";
+import { errorResourceNotFoundSchema } from "./errorResourceNotFoundSchema.gen";
+import { errorInternalSchema } from "./errorInternalSchema.gen";
+import { errorInvalidArgumentSchema } from "./errorInvalidArgumentSchema.gen";
+import { errorPasswordMismatchSchema } from "./errorPasswordMismatchSchema.gen";
+import { errorPreconditionFailedSchema } from "./errorPreconditionFailedSchema.gen";
+import { errorRefreshTokenCannotBeEmptySchema } from "./errorRefreshTokenCannotBeEmptySchema.gen";
+import { errorRefreshTokenExpiredSchema } from "./errorRefreshTokenExpiredSchema.gen";
+import { errorRefreshTokenInvalidSchema } from "./errorRefreshTokenInvalidSchema.gen";
+import { errorRequestValidationFailedSchema } from "./errorRequestValidationFailedSchema.gen";
+import { errorResourceConflictSchema } from "./errorResourceConflictSchema.gen";
+import { errorUnauthorizedSchema } from "./errorUnauthorizedSchema.gen";
+import { errorUsernameOrEmailCannotBeEmptySchema } from "./errorUsernameOrEmailCannotBeEmptySchema.gen";
+import { errorValidationFailedSchema } from "./errorValidationFailedSchema.gen";
 import { bodyAuthApisOidcV1AuthPostSchema } from "./bodyAuthApisOidcV1AuthPostSchema.gen";
 
  /**
@@ -9,40 +22,10 @@ import { bodyAuthApisOidcV1AuthPostSchema } from "./bodyAuthApisOidcV1AuthPostSc
 export const auth200Schema = z.lazy(() => tokenSchema);
 export type Auth200Schema = z.infer<typeof auth200Schema>;
 /**
- * @description Request error
+ * @description Unprocessable Entity
  */
-export const auth400Schema = z.lazy(() => errorSchema);
-export type Auth400Schema = z.infer<typeof auth400Schema>;
-/**
- * @description Unauthorized
- */
-export const auth401Schema = z.lazy(() => errorSchema);
-export type Auth401Schema = z.infer<typeof auth401Schema>;
-/**
- * @description Not found
- */
-export const auth404Schema = z.lazy(() => errorSchema);
-export type Auth404Schema = z.infer<typeof auth404Schema>;
-/**
- * @description Validation error
- */
-export const auth422Schema = z.lazy(() => errorSchema);
+export const auth422Schema = z.union([z.lazy(() => errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema), z.lazy(() => errorResourceNotFoundSchema), z.lazy(() => errorInternalSchema), z.lazy(() => errorInvalidArgumentSchema), z.lazy(() => errorPasswordMismatchSchema), z.lazy(() => errorPreconditionFailedSchema), z.lazy(() => errorRefreshTokenCannotBeEmptySchema), z.lazy(() => errorRefreshTokenExpiredSchema), z.lazy(() => errorRefreshTokenInvalidSchema), z.lazy(() => errorRequestValidationFailedSchema), z.lazy(() => errorResourceConflictSchema), z.lazy(() => errorUnauthorizedSchema), z.lazy(() => errorUsernameOrEmailCannotBeEmptySchema), z.lazy(() => errorValidationFailedSchema)]);
 export type Auth422Schema = z.infer<typeof auth422Schema>;
-/**
- * @description Rate limit exceeded
- */
-export const auth429Schema = z.lazy(() => errorSchema);
-export type Auth429Schema = z.infer<typeof auth429Schema>;
-/**
- * @description Internal server error
- */
-export const auth500Schema = z.lazy(() => errorSchema);
-export type Auth500Schema = z.infer<typeof auth500Schema>;
-/**
- * @description Service unavailable
- */
-export const auth503Schema = z.lazy(() => errorSchema);
-export type Auth503Schema = z.infer<typeof auth503Schema>;
 
  export const authMutationRequestSchema = z.lazy(() => bodyAuthApisOidcV1AuthPostSchema);
 export type AuthMutationRequestSchema = z.infer<typeof authMutationRequestSchema>;

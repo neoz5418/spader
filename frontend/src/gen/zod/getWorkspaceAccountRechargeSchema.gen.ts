@@ -1,6 +1,19 @@
 import { z } from "@/utils/zod.ts";
 import { workspaceAccountRechargeSchema } from "./workspaceAccountRechargeSchema.gen";
-import { errorSchema } from "./errorSchema.gen";
+import { errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema } from "./errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema.gen";
+import { errorResourceNotFoundSchema } from "./errorResourceNotFoundSchema.gen";
+import { errorInternalSchema } from "./errorInternalSchema.gen";
+import { errorInvalidArgumentSchema } from "./errorInvalidArgumentSchema.gen";
+import { errorPasswordMismatchSchema } from "./errorPasswordMismatchSchema.gen";
+import { errorPreconditionFailedSchema } from "./errorPreconditionFailedSchema.gen";
+import { errorRefreshTokenCannotBeEmptySchema } from "./errorRefreshTokenCannotBeEmptySchema.gen";
+import { errorRefreshTokenExpiredSchema } from "./errorRefreshTokenExpiredSchema.gen";
+import { errorRefreshTokenInvalidSchema } from "./errorRefreshTokenInvalidSchema.gen";
+import { errorRequestValidationFailedSchema } from "./errorRequestValidationFailedSchema.gen";
+import { errorResourceConflictSchema } from "./errorResourceConflictSchema.gen";
+import { errorUnauthorizedSchema } from "./errorUnauthorizedSchema.gen";
+import { errorUsernameOrEmailCannotBeEmptySchema } from "./errorUsernameOrEmailCannotBeEmptySchema.gen";
+import { errorValidationFailedSchema } from "./errorValidationFailedSchema.gen";
 
 
 export const getWorkspaceAccountRechargePathParamsSchema = z.object({ "workspace": z.string(), "recharge_id": z.string().uuid() });
@@ -11,40 +24,10 @@ export type GetWorkspaceAccountRechargePathParamsSchema = z.infer<typeof getWork
 export const getWorkspaceAccountRecharge200Schema = z.lazy(() => workspaceAccountRechargeSchema);
 export type GetWorkspaceAccountRecharge200Schema = z.infer<typeof getWorkspaceAccountRecharge200Schema>;
 /**
- * @description Request error
+ * @description Unprocessable Entity
  */
-export const getWorkspaceAccountRecharge400Schema = z.lazy(() => errorSchema);
-export type GetWorkspaceAccountRecharge400Schema = z.infer<typeof getWorkspaceAccountRecharge400Schema>;
-/**
- * @description Unauthorized
- */
-export const getWorkspaceAccountRecharge401Schema = z.lazy(() => errorSchema);
-export type GetWorkspaceAccountRecharge401Schema = z.infer<typeof getWorkspaceAccountRecharge401Schema>;
-/**
- * @description Not found
- */
-export const getWorkspaceAccountRecharge404Schema = z.lazy(() => errorSchema);
-export type GetWorkspaceAccountRecharge404Schema = z.infer<typeof getWorkspaceAccountRecharge404Schema>;
-/**
- * @description Validation error
- */
-export const getWorkspaceAccountRecharge422Schema = z.lazy(() => errorSchema);
+export const getWorkspaceAccountRecharge422Schema = z.union([z.lazy(() => errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema), z.lazy(() => errorResourceNotFoundSchema), z.lazy(() => errorInternalSchema), z.lazy(() => errorInvalidArgumentSchema), z.lazy(() => errorPasswordMismatchSchema), z.lazy(() => errorPreconditionFailedSchema), z.lazy(() => errorRefreshTokenCannotBeEmptySchema), z.lazy(() => errorRefreshTokenExpiredSchema), z.lazy(() => errorRefreshTokenInvalidSchema), z.lazy(() => errorRequestValidationFailedSchema), z.lazy(() => errorResourceConflictSchema), z.lazy(() => errorUnauthorizedSchema), z.lazy(() => errorUsernameOrEmailCannotBeEmptySchema), z.lazy(() => errorValidationFailedSchema)]);
 export type GetWorkspaceAccountRecharge422Schema = z.infer<typeof getWorkspaceAccountRecharge422Schema>;
-/**
- * @description Rate limit exceeded
- */
-export const getWorkspaceAccountRecharge429Schema = z.lazy(() => errorSchema);
-export type GetWorkspaceAccountRecharge429Schema = z.infer<typeof getWorkspaceAccountRecharge429Schema>;
-/**
- * @description Internal server error
- */
-export const getWorkspaceAccountRecharge500Schema = z.lazy(() => errorSchema);
-export type GetWorkspaceAccountRecharge500Schema = z.infer<typeof getWorkspaceAccountRecharge500Schema>;
-/**
- * @description Service unavailable
- */
-export const getWorkspaceAccountRecharge503Schema = z.lazy(() => errorSchema);
-export type GetWorkspaceAccountRecharge503Schema = z.infer<typeof getWorkspaceAccountRecharge503Schema>;
 /**
  * @description Successful Response
  */

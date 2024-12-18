@@ -1,5 +1,18 @@
 import { z } from "@/utils/zod.ts";
-import { errorSchema } from "./errorSchema.gen";
+import { errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema } from "./errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema.gen";
+import { errorResourceNotFoundSchema } from "./errorResourceNotFoundSchema.gen";
+import { errorInternalSchema } from "./errorInternalSchema.gen";
+import { errorInvalidArgumentSchema } from "./errorInvalidArgumentSchema.gen";
+import { errorPasswordMismatchSchema } from "./errorPasswordMismatchSchema.gen";
+import { errorPreconditionFailedSchema } from "./errorPreconditionFailedSchema.gen";
+import { errorRefreshTokenCannotBeEmptySchema } from "./errorRefreshTokenCannotBeEmptySchema.gen";
+import { errorRefreshTokenExpiredSchema } from "./errorRefreshTokenExpiredSchema.gen";
+import { errorRefreshTokenInvalidSchema } from "./errorRefreshTokenInvalidSchema.gen";
+import { errorRequestValidationFailedSchema } from "./errorRequestValidationFailedSchema.gen";
+import { errorResourceConflictSchema } from "./errorResourceConflictSchema.gen";
+import { errorUnauthorizedSchema } from "./errorUnauthorizedSchema.gen";
+import { errorUsernameOrEmailCannotBeEmptySchema } from "./errorUsernameOrEmailCannotBeEmptySchema.gen";
+import { errorValidationFailedSchema } from "./errorValidationFailedSchema.gen";
 import { bodyTokenApisOidcV1TokenPostSchema } from "./bodyTokenApisOidcV1TokenPostSchema.gen";
 
 
@@ -12,40 +25,10 @@ export type TokenSchema = z.infer<typeof tokenSchema>;
 export const token200Schema = z.lazy(() => tokenSchema);
 export type Token200Schema = z.infer<typeof token200Schema>;
 /**
- * @description Request error
+ * @description Unprocessable Entity
  */
-export const token400Schema = z.lazy(() => errorSchema);
-export type Token400Schema = z.infer<typeof token400Schema>;
-/**
- * @description Unauthorized
- */
-export const token401Schema = z.lazy(() => errorSchema);
-export type Token401Schema = z.infer<typeof token401Schema>;
-/**
- * @description Not found
- */
-export const token404Schema = z.lazy(() => errorSchema);
-export type Token404Schema = z.infer<typeof token404Schema>;
-/**
- * @description Validation error
- */
-export const token422Schema = z.lazy(() => errorSchema);
+export const token422Schema = z.union([z.lazy(() => errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema), z.lazy(() => errorResourceNotFoundSchema), z.lazy(() => errorInternalSchema), z.lazy(() => errorInvalidArgumentSchema), z.lazy(() => errorPasswordMismatchSchema), z.lazy(() => errorPreconditionFailedSchema), z.lazy(() => errorRefreshTokenCannotBeEmptySchema), z.lazy(() => errorRefreshTokenExpiredSchema), z.lazy(() => errorRefreshTokenInvalidSchema), z.lazy(() => errorRequestValidationFailedSchema), z.lazy(() => errorResourceConflictSchema), z.lazy(() => errorUnauthorizedSchema), z.lazy(() => errorUsernameOrEmailCannotBeEmptySchema), z.lazy(() => errorValidationFailedSchema)]);
 export type Token422Schema = z.infer<typeof token422Schema>;
-/**
- * @description Rate limit exceeded
- */
-export const token429Schema = z.lazy(() => errorSchema);
-export type Token429Schema = z.infer<typeof token429Schema>;
-/**
- * @description Internal server error
- */
-export const token500Schema = z.lazy(() => errorSchema);
-export type Token500Schema = z.infer<typeof token500Schema>;
-/**
- * @description Service unavailable
- */
-export const token503Schema = z.lazy(() => errorSchema);
-export type Token503Schema = z.infer<typeof token503Schema>;
 
  export const tokenMutationRequestSchema = z.lazy(() => bodyTokenApisOidcV1TokenPostSchema);
 export type TokenMutationRequestSchema = z.infer<typeof tokenMutationRequestSchema>;

@@ -1,6 +1,19 @@
 import { z } from "@/utils/zod.ts";
 import { paginatedListGpuTypeSchema } from "./paginatedListGpuTypeSchema.gen";
-import { errorSchema } from "./errorSchema.gen";
+import { errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema } from "./errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema.gen";
+import { errorResourceNotFoundSchema } from "./errorResourceNotFoundSchema.gen";
+import { errorInternalSchema } from "./errorInternalSchema.gen";
+import { errorInvalidArgumentSchema } from "./errorInvalidArgumentSchema.gen";
+import { errorPasswordMismatchSchema } from "./errorPasswordMismatchSchema.gen";
+import { errorPreconditionFailedSchema } from "./errorPreconditionFailedSchema.gen";
+import { errorRefreshTokenCannotBeEmptySchema } from "./errorRefreshTokenCannotBeEmptySchema.gen";
+import { errorRefreshTokenExpiredSchema } from "./errorRefreshTokenExpiredSchema.gen";
+import { errorRefreshTokenInvalidSchema } from "./errorRefreshTokenInvalidSchema.gen";
+import { errorRequestValidationFailedSchema } from "./errorRequestValidationFailedSchema.gen";
+import { errorResourceConflictSchema } from "./errorResourceConflictSchema.gen";
+import { errorUnauthorizedSchema } from "./errorUnauthorizedSchema.gen";
+import { errorUsernameOrEmailCannotBeEmptySchema } from "./errorUsernameOrEmailCannotBeEmptySchema.gen";
+import { errorValidationFailedSchema } from "./errorValidationFailedSchema.gen";
 
 
 export const listGpuTypesPathParamsSchema = z.object({ "zone": z.string() });
@@ -14,40 +27,10 @@ export type ListGpuTypesQueryParamsSchema = z.infer<typeof listGpuTypesQueryPara
 export const listGpuTypes200Schema = z.lazy(() => paginatedListGpuTypeSchema);
 export type ListGpuTypes200Schema = z.infer<typeof listGpuTypes200Schema>;
 /**
- * @description Request error
+ * @description Unprocessable Entity
  */
-export const listGpuTypes400Schema = z.lazy(() => errorSchema);
-export type ListGpuTypes400Schema = z.infer<typeof listGpuTypes400Schema>;
-/**
- * @description Unauthorized
- */
-export const listGpuTypes401Schema = z.lazy(() => errorSchema);
-export type ListGpuTypes401Schema = z.infer<typeof listGpuTypes401Schema>;
-/**
- * @description Not found
- */
-export const listGpuTypes404Schema = z.lazy(() => errorSchema);
-export type ListGpuTypes404Schema = z.infer<typeof listGpuTypes404Schema>;
-/**
- * @description Validation error
- */
-export const listGpuTypes422Schema = z.lazy(() => errorSchema);
+export const listGpuTypes422Schema = z.union([z.lazy(() => errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema), z.lazy(() => errorResourceNotFoundSchema), z.lazy(() => errorInternalSchema), z.lazy(() => errorInvalidArgumentSchema), z.lazy(() => errorPasswordMismatchSchema), z.lazy(() => errorPreconditionFailedSchema), z.lazy(() => errorRefreshTokenCannotBeEmptySchema), z.lazy(() => errorRefreshTokenExpiredSchema), z.lazy(() => errorRefreshTokenInvalidSchema), z.lazy(() => errorRequestValidationFailedSchema), z.lazy(() => errorResourceConflictSchema), z.lazy(() => errorUnauthorizedSchema), z.lazy(() => errorUsernameOrEmailCannotBeEmptySchema), z.lazy(() => errorValidationFailedSchema)]);
 export type ListGpuTypes422Schema = z.infer<typeof listGpuTypes422Schema>;
-/**
- * @description Rate limit exceeded
- */
-export const listGpuTypes429Schema = z.lazy(() => errorSchema);
-export type ListGpuTypes429Schema = z.infer<typeof listGpuTypes429Schema>;
-/**
- * @description Internal server error
- */
-export const listGpuTypes500Schema = z.lazy(() => errorSchema);
-export type ListGpuTypes500Schema = z.infer<typeof listGpuTypes500Schema>;
-/**
- * @description Service unavailable
- */
-export const listGpuTypes503Schema = z.lazy(() => errorSchema);
-export type ListGpuTypes503Schema = z.infer<typeof listGpuTypes503Schema>;
 /**
  * @description Successful Response
  */

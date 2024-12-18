@@ -1,5 +1,18 @@
 import type { ImageType } from "./ImageType";
-import type { ErrorType } from "./ErrorType";
+import type { ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType } from "./ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType";
+import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
+import type { ErrorInternalType } from "./ErrorInternalType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorPasswordMismatchType } from "./ErrorPasswordMismatchType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorRefreshTokenCannotBeEmptyType } from "./ErrorRefreshTokenCannotBeEmptyType";
+import type { ErrorRefreshTokenExpiredType } from "./ErrorRefreshTokenExpiredType";
+import type { ErrorRefreshTokenInvalidType } from "./ErrorRefreshTokenInvalidType";
+import type { ErrorRequestValidationFailedType } from "./ErrorRequestValidationFailedType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorUsernameOrEmailCannotBeEmptyType } from "./ErrorUsernameOrEmailCannotBeEmptyType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 
  export type CreateImagePathParamsType = {
     /**
@@ -12,33 +25,9 @@ import type { ErrorType } from "./ErrorType";
 */
 export type CreateImage201Type = ImageType;
 /**
- * @description Request error
+ * @description Unprocessable Entity
 */
-export type CreateImage400Type = ErrorType;
-/**
- * @description Unauthorized
-*/
-export type CreateImage401Type = ErrorType;
-/**
- * @description Not found
-*/
-export type CreateImage404Type = ErrorType;
-/**
- * @description Validation error
-*/
-export type CreateImage422Type = ErrorType;
-/**
- * @description Rate limit exceeded
-*/
-export type CreateImage429Type = ErrorType;
-/**
- * @description Internal server error
-*/
-export type CreateImage500Type = ErrorType;
-/**
- * @description Service unavailable
-*/
-export type CreateImage503Type = ErrorType;
+export type CreateImage422Type = (ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType | ErrorResourceNotFoundType | ErrorInternalType | ErrorInvalidArgumentType | ErrorPasswordMismatchType | ErrorPreconditionFailedType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorRequestValidationFailedType | ErrorResourceConflictType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
 export type CreateImageMutationRequestType = ImageType;
 /**
  * @description Successful Response
@@ -48,5 +37,5 @@ export type CreateImageTypeMutation = {
     Response: CreateImageMutationResponseType;
     Request: CreateImageMutationRequestType;
     PathParams: CreateImagePathParamsType;
-    Errors: CreateImage400Type | CreateImage401Type | CreateImage404Type | CreateImage422Type | CreateImage429Type | CreateImage500Type | CreateImage503Type;
+    Errors: CreateImage422Type;
 };

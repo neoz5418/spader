@@ -1,12 +1,12 @@
 import client from "@/utils/client.ts";
 import { useQuery, queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import type { GetWorkspaceSshKeysQueryResponseType, GetWorkspaceSshKeysPathParamsType, GetWorkspaceSshKeys400Type, GetWorkspaceSshKeys401Type, GetWorkspaceSshKeys404Type, GetWorkspaceSshKeys422Type, GetWorkspaceSshKeys429Type, GetWorkspaceSshKeys500Type, GetWorkspaceSshKeys503Type } from "../ts/GetWorkspaceSshKeysType";
+import type { GetWorkspaceSshKeysQueryResponseType, GetWorkspaceSshKeysPathParamsType, GetWorkspaceSshKeys422Type } from "../ts/GetWorkspaceSshKeysType";
 import type { QueryObserverOptions, UseQueryResult, QueryKey, UseSuspenseQueryOptions, UseSuspenseQueryResult } from "@tanstack/react-query";
 
- type GetWorkspaceSshKeysClient = typeof client<GetWorkspaceSshKeysQueryResponseType, GetWorkspaceSshKeys400Type | GetWorkspaceSshKeys401Type | GetWorkspaceSshKeys404Type | GetWorkspaceSshKeys422Type | GetWorkspaceSshKeys429Type | GetWorkspaceSshKeys500Type | GetWorkspaceSshKeys503Type, never>;
+ type GetWorkspaceSshKeysClient = typeof client<GetWorkspaceSshKeysQueryResponseType, GetWorkspaceSshKeys422Type, never>;
 type GetWorkspaceSshKeys = {
     data: GetWorkspaceSshKeysQueryResponseType;
-    error: GetWorkspaceSshKeys400Type | GetWorkspaceSshKeys401Type | GetWorkspaceSshKeys404Type | GetWorkspaceSshKeys422Type | GetWorkspaceSshKeys429Type | GetWorkspaceSshKeys500Type | GetWorkspaceSshKeys503Type;
+    error: GetWorkspaceSshKeys422Type;
     request: never;
     pathParams: GetWorkspaceSshKeysPathParamsType;
     queryParams: never;

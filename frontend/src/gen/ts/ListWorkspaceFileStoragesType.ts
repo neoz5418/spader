@@ -1,5 +1,18 @@
 import type { PaginatedListFileStorageType } from "./PaginatedListFileStorageType";
-import type { ErrorType } from "./ErrorType";
+import type { ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType } from "./ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType";
+import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
+import type { ErrorInternalType } from "./ErrorInternalType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorPasswordMismatchType } from "./ErrorPasswordMismatchType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorRefreshTokenCannotBeEmptyType } from "./ErrorRefreshTokenCannotBeEmptyType";
+import type { ErrorRefreshTokenExpiredType } from "./ErrorRefreshTokenExpiredType";
+import type { ErrorRefreshTokenInvalidType } from "./ErrorRefreshTokenInvalidType";
+import type { ErrorRequestValidationFailedType } from "./ErrorRequestValidationFailedType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorUsernameOrEmailCannotBeEmptyType } from "./ErrorUsernameOrEmailCannotBeEmptyType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 
  export type ListWorkspaceFileStoragesPathParamsType = {
     /**
@@ -28,33 +41,9 @@ export type ListWorkspaceFileStoragesQueryParamsType = {
 */
 export type ListWorkspaceFileStorages200Type = PaginatedListFileStorageType;
 /**
- * @description Request error
+ * @description Unprocessable Entity
 */
-export type ListWorkspaceFileStorages400Type = ErrorType;
-/**
- * @description Unauthorized
-*/
-export type ListWorkspaceFileStorages401Type = ErrorType;
-/**
- * @description Not found
-*/
-export type ListWorkspaceFileStorages404Type = ErrorType;
-/**
- * @description Validation error
-*/
-export type ListWorkspaceFileStorages422Type = ErrorType;
-/**
- * @description Rate limit exceeded
-*/
-export type ListWorkspaceFileStorages429Type = ErrorType;
-/**
- * @description Internal server error
-*/
-export type ListWorkspaceFileStorages500Type = ErrorType;
-/**
- * @description Service unavailable
-*/
-export type ListWorkspaceFileStorages503Type = ErrorType;
+export type ListWorkspaceFileStorages422Type = (ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType | ErrorResourceNotFoundType | ErrorInternalType | ErrorInvalidArgumentType | ErrorPasswordMismatchType | ErrorPreconditionFailedType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorRequestValidationFailedType | ErrorResourceConflictType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
 /**
  * @description Successful Response
 */
@@ -63,5 +52,5 @@ export type ListWorkspaceFileStoragesTypeQuery = {
     Response: ListWorkspaceFileStoragesQueryResponseType;
     PathParams: ListWorkspaceFileStoragesPathParamsType;
     QueryParams: ListWorkspaceFileStoragesQueryParamsType;
-    Errors: ListWorkspaceFileStorages400Type | ListWorkspaceFileStorages401Type | ListWorkspaceFileStorages404Type | ListWorkspaceFileStorages422Type | ListWorkspaceFileStorages429Type | ListWorkspaceFileStorages500Type | ListWorkspaceFileStorages503Type;
+    Errors: ListWorkspaceFileStorages422Type;
 };

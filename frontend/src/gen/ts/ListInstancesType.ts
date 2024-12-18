@@ -1,7 +1,20 @@
 import type { ListInstancesSortOptionsType } from "./ListInstancesSortOptionsType";
 import type { SortOrderType } from "./SortOrderType";
 import type { PaginatedListInstancePublicType } from "./PaginatedListInstancePublicType";
-import type { ErrorType } from "./ErrorType";
+import type { ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType } from "./ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType";
+import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
+import type { ErrorInternalType } from "./ErrorInternalType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorPasswordMismatchType } from "./ErrorPasswordMismatchType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorRefreshTokenCannotBeEmptyType } from "./ErrorRefreshTokenCannotBeEmptyType";
+import type { ErrorRefreshTokenExpiredType } from "./ErrorRefreshTokenExpiredType";
+import type { ErrorRefreshTokenInvalidType } from "./ErrorRefreshTokenInvalidType";
+import type { ErrorRequestValidationFailedType } from "./ErrorRequestValidationFailedType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorUsernameOrEmailCannotBeEmptyType } from "./ErrorUsernameOrEmailCannotBeEmptyType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 
  export type ListInstancesQueryParamsType = {
     /**
@@ -36,33 +49,9 @@ import type { ErrorType } from "./ErrorType";
 */
 export type ListInstances200Type = PaginatedListInstancePublicType;
 /**
- * @description Request error
+ * @description Unprocessable Entity
 */
-export type ListInstances400Type = ErrorType;
-/**
- * @description Unauthorized
-*/
-export type ListInstances401Type = ErrorType;
-/**
- * @description Not found
-*/
-export type ListInstances404Type = ErrorType;
-/**
- * @description Validation error
-*/
-export type ListInstances422Type = ErrorType;
-/**
- * @description Rate limit exceeded
-*/
-export type ListInstances429Type = ErrorType;
-/**
- * @description Internal server error
-*/
-export type ListInstances500Type = ErrorType;
-/**
- * @description Service unavailable
-*/
-export type ListInstances503Type = ErrorType;
+export type ListInstances422Type = (ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType | ErrorResourceNotFoundType | ErrorInternalType | ErrorInvalidArgumentType | ErrorPasswordMismatchType | ErrorPreconditionFailedType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorRequestValidationFailedType | ErrorResourceConflictType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
 /**
  * @description Successful Response
 */
@@ -70,5 +59,5 @@ export type ListInstancesQueryResponseType = PaginatedListInstancePublicType;
 export type ListInstancesTypeQuery = {
     Response: ListInstancesQueryResponseType;
     QueryParams: ListInstancesQueryParamsType;
-    Errors: ListInstances400Type | ListInstances401Type | ListInstances404Type | ListInstances422Type | ListInstances429Type | ListInstances500Type | ListInstances503Type;
+    Errors: ListInstances422Type;
 };

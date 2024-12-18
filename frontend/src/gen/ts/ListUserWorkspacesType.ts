@@ -1,5 +1,18 @@
 import type { PaginatedListWorkspaceType } from "./PaginatedListWorkspaceType";
-import type { ErrorType } from "./ErrorType";
+import type { ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType } from "./ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType";
+import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
+import type { ErrorInternalType } from "./ErrorInternalType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorPasswordMismatchType } from "./ErrorPasswordMismatchType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorRefreshTokenCannotBeEmptyType } from "./ErrorRefreshTokenCannotBeEmptyType";
+import type { ErrorRefreshTokenExpiredType } from "./ErrorRefreshTokenExpiredType";
+import type { ErrorRefreshTokenInvalidType } from "./ErrorRefreshTokenInvalidType";
+import type { ErrorRequestValidationFailedType } from "./ErrorRequestValidationFailedType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorUsernameOrEmailCannotBeEmptyType } from "./ErrorUsernameOrEmailCannotBeEmptyType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 
  export type ListUserWorkspacesPathParamsType = {
     /**
@@ -28,33 +41,9 @@ export type ListUserWorkspacesQueryParamsType = {
 */
 export type ListUserWorkspaces200Type = PaginatedListWorkspaceType;
 /**
- * @description Request error
+ * @description Unprocessable Entity
 */
-export type ListUserWorkspaces400Type = ErrorType;
-/**
- * @description Unauthorized
-*/
-export type ListUserWorkspaces401Type = ErrorType;
-/**
- * @description Not found
-*/
-export type ListUserWorkspaces404Type = ErrorType;
-/**
- * @description Validation error
-*/
-export type ListUserWorkspaces422Type = ErrorType;
-/**
- * @description Rate limit exceeded
-*/
-export type ListUserWorkspaces429Type = ErrorType;
-/**
- * @description Internal server error
-*/
-export type ListUserWorkspaces500Type = ErrorType;
-/**
- * @description Service unavailable
-*/
-export type ListUserWorkspaces503Type = ErrorType;
+export type ListUserWorkspaces422Type = (ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType | ErrorResourceNotFoundType | ErrorInternalType | ErrorInvalidArgumentType | ErrorPasswordMismatchType | ErrorPreconditionFailedType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorRequestValidationFailedType | ErrorResourceConflictType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
 /**
  * @description Successful Response
 */
@@ -63,5 +52,5 @@ export type ListUserWorkspacesTypeQuery = {
     Response: ListUserWorkspacesQueryResponseType;
     PathParams: ListUserWorkspacesPathParamsType;
     QueryParams: ListUserWorkspacesQueryParamsType;
-    Errors: ListUserWorkspaces400Type | ListUserWorkspaces401Type | ListUserWorkspaces404Type | ListUserWorkspaces422Type | ListUserWorkspaces429Type | ListUserWorkspaces500Type | ListUserWorkspaces503Type;
+    Errors: ListUserWorkspaces422Type;
 };

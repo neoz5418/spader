@@ -1,6 +1,19 @@
 import { z } from "@/utils/zod.ts";
 import { paginatedListFileStorageSchema } from "./paginatedListFileStorageSchema.gen";
-import { errorSchema } from "./errorSchema.gen";
+import { errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema } from "./errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema.gen";
+import { errorResourceNotFoundSchema } from "./errorResourceNotFoundSchema.gen";
+import { errorInternalSchema } from "./errorInternalSchema.gen";
+import { errorInvalidArgumentSchema } from "./errorInvalidArgumentSchema.gen";
+import { errorPasswordMismatchSchema } from "./errorPasswordMismatchSchema.gen";
+import { errorPreconditionFailedSchema } from "./errorPreconditionFailedSchema.gen";
+import { errorRefreshTokenCannotBeEmptySchema } from "./errorRefreshTokenCannotBeEmptySchema.gen";
+import { errorRefreshTokenExpiredSchema } from "./errorRefreshTokenExpiredSchema.gen";
+import { errorRefreshTokenInvalidSchema } from "./errorRefreshTokenInvalidSchema.gen";
+import { errorRequestValidationFailedSchema } from "./errorRequestValidationFailedSchema.gen";
+import { errorResourceConflictSchema } from "./errorResourceConflictSchema.gen";
+import { errorUnauthorizedSchema } from "./errorUnauthorizedSchema.gen";
+import { errorUsernameOrEmailCannotBeEmptySchema } from "./errorUsernameOrEmailCannotBeEmptySchema.gen";
+import { errorValidationFailedSchema } from "./errorValidationFailedSchema.gen";
 
 
 export const listWorkspaceFileStoragesPathParamsSchema = z.object({ "workspace": z.string(), "zone": z.string() });
@@ -14,40 +27,10 @@ export type ListWorkspaceFileStoragesQueryParamsSchema = z.infer<typeof listWork
 export const listWorkspaceFileStorages200Schema = z.lazy(() => paginatedListFileStorageSchema);
 export type ListWorkspaceFileStorages200Schema = z.infer<typeof listWorkspaceFileStorages200Schema>;
 /**
- * @description Request error
+ * @description Unprocessable Entity
  */
-export const listWorkspaceFileStorages400Schema = z.lazy(() => errorSchema);
-export type ListWorkspaceFileStorages400Schema = z.infer<typeof listWorkspaceFileStorages400Schema>;
-/**
- * @description Unauthorized
- */
-export const listWorkspaceFileStorages401Schema = z.lazy(() => errorSchema);
-export type ListWorkspaceFileStorages401Schema = z.infer<typeof listWorkspaceFileStorages401Schema>;
-/**
- * @description Not found
- */
-export const listWorkspaceFileStorages404Schema = z.lazy(() => errorSchema);
-export type ListWorkspaceFileStorages404Schema = z.infer<typeof listWorkspaceFileStorages404Schema>;
-/**
- * @description Validation error
- */
-export const listWorkspaceFileStorages422Schema = z.lazy(() => errorSchema);
+export const listWorkspaceFileStorages422Schema = z.union([z.lazy(() => errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema), z.lazy(() => errorResourceNotFoundSchema), z.lazy(() => errorInternalSchema), z.lazy(() => errorInvalidArgumentSchema), z.lazy(() => errorPasswordMismatchSchema), z.lazy(() => errorPreconditionFailedSchema), z.lazy(() => errorRefreshTokenCannotBeEmptySchema), z.lazy(() => errorRefreshTokenExpiredSchema), z.lazy(() => errorRefreshTokenInvalidSchema), z.lazy(() => errorRequestValidationFailedSchema), z.lazy(() => errorResourceConflictSchema), z.lazy(() => errorUnauthorizedSchema), z.lazy(() => errorUsernameOrEmailCannotBeEmptySchema), z.lazy(() => errorValidationFailedSchema)]);
 export type ListWorkspaceFileStorages422Schema = z.infer<typeof listWorkspaceFileStorages422Schema>;
-/**
- * @description Rate limit exceeded
- */
-export const listWorkspaceFileStorages429Schema = z.lazy(() => errorSchema);
-export type ListWorkspaceFileStorages429Schema = z.infer<typeof listWorkspaceFileStorages429Schema>;
-/**
- * @description Internal server error
- */
-export const listWorkspaceFileStorages500Schema = z.lazy(() => errorSchema);
-export type ListWorkspaceFileStorages500Schema = z.infer<typeof listWorkspaceFileStorages500Schema>;
-/**
- * @description Service unavailable
- */
-export const listWorkspaceFileStorages503Schema = z.lazy(() => errorSchema);
-export type ListWorkspaceFileStorages503Schema = z.infer<typeof listWorkspaceFileStorages503Schema>;
 /**
  * @description Successful Response
  */

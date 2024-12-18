@@ -3,6 +3,7 @@ import secrets
 import string
 from datetime import datetime, timedelta, timezone
 from typing import Optional, Union
+from jwt import DecodeError, ExpiredSignatureError
 
 import jwt
 from argon2 import PasswordHasher
@@ -79,7 +80,11 @@ class JWTManager:
         return self._create_jwt_token(username, expires_delta=self.expires_delta * 24)
 
     def decode_jwt_token(self, token: str):
-        return jwt.decode(token, self.secret_key, algorithms=[self.algorithm])
+        try:
+            return jwt.decode(token, self.secret_key, algorithms=[self.algorithm])
+        except (ExpiredSignatureError, DecodeError) as e:
+            logger.exception(e)
+        return None
 
 
 jwt_manager = JWTManager(get_settings().jwt_secret_key)

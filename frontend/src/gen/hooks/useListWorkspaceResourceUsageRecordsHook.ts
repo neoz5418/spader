@@ -1,12 +1,12 @@
 import client from "@/utils/client.ts";
 import { useQuery, queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import type { ListWorkspaceResourceUsageRecordsQueryResponseType, ListWorkspaceResourceUsageRecordsPathParamsType, ListWorkspaceResourceUsageRecordsQueryParamsType, ListWorkspaceResourceUsageRecords400Type, ListWorkspaceResourceUsageRecords401Type, ListWorkspaceResourceUsageRecords404Type, ListWorkspaceResourceUsageRecords422Type, ListWorkspaceResourceUsageRecords429Type, ListWorkspaceResourceUsageRecords500Type, ListWorkspaceResourceUsageRecords503Type } from "../ts/ListWorkspaceResourceUsageRecordsType";
+import type { ListWorkspaceResourceUsageRecordsQueryResponseType, ListWorkspaceResourceUsageRecordsPathParamsType, ListWorkspaceResourceUsageRecordsQueryParamsType, ListWorkspaceResourceUsageRecords422Type } from "../ts/ListWorkspaceResourceUsageRecordsType";
 import type { QueryObserverOptions, UseQueryResult, QueryKey, UseSuspenseQueryOptions, UseSuspenseQueryResult } from "@tanstack/react-query";
 
- type ListWorkspaceResourceUsageRecordsClient = typeof client<ListWorkspaceResourceUsageRecordsQueryResponseType, ListWorkspaceResourceUsageRecords400Type | ListWorkspaceResourceUsageRecords401Type | ListWorkspaceResourceUsageRecords404Type | ListWorkspaceResourceUsageRecords422Type | ListWorkspaceResourceUsageRecords429Type | ListWorkspaceResourceUsageRecords500Type | ListWorkspaceResourceUsageRecords503Type, never>;
+ type ListWorkspaceResourceUsageRecordsClient = typeof client<ListWorkspaceResourceUsageRecordsQueryResponseType, ListWorkspaceResourceUsageRecords422Type, never>;
 type ListWorkspaceResourceUsageRecords = {
     data: ListWorkspaceResourceUsageRecordsQueryResponseType;
-    error: ListWorkspaceResourceUsageRecords400Type | ListWorkspaceResourceUsageRecords401Type | ListWorkspaceResourceUsageRecords404Type | ListWorkspaceResourceUsageRecords422Type | ListWorkspaceResourceUsageRecords429Type | ListWorkspaceResourceUsageRecords500Type | ListWorkspaceResourceUsageRecords503Type;
+    error: ListWorkspaceResourceUsageRecords422Type;
     request: never;
     pathParams: ListWorkspaceResourceUsageRecordsPathParamsType;
     queryParams: ListWorkspaceResourceUsageRecordsQueryParamsType;

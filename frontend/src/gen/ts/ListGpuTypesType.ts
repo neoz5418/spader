@@ -1,5 +1,18 @@
 import type { PaginatedListGpuTypeType } from "./PaginatedListGpuTypeType";
-import type { ErrorType } from "./ErrorType";
+import type { ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType } from "./ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType";
+import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
+import type { ErrorInternalType } from "./ErrorInternalType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorPasswordMismatchType } from "./ErrorPasswordMismatchType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorRefreshTokenCannotBeEmptyType } from "./ErrorRefreshTokenCannotBeEmptyType";
+import type { ErrorRefreshTokenExpiredType } from "./ErrorRefreshTokenExpiredType";
+import type { ErrorRefreshTokenInvalidType } from "./ErrorRefreshTokenInvalidType";
+import type { ErrorRequestValidationFailedType } from "./ErrorRequestValidationFailedType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorUsernameOrEmailCannotBeEmptyType } from "./ErrorUsernameOrEmailCannotBeEmptyType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 
  export type ListGpuTypesPathParamsType = {
     /**
@@ -24,33 +37,9 @@ export type ListGpuTypesQueryParamsType = {
 */
 export type ListGpuTypes200Type = PaginatedListGpuTypeType;
 /**
- * @description Request error
+ * @description Unprocessable Entity
 */
-export type ListGpuTypes400Type = ErrorType;
-/**
- * @description Unauthorized
-*/
-export type ListGpuTypes401Type = ErrorType;
-/**
- * @description Not found
-*/
-export type ListGpuTypes404Type = ErrorType;
-/**
- * @description Validation error
-*/
-export type ListGpuTypes422Type = ErrorType;
-/**
- * @description Rate limit exceeded
-*/
-export type ListGpuTypes429Type = ErrorType;
-/**
- * @description Internal server error
-*/
-export type ListGpuTypes500Type = ErrorType;
-/**
- * @description Service unavailable
-*/
-export type ListGpuTypes503Type = ErrorType;
+export type ListGpuTypes422Type = (ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType | ErrorResourceNotFoundType | ErrorInternalType | ErrorInvalidArgumentType | ErrorPasswordMismatchType | ErrorPreconditionFailedType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorRequestValidationFailedType | ErrorResourceConflictType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
 /**
  * @description Successful Response
 */
@@ -59,5 +48,5 @@ export type ListGpuTypesTypeQuery = {
     Response: ListGpuTypesQueryResponseType;
     PathParams: ListGpuTypesPathParamsType;
     QueryParams: ListGpuTypesQueryParamsType;
-    Errors: ListGpuTypes400Type | ListGpuTypes401Type | ListGpuTypes404Type | ListGpuTypes422Type | ListGpuTypes429Type | ListGpuTypes500Type | ListGpuTypes503Type;
+    Errors: ListGpuTypes422Type;
 };

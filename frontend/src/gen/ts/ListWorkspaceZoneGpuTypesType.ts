@@ -1,5 +1,18 @@
 import type { PaginatedListGpuTypeType } from "./PaginatedListGpuTypeType";
-import type { ErrorType } from "./ErrorType";
+import type { ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType } from "./ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType";
+import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
+import type { ErrorInternalType } from "./ErrorInternalType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorPasswordMismatchType } from "./ErrorPasswordMismatchType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorRefreshTokenCannotBeEmptyType } from "./ErrorRefreshTokenCannotBeEmptyType";
+import type { ErrorRefreshTokenExpiredType } from "./ErrorRefreshTokenExpiredType";
+import type { ErrorRefreshTokenInvalidType } from "./ErrorRefreshTokenInvalidType";
+import type { ErrorRequestValidationFailedType } from "./ErrorRequestValidationFailedType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorUsernameOrEmailCannotBeEmptyType } from "./ErrorUsernameOrEmailCannotBeEmptyType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 
  export type ListWorkspaceZoneGpuTypesPathParamsType = {
     /**
@@ -28,33 +41,9 @@ export type ListWorkspaceZoneGpuTypesQueryParamsType = {
 */
 export type ListWorkspaceZoneGpuTypes200Type = PaginatedListGpuTypeType;
 /**
- * @description Request error
+ * @description Unprocessable Entity
 */
-export type ListWorkspaceZoneGpuTypes400Type = ErrorType;
-/**
- * @description Unauthorized
-*/
-export type ListWorkspaceZoneGpuTypes401Type = ErrorType;
-/**
- * @description Not found
-*/
-export type ListWorkspaceZoneGpuTypes404Type = ErrorType;
-/**
- * @description Validation error
-*/
-export type ListWorkspaceZoneGpuTypes422Type = ErrorType;
-/**
- * @description Rate limit exceeded
-*/
-export type ListWorkspaceZoneGpuTypes429Type = ErrorType;
-/**
- * @description Internal server error
-*/
-export type ListWorkspaceZoneGpuTypes500Type = ErrorType;
-/**
- * @description Service unavailable
-*/
-export type ListWorkspaceZoneGpuTypes503Type = ErrorType;
+export type ListWorkspaceZoneGpuTypes422Type = (ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType | ErrorResourceNotFoundType | ErrorInternalType | ErrorInvalidArgumentType | ErrorPasswordMismatchType | ErrorPreconditionFailedType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorRequestValidationFailedType | ErrorResourceConflictType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
 /**
  * @description Successful Response
 */
@@ -63,5 +52,5 @@ export type ListWorkspaceZoneGpuTypesTypeQuery = {
     Response: ListWorkspaceZoneGpuTypesQueryResponseType;
     PathParams: ListWorkspaceZoneGpuTypesPathParamsType;
     QueryParams: ListWorkspaceZoneGpuTypesQueryParamsType;
-    Errors: ListWorkspaceZoneGpuTypes400Type | ListWorkspaceZoneGpuTypes401Type | ListWorkspaceZoneGpuTypes404Type | ListWorkspaceZoneGpuTypes422Type | ListWorkspaceZoneGpuTypes429Type | ListWorkspaceZoneGpuTypes500Type | ListWorkspaceZoneGpuTypes503Type;
+    Errors: ListWorkspaceZoneGpuTypes422Type;
 };

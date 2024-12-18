@@ -1,5 +1,18 @@
 import type { WorkspaceQuotaType } from "./WorkspaceQuotaType";
-import type { ErrorType } from "./ErrorType";
+import type { ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType } from "./ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType";
+import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
+import type { ErrorInternalType } from "./ErrorInternalType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorPasswordMismatchType } from "./ErrorPasswordMismatchType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorRefreshTokenCannotBeEmptyType } from "./ErrorRefreshTokenCannotBeEmptyType";
+import type { ErrorRefreshTokenExpiredType } from "./ErrorRefreshTokenExpiredType";
+import type { ErrorRefreshTokenInvalidType } from "./ErrorRefreshTokenInvalidType";
+import type { ErrorRequestValidationFailedType } from "./ErrorRequestValidationFailedType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorUsernameOrEmailCannotBeEmptyType } from "./ErrorUsernameOrEmailCannotBeEmptyType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 
  export type GetWorkspaceQuotaPathParamsType = {
     /**
@@ -12,33 +25,9 @@ import type { ErrorType } from "./ErrorType";
 */
 export type GetWorkspaceQuota200Type = WorkspaceQuotaType;
 /**
- * @description Request error
+ * @description Unprocessable Entity
 */
-export type GetWorkspaceQuota400Type = ErrorType;
-/**
- * @description Unauthorized
-*/
-export type GetWorkspaceQuota401Type = ErrorType;
-/**
- * @description Not found
-*/
-export type GetWorkspaceQuota404Type = ErrorType;
-/**
- * @description Validation error
-*/
-export type GetWorkspaceQuota422Type = ErrorType;
-/**
- * @description Rate limit exceeded
-*/
-export type GetWorkspaceQuota429Type = ErrorType;
-/**
- * @description Internal server error
-*/
-export type GetWorkspaceQuota500Type = ErrorType;
-/**
- * @description Service unavailable
-*/
-export type GetWorkspaceQuota503Type = ErrorType;
+export type GetWorkspaceQuota422Type = (ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType | ErrorResourceNotFoundType | ErrorInternalType | ErrorInvalidArgumentType | ErrorPasswordMismatchType | ErrorPreconditionFailedType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorRequestValidationFailedType | ErrorResourceConflictType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
 /**
  * @description Successful Response
 */
@@ -46,5 +35,5 @@ export type GetWorkspaceQuotaQueryResponseType = WorkspaceQuotaType;
 export type GetWorkspaceQuotaTypeQuery = {
     Response: GetWorkspaceQuotaQueryResponseType;
     PathParams: GetWorkspaceQuotaPathParamsType;
-    Errors: GetWorkspaceQuota400Type | GetWorkspaceQuota401Type | GetWorkspaceQuota404Type | GetWorkspaceQuota422Type | GetWorkspaceQuota429Type | GetWorkspaceQuota500Type | GetWorkspaceQuota503Type;
+    Errors: GetWorkspaceQuota422Type;
 };

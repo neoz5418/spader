@@ -67,12 +67,10 @@ async def get_admin_user(
 async def get_user_from_jwt_token(
     session: AsyncSession, access_token: str
 ) -> Optional[User]:
-    try:
-        payload = jwt_manager.decode_jwt_token(access_token)
-        username = payload.get("sub")
-    except Exception as e:
-        logger.error(e)
+    payload = jwt_manager.decode_jwt_token(access_token)
+    if not payload:
         return None
+    username = payload.get("sub")
 
     if username is None:
         return None

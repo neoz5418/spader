@@ -1,5 +1,18 @@
 import type { PaginatedListWorkspaceAccountRechargeType } from "./PaginatedListWorkspaceAccountRechargeType";
-import type { ErrorType } from "./ErrorType";
+import type { ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType } from "./ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType";
+import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
+import type { ErrorInternalType } from "./ErrorInternalType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorPasswordMismatchType } from "./ErrorPasswordMismatchType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorRefreshTokenCannotBeEmptyType } from "./ErrorRefreshTokenCannotBeEmptyType";
+import type { ErrorRefreshTokenExpiredType } from "./ErrorRefreshTokenExpiredType";
+import type { ErrorRefreshTokenInvalidType } from "./ErrorRefreshTokenInvalidType";
+import type { ErrorRequestValidationFailedType } from "./ErrorRequestValidationFailedType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorUsernameOrEmailCannotBeEmptyType } from "./ErrorUsernameOrEmailCannotBeEmptyType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 
  export type ListWorkspaceAccountRechargesPathParamsType = {
     /**
@@ -24,33 +37,9 @@ export type ListWorkspaceAccountRechargesQueryParamsType = {
 */
 export type ListWorkspaceAccountRecharges200Type = PaginatedListWorkspaceAccountRechargeType;
 /**
- * @description Request error
+ * @description Unprocessable Entity
 */
-export type ListWorkspaceAccountRecharges400Type = ErrorType;
-/**
- * @description Unauthorized
-*/
-export type ListWorkspaceAccountRecharges401Type = ErrorType;
-/**
- * @description Not found
-*/
-export type ListWorkspaceAccountRecharges404Type = ErrorType;
-/**
- * @description Validation error
-*/
-export type ListWorkspaceAccountRecharges422Type = ErrorType;
-/**
- * @description Rate limit exceeded
-*/
-export type ListWorkspaceAccountRecharges429Type = ErrorType;
-/**
- * @description Internal server error
-*/
-export type ListWorkspaceAccountRecharges500Type = ErrorType;
-/**
- * @description Service unavailable
-*/
-export type ListWorkspaceAccountRecharges503Type = ErrorType;
+export type ListWorkspaceAccountRecharges422Type = (ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType | ErrorResourceNotFoundType | ErrorInternalType | ErrorInvalidArgumentType | ErrorPasswordMismatchType | ErrorPreconditionFailedType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorRequestValidationFailedType | ErrorResourceConflictType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
 /**
  * @description Successful Response
 */
@@ -59,5 +48,5 @@ export type ListWorkspaceAccountRechargesTypeQuery = {
     Response: ListWorkspaceAccountRechargesQueryResponseType;
     PathParams: ListWorkspaceAccountRechargesPathParamsType;
     QueryParams: ListWorkspaceAccountRechargesQueryParamsType;
-    Errors: ListWorkspaceAccountRecharges400Type | ListWorkspaceAccountRecharges401Type | ListWorkspaceAccountRecharges404Type | ListWorkspaceAccountRecharges422Type | ListWorkspaceAccountRecharges429Type | ListWorkspaceAccountRecharges500Type | ListWorkspaceAccountRecharges503Type;
+    Errors: ListWorkspaceAccountRecharges422Type;
 };

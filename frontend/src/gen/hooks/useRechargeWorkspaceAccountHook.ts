@@ -1,13 +1,13 @@
 import client from "@/utils/client.ts";
 import { useMutation } from "@tanstack/react-query";
 import { useInvalidationForMutation } from "../../useInvalidationForMutation";
-import type { RechargeWorkspaceAccountMutationRequestType, RechargeWorkspaceAccountMutationResponseType, RechargeWorkspaceAccountPathParamsType, RechargeWorkspaceAccount400Type, RechargeWorkspaceAccount401Type, RechargeWorkspaceAccount404Type, RechargeWorkspaceAccount422Type, RechargeWorkspaceAccount429Type, RechargeWorkspaceAccount500Type, RechargeWorkspaceAccount503Type } from "../ts/RechargeWorkspaceAccountType";
+import type { RechargeWorkspaceAccountMutationRequestType, RechargeWorkspaceAccountMutationResponseType, RechargeWorkspaceAccountPathParamsType, RechargeWorkspaceAccount422Type } from "../ts/RechargeWorkspaceAccountType";
 import type { UseMutationOptions } from "@tanstack/react-query";
 
- type RechargeWorkspaceAccountClient = typeof client<RechargeWorkspaceAccountMutationResponseType, RechargeWorkspaceAccount400Type | RechargeWorkspaceAccount401Type | RechargeWorkspaceAccount404Type | RechargeWorkspaceAccount422Type | RechargeWorkspaceAccount429Type | RechargeWorkspaceAccount500Type | RechargeWorkspaceAccount503Type, RechargeWorkspaceAccountMutationRequestType>;
+ type RechargeWorkspaceAccountClient = typeof client<RechargeWorkspaceAccountMutationResponseType, RechargeWorkspaceAccount422Type, RechargeWorkspaceAccountMutationRequestType>;
 type RechargeWorkspaceAccount = {
     data: RechargeWorkspaceAccountMutationResponseType;
-    error: RechargeWorkspaceAccount400Type | RechargeWorkspaceAccount401Type | RechargeWorkspaceAccount404Type | RechargeWorkspaceAccount422Type | RechargeWorkspaceAccount429Type | RechargeWorkspaceAccount500Type | RechargeWorkspaceAccount503Type;
+    error: RechargeWorkspaceAccount422Type;
     request: RechargeWorkspaceAccountMutationRequestType;
     pathParams: RechargeWorkspaceAccountPathParamsType;
     queryParams: never;

@@ -1,12 +1,12 @@
 import client from "@/utils/client.ts";
 import { useQuery, queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import type { GetWorkspaceOperationQueryResponseType, GetWorkspaceOperationPathParamsType, GetWorkspaceOperation400Type, GetWorkspaceOperation401Type, GetWorkspaceOperation404Type, GetWorkspaceOperation422Type, GetWorkspaceOperation429Type, GetWorkspaceOperation500Type, GetWorkspaceOperation503Type } from "../ts/GetWorkspaceOperationType";
+import type { GetWorkspaceOperationQueryResponseType, GetWorkspaceOperationPathParamsType, GetWorkspaceOperation422Type } from "../ts/GetWorkspaceOperationType";
 import type { QueryObserverOptions, UseQueryResult, QueryKey, UseSuspenseQueryOptions, UseSuspenseQueryResult } from "@tanstack/react-query";
 
- type GetWorkspaceOperationClient = typeof client<GetWorkspaceOperationQueryResponseType, GetWorkspaceOperation400Type | GetWorkspaceOperation401Type | GetWorkspaceOperation404Type | GetWorkspaceOperation422Type | GetWorkspaceOperation429Type | GetWorkspaceOperation500Type | GetWorkspaceOperation503Type, never>;
+ type GetWorkspaceOperationClient = typeof client<GetWorkspaceOperationQueryResponseType, GetWorkspaceOperation422Type, never>;
 type GetWorkspaceOperation = {
     data: GetWorkspaceOperationQueryResponseType;
-    error: GetWorkspaceOperation400Type | GetWorkspaceOperation401Type | GetWorkspaceOperation404Type | GetWorkspaceOperation422Type | GetWorkspaceOperation429Type | GetWorkspaceOperation500Type | GetWorkspaceOperation503Type;
+    error: GetWorkspaceOperation422Type;
     request: never;
     pathParams: GetWorkspaceOperationPathParamsType;
     queryParams: never;

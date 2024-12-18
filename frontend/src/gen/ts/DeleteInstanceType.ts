@@ -1,5 +1,18 @@
 import type { OperationType } from "./OperationType";
-import type { ErrorType } from "./ErrorType";
+import type { ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType } from "./ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType";
+import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
+import type { ErrorInternalType } from "./ErrorInternalType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorPasswordMismatchType } from "./ErrorPasswordMismatchType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorRefreshTokenCannotBeEmptyType } from "./ErrorRefreshTokenCannotBeEmptyType";
+import type { ErrorRefreshTokenExpiredType } from "./ErrorRefreshTokenExpiredType";
+import type { ErrorRefreshTokenInvalidType } from "./ErrorRefreshTokenInvalidType";
+import type { ErrorRequestValidationFailedType } from "./ErrorRequestValidationFailedType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorUsernameOrEmailCannotBeEmptyType } from "./ErrorUsernameOrEmailCannotBeEmptyType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 
  export type DeleteInstancePathParamsType = {
     /**
@@ -20,33 +33,9 @@ import type { ErrorType } from "./ErrorType";
 */
 export type DeleteInstance200Type = OperationType;
 /**
- * @description Request error
+ * @description Unprocessable Entity
 */
-export type DeleteInstance400Type = ErrorType;
-/**
- * @description Unauthorized
-*/
-export type DeleteInstance401Type = ErrorType;
-/**
- * @description Not found
-*/
-export type DeleteInstance404Type = ErrorType;
-/**
- * @description Validation error
-*/
-export type DeleteInstance422Type = ErrorType;
-/**
- * @description Rate limit exceeded
-*/
-export type DeleteInstance429Type = ErrorType;
-/**
- * @description Internal server error
-*/
-export type DeleteInstance500Type = ErrorType;
-/**
- * @description Service unavailable
-*/
-export type DeleteInstance503Type = ErrorType;
+export type DeleteInstance422Type = (ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType | ErrorResourceNotFoundType | ErrorInternalType | ErrorInvalidArgumentType | ErrorPasswordMismatchType | ErrorPreconditionFailedType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorRequestValidationFailedType | ErrorResourceConflictType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
 /**
  * @description Successful Response
 */
@@ -54,5 +43,5 @@ export type DeleteInstanceMutationResponseType = OperationType;
 export type DeleteInstanceTypeMutation = {
     Response: DeleteInstanceMutationResponseType;
     PathParams: DeleteInstancePathParamsType;
-    Errors: DeleteInstance400Type | DeleteInstance401Type | DeleteInstance404Type | DeleteInstance422Type | DeleteInstance429Type | DeleteInstance500Type | DeleteInstance503Type;
+    Errors: DeleteInstance422Type;
 };

@@ -1,12 +1,12 @@
 import client from "@/utils/client.ts";
 import { useQuery, queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import type { ListUsersQueryResponseType, ListUsersQueryParamsType, ListUsers400Type, ListUsers401Type, ListUsers404Type, ListUsers422Type, ListUsers429Type, ListUsers500Type, ListUsers503Type } from "../ts/ListUsersType";
+import type { ListUsersQueryResponseType, ListUsersQueryParamsType, ListUsers422Type } from "../ts/ListUsersType";
 import type { QueryObserverOptions, UseQueryResult, QueryKey, UseSuspenseQueryOptions, UseSuspenseQueryResult } from "@tanstack/react-query";
 
- type ListUsersClient = typeof client<ListUsersQueryResponseType, ListUsers400Type | ListUsers401Type | ListUsers404Type | ListUsers422Type | ListUsers429Type | ListUsers500Type | ListUsers503Type, never>;
+ type ListUsersClient = typeof client<ListUsersQueryResponseType, ListUsers422Type, never>;
 type ListUsers = {
     data: ListUsersQueryResponseType;
-    error: ListUsers400Type | ListUsers401Type | ListUsers404Type | ListUsers422Type | ListUsers429Type | ListUsers500Type | ListUsers503Type;
+    error: ListUsers422Type;
     request: never;
     pathParams: never;
     queryParams: ListUsersQueryParamsType;

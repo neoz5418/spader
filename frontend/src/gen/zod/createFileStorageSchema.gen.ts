@@ -1,6 +1,19 @@
 import { z } from "@/utils/zod.ts";
 import { operationSchema } from "./operationSchema.gen";
-import { errorSchema } from "./errorSchema.gen";
+import { errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema } from "./errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema.gen";
+import { errorResourceNotFoundSchema } from "./errorResourceNotFoundSchema.gen";
+import { errorInternalSchema } from "./errorInternalSchema.gen";
+import { errorInvalidArgumentSchema } from "./errorInvalidArgumentSchema.gen";
+import { errorPasswordMismatchSchema } from "./errorPasswordMismatchSchema.gen";
+import { errorPreconditionFailedSchema } from "./errorPreconditionFailedSchema.gen";
+import { errorRefreshTokenCannotBeEmptySchema } from "./errorRefreshTokenCannotBeEmptySchema.gen";
+import { errorRefreshTokenExpiredSchema } from "./errorRefreshTokenExpiredSchema.gen";
+import { errorRefreshTokenInvalidSchema } from "./errorRefreshTokenInvalidSchema.gen";
+import { errorRequestValidationFailedSchema } from "./errorRequestValidationFailedSchema.gen";
+import { errorResourceConflictSchema } from "./errorResourceConflictSchema.gen";
+import { errorUnauthorizedSchema } from "./errorUnauthorizedSchema.gen";
+import { errorUsernameOrEmailCannotBeEmptySchema } from "./errorUsernameOrEmailCannotBeEmptySchema.gen";
+import { errorValidationFailedSchema } from "./errorValidationFailedSchema.gen";
 import { createFileStorageRequestSchema } from "./createFileStorageRequestSchema.gen";
 
 
@@ -12,40 +25,10 @@ export type CreateFileStoragePathParamsSchema = z.infer<typeof createFileStorage
 export const createFileStorage201Schema = z.lazy(() => operationSchema);
 export type CreateFileStorage201Schema = z.infer<typeof createFileStorage201Schema>;
 /**
- * @description Request error
+ * @description Unprocessable Entity
  */
-export const createFileStorage400Schema = z.lazy(() => errorSchema);
-export type CreateFileStorage400Schema = z.infer<typeof createFileStorage400Schema>;
-/**
- * @description Unauthorized
- */
-export const createFileStorage401Schema = z.lazy(() => errorSchema);
-export type CreateFileStorage401Schema = z.infer<typeof createFileStorage401Schema>;
-/**
- * @description Not found
- */
-export const createFileStorage404Schema = z.lazy(() => errorSchema);
-export type CreateFileStorage404Schema = z.infer<typeof createFileStorage404Schema>;
-/**
- * @description Validation error
- */
-export const createFileStorage422Schema = z.lazy(() => errorSchema);
+export const createFileStorage422Schema = z.union([z.lazy(() => errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema), z.lazy(() => errorResourceNotFoundSchema), z.lazy(() => errorInternalSchema), z.lazy(() => errorInvalidArgumentSchema), z.lazy(() => errorPasswordMismatchSchema), z.lazy(() => errorPreconditionFailedSchema), z.lazy(() => errorRefreshTokenCannotBeEmptySchema), z.lazy(() => errorRefreshTokenExpiredSchema), z.lazy(() => errorRefreshTokenInvalidSchema), z.lazy(() => errorRequestValidationFailedSchema), z.lazy(() => errorResourceConflictSchema), z.lazy(() => errorUnauthorizedSchema), z.lazy(() => errorUsernameOrEmailCannotBeEmptySchema), z.lazy(() => errorValidationFailedSchema)]);
 export type CreateFileStorage422Schema = z.infer<typeof createFileStorage422Schema>;
-/**
- * @description Rate limit exceeded
- */
-export const createFileStorage429Schema = z.lazy(() => errorSchema);
-export type CreateFileStorage429Schema = z.infer<typeof createFileStorage429Schema>;
-/**
- * @description Internal server error
- */
-export const createFileStorage500Schema = z.lazy(() => errorSchema);
-export type CreateFileStorage500Schema = z.infer<typeof createFileStorage500Schema>;
-/**
- * @description Service unavailable
- */
-export const createFileStorage503Schema = z.lazy(() => errorSchema);
-export type CreateFileStorage503Schema = z.infer<typeof createFileStorage503Schema>;
 
  export const createFileStorageMutationRequestSchema = z.lazy(() => createFileStorageRequestSchema);
 export type CreateFileStorageMutationRequestSchema = z.infer<typeof createFileStorageMutationRequestSchema>;

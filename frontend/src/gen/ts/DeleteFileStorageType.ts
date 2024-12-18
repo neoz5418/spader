@@ -1,5 +1,18 @@
 import type { OperationType } from "./OperationType";
-import type { ErrorType } from "./ErrorType";
+import type { ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType } from "./ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType";
+import type { ErrorResourceNotFoundType } from "./ErrorResourceNotFoundType";
+import type { ErrorInternalType } from "./ErrorInternalType";
+import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
+import type { ErrorPasswordMismatchType } from "./ErrorPasswordMismatchType";
+import type { ErrorPreconditionFailedType } from "./ErrorPreconditionFailedType";
+import type { ErrorRefreshTokenCannotBeEmptyType } from "./ErrorRefreshTokenCannotBeEmptyType";
+import type { ErrorRefreshTokenExpiredType } from "./ErrorRefreshTokenExpiredType";
+import type { ErrorRefreshTokenInvalidType } from "./ErrorRefreshTokenInvalidType";
+import type { ErrorRequestValidationFailedType } from "./ErrorRequestValidationFailedType";
+import type { ErrorResourceConflictType } from "./ErrorResourceConflictType";
+import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
+import type { ErrorUsernameOrEmailCannotBeEmptyType } from "./ErrorUsernameOrEmailCannotBeEmptyType";
+import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 
  export type DeleteFileStoragePathParamsType = {
     /**
@@ -20,33 +33,9 @@ import type { ErrorType } from "./ErrorType";
 */
 export type DeleteFileStorage200Type = OperationType;
 /**
- * @description Request error
+ * @description Unprocessable Entity
 */
-export type DeleteFileStorage400Type = ErrorType;
-/**
- * @description Unauthorized
-*/
-export type DeleteFileStorage401Type = ErrorType;
-/**
- * @description Not found
-*/
-export type DeleteFileStorage404Type = ErrorType;
-/**
- * @description Validation error
-*/
-export type DeleteFileStorage422Type = ErrorType;
-/**
- * @description Rate limit exceeded
-*/
-export type DeleteFileStorage429Type = ErrorType;
-/**
- * @description Internal server error
-*/
-export type DeleteFileStorage500Type = ErrorType;
-/**
- * @description Service unavailable
-*/
-export type DeleteFileStorage503Type = ErrorType;
+export type DeleteFileStorage422Type = (ErrorEmailAndUsernameCannotBeProvidedAtTheSameTimeType | ErrorResourceNotFoundType | ErrorInternalType | ErrorInvalidArgumentType | ErrorPasswordMismatchType | ErrorPreconditionFailedType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorRequestValidationFailedType | ErrorResourceConflictType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
 /**
  * @description Successful Response
 */
@@ -54,5 +43,5 @@ export type DeleteFileStorageMutationResponseType = OperationType;
 export type DeleteFileStorageTypeMutation = {
     Response: DeleteFileStorageMutationResponseType;
     PathParams: DeleteFileStoragePathParamsType;
-    Errors: DeleteFileStorage400Type | DeleteFileStorage401Type | DeleteFileStorage404Type | DeleteFileStorage422Type | DeleteFileStorage429Type | DeleteFileStorage500Type | DeleteFileStorage503Type;
+    Errors: DeleteFileStorage422Type;
 };

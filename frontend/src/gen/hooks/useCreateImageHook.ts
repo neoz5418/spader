@@ -1,13 +1,13 @@
 import client from "@/utils/client.ts";
 import { useMutation } from "@tanstack/react-query";
 import { useInvalidationForMutation } from "../../useInvalidationForMutation";
-import type { CreateImageMutationRequestType, CreateImageMutationResponseType, CreateImagePathParamsType, CreateImage400Type, CreateImage401Type, CreateImage404Type, CreateImage422Type, CreateImage429Type, CreateImage500Type, CreateImage503Type } from "../ts/CreateImageType";
+import type { CreateImageMutationRequestType, CreateImageMutationResponseType, CreateImagePathParamsType, CreateImage422Type } from "../ts/CreateImageType";
 import type { UseMutationOptions } from "@tanstack/react-query";
 
- type CreateImageClient = typeof client<CreateImageMutationResponseType, CreateImage400Type | CreateImage401Type | CreateImage404Type | CreateImage422Type | CreateImage429Type | CreateImage500Type | CreateImage503Type, CreateImageMutationRequestType>;
+ type CreateImageClient = typeof client<CreateImageMutationResponseType, CreateImage422Type, CreateImageMutationRequestType>;
 type CreateImage = {
     data: CreateImageMutationResponseType;
-    error: CreateImage400Type | CreateImage401Type | CreateImage404Type | CreateImage422Type | CreateImage429Type | CreateImage500Type | CreateImage503Type;
+    error: CreateImage422Type;
     request: CreateImageMutationRequestType;
     pathParams: CreateImagePathParamsType;
     queryParams: never;

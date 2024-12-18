@@ -1,12 +1,10 @@
-from datetime import datetime, timezone
 from enum import Enum
-
-from fastapi import APIRouter, HTTPException
+from typing import Annotated
+from fastapi import APIRouter, Depends
 from uuid import UUID
 
 from dependencies import (
     CurrentAdminUserDep,
-    CurrentAdminUserDepAnnotated,
     CurrentUserDep,
     CurrentUserDepAnnotated,
     ListParamsDep,
@@ -29,6 +27,7 @@ from routers.types import (
     Operation,
     OperationList,
     OperationStatus,
+    OperationType,
     PortForward,
     SortOrder,
     WorkspaceZoneQuota,
@@ -42,6 +41,7 @@ from services.celery import (
     start_instance_operation,
     stop_instance_operation,
 )
+from services.common import ErrorResourceConflict, ErrorResourceNotFound, utcnow
 from services.lru_resource_cache import get_gpu_type_display_name, get_zone_display_name
 
 router = APIRouter(
@@ -59,11 +59,15 @@ router = APIRouter(
 async def create_zone(
     session: SessionDep,
     zone_in: ZoneBase,
-    user: CurrentAdminUserDepAnnotated,
 ) -> Zone:
     existing = await Zone.one_by_field(session, "name", zone_in.name)
     if existing:
-        raise HTTPException(status_code=409, detail="Zone already exists")
+        raise ErrorResourceConflict(
+            type="ResourceConflict",
+            input=zone_in.name,
+            location="name",
+            resource_name="zone",
+        ).to_exception()
     to_create = Zone.model_validate(zone_in)
     return await Zone.create(session, to_create)
 
@@ -212,15 +216,28 @@ async def list_workspace_instances(
 
 
 @router.get(
-    "/workspaces/{workspace}/zones/{zone}/instances/{name}",
+    "/workspaces/{workspace}/instances/{name}",
     dependencies=[CurrentUserDep],
 )
-def get_instance(
+async def get_instance(
+    session: SessionDep,
     workspace: str,
-    zone: str,
     name: str,
 ) -> Instance:
-    return
+    instance = await Instance.one_by_fields(
+        session,
+        {
+            "name": name,
+            "workspace": workspace,
+        },
+    )
+    if not instance:
+        raise ErrorResourceNotFound(
+            type="ResourceNotFound",
+            resource_name="instance",
+            input=name,
+        ).to_exception()
+    return instance
 
 
 @router.post(
@@ -238,7 +255,12 @@ async def create_instance(
 ) -> Operation:
     existing = await Instance.one_by_field(session, "name", instance_in.name)
     if existing:
-        raise HTTPException(status_code=409, detail="Instance already exists")
+        raise ErrorResourceConflict(
+            type="ResourceConflict",
+            input=instance_in.name,
+            location="name",
+            resource_name="instance",
+        ).to_exception()
     to_create = Instance.model_validate(
         instance_in,
         update={
@@ -248,9 +270,10 @@ async def create_instance(
         },
     )
     operation_creation = Operation(
+        type=OperationType.create_instance,
         workspace=workspace,
         zone=zone,
-        create_time=datetime.now(timezone.utc),
+        create_time=utcnow(),
         target=to_create.uid,
         user=user.uid,
         status=OperationStatus.pending,
@@ -262,25 +285,24 @@ async def create_instance(
     return operation
 
 
+InstanceDep = Annotated[Instance, Depends(get_instance)]
+
+
 @router.post(
-    "/workspaces/{workspace}/zones/{zone}/instances/{name}/start",
+    "/workspaces/{workspace}/instances/{name}/start",
     dependencies=[CurrentUserDep],
 )
 async def start_instance(
     session: SessionDep,
+    instance: InstanceDep,
     workspace: str,
-    zone: str,
-    name: str,
     user: CurrentUserDepAnnotated,
 ) -> Operation:
-    instance = await Instance.one_by_field(session, "name", name)
-    if not instance:
-        raise HTTPException(status_code=404, detail="Instance not found")
-
     operation_creation = Operation(
+        type=OperationType.start_instance,
         workspace=workspace,
-        zone=zone,
-        create_time=datetime.now(timezone.utc),
+        zone=instance.zone,
+        create_time=utcnow(),
         target=instance.uid,
         user=user.uid,
         status=OperationStatus.pending,
@@ -292,24 +314,20 @@ async def start_instance(
 
 
 @router.post(
-    "/workspaces/{workspace}/zones/{zone}/instances/{name}/stop",
+    "/workspaces/{workspace}/instances/{name}/stop",
     dependencies=[CurrentUserDep],
 )
 async def stop_instance(
     session: SessionDep,
+    instance: InstanceDep,
     workspace: str,
-    zone: str,
-    name: str,
     user: CurrentUserDepAnnotated,
 ) -> Operation:
-    instance = await Instance.one_by_field(session, "name", name)
-    if not instance:
-        raise HTTPException(status_code=404, detail="Instance not found")
-
     operation_creation = Operation(
+        type=OperationType.stop_instance,
         workspace=workspace,
-        zone=zone,
-        create_time=datetime.now(timezone.utc),
+        zone=instance.zone,
+        create_time=utcnow(),
         target=instance.uid,
         user=user.uid,
         status=OperationStatus.pending,
@@ -361,24 +379,20 @@ def list_instance_port_forwards(
 
 
 @router.delete(
-    "/workspaces/{workspace}/zones/{zone}/instances/{name}",
+    "/workspaces/{workspace}/instances/{name}",
     dependencies=[CurrentUserDep],
 )
 async def delete_instance(
     session: SessionDep,
+    instance: InstanceDep,
     workspace: str,
-    zone: str,
-    name: str,
     user: CurrentUserDepAnnotated,
 ) -> Operation:
-    instance = await Instance.one_by_field(session, "name", name)
-    if not instance:
-        raise HTTPException(status_code=404, detail="Instance not found")
-
     operation_creation = Operation(
+        type=OperationType.delete_instance,
         workspace=workspace,
-        zone=zone,
-        create_time=datetime.now(timezone.utc),
+        zone=instance.zone,
+        create_time=utcnow(),
         target=instance.uid,
         user=user.uid,
         status=OperationStatus.pending,

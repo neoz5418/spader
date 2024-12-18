@@ -1,7 +1,7 @@
 import logging
 from enum import Enum
 
-from fastapi import APIRouter, HTTPException, status, WebSocket
+from fastapi import APIRouter, status, WebSocket
 from sqlmodel import and_, select
 from uuid import UUID
 
@@ -36,7 +36,14 @@ from routers.types import (
     OperationList,
 )
 from services.cache import get_redis
-from services.common import Direction, PaginatedList, Pagination
+from services.common import (
+    Direction,
+    ErrorInvalidArgument,
+    ErrorResourceConflict,
+    ErrorResourceNotFound,
+    PaginatedList,
+    Pagination,
+)
 from services.lago import get_account, top_up_account
 from services.payment import alipay_recharge, check_alipay_recharge
 
@@ -59,11 +66,6 @@ async def create_workspace(
     username: str,
     workspace: WorkspaceCreate,
 ) -> Workspace:
-    if user.name != username:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only the user itself can create a workspace",
-        )
     db_workspace = (
         await session.exec(
             select(Workspace).where(
@@ -72,14 +74,16 @@ async def create_workspace(
         )
     ).first()
     if db_workspace:
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail="workspace already exists",
-        )
+        raise ErrorResourceConflict(
+            type="ResourceConflict",
+            input=workspace.name,
+            location="name",
+            resource_name="workspace",
+        ).to_exception()
     db_workspace = Workspace.model_validate(
         workspace,
         update={
-            "owner": user.name,
+            "owner": username,
         },
     )
     session.add(db_workspace)
@@ -100,26 +104,20 @@ class ListWorkspacesSortOptions(Enum):
 )
 async def list_user_workspaces(
     session: SessionDep,
-    user: CurrentUserDepAnnotated,
     username: str,
     params: ListParamsDep,
     search: str = None,
 ) -> WorkspaceList:
-    if username != "" and user.name != username:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only the user itself can list workspaces",
-        )
     workspaces = []
 
-    # check workspace exists, the workspace's name is same as user name
+    # check workspace exists, the workspace's name is same as username
     statement = select(Workspace).where(
         and_(Workspace.name == username, Workspace.owner == username)
     )
     workspace = (await session.exec(statement)).first()
     if workspace is not None:
         if workspace.owner != username:
-            logger.warn("workspace's owner is not same as user name")
+            logger.warning("workspace's owner is not same as user name")
         else:
             workspaces.append(workspace)
 
@@ -162,10 +160,11 @@ async def get_workspace(
 ) -> Workspace:
     workspace = await Workspace.one_by_field(session, "name", workspace)
     if not workspace:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Workspace not found",
-        )
+        raise ErrorResourceNotFound(
+            type="ResourceNotFound",
+            resource_name="workspace",
+            input=workspace,
+        ).to_exception()
     return workspace
 
 
@@ -219,10 +218,9 @@ async def recharge_workspace_account(
     recharge_in: RechargeWorkspaceAccount,
 ) -> WorkspaceAccountRecharge:
     if recharge_in.type != RechargeType.alipay:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="recharge type [%s] is not supported" % recharge_in.type,
-        )
+        raise ErrorInvalidArgument(
+            type="InvalidArgument", location="type", input=recharge_in.type
+        ).to_exception()
     recharge = WorkspaceAccountRecharge(
         workspace=workspace,
         currency=recharge_in.currency,
@@ -278,10 +276,9 @@ async def get_workspace_account_recharge(
         },
     )
     if db_recharge is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Recharge not found",
-        )
+        raise ErrorResourceNotFound(
+            type="ResourceNotFound", resource_name="recharge", input=recharge_id
+        ).to_exception()
     return db_recharge
 
 
@@ -304,10 +301,9 @@ async def check_workspace_account_recharge(
         )
         # TODO: check user has workspace permission
         if db_recharge is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Recharge not found",
-            )
+            raise ErrorResourceNotFound(
+                type="ResourceNotFound", resource_name="recharge", input=recharge_id
+            ).to_exception()
         if db_recharge.status == RechargeStatus.succeeded:
             return db_recharge
         recharged = check_alipay_recharge(db_recharge.uid)

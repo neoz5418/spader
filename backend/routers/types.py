@@ -1,6 +1,6 @@
 import re
 from datetime import datetime
-from enum import Enum
+from enum import auto, Enum
 from typing import Annotated, Literal, Optional
 from pydantic import (
     BaseModel,
@@ -366,8 +366,16 @@ class OperationStatus(Enum):
     done = "done"
 
 
+class OperationType(str, Enum):
+    start_instance = auto()
+    delete_instance = auto()
+    stop_instance = auto()
+    create_instance = auto()
+
+
 class Operation(SQLModel, ActiveRecordMixin, table=True):
     uid: UUID = UID
+    type: OperationType
 
     create_time: datetime
     description: Optional[str] = None

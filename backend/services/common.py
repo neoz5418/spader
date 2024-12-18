@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from enum import Enum
+from enum import auto, Enum, StrEnum
 from typing import Annotated, Any, Literal, Optional, Union
 from typing import Generic, TypeVar
 
@@ -70,7 +70,7 @@ DisplayName = Annotated[
 status_code_mapping = {}
 
 
-def status_code(code: int):
+def http_exception(code: int):
     def decorator(cls):
         status_code_mapping[cls.__qualname__] = code
         return cls
@@ -88,52 +88,60 @@ class ErrorBase(BaseModel):
     def status_code(self) -> int:
         return status_code_mapping[self.__class__.__qualname__]
 
+    @classmethod
+    def get_subclasses(cls):
+        return tuple(cls.__subclasses__())
 
-@status_code(422)
+
+class ErrorType(StrEnum):
+    EmailAndUsernameCannotBeProvidedAtTheSameTime = auto()
+
+
+@http_exception(422)
 class ErrorEmailAndUsernameCannotBeProvidedAtTheSameTime(ErrorBase):
-    type: Literal["EmailAndUsernameCannotBeProvidedAtTheSameTime"]
+    type: Literal[ErrorType.EmailAndUsernameCannotBeProvidedAtTheSameTime]
 
 
-@status_code(404)
+@http_exception(404)
 class ErrorResourceNotFound(ErrorBase):
     type: Literal["ResourceNotFound"]
     resource_name: str
     input: Any
 
 
-@status_code(500)
+@http_exception(500)
 class ErrorInternal(ErrorBase):
     type: Literal["Internal"]
 
 
-@status_code(422)
+@http_exception(422)
 class ErrorInvalidArgument(ErrorBase):
     type: Literal["InvalidArgument"]
     location: str
     input: Any
 
 
-@status_code(401)
+@http_exception(401)
 class ErrorPasswordMismatch(ErrorBase):
     type: Literal["PasswordMismatch"]
 
 
-@status_code(422)
+@http_exception(422)
 class ErrorRefreshTokenCannotBeEmpty(ErrorBase):
     type: Literal["RefreshTokenCannotBeEmpty"]
 
 
-@status_code(401)
+@http_exception(401)
 class ErrorRefreshTokenExpired(ErrorBase):
     type: Literal["RefreshTokenExpired"]
 
 
-@status_code(401)
+@http_exception(401)
 class ErrorRefreshTokenInvalid(ErrorBase):
     type: Literal["RefreshTokenInvalid"]
 
 
-@status_code(422)
+@http_exception(422)
 class ErrorResourceConflict(ErrorBase):
     type: Literal["ResourceConflict"]
     input: Any
@@ -141,19 +149,22 @@ class ErrorResourceConflict(ErrorBase):
     resource_name: str
 
 
-@status_code(401)
+@http_exception(403)
+class ErrorForbidden(ErrorBase):
+    type: Literal["Forbidden"]
+
+
+@http_exception(401)
 class ErrorUnauthorized(ErrorBase):
     type: Literal["Unauthorized"]
-    pass
 
 
-@status_code(422)
+@http_exception(422)
 class ErrorUsernameOrEmailCannotBeEmpty(ErrorBase):
     type: Literal["UsernameOrEmailCannotBeEmpty"]
-    pass
 
 
-@status_code(422)
+@http_exception(422)
 class ErrorValidationFailed(ErrorBase):
     type: Literal["ValidationFailed"]
     details: list[ErrorInvalidArgument]
@@ -180,97 +191,7 @@ class ErrorValidationFailed(ErrorBase):
         )
 
 
-Errors = Annotated[
-    Union[
-        ErrorEmailAndUsernameCannotBeProvidedAtTheSameTime,
-        ErrorResourceNotFound,
-        ErrorInternal,
-        ErrorInvalidArgument,
-        ErrorPasswordMismatch,
-        ErrorRefreshTokenCannotBeEmpty,
-        ErrorRefreshTokenExpired,
-        ErrorRefreshTokenInvalid,
-        ErrorResourceConflict,
-        ErrorUnauthorized,
-        ErrorUsernameOrEmailCannotBeEmpty,
-        ErrorValidationFailed,
-    ],
-    Field(discriminator="type"),
-]
-
-
-# @http_exception(404, "resource_not_found", "")
-# class ErrorResourceNotFound(ErrorBase):
-#     resource_name: str
-#
-#
-# @http_exception(401, "", "")
-# class ErrorUnauthorized(ErrorBase):
-#     class Message(StrEnum):
-#         unauthorized = auto()
-#         password_mismatch = auto()
-#
-#     status_code: int = 401
-#     message: Message = Message.unauthorized
-
-
-# class ErrorPreconditionFailed(ErrorBase):
-#     class Type(StrEnum):
-#         username_or_email_cannot_be_empty = auto()
-#         email_and_username_cannot_be_provided_at_the_same_time = auto()
-#         refresh_token_cannot_be_empty = auto()
-#         refresh_token_invalid = auto()
-#         refresh_token_expired = auto()
-#
-#     type: Type
-#     status_code: int = 412
-#     message: str = "precondition_failed"
-#
-#
-# class ErrorInvalidArgument(ErrorBase, ArgumentDetail):
-#     type: str = "invalid_argument"
-#     msg: str = "Invalid argument"
-#     metadata: dict = {}
-#
-#     status_code: int = 400
-#     message: str = "invalid_argument"
-#
-#
-# class ErrorValidationFailed(ErrorBase):
-#     details: list[ArgumentDetail]
-#
-#     status_code: int = 422
-#     message: str = "request_validation_failed"
-#
-#     @classmethod
-#     def from_fastapi(cls, e: RequestValidationError) -> "ErrorValidationFailed":
-#         details = []
-#         for error in e.errors():
-#             detail = ArgumentDetail(
-#                 type=error.get("type"),
-#                 metadata=error.get("ctx", {}),
-#                 loc=error.get("loc", []),
-#                 msg=error.get("msg", ""),
-#                 input=error.get("input", ""),
-#             )
-#             details.append(detail)
-#         return ErrorValidationFailed(
-#             details=details,
-#         )
-#
-#
-# class ErrorResourceConflict(ErrorBase):
-#     input: Input
-#     loc: Loc
-#     resource_name: str
-#
-#     status_code: int = 409
-#     message: str = "resource_conflict"
-#
-#
-# class ErrorInternal(ErrorBase):
-#     status_code: int = 500
-#     message: str = "Internal Error"
+Errors = Annotated[Union[ErrorBase.get_subclasses()], Field(discriminator="type")]
 
 
 def error_from_exception(request: Request, e: Exception) -> ErrorBase:

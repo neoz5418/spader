@@ -464,6 +464,7 @@ class CreateInstanceRequest(BaseModel):
     name: Name
     display_name: DisplayName
 
+    zone: str
     gpu_count: int
     gpu_type: str
 

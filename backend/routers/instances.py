@@ -94,7 +94,7 @@ async def list_gpu_types(
     params: ListParamsDep,
     zone: Optional[str],
 ) -> GPUTypePublicList:
-    return await list_workspace_zone_gpu_types(
+    return await list_workspace_gpu_types(
         session, params=params, zone=zone, workspace=""
     )
 
@@ -115,7 +115,7 @@ async def list_workspace_zones(
     "/workspaces/{workspace}/gpu_types",
     dependencies=[CurrentUserDep],
 )
-async def list_workspace_zone_gpu_types(
+async def list_workspace_gpu_types(
     session: SessionDep,
     workspace: str,
     params: ListParamsDep,
@@ -250,7 +250,7 @@ async def get_instance(
 
 
 @router.post(
-    "/workspaces/{workspace}/zones/{zone}/instances",
+    "/workspaces/{workspace}/instances",
     dependencies=[CurrentUserDep],
     status_code=201,
     summary="Create and start a new instance",
@@ -258,7 +258,6 @@ async def get_instance(
 async def create_instance(
     session: SessionDep,
     workspace: str,
-    zone: str,
     instance_in: CreateInstanceRequest,
     user: CurrentUserDepAnnotated,
 ) -> Operation:
@@ -280,14 +279,14 @@ async def create_instance(
         instance_in,
         update={
             "workspace": workspace,
-            "zone": zone,
+            "zone": instance_in.zone,
             "status": InstanceStatus.provisioning,
         },
     )
     operation_creation = Operation(
         type=OperationType.create_instance,
         workspace=workspace,
-        zone=zone,
+        zone=instance_in.zone,
         create_time=utcnow(),
         target=to_create.uid,
         user=user.uid,

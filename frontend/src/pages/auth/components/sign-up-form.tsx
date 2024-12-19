@@ -52,10 +52,10 @@ export function SignUpForm({ className, ...props }: { className?: string }) {
   const registerForm = useForm({
     resolver: zodResolver(sendOneTimePasswordRequestSchema.extend({
       phone_number: z.string().min(1, 'Invalid phone number').refine((phone: string) => validator.isMobilePhone(phone, ['zh-CN']), { params: { i18n: "invalid_phone_number" } }),
-      password: z.string().min(8, { params: { i18n: "invalid_password" } })
+      password: z.string().min(8)
       .refine( (val) => val.match(/[A-Z]/),{params: { i18n: "invalid_password_uppercase" }})
       .refine( (val) => val.match(/[a-z]/),{params: { i18n: "invalid_password_lowercase" }}),
-      confirm_password: z.string().min(8, { params: { i18n: "invalid_password" } }),
+      confirm_password: z.string(),
       email: z.string().email(),
     }).refine(({ password, confirm_password }) => password === confirm_password , {
       params: { i18n: "password_mismatch" },

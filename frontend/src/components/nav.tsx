@@ -23,6 +23,7 @@ import {
 import { cn } from '@/lib/utils'
 import useCheckActiveNav from '@/hooks/use-check-active-nav'
 import { SideLink } from '@/data/sidelinks'
+import { useState } from 'react'
 
 interface NavProps extends React.HTMLAttributes<HTMLDivElement> {
   isCollapsed: boolean
@@ -38,8 +39,10 @@ export default function Nav({
 }: NavProps) {
   const renderLink = ({ sub, ...rest }: SideLink) => {
     const params = useParams();
+    const [currentLink, setCurrentLink] = useState<SideLink>();
     rest.href = `/workspaces/${params.workspace}${rest.href}`
-    const key = `${rest.title}-${rest.href}`
+    const 
+    key = `${rest.title}-${rest.href}`
     if (isCollapsed && sub) {
       return (
         <NavLinkIconDropdown
@@ -59,7 +62,7 @@ export default function Nav({
         <NavLinkDropdown {...rest} sub={sub} key={key} closeNav={closeNav} />
       )
 
-    return <NavLink {...rest} key={key} closeNav={closeNav} />
+    return <NavLink {...rest} key={key} closeNav={closeNav} onClick={() => setCurrentLink(rest)} />
   }
   return (
     <div

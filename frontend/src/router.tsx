@@ -161,9 +161,9 @@ const router = createBrowserRouter([{
             }),
           },
           {
-            path: 'logs',
+            path: 'audit-logs',
             lazy: async () => ({
-              Component: (await import('@/components/coming-soon')).default,
+              Component: (await import('./pages/audit/index.tsx')).default,
             }),
           },
           {

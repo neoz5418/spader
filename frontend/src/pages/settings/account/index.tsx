@@ -7,9 +7,9 @@ import { FileText, ChevronDown, ChevronUp, Monitor } from 'lucide-react'
 import { useState } from "react"
 import { AppearanceForm } from "./appearance-form"
 import { Textarea } from "@/components/ui/textarea"
+import APIKeys from "./apikey"
 
 export default function Component() {
-  const [isApiKeysOpen, setIsApiKeysOpen] = useState(true)
   const [isActiveSessionsOpen, setIsActiveSessionsOpen] = useState(false)
   const [isThemeSettingsOpen, setIsThemeSettingsOpen] = useState(false)
   const [isContainerRegistryAuthOpen, setIsContainerRegistryAuthOpen] = useState(false)
@@ -77,33 +77,8 @@ export default function Component() {
           )}
         </Card>
 
-        <Card className="p-6">
-          <button 
-            className="w-full flex justify-between items-center"
-            onClick={() => setIsApiKeysOpen(!isApiKeysOpen)}
-          >
-            <h2 className="text-xl font-semibold">API Keys</h2>
-            {isApiKeysOpen ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
-          </button>
-          
-          {isApiKeysOpen && (
-            <div className="mt-6 space-y-6">
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <FileText className="h-5 w-5" />
-                <span>Documents</span>
-              </div>
-              
-              <p className="text-muted-foreground">
-                Generate unique keys that allow you to securely access our API services. Simply create a new key, copy it, and use it to integrate our API into your project. Treat these keys as top secret - they allow anyone with the key to gain full access to your account!
-              </p>
-              
-              <Button className="gap-2" variant="outline">
-                <span className="text-purple-600">+</span>
-                Create API Key
-              </Button>
-            </div>
-          )}
-        </Card>
+        
+        <APIKeys />
 
         <Card className="border rounded-lg overflow-hidden">
           <button

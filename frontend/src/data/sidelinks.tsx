@@ -81,7 +81,7 @@ export const sidelinks: SideLink[] = [
   {
     title: '审计日志',
     label: '',
-    href: '/logs',
+    href: '/audit-logs',
     icon: <IconLogs size={18} />,
   },
   {

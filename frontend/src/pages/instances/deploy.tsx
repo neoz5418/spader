@@ -11,6 +11,8 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
 	Select,
 	SelectContent,
@@ -62,7 +64,6 @@ export default function DeployForm() {
 
 	const form = useForm<CreateInstanceRequestSchema>({
 		resolver: zodResolver(createInstanceRequestSchema),
-		mode: "onChange",
 	});
 
 	const { user: currentUser } = useAuth();
@@ -73,7 +74,7 @@ export default function DeployForm() {
 		data,
 	} = useCreateInstanceHook(currentUser?.name || "");
 
-	function onSubmit(data) {
+	function onSubmit(data: CreateInstanceRequestSchema) {
 		createInstance(data);
 	}
 
@@ -106,34 +107,6 @@ export default function DeployForm() {
 						>
 							<FormField
 								control={form.control}
-								name="gpu_type"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>GPU类型</FormLabel>
-										<Select
-											onValueChange={field.onChange}
-											defaultValue={field.value}
-										>
-											<FormControl>
-												<SelectTrigger>
-													<SelectValue placeholder="选择一个GPU类型" />
-												</SelectTrigger>
-											</FormControl>
-											<SelectContent>
-												{gpuTypes.map((gpuType) => (
-													<SelectItem value={gpuType.name} key={gpuType.name}>
-														{gpuType.display_name}
-													</SelectItem>
-												))}
-											</SelectContent>
-										</Select>
-										<FormDescription>选择一个GPU类型</FormDescription>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
-							<FormField
-								control={form.control}
 								name="name"
 								render={({ field }) => (
 									<FormItem>
@@ -142,6 +115,46 @@ export default function DeployForm() {
 											<Input placeholder="主机名称" {...field} />
 										</FormControl>
 										<FormDescription />
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name="gpu_type"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>GPU类型</FormLabel>
+										<FormControl>
+											<RadioGroup
+												onValueChange={field.onChange}
+												defaultValue={field.value}
+												className="flex flex-col space-y-1"
+											>
+												{gpuTypes.map((gpuType) => (
+													<FormItem
+														className="flex items-center space-x-3 space-y-0"
+														key={gpuType.name}
+													>
+														<FormControl>
+															<RadioGroupItem value={gpuType.name} />
+														</FormControl>
+														<FormLabel className="w-full flex justify-between ">
+															<div>{gpuType.display_name}</div>
+															<div>
+																<span className="font-extrabold">
+																	¥
+																	{gpuType.prices.filter(
+																		(price) => price.period === "one_hour",
+																	)[0].price / 100}
+																</span>
+																/时
+															</div>
+														</FormLabel>
+													</FormItem>
+												))}
+											</RadioGroup>
+										</FormControl>
 										<FormMessage />
 									</FormItem>
 								)}

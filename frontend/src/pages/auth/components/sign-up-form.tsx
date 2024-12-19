@@ -20,13 +20,13 @@ import * as validator from 'validator'
 import { z } from 'zod'
 import { ErrorResourceConflictType, RegisterUserRequestType, SendOneTimePasswordRequestType } from '@/gen'
 
-export function SignUpForm({ className, ...props }) {
+export function SignUpForm({ className, ...props }: { className?: string }) {
   const [disableVerifyBtn, setDisableVerifyBtn] = useState(true)
   const [registerUserRequest, setRegisterUserRequest] = useState({
     name: '',
     email: '',
     phone_number: '',
-    password: '',
+    password: ''
   } as SendOneTimePasswordRequestType)
   const [step, setStep] = useState<'register' | 'verify' | 'success'>(
     'register',
@@ -42,9 +42,24 @@ export function SignUpForm({ className, ...props }) {
     resolver: zodResolver(registerUserRequestSchema),
   })
 
+  // const requestSchema = sendOneTimePasswordRequestSchema.extend({
+  //   phone_umber: z.string().refine((phone: string) => validator.isMobilePhone(phone, ['zh-CN']), { params: { i18n: "invalid_phone_number" } }),
+  //   confirm_password: z.string().min(8, { params: { i18n: "invalid_password" } }),
+  // })
+  // const registerForm = useForm({
+  //   resolver: zodResolver(requestSchema),
+  // })
   const registerForm = useForm({
     resolver: zodResolver(sendOneTimePasswordRequestSchema.extend({
-      phone_number: z.string().min(1, 'Invalid phone number').refine((phone: string) => validator.isMobilePhone(phone, ['zh-CN']), 'Invalid phone number'),
+      phone_number: z.string().min(1, 'Invalid phone number').refine((phone: string) => validator.isMobilePhone(phone, ['zh-CN']), { params: { i18n: "invalid_phone_number" } }),
+      password: z.string().min(8, { params: { i18n: "invalid_password" } })
+      .refine( (val) => val.match(/[A-Z]/),{params: { i18n: "invalid_password_uppercase" }})
+      .refine( (val) => val.match(/[a-z]/),{params: { i18n: "invalid_password_lowercase" }}),
+      confirm_password: z.string().min(8, { params: { i18n: "invalid_password" } }),
+      email: z.string().email(),
+    }).refine(({ password, confirm_password }) => password === confirm_password , {
+      params: { i18n: "password_mismatch" },
+      path: ['confirm_password']
     })),
   })
 
@@ -248,6 +263,19 @@ export function SignUpForm({ className, ...props }) {
                         <FormLabel>密码</FormLabel>
                         <FormControl>
                           <PasswordInput placeholder="输入您的密码" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={registerForm.control}
+                    name="confirm_password"
+                    render={({ field }) => (
+                      <FormItem className="space-y-1">
+                        <FormLabel>确认密码</FormLabel>
+                        <FormControl>
+                          <PasswordInput placeholder="确认您的密码" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>

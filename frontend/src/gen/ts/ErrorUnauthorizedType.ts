@@ -1,11 +1,10 @@
 export const errorUnauthorizedType = {
-	Unauthorized: "Unauthorized",
+    "Unauthorized": "Unauthorized"
 } as const;
-export type ErrorUnauthorizedTypeType =
-	(typeof errorUnauthorizedType)[keyof typeof errorUnauthorizedType];
+export type ErrorUnauthorizedTypeType = (typeof errorUnauthorizedType)[keyof typeof errorUnauthorizedType];
 export type ErrorUnauthorizedType = {
-	/**
-	 * @type string
-	 */
-	type: ErrorUnauthorizedTypeType;
+    /**
+     * @type string
+    */
+    type: ErrorUnauthorizedTypeType;
 };

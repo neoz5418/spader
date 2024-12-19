@@ -1,5 +1,4 @@
 export const oneTimePasswordValidateType = {
-	email: "email",
+    "email": "email"
 } as const;
-export type OneTimePasswordValidateTypeType =
-	(typeof oneTimePasswordValidateType)[keyof typeof oneTimePasswordValidateType];
+export type OneTimePasswordValidateTypeType = (typeof oneTimePasswordValidateType)[keyof typeof oneTimePasswordValidateType];

@@ -1,6 +1,9 @@
 import { z } from "@/utils/zod.ts";
+import { listOperationsSortOptionsSchema } from "./listOperationsSortOptionsSchema.gen";
+import { sortOrderSchema } from "./sortOrderSchema.gen";
+import { paginatedListOperationSchema } from "./paginatedListOperationSchema.gen";
 import { errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema } from "./errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema.gen";
-import { errorForbiddenSchema } from "./errorForbiddenSchema.gen";
+import { errorResourceNotFoundSchema } from "./errorResourceNotFoundSchema.gen";
 import { errorInternalSchema } from "./errorInternalSchema.gen";
 import { errorInvalidArgumentSchema } from "./errorInvalidArgumentSchema.gen";
 import { errorPasswordMismatchSchema } from "./errorPasswordMismatchSchema.gen";
@@ -8,69 +11,29 @@ import { errorRefreshTokenCannotBeEmptySchema } from "./errorRefreshTokenCannotB
 import { errorRefreshTokenExpiredSchema } from "./errorRefreshTokenExpiredSchema.gen";
 import { errorRefreshTokenInvalidSchema } from "./errorRefreshTokenInvalidSchema.gen";
 import { errorResourceConflictSchema } from "./errorResourceConflictSchema.gen";
-import { errorResourceNotFoundSchema } from "./errorResourceNotFoundSchema.gen";
+import { errorForbiddenSchema } from "./errorForbiddenSchema.gen";
 import { errorUnauthorizedSchema } from "./errorUnauthorizedSchema.gen";
 import { errorUsernameOrEmailCannotBeEmptySchema } from "./errorUsernameOrEmailCannotBeEmptySchema.gen";
 import { errorValidationFailedSchema } from "./errorValidationFailedSchema.gen";
-import { listOperationsSortOptionsSchema } from "./listOperationsSortOptionsSchema.gen";
-import { paginatedListOperationSchema } from "./paginatedListOperationSchema.gen";
-import { sortOrderSchema } from "./sortOrderSchema.gen";
 
-export const getWorkspaceOperationsPathParamsSchema = z.object({
-	workspace: z.string(),
-});
-export type GetWorkspaceOperationsPathParamsSchema = z.infer<
-	typeof getWorkspaceOperationsPathParamsSchema
->;
 
-export const getWorkspaceOperationsQueryParamsSchema = z
-	.object({
-		search: z.string().optional(),
-		sort: z.lazy(() => listOperationsSortOptionsSchema).optional(),
-		sort_order: z.lazy(() => sortOrderSchema).optional(),
-		offset: z.number().int().min(0).default(0).optional(),
-		limit: z.number().int().min(1).max(100).default(20).optional(),
-	})
-	.optional();
-export type GetWorkspaceOperationsQueryParamsSchema = z.infer<
-	typeof getWorkspaceOperationsQueryParamsSchema
->;
+export const getWorkspaceOperationsPathParamsSchema = z.object({ "workspace": z.string() });
+export type GetWorkspaceOperationsPathParamsSchema = z.infer<typeof getWorkspaceOperationsPathParamsSchema>;
+
+ export const getWorkspaceOperationsQueryParamsSchema = z.object({ "search": z.string().optional(), "sort": z.lazy(() => listOperationsSortOptionsSchema).optional(), "sort_order": z.lazy(() => sortOrderSchema).optional(), "offset": z.number().int().min(0).default(0).optional(), "limit": z.number().int().min(1).max(100).default(20).optional() }).optional();
+export type GetWorkspaceOperationsQueryParamsSchema = z.infer<typeof getWorkspaceOperationsQueryParamsSchema>;
 /**
  * @description Successful Response
  */
-export const getWorkspaceOperations200Schema = z.lazy(
-	() => paginatedListOperationSchema,
-);
-export type GetWorkspaceOperations200Schema = z.infer<
-	typeof getWorkspaceOperations200Schema
->;
+export const getWorkspaceOperations200Schema = z.lazy(() => paginatedListOperationSchema);
+export type GetWorkspaceOperations200Schema = z.infer<typeof getWorkspaceOperations200Schema>;
 /**
  * @description Unprocessable Entity
  */
-export const getWorkspaceOperations422Schema = z.union([
-	z.lazy(() => errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema),
-	z.lazy(() => errorResourceNotFoundSchema),
-	z.lazy(() => errorInternalSchema),
-	z.lazy(() => errorInvalidArgumentSchema),
-	z.lazy(() => errorPasswordMismatchSchema),
-	z.lazy(() => errorRefreshTokenCannotBeEmptySchema),
-	z.lazy(() => errorRefreshTokenExpiredSchema),
-	z.lazy(() => errorRefreshTokenInvalidSchema),
-	z.lazy(() => errorResourceConflictSchema),
-	z.lazy(() => errorForbiddenSchema),
-	z.lazy(() => errorUnauthorizedSchema),
-	z.lazy(() => errorUsernameOrEmailCannotBeEmptySchema),
-	z.lazy(() => errorValidationFailedSchema),
-]);
-export type GetWorkspaceOperations422Schema = z.infer<
-	typeof getWorkspaceOperations422Schema
->;
+export const getWorkspaceOperations422Schema = z.union([z.lazy(() => errorEmailAndUsernameCannotBeProvidedAtTheSameTimeSchema), z.lazy(() => errorResourceNotFoundSchema), z.lazy(() => errorInternalSchema), z.lazy(() => errorInvalidArgumentSchema), z.lazy(() => errorPasswordMismatchSchema), z.lazy(() => errorRefreshTokenCannotBeEmptySchema), z.lazy(() => errorRefreshTokenExpiredSchema), z.lazy(() => errorRefreshTokenInvalidSchema), z.lazy(() => errorResourceConflictSchema), z.lazy(() => errorForbiddenSchema), z.lazy(() => errorUnauthorizedSchema), z.lazy(() => errorUsernameOrEmailCannotBeEmptySchema), z.lazy(() => errorValidationFailedSchema)]);
+export type GetWorkspaceOperations422Schema = z.infer<typeof getWorkspaceOperations422Schema>;
 /**
  * @description Successful Response
  */
-export const getWorkspaceOperationsQueryResponseSchema = z.lazy(
-	() => paginatedListOperationSchema,
-);
-export type GetWorkspaceOperationsQueryResponseSchema = z.infer<
-	typeof getWorkspaceOperationsQueryResponseSchema
->;
+export const getWorkspaceOperationsQueryResponseSchema = z.lazy(() => paginatedListOperationSchema);
+export type GetWorkspaceOperationsQueryResponseSchema = z.infer<typeof getWorkspaceOperationsQueryResponseSchema>;

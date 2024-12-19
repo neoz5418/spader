@@ -34,6 +34,10 @@ const isLoggedIn = () => {
   return getRefreshToken() !== null
 }
 
+const getErrorMessage = (error :ApiError) => {
+  return error.type + ":" + error.message
+}
+
 const useAuth = () => {
   const [error, setError] = useState<string | null>(null)
   const navigate = useNavigate()
@@ -84,8 +88,8 @@ const useAuth = () => {
       navigate( "/" )
     }catch(err) {
       const error = err as ApiError ;
-      showToast("登录失败", error.message, "error")
-      setError("登录失败, 请检查邮箱和密码")
+      showToast("登录失败", getErrorMessage(error), "error")
+      setError( getErrorMessage(error))
     }
   }
 

@@ -4,10 +4,11 @@ import { MutationCache, QueryCache } from "@tanstack/react-query";
 import { mutationErrorHandler, queryErrorHandler } from "./error-handler";
 import type { AxiosError, AxiosHeaders, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
 import { getAccessToken } from './tokens'
-import { ApiError } from '@/core/ApiError';
+import { ApiError } from '@/utils/api-error';
 
 declare const AXIOS_BASE: string
 declare const AXIOS_HEADERS: string
+
 
 /**
  * Subset of AxiosRequestConfig
@@ -64,24 +65,22 @@ export async function axiosClient<TData, TVariables = unknown>(
     commonHeader["Timezone-Val"] =
       Intl.DateTimeFormat().resolvedOptions().timeZone;
   }
+  
 
   try {
     const response = await axiosInstance.request<TData, ResponseConfig<TData>>(config);
     return response;
   } catch (err) {
     const error = err as AxiosError ;
-    const errorResponse: ApiError = {
-      message: '未知错误',
-      status: error.response?.status || 0,
-    };
-
-
-    if (!error.response) {
-      errorResponse.message = '网络连接失败，请检查网络设置！';
-    } else {
+    const errorResponse: ApiError = !error.response ?   {
+      name: 'ApiError',
+      type: 'NetworkError',
+      message: '网络连接失败，请检查网络设置！',
+    } : error.response?.data as ApiError;
+    if (error.response) {
       switch (error.response.status) {
         case 401:
-          errorResponse.message = '未授权，请重新登录';
+          errorResponse.message = '请重新登录';
           break;
         case 403:
           errorResponse.message = '拒绝访问';

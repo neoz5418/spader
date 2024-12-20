@@ -1,7 +1,7 @@
 import { HTMLAttributes, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
-import { z } from "@/utils/zod"
+import { z ,handleFormError} from '@/utils/zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { IconBrandFacebook, IconBrandGithub, IconRegistered } from '@tabler/icons-react'
 import {
@@ -23,15 +23,31 @@ import useAuth from "@/hooks/use-auth"
 
 interface UserAuthFormProps extends HTMLAttributes<HTMLDivElement> {}
 
+import {
+  token as loginAccessToken,
+} from "@/gen/clients"
 
+import {
+  type ApiError,
+} from "@/core/ApiError"
+
+import {
+  useTokenHook
+} from '@/gen/hooks/useTokenHook'
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
-  const { loginMutation, error: loginError, resetError } = useAuth()
+  const [formError, setFormError] = useState('')
+  const { loginSuccess } = useAuth()
+  const { mutateAsync: loginAsync, isPending: isLoginPending, error: loginError } = useTokenHook()
   const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate()
 
   const form = useForm<BodyLoginLoginAccessTokenSchema>({
-    resolver: zodResolver(bodyLoginLoginAccessTokenSchema),
+    mode: 'onChange',
+    resolver: zodResolver(bodyLoginLoginAccessTokenSchema.extend({
+      email: z.string().email(),
+      password: z.string().min(1)
+    })),
     defaultValues: {
       grant_type: 'password',
       email: '',
@@ -39,27 +55,29 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     },
   })
 
-
   async function onSubmit(data: BodyLoginLoginAccessTokenSchema) {
-    console.log("onSubmit", loginError)
-    if (isLoading) return
+    setFormError('')
 
-    resetError()
-
-    setIsLoading(true)
-    console.log(data)
-
-    try {
-      await loginMutation.mutateAsync(data)
-      console.log("loginMutation")
-    } catch {
-      // error is handled by useAuth hook
-      console.log("loginMutation error")
+    try{
+      const response = await loginAccessToken({
+        grant_type: 'password',
+        email: data.email,
+        password: data.password,
+      })
+      loginSuccess(response)
+      navigate( "/" )
+    }catch(err) {
+      const error = err as ApiError ;
+      // showToast("登录失败", getErrorMessage(error), "error")
+      console.log(error, err)
+      handleFormError(error, form)
     }
-
-    setIsLoading(false)
   }
-  const onInvalid = (errors: any) => console.error(errors)
+
+  const onInvalid = (errors: any) => {
+    console.log(errors)
+    console.log(form.formState)
+  }
 
   return (
     <div className={cn('grid gap-6', className)} {...props}>
@@ -100,10 +118,15 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                 </FormItem>
               )}
             />
+            {/* 显示根级别的表单错误 */}
+            {form.formState.errors.root && (
+                    <div className="text-[0.8rem] font-medium text-destructive">
+                      {form.formState.errors.root.message}
+                    </div>
+                  )}
             <Button className='mt-2' loading={isLoading}>
               登录
             </Button>
-           {loginError && <FormMessage>{loginError}</FormMessage>}
             <div className='relative my-2'>
               <div className='absolute inset-0 flex items-center'>
                 <span className='w-full border-t' />

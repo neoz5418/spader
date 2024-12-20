@@ -8,6 +8,7 @@ import translation from "zod-i18n-map/locales/zh-CN/zod.json";
 import { ApiError } from "./api-error";
 import { UseFormReturn } from "react-hook-form";
 
+
 // lng and resources key depend on your locale.
 i18next.use(initReactI18next).init({
   lng: "zh",
@@ -30,6 +31,9 @@ i18next.use(initReactI18next).init({
         EmailVerificationFailed: "邮箱验证失败",
         EmailVerificationCodeInvalid: "邮箱验证码无效",
         EmailVerificationCodeExpired: "邮箱验证码已过期",
+        InvalidArgument: "无效的参数",
+        PasswordMismatch: "密码错误",
+        ResourceNotFound: "资源不存在",
       }    
     }
   },

@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from "@/utils/zod"
 import { Link } from 'react-router-dom'
 import { useFieldArray, useForm } from 'react-hook-form'
 import { Button } from '@/components/custom/button'

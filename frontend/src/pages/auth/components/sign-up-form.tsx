@@ -17,10 +17,9 @@ import SignUpSuccess from '@/components/signup-success'
 import { Card } from '@/components/ui/card'
 import { PhoneInput } from '@/components/phone-input.tsx'
 import * as validator from 'validator'
-import { z } from 'zod'
+import { z ,handleFormError} from '@/utils/zod'
 import { useTranslation } from 'react-i18next'
 import { ErrorResourceConflictType, RegisterUserRequestType, SendOneTimePasswordRequestType } from '@/gen'
-
 export function SignUpForm({ className, ...props }: { className?: string }) {
   const { t } = useTranslation('custom')  // 指定使用 custom 命名空间
   const [formError, setFormError] = useState('')
@@ -53,6 +52,7 @@ export function SignUpForm({ className, ...props }: { className?: string }) {
   //   resolver: zodResolver(requestSchema),
   // })
   const registerForm = useForm({
+    mode: 'onChange',
     resolver: zodResolver(sendOneTimePasswordRequestSchema.extend({
       phone_number: z.string().min(1, 'Invalid phone number').refine((phone: string) => validator.isMobilePhone(phone, ['zh-CN']), { params: { i18n: "invalid_phone_number" } }),
       password: z.string().min(8)
@@ -72,13 +72,8 @@ export function SignUpForm({ className, ...props }: { className?: string }) {
       setRegisterUserRequest(data)
       setStep('verify')
     }).catch((e) => {
-      console.log(e,verifyForm)
-      setFormError(t(e.type))
-      console.log(e.type, t(e.type))
-      registerForm.setError('root', { 
-        type: 'custom',
-        message: t(e.type)
-      })
+      console.log(e)
+      handleFormError(e, registerForm)
     })
   }
 

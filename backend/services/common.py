@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from enum import auto, Enum, StrEnum
+from enum import Enum
 from typing import Annotated, Any, Literal, Optional, Union
 from typing import Generic, TypeVar
 
@@ -93,22 +93,6 @@ class ErrorBase(BaseModel):
         return tuple(cls.__subclasses__())
 
 
-class ErrorType(StrEnum):
-    EmailAndUsernameCannotBeProvidedAtTheSameTime = auto()
-
-
-@http_exception(422)
-class ErrorEmailAndUsernameCannotBeProvidedAtTheSameTime(ErrorBase):
-    type: Literal[ErrorType.EmailAndUsernameCannotBeProvidedAtTheSameTime]
-
-
-@http_exception(404)
-class ErrorResourceNotFound(ErrorBase):
-    type: Literal["ResourceNotFound"]
-    resource_name: str
-    input: Any
-
-
 @http_exception(500)
 class ErrorInternal(ErrorBase):
     type: Literal["Internal"]
@@ -122,17 +106,22 @@ class ErrorInvalidArgument(ErrorBase):
 
 
 @http_exception(422)
+class ErrorEmailAndUsernameCannotBeProvidedAtTheSameTime(ErrorInvalidArgument):
+    type: Literal["EmailAndUsernameCannotBeProvidedAtTheSameTime"]
+
+
+@http_exception(404)
+class ErrorResourceNotFound(ErrorInvalidArgument):
+    type: Literal["ResourceNotFound"]
+
+
+@http_exception(422)
 class ErrorEmailUndeliverable(ErrorInvalidArgument):
     type: Literal["EmailUndeliverable"]
 
 
-@http_exception(422)
-class ErrorInvalidEmail(ErrorInvalidArgument):
-    type: Literal["InvalidEmail"]
-
-
 @http_exception(401)
-class ErrorPasswordMismatch(ErrorBase):
+class ErrorPasswordMismatch(ErrorInvalidArgument):
     type: Literal["PasswordMismatch"]
 
 
@@ -152,10 +141,8 @@ class ErrorRefreshTokenInvalid(ErrorBase):
 
 
 @http_exception(422)
-class ErrorResourceConflict(ErrorBase):
+class ErrorResourceConflict(ErrorInvalidArgument):
     type: Literal["ResourceConflict"]
-    input: Any
-    location: str
     resource_name: str
 
 
@@ -199,6 +186,13 @@ class ErrorValidationFailed(ErrorBase):
             type="ValidationFailed",
             details=details,
         )
+
+
+def single_column_validation_failed(detail: ErrorInvalidArgument) -> HTTPException:
+    return ErrorValidationFailed(
+        type="ValidationFailed",
+        details=[detail],
+    ).to_exception()
 
 
 Errors = Annotated[Union[ErrorBase.get_subclasses()], Field(discriminator="type")]

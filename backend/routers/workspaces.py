@@ -165,7 +165,7 @@ async def get_workspace(
     if not workspace:
         raise ErrorResourceNotFound(
             type="ResourceNotFound",
-            resource_name="workspace",
+            location="workspace",
             input=workspace,
         ).to_exception()
     return workspace
@@ -280,7 +280,7 @@ async def get_workspace_account_recharge(
     )
     if db_recharge is None:
         raise ErrorResourceNotFound(
-            type="ResourceNotFound", resource_name="recharge", input=recharge_id
+            type="ResourceNotFound", location="recharge", input=recharge_id
         ).to_exception()
     return db_recharge
 
@@ -305,7 +305,7 @@ async def check_workspace_account_recharge(
         # TODO: check user has workspace permission
         if db_recharge is None:
             raise ErrorResourceNotFound(
-                type="ResourceNotFound", resource_name="recharge", input=recharge_id
+                type="ResourceNotFound", location="recharge", input=recharge_id
             ).to_exception()
         if db_recharge.status == RechargeStatus.succeeded:
             return db_recharge
@@ -372,7 +372,7 @@ async def get_ssh_key(
     if not ssh_key:
         raise ErrorResourceNotFound(
             type="ResourceNotFound",
-            resource_name="ssh_key",
+            location="ssh_key",
             input=name,
         ).to_exception()
     return ssh_key

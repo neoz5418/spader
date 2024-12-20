@@ -104,7 +104,7 @@ async def authorizer(session: AsyncSession, request: HTTPConnection, user: User)
         if not db_workspace:
             raise ErrorResourceNotFound(
                 type="ResourceNotFound",
-                resource_name="workspace",
+                location="workspace",
                 input=workspace,
             ).to_exception()
         if user.name != db_workspace.owner:

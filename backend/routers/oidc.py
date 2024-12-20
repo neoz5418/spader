@@ -17,7 +17,8 @@ from services.common import (
     ErrorRefreshTokenExpired,
     ErrorRefreshTokenInvalid,
     ErrorResourceNotFound,
-    ErrorUsernameOrEmailCannotBeEmpty,
+    ErrorValidationFailed,
+    single_column_validation_failed,
 )
 from services.security import (
     jwt_manager,
@@ -72,18 +73,44 @@ async def token(
 ) -> Token:
     if grant_type == GrantType.password:
         if not password:
-            raise ErrorInvalidArgument(
-                type="InvalidArgument",
-                input=password,
-                location="password",
-            ).to_exception()
+            raise single_column_validation_failed(
+                ErrorInvalidArgument(
+                    type="InvalidArgument",
+                    input=password,
+                    location="password",
+                )
+            )
         if not email and not username:
-            raise ErrorUsernameOrEmailCannotBeEmpty(
-                type="UsernameOrEmailCannotBeEmpty"
+            raise ErrorValidationFailed(
+                type="ValidationFailed",
+                details=[
+                    ErrorInvalidArgument(
+                        type="InvalidArgument",
+                        location="email",
+                        input=email,
+                    ),
+                    ErrorInvalidArgument(
+                        type="InvalidArgument",
+                        location="username",
+                        input=username,
+                    ),
+                ],
             ).to_exception()
         if email and username:
-            raise ErrorEmailAndUsernameCannotBeProvidedAtTheSameTime(
-                type="EmailAndUsernameCannotBeProvidedAtTheSameTime"
+            raise ErrorValidationFailed(
+                type="ValidationFailed",
+                details=[
+                    ErrorEmailAndUsernameCannotBeProvidedAtTheSameTime(
+                        type="EmailAndUsernameCannotBeProvidedAtTheSameTime",
+                        location="email",
+                        input=email,
+                    ),
+                    ErrorEmailAndUsernameCannotBeProvidedAtTheSameTime(
+                        type="EmailAndUsernameCannotBeProvidedAtTheSameTime",
+                        location="username",
+                        input=username,
+                    ),
+                ],
             ).to_exception()
         if email:
             user = (await session.exec(select(User).where(User.email == email))).first()
@@ -95,11 +122,17 @@ async def token(
             raise Exception("should not run in there")
         logger.info("user: %s, username: %s, email: %s", user, username, email)
         if user is None:
-            raise ErrorResourceNotFound(
-                type="ResourceNotFound", resource_name="user", input=email or username
-            ).to_exception()
+            raise single_column_validation_failed(
+                ErrorResourceNotFound(
+                    type="ResourceNotFound",
+                    location="email" if email else "user",
+                    input=email or username,
+                )
+            )
         if verify_hashed_secret(user.hashed_password, password) is False:
-            raise ErrorPasswordMismatch(type="PasswordMismatch").to_exception()
+            raise single_column_validation_failed(
+                ErrorPasswordMismatch(type="PasswordMismatch", location="password")
+            )
         username = user.name
     if grant_type == GrantType.refresh_token:
         if len(refresh_token) == 0:
@@ -115,7 +148,7 @@ async def token(
         username = payload["sub"]
         if username == "":
             raise ErrorResourceNotFound(
-                type="ResourceNotFound", resource_name="user", input=""
+                type="ResourceNotFound", location="user", input=username
             ).to_exception()
     access_token = jwt_manager.create_access_token(username=username)
     refresh_token = jwt_manager.create_refresh_token(username=username)

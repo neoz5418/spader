@@ -243,7 +243,7 @@ async def get_instance(
     if not instance:
         raise ErrorResourceNotFound(
             type="ResourceNotFound",
-            resource_name="instance",
+            location="instance",
             input=name,
         ).to_exception()
     return instance

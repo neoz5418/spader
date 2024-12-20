@@ -6,7 +6,6 @@ from enum import Enum
 
 from email_validator import (
     EmailNotValidError,
-    EmailSyntaxError,
     EmailUndeliverableError,
     validate_email,
 )
@@ -37,9 +36,8 @@ from services.common import (
     Direction,
     ErrorEmailUndeliverable,
     ErrorInvalidArgument,
-    ErrorInvalidEmail,
     ErrorResourceConflict,
-    ErrorValidationFailed,
+    single_column_validation_failed,
 )
 from services.notification import send_one_time_password_email
 from services.security import get_secret_hash
@@ -169,52 +167,43 @@ async def check_user_register_info(
         # especially before going to a database query.
         email = email_info.normalized
     except EmailUndeliverableError:
-        raise ErrorValidationFailed(
-            type="ValidationFailed",
-            details=[
-                ErrorEmailUndeliverable(
-                    type="EmailUndeliverable", input=email, location="email"
-                ),
-            ],
-        ).to_exception()
-    except EmailSyntaxError:
-        raise ErrorValidationFailed(
-            type="ValidationFailed",
-            details=[
-                ErrorInvalidEmail(type="InvalidEmail", input=email, location="email"),
-            ],
-        ).to_exception()
+        raise single_column_validation_failed(
+            detail=ErrorEmailUndeliverable(
+                type="EmailUndeliverable", input=email, location="email"
+            )
+        )
     except EmailNotValidError:
-        raise ErrorValidationFailed(
-            type="ValidationFailed",
-            details=[
-                ErrorInvalidArgument(
-                    type="InvalidArgument",
-                    location="email",
-                    input=email,
-                ),
-            ],
-        ).to_exception()
+        raise single_column_validation_failed(
+            detail=ErrorInvalidArgument(
+                type="InvalidArgument",
+                location="email",
+                input=email,
+            ),
+        )
 
     # check user exists
     statement = select(User).where(User.email == email)
     db_user = (await session.exec(statement)).first()
     if db_user is not None:
-        raise ErrorResourceConflict(
-            type="ResourceConflict",
-            input=email,
-            location="email",
-            resource_name="user",
-        ).to_exception()
+        raise single_column_validation_failed(
+            ErrorResourceConflict(
+                type="ResourceConflict",
+                input=email,
+                location="email",
+                resource_name="user",
+            )
+        )
     statement = select(User).where(User.name == name)
     db_user = (await session.exec(statement)).first()
     if db_user is not None:
-        raise ErrorResourceConflict(
-            type="ResourceConflict",
-            input=name,
-            location="name",
-            resource_name="user",
-        ).to_exception()
+        raise single_column_validation_failed(
+            ErrorResourceConflict(
+                type="ResourceConflict",
+                input=name,
+                location="name",
+                resource_name="user",
+            )
+        )
 
 
 @router.post("/users/")
@@ -236,11 +225,13 @@ async def register_user(
         register_user_request.one_time_password,
     )
     if not otp or otp != str(register_user_request.one_time_password):
-        raise ErrorInvalidArgument(
-            type="InvalidArgument",
-            input=register_user_request.one_time_password,
-            loc=["body", "one_time_password"],
-        ).to_exception()
+        raise single_column_validation_failed(
+            ErrorInvalidArgument(
+                type="InvalidArgument",
+                input=register_user_request.one_time_password,
+                location="one_time_password",
+            )
+        )
 
     db_user = User.model_validate(
         register_user_request,

@@ -6,7 +6,9 @@ import { useState } from "react"
 import { AxiosError } from "axios"
 import {
   type BodyTokenApisOidcV1TokenPostType as AccessToken,
+  BodyTokenApisOidcV1TokenPostType,
   RegisterUserMutationRequestType,
+  TokenMutationResponseType,
   GetCurrentUserQueryResponseType as UserPublicType,
 } from "../gen/ts"
 
@@ -93,6 +95,13 @@ const useAuth = () => {
     }
   }
 
+  const loginSuccess = (data: TokenMutationResponseType) => {
+    setRefreshToken(data.refresh_token)
+    setAccessToken(data.access_token)
+    showToast("登录成功", "You have been logged in successfully.", "success")
+    navigate( "/" )
+  }
+
   const loginMutation = useMutation({
     mutationFn: login,
     // onError: (err: AxiosError) => {
@@ -163,6 +172,7 @@ const useAuth = () => {
     logout,
     refreshToken,
     refreshTokenRetry,
+    loginSuccess,
     user,
     isLoading,
     error,

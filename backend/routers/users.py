@@ -4,7 +4,12 @@ import string
 from datetime import timedelta
 from enum import Enum
 
-from email_validator import EmailNotValidError, validate_email
+from email_validator import (
+    EmailNotValidError,
+    EmailSyntaxError,
+    EmailUndeliverableError,
+    validate_email,
+)
 from fastapi import APIRouter, BackgroundTasks, status
 from pydantic import EmailStr
 from pydantic_extra_types.phone_numbers import PhoneNumber
@@ -30,7 +35,9 @@ from routers.types import (
 from services.cache import get_redis
 from services.common import (
     Direction,
+    ErrorEmailUndeliverable,
     ErrorInvalidArgument,
+    ErrorInvalidEmail,
     ErrorResourceConflict,
     ErrorValidationFailed,
 )
@@ -161,15 +168,31 @@ async def check_user_register_info(
         # After this point, use only the normalized form of the email address,
         # especially before going to a database query.
         email = email_info.normalized
-
+    except EmailUndeliverableError:
+        raise ErrorValidationFailed(
+            type="ValidationFailed",
+            details=[
+                ErrorEmailUndeliverable(
+                    type="EmailUndeliverable", input=email, location="email"
+                ),
+            ],
+        ).to_exception()
+    except EmailSyntaxError:
+        raise ErrorValidationFailed(
+            type="ValidationFailed",
+            details=[
+                ErrorInvalidEmail(type="InvalidEmail", input=email, location="email"),
+            ],
+        ).to_exception()
     except EmailNotValidError:
         raise ErrorValidationFailed(
             type="ValidationFailed",
             details=[
                 ErrorInvalidArgument(
+                    type="InvalidArgument",
                     location="email",
                     input=email,
-                )
+                ),
             ],
         ).to_exception()
 

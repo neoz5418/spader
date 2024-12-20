@@ -121,6 +121,16 @@ class ErrorInvalidArgument(ErrorBase):
     input: Any
 
 
+@http_exception(422)
+class ErrorEmailUndeliverable(ErrorInvalidArgument):
+    type: Literal["EmailUndeliverable"]
+
+
+@http_exception(422)
+class ErrorInvalidEmail(ErrorInvalidArgument):
+    type: Literal["InvalidEmail"]
+
+
 @http_exception(401)
 class ErrorPasswordMismatch(ErrorBase):
     type: Literal["PasswordMismatch"]

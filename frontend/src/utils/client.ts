@@ -72,12 +72,15 @@ export async function axiosClient<TData, TVariables = unknown>(
     return response;
   } catch (err) {
     const error = err as AxiosError ;
+    console.log("[+]response",error)
     const errorResponse: ApiError = !error.response ?   {
+      status: 0,
       name: 'ApiError',
       type: 'NetworkError',
       message: '网络连接失败，请检查网络设置！',
     } : error.response?.data as ApiError;
     if (error.response) {
+      errorResponse.status = error.response.status
       switch (error.response.status) {
         case 401:
           errorResponse.message = '请重新登录';

@@ -131,7 +131,9 @@ async def token(
             )
         if verify_hashed_secret(user.hashed_password, password) is False:
             raise single_column_validation_failed(
-                ErrorPasswordMismatch(type="PasswordMismatch", location="password")
+                ErrorPasswordMismatch(
+                    type="PasswordMismatch", location="password", input=""
+                )
             )
         username = user.name
     if grant_type == GrantType.refresh_token:

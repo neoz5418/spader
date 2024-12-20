@@ -1,9 +1,12 @@
+import asyncio
 import logging
 from enum import Enum
 
 from fastapi import APIRouter, status, WebSocket
 from sqlmodel import and_, select
 from uuid import UUID
+
+from starlette.websockets import WebSocketDisconnect
 
 from dependencies import (
     active_connections_set,
@@ -476,7 +479,8 @@ async def watch_workspace(
     await websocket.accept()
     active_connections_set.add(websocket)
     redis = get_redis()
-    try:
+
+    async def redis_listener():
         async with redis.pubsub() as pubsub:
             await pubsub.subscribe("workspace:" + workspace)
             while True:
@@ -486,11 +490,18 @@ async def watch_workspace(
                 if message is not None:
                     logger.info(message["data"])
                     await websocket.send_text(message["data"])
+
+    listener_task = asyncio.create_task(redis_listener())
+    try:
+        while True:
+            await websocket.receive_text()
+    except WebSocketDisconnect:
+        logger.info("websocket %s is closed", websocket)
     except Exception as e:
         logger.error(e)
         await websocket.close()
-    finally:
-        active_connections_set.discard(websocket)
+    listener_task.cancel()
+    active_connections_set.discard(websocket)
 
 
 class ListOperationsSortOptions(Enum):

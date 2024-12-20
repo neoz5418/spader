@@ -62,18 +62,6 @@ export default function AuditLogs() {
   console.log("[+] auditLogs", auditLogs)
  
 
-  const getActionColor = (action: string) => {
-    switch (action) {
-      case 'update':
-        return 'text-blue-600'
-      case 'create':
-        return 'text-green-600'
-      case 'delete':
-        return 'text-red-600'
-      default:
-        return ''
-    }
-  }
 
   return (
     <div className="w-full max-w-[1200px] mx-auto p-4">
@@ -139,6 +127,19 @@ export default function AuditLogs() {
 }
 
 
+const getActionColor = (action: string) => {
+  switch (action) {
+    case 'update':
+      return 'text-blue-600'
+    case 'create':
+      return 'text-green-600'
+    case 'delete':
+      return 'text-red-600'
+    default:
+      return ''
+  }
+}
+
 export const AuditLogsColumns: ColumnDef<AuditLogType>[] = [
   {
     accessorKey: 'create_time',
@@ -159,5 +160,8 @@ export const AuditLogsColumns: ColumnDef<AuditLogType>[] = [
   {
     accessorKey: 'action',
     header: '操作',
+    cell: (cell) => {
+      return <span className={getActionColor(cell.getValue())}>{cell.getValue()}</span>
+    },
   },
 ]

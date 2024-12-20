@@ -18,9 +18,12 @@ import { Card } from '@/components/ui/card'
 import { PhoneInput } from '@/components/phone-input.tsx'
 import * as validator from 'validator'
 import { z } from 'zod'
+import { useTranslation } from 'react-i18next'
 import { ErrorResourceConflictType, RegisterUserRequestType, SendOneTimePasswordRequestType } from '@/gen'
 
 export function SignUpForm({ className, ...props }: { className?: string }) {
+  const { t } = useTranslation('custom')  // 指定使用 custom 命名空间
+  const [formError, setFormError] = useState('')
   const [disableVerifyBtn, setDisableVerifyBtn] = useState(true)
   const [registerUserRequest, setRegisterUserRequest] = useState({
     name: '',
@@ -64,11 +67,18 @@ export function SignUpForm({ className, ...props }: { className?: string }) {
   })
 
   async function onRegisterSubmit(data: SendOneTimePasswordRequestType) {
+    setFormError('')
     return registerAsync(data).then(() => {
       setRegisterUserRequest(data)
       setStep('verify')
     }).catch((e) => {
-      console.error(e)
+      console.log(e,verifyForm)
+      setFormError(t(e.type))
+      console.log(e.type, t(e.type))
+      registerForm.setError('root', { 
+        type: 'custom',
+        message: t(e.type)
+      })
     })
   }
 
@@ -154,7 +164,7 @@ export function SignUpForm({ className, ...props }: { className?: string }) {
                            type={'hidden'} {...verifyForm.register('password')} />
                     <input value={'email'}
                            type={'hidden'} {...verifyForm.register('one_time_password_validate_type')} />
-                    {verifyError && <div>{verifyError.message.type}</div>}
+                    {formError && <div>1111{formError}1111</div>}
                     <Button
                       className="mt-2"
                       disabled={disableVerifyBtn}
@@ -281,7 +291,12 @@ export function SignUpForm({ className, ...props }: { className?: string }) {
                       </FormItem>
                     )}
                   />
-                  {registerError && <div>{registerError.message.type}</div>}
+                  {/* 显示根级别的表单错误 */}
+                  {registerForm.formState.errors.root && (
+                    <div className="text-[0.8rem] font-medium text-destructive">
+                      {registerForm.formState.errors.root.message}
+                    </div>
+                  )}
                   <input value={'email'} type={'hidden'} {...registerForm.register('type')} />
                   <Button className="mt-2" loading={isRegisterPending}
                           type="submit">

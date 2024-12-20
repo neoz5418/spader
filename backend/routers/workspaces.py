@@ -46,6 +46,8 @@ from services.common import (
     ErrorResourceNotFound,
     PaginatedList,
     Pagination,
+    ResourceName,
+    single_column_validation_failed,
 )
 from services.lago import get_account, top_up_account
 from services.payment import alipay_recharge, check_alipay_recharge
@@ -77,12 +79,14 @@ async def create_workspace(
         )
     ).first()
     if db_workspace:
-        raise ErrorResourceConflict(
-            type="ResourceConflict",
-            input=workspace.name,
-            location="name",
-            resource_name="workspace",
-        ).to_exception()
+        raise single_column_validation_failed(
+            ErrorResourceConflict(
+                type="ResourceConflict",
+                input=workspace.name,
+                location="name",
+                resource_name=ResourceName.workspace,
+            )
+        )
     db_workspace = Workspace.model_validate(
         workspace,
         update={
@@ -394,12 +398,14 @@ async def create_workspace_ssh_keys(
         },
     )
     if existing:
-        raise ErrorResourceConflict(
-            type="ResourceConflict",
-            input=ssh_key_in.name,
-            location="name",
-            resource_name="ssh_key",
-        ).to_exception()
+        raise single_column_validation_failed(
+            ErrorResourceConflict(
+                type="ResourceConflict",
+                input=ssh_key_in.name,
+                location="name",
+                resource_name=ResourceName.ssh_key,
+            )
+        )
     # TODO: validate ssh key
     to_create = SSHKey.model_validate(
         ssh_key_in,

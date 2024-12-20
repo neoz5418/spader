@@ -42,7 +42,13 @@ from services.celery import (
     start_instance_operation,
     stop_instance_operation,
 )
-from services.common import ErrorResourceConflict, ErrorResourceNotFound, utcnow
+from services.common import (
+    ErrorResourceConflict,
+    ErrorResourceNotFound,
+    ResourceName,
+    single_column_validation_failed,
+    utcnow,
+)
 from services.lru_resource_cache import get_gpu_type_display_name, get_zone_display_name
 
 router = APIRouter(
@@ -63,12 +69,14 @@ async def create_zone(
 ) -> Zone:
     existing = await Zone.one_by_field(session, "name", zone_in.name)
     if existing:
-        raise ErrorResourceConflict(
-            type="ResourceConflict",
-            input=zone_in.name,
-            location="name",
-            resource_name="zone",
-        ).to_exception()
+        raise single_column_validation_failed(
+            ErrorResourceConflict(
+                type="ResourceConflict",
+                input=zone_in.name,
+                location="name",
+                resource_name=ResourceName.zone,
+            )
+        )
     to_create = Zone.model_validate(zone_in)
     return await Zone.create(session, to_create)
 
@@ -269,12 +277,14 @@ async def create_instance(
         },
     )
     if existing:
-        raise ErrorResourceConflict(
-            type="ResourceConflict",
-            input=instance_in.name,
-            location="name",
-            resource_name="instance",
-        ).to_exception()
+        raise single_column_validation_failed(
+            ErrorResourceConflict(
+                type="ResourceConflict",
+                input=instance_in.name,
+                location="name",
+                resource_name=ResourceName.instance,
+            )
+        )
     to_create = Instance.model_validate(
         instance_in,
         update={

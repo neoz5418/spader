@@ -37,6 +37,7 @@ from services.common import (
     ErrorEmailUndeliverable,
     ErrorInvalidArgument,
     ErrorResourceConflict,
+    ResourceName,
     single_column_validation_failed,
 )
 from services.notification import send_one_time_password_email
@@ -190,7 +191,7 @@ async def check_user_register_info(
                 type="ResourceConflict",
                 input=email,
                 location="email",
-                resource_name="user",
+                resource_name=ResourceName.user,
             )
         )
     statement = select(User).where(User.name == name)
@@ -201,7 +202,7 @@ async def check_user_register_info(
                 type="ResourceConflict",
                 input=name,
                 location="name",
-                resource_name="user",
+                resource_name=ResourceName.user,
             )
         )
 

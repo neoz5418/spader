@@ -9,7 +9,7 @@ from lago_python_client.models.wallet_transaction import WalletTransaction
 from uuid import UUID
 import logging
 
-from routers.types import Workspace, WorkspaceAccount
+from routers.types import Currency, Workspace, WorkspaceAccount
 from settings import get_settings
 
 client = Client(api_key=get_settings().lago_key, api_url=get_settings().lago_host)
@@ -26,7 +26,7 @@ def get_wallet(workspace: Workspace) -> Wallet:
             Wallet(
                 external_customer_id=str(workspace.uid),
                 currency="CNY",
-                rate_amount=1,
+                rate_amount="1",
             )
         )
     else:
@@ -65,7 +65,7 @@ def get_account(workspace: Workspace) -> WorkspaceAccount:
     return WorkspaceAccount(
         workspace=workspace.name,
         balance=wallet.balance_cents,
-        currency=wallet.currency,
+        currency=Currency.CNY if wallet.currency == "CNY" else Currency.USD,
     )
 
 

@@ -140,10 +140,18 @@ class ErrorRefreshTokenInvalid(ErrorBase):
     type: Literal["RefreshTokenInvalid"]
 
 
+class ResourceName(str, Enum):
+    user = "user"
+    workspace = "workspace"
+    ssh_key = "ssh_key"
+    instance = "instance"
+    zone = "zone"
+
+
 @http_exception(422)
 class ErrorResourceConflict(ErrorInvalidArgument):
     type: Literal["ResourceConflict"]
-    resource_name: str
+    resource_name: ResourceName
 
 
 @http_exception(403)

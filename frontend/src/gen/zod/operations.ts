@@ -26,7 +26,7 @@ import { createWorkspaceSshKeysMutationRequestSchema, createWorkspaceSshKeysMuta
 import { deleteWorkspaceSshKeysMutationResponseSchema, deleteWorkspaceSshKeys422Schema, deleteWorkspaceSshKeysPathParamsSchema } from "./deleteWorkspaceSshKeysSchema.gen";
 import { getWorkspaceMembersQueryResponseSchema, getWorkspaceMembers422Schema, getWorkspaceMembersPathParamsSchema } from "./getWorkspaceMembersSchema.gen";
 import { getWorkspaceInvitationsQueryResponseSchema, getWorkspaceInvitations422Schema, getWorkspaceInvitationsPathParamsSchema } from "./getWorkspaceInvitationsSchema.gen";
-import { getWorkspaceOperationsQueryResponseSchema, getWorkspaceOperations422Schema, getWorkspaceOperationsPathParamsSchema, getWorkspaceOperationsQueryParamsSchema } from "./getWorkspaceOperationsSchema.gen";
+import { getWorkspaceAuditLogsQueryResponseSchema, getWorkspaceAuditLogs422Schema, getWorkspaceAuditLogsPathParamsSchema, getWorkspaceAuditLogsQueryParamsSchema } from "./getWorkspaceAuditLogsSchema.gen";
 import { createZoneMutationRequestSchema, createZoneMutationResponseSchema, createZone422Schema } from "./createZoneSchema.gen";
 import { listZonesQueryResponseSchema, listZones422Schema, listZonesQueryParamsSchema } from "./listZonesSchema.gen";
 import { listGpuTypesQueryResponseSchema, listGpuTypes422Schema, listGpuTypesQueryParamsSchema } from "./listGpuTypesSchema.gen";
@@ -476,20 +476,20 @@ import { tokenMutationRequestSchema, tokenMutationResponseSchema, token422Schema
         errors: {
             422: getWorkspaceInvitations422Schema
         }
-    }, "get_workspace_operations": {
+    }, "get_workspace_audit_logs": {
         request: undefined,
         parameters: {
-            path: getWorkspaceOperationsPathParamsSchema,
-            query: getWorkspaceOperationsQueryParamsSchema,
+            path: getWorkspaceAuditLogsPathParamsSchema,
+            query: getWorkspaceAuditLogsQueryParamsSchema,
             header: undefined
         },
         responses: {
-            200: getWorkspaceOperationsQueryResponseSchema,
-            422: getWorkspaceOperations422Schema,
-            default: getWorkspaceOperationsQueryResponseSchema
+            200: getWorkspaceAuditLogsQueryResponseSchema,
+            422: getWorkspaceAuditLogs422Schema,
+            default: getWorkspaceAuditLogsQueryResponseSchema
         },
         errors: {
-            422: getWorkspaceOperations422Schema
+            422: getWorkspaceAuditLogs422Schema
         }
     }, "create_zone": {
         request: createZoneMutationRequestSchema,
@@ -959,8 +959,8 @@ export const paths = { "/apis/user/v1/users/me": {
         get: operations["get_workspace_members"]
     }, "/apis/workspace/v1/workspaces/{workspace}/invitations": {
         get: operations["get_workspace_invitations"]
-    }, "/apis/workspace/v1/workspaces/{workspace}/operations": {
-        get: operations["get_workspace_operations"]
+    }, "/apis/workspace/v1/workspaces/{workspace}/audit_logs": {
+        get: operations["get_workspace_audit_logs"]
     }, "/apis/compute/v1/zones/": {
         post: operations["create_zone"]
     }, "/apis/compute/v1/zones": {

@@ -63,12 +63,12 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className='space-y-4'>
-      <div className='flex items-center justify-between'>
+      {createLink ? <div className='flex items-center justify-between'>
         <Button variant="outline" asChild>
           <Link to={createLink}>新建</Link>
         </Button>
-      </div>
-      <DataTableToolbar table={table} />
+      </div> : null}
+      {createLink ? <DataTableToolbar table={table} /> : null}
       <div className="rounded-md border">
         <Table>
           <TableHeader>

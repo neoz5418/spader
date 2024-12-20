@@ -111,8 +111,8 @@ export const operations = {
         "path": "/apis/workspace/v1/workspaces/:workspace/invitations",
         "method": "get"
     },
-    "get_workspace_operations": {
-        "path": "/apis/workspace/v1/workspaces/:workspace/operations",
+    "get_workspace_audit_logs": {
+        "path": "/apis/workspace/v1/workspaces/:workspace/audit_logs",
         "method": "get"
     },
     "create_zone": {

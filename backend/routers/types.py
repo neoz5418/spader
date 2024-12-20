@@ -575,3 +575,38 @@ class RechargeWorkspaceAccount(BaseModel):
     currency: Currency
     type: RechargeType
     callback_url: str
+
+
+
+class AuditLogActionType(str, Enum):
+    create = "create"
+    update = "update"
+    delete = "delete"
+    start = "start"
+    stop = "stop"
+    list = "list"
+
+
+class AuditLogResourceType(str, Enum):
+    instance = "instance"
+    image = "image"
+    file_storage = "file_storage"
+    workspace = "workspace"
+    user = "user"
+    ssh_key = "ssh_key"
+    api_key = "api_key"
+
+class AuditLog(SQLModel, ActiveRecordMixin, table=True):
+    uid: UUID = UID
+    user_id: UUID
+    user_email: Optional[str] = None
+    resource_id: UUID
+    resource_type: AuditLogResourceType
+    action: AuditLogActionType
+    create_time: datetime
+    description: Optional[str] = None
+    workspace: Optional[str] = None  # empty string if the action is not related to a workspace
+    zone: Optional[str] = None  # empty string if the action is not related to a zone
+
+
+AuditLogList = PaginatedList[AuditLog]

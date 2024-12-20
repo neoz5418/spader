@@ -2776,13 +2776,13 @@
         }
       }
     },
-    "/apis/workspace/v1/workspaces/{workspace}/operations": {
+    "/apis/workspace/v1/workspaces/{workspace}/audit_logs": {
       "get": {
         "tags": [
           "workspace"
         ],
-        "summary": "Get Workspace Operations",
-        "operationId": "get_workspace_operations",
+        "summary": "Get Workspace Audit Logs",
+        "operationId": "get_workspace_audit_logs",
         "security": [
           {
             "OAuth2PasswordBearer": [
@@ -2814,7 +2814,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "$ref": "#/components/schemas/ListOperationsSortOptions",
+              "$ref": "#/components/schemas/ListAuditLogsSortOptions",
               "default": "create_time"
             }
           },
@@ -2857,7 +2857,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaginatedList_Operation_"
+                  "$ref": "#/components/schemas/PaginatedList_AuditLog_"
                 }
               }
             }
@@ -2909,7 +2909,7 @@
                       "ValidationFailed": "#/components/schemas/ErrorValidationFailed"
                     }
                   },
-                  "title": "Response 422 Get Workspace Operations Apis Workspace V1 Workspaces  Workspace  Operations Get"
+                  "title": "Response 422 Get Workspace Audit Logs Apis Workspace V1 Workspaces  Workspace  Audit Logs Get"
                 }
               }
             },
@@ -6056,6 +6056,114 @@
         ],
         "title": "Architecture"
       },
+      "AuditLog": {
+        "properties": {
+          "uid": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Uid"
+          },
+          "user_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "User Id"
+          },
+          "user_email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "User Email"
+          },
+          "resource_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Resource Id"
+          },
+          "resource_type": {
+            "$ref": "#/components/schemas/AuditLogResourceType"
+          },
+          "action": {
+            "$ref": "#/components/schemas/AuditLogActionType"
+          },
+          "create_time": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Create Time"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "workspace": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Workspace"
+          },
+          "zone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Zone"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "resource_id",
+          "resource_type",
+          "action",
+          "create_time"
+        ],
+        "title": "AuditLog"
+      },
+      "AuditLogActionType": {
+        "type": "string",
+        "enum": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6"
+        ],
+        "title": "AuditLogActionType"
+      },
+      "AuditLogResourceType": {
+        "type": "string",
+        "enum": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7"
+        ],
+        "title": "AuditLogResourceType"
+      },
       "BillingPeriod": {
         "type": "string",
         "enum": [
@@ -7029,6 +7137,14 @@
         ],
         "title": "InvitationStatus"
       },
+      "ListAuditLogsSortOptions": {
+        "type": "string",
+        "enum": [
+          "create_time"
+        ],
+        "const": "create_time",
+        "title": "ListAuditLogsSortOptions"
+      },
       "ListInstancesSortOptions": {
         "type": "string",
         "enum": [
@@ -7036,15 +7152,6 @@
           "name"
         ],
         "title": "ListInstancesSortOptions"
-      },
-      "ListOperationsSortOptions": {
-        "type": "string",
-        "enum": [
-          "create_time",
-          "start_time",
-          "end_time"
-        ],
-        "title": "ListOperationsSortOptions"
       },
       "ListUsersSortOptions": {
         "type": "string",
@@ -7194,6 +7301,26 @@
           "4"
         ],
         "title": "OperationType"
+      },
+      "PaginatedList_AuditLog_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AuditLog"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "pagination"
+        ],
+        "title": "PaginatedList[AuditLog]"
       },
       "PaginatedList_FileInfo_": {
         "properties": {

@@ -1,6 +1,6 @@
-import type { ListOperationsSortOptionsType } from "./ListOperationsSortOptionsType";
+import type { ListAuditLogsSortOptionsType } from "./ListAuditLogsSortOptionsType";
 import type { SortOrderType } from "./SortOrderType";
-import type { PaginatedListOperationType } from "./PaginatedListOperationType";
+import type { PaginatedListAuditLogType } from "./PaginatedListAuditLogType";
 import type { ErrorInternalType } from "./ErrorInternalType";
 import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
 import type { ErrorRefreshTokenCannotBeEmptyType } from "./ErrorRefreshTokenCannotBeEmptyType";
@@ -11,13 +11,13 @@ import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
 import type { ErrorUsernameOrEmailCannotBeEmptyType } from "./ErrorUsernameOrEmailCannotBeEmptyType";
 import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 
- export type GetWorkspaceOperationsPathParamsType = {
+ export type GetWorkspaceAuditLogsPathParamsType = {
     /**
      * @type string
     */
     workspace: string;
 };
-export type GetWorkspaceOperationsQueryParamsType = {
+export type GetWorkspaceAuditLogsQueryParamsType = {
     /**
      * @type string | undefined
     */
@@ -25,7 +25,7 @@ export type GetWorkspaceOperationsQueryParamsType = {
     /**
      * @type string | undefined
     */
-    sort?: ListOperationsSortOptionsType;
+    sort?: ListAuditLogsSortOptionsType;
     /**
      * @type string | undefined
     */
@@ -44,18 +44,18 @@ export type GetWorkspaceOperationsQueryParamsType = {
 /**
  * @description Successful Response
 */
-export type GetWorkspaceOperations200Type = PaginatedListOperationType;
+export type GetWorkspaceAuditLogs200Type = PaginatedListAuditLogType;
 /**
  * @description Unprocessable Entity
 */
-export type GetWorkspaceOperations422Type = (ErrorInternalType | ErrorInvalidArgumentType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorForbiddenType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
+export type GetWorkspaceAuditLogs422Type = (ErrorInternalType | ErrorInvalidArgumentType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorForbiddenType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
 /**
  * @description Successful Response
 */
-export type GetWorkspaceOperationsQueryResponseType = PaginatedListOperationType;
-export type GetWorkspaceOperationsTypeQuery = {
-    Response: GetWorkspaceOperationsQueryResponseType;
-    PathParams: GetWorkspaceOperationsPathParamsType;
-    QueryParams: GetWorkspaceOperationsQueryParamsType;
-    Errors: GetWorkspaceOperations422Type;
+export type GetWorkspaceAuditLogsQueryResponseType = PaginatedListAuditLogType;
+export type GetWorkspaceAuditLogsTypeQuery = {
+    Response: GetWorkspaceAuditLogsQueryResponseType;
+    PathParams: GetWorkspaceAuditLogsPathParamsType;
+    QueryParams: GetWorkspaceAuditLogsQueryParamsType;
+    Errors: GetWorkspaceAuditLogs422Type;
 };

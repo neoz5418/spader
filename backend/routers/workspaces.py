@@ -40,6 +40,10 @@ from routers.types import (
     WorkspaceQuota,
     Operation,
     OperationList,
+    AuditLog,
+    AuditLogList,
+    AuditLogResourceType,
+    AuditLogActionType,
 )
 from services.cache import get_redis
 from services.common import (
@@ -417,6 +421,18 @@ async def create_workspace_ssh_keys(
         },
     )
     await to_create.save(session)
+
+    await AuditLog.create(session, AuditLog(
+        action=AuditLogActionType.create,
+        workspace=workspace,
+        zone=zone,
+        create_time=utcnow(),
+        resource_id=user.uid,
+        resource_type=AuditLogResourceType.ssh_key,
+        user_id=user.uid,
+        user_email=user.email,
+        description=f"create ssh key {to_create.name}",
+    )) 
     return to_create
 
 
@@ -425,7 +441,7 @@ async def create_workspace_ssh_keys(
     dependencies=[CurrentUserDep],
     status_code=status.HTTP_204_NO_CONTENT,
 )
-async def delete_workspace_ssh_keys(session: SessionDep, workspace: str, name: str):
+async def delete_workspace_ssh_keys(session: SessionDep, workspace: str, name: str, user: CurrentUserDepAnnotated):
     ssh_key = SSHKey.one_by_fields(
         session,
         {
@@ -436,6 +452,19 @@ async def delete_workspace_ssh_keys(session: SessionDep, workspace: str, name: s
     if ssh_key:
         session.delete(ssh_key)
         await session.commit()
+
+        await AuditLog.create(session, AuditLog(
+            action=AuditLogActionType.delete,
+            workspace=workspace,
+            zone=zone,
+            create_time=utcnow(),
+            resource_id=user.uid,
+            resource_type=AuditLogResourceType.ssh_key,
+            user_id=user.uid,
+            user_email=user.email,
+        description=f"delete ssh key {name}",
+        )) 
+        
     return
 
 
@@ -504,32 +533,30 @@ async def watch_workspace(
     active_connections_set.discard(websocket)
 
 
-class ListOperationsSortOptions(Enum):
+class ListAuditLogsSortOptions(Enum):
     create_time = "create_time"
-    start_time = "start_time"
-    end_time = "end_time"
 
 
 @router.get(
-    "/workspaces/{workspace}/operations",
+    "/workspaces/{workspace}/audit_logs",
     dependencies=[CurrentUserDep],
 )
-async def get_workspace_operations(
+async def get_workspace_audit_logs(
     session: SessionDep,
     workspace: str,
     params: ListParamsDep,
     search: str = None,
-    sort: ListOperationsSortOptions = ListOperationsSortOptions.create_time,
+    sort: ListAuditLogsSortOptions = ListAuditLogsSortOptions.create_time,
     sort_order: SortOrder = SortOrder.DESC,
-) -> OperationList:
+) -> AuditLogList:
     fields = {}
     if workspace:
         fields["workspace"] = workspace
     fuzzy_fields = {}
     if search:
-        fuzzy_fields = {"name": search, "display_name": search}
-
-    operation_list = await Operation.paginated_by_query(
+        fuzzy_fields = {"description": search}
+    
+    audit_log_list = await AuditLog.paginated_by_query(
         session=session,
         fields=fields,
         fuzzy_fields=fuzzy_fields,
@@ -537,4 +564,5 @@ async def get_workspace_operations(
         limit=params.limit,
         order_by=(sort, sort_order),
     )
-    return operation_list
+    return audit_log_list
+

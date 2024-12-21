@@ -371,7 +371,6 @@ async def list_workspace_ssh_keys(session: SessionDep, workspace: str) -> SSHKey
 @router.get(
     "/workspaces/{workspace}/ssh_keys/{name}",
     dependencies=[CurrentUserDep],
-    status_code=status.HTTP_204_NO_CONTENT,
 )
 async def get_ssh_key(
     session: SessionDep,

@@ -2499,6 +2499,105 @@
       }
     },
     "/apis/workspace/v1/workspaces/{workspace}/ssh_keys/{name}": {
+      "get": {
+        "tags": [
+          "workspace"
+        ],
+        "summary": "Get Ssh Key",
+        "operationId": "get_ssh_key",
+        "security": [
+          {
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Workspace"
+            }
+          },
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Name"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SSHKey"
+                }
+              }
+            }
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ErrorInternal"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorInvalidArgument"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorRefreshTokenCannotBeEmpty"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorRefreshTokenExpired"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorRefreshTokenInvalid"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorForbidden"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorUnauthorized"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorUsernameOrEmailCannotBeEmpty"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorValidationFailed"
+                    }
+                  ],
+                  "discriminator": {
+                    "propertyName": "type",
+                    "mapping": {
+                      "Internal": "#/components/schemas/ErrorInternal",
+                      "InvalidArgument": "#/components/schemas/ErrorInvalidArgument",
+                      "RefreshTokenCannotBeEmpty": "#/components/schemas/ErrorRefreshTokenCannotBeEmpty",
+                      "RefreshTokenExpired": "#/components/schemas/ErrorRefreshTokenExpired",
+                      "RefreshTokenInvalid": "#/components/schemas/ErrorRefreshTokenInvalid",
+                      "Forbidden": "#/components/schemas/ErrorForbidden",
+                      "Unauthorized": "#/components/schemas/ErrorUnauthorized",
+                      "UsernameOrEmailCannotBeEmpty": "#/components/schemas/ErrorUsernameOrEmailCannotBeEmpty",
+                      "ValidationFailed": "#/components/schemas/ErrorValidationFailed"
+                    }
+                  },
+                  "title": "Response 422 Get Ssh Key Apis Workspace V1 Workspaces  Workspace  Ssh Keys  Name  Get"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          }
+        }
+      },
       "delete": {
         "tags": [
           "workspace"
@@ -6142,25 +6241,25 @@
       "AuditLogActionType": {
         "type": "string",
         "enum": [
-          "1",
-          "2",
-          "3",
-          "4",
-          "5",
-          "6"
+          "create",
+          "update",
+          "delete",
+          "start",
+          "stop",
+          "list"
         ],
         "title": "AuditLogActionType"
       },
       "AuditLogResourceType": {
         "type": "string",
         "enum": [
-          "1",
-          "2",
-          "3",
-          "4",
-          "5",
-          "6",
-          "7"
+          "instance",
+          "image",
+          "file_storage",
+          "workspace",
+          "user",
+          "ssh_key",
+          "api_key"
         ],
         "title": "AuditLogResourceType"
       },

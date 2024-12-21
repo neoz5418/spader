@@ -23,6 +23,7 @@ import { checkWorkspaceAccountRechargeMutationResponseSchema, checkWorkspaceAcco
 import { listWorkspaceResourceUsageRecordsQueryResponseSchema, listWorkspaceResourceUsageRecords422Schema, listWorkspaceResourceUsageRecordsPathParamsSchema, listWorkspaceResourceUsageRecordsQueryParamsSchema } from "./listWorkspaceResourceUsageRecordsSchema.gen";
 import { listWorkspaceSshKeysQueryResponseSchema, listWorkspaceSshKeys422Schema, listWorkspaceSshKeysPathParamsSchema } from "./listWorkspaceSshKeysSchema.gen";
 import { createWorkspaceSshKeysMutationRequestSchema, createWorkspaceSshKeysMutationResponseSchema, createWorkspaceSshKeys422Schema, createWorkspaceSshKeysPathParamsSchema } from "./createWorkspaceSshKeysSchema.gen";
+import { getSshKeyQueryResponseSchema, getSshKey422Schema, getSshKeyPathParamsSchema } from "./getSshKeySchema.gen";
 import { deleteWorkspaceSshKeysMutationResponseSchema, deleteWorkspaceSshKeys422Schema, deleteWorkspaceSshKeysPathParamsSchema } from "./deleteWorkspaceSshKeysSchema.gen";
 import { getWorkspaceMembersQueryResponseSchema, getWorkspaceMembers422Schema, getWorkspaceMembersPathParamsSchema } from "./getWorkspaceMembersSchema.gen";
 import { getWorkspaceInvitationsQueryResponseSchema, getWorkspaceInvitations422Schema, getWorkspaceInvitationsPathParamsSchema } from "./getWorkspaceInvitationsSchema.gen";
@@ -430,6 +431,21 @@ import { tokenMutationRequestSchema, tokenMutationResponseSchema, token422Schema
         },
         errors: {
             422: createWorkspaceSshKeys422Schema
+        }
+    }, "get_ssh_key": {
+        request: undefined,
+        parameters: {
+            path: getSshKeyPathParamsSchema,
+            query: undefined,
+            header: undefined
+        },
+        responses: {
+            200: getSshKeyQueryResponseSchema,
+            422: getSshKey422Schema,
+            default: getSshKeyQueryResponseSchema
+        },
+        errors: {
+            422: getSshKey422Schema
         }
     }, "delete_workspace_ssh_keys": {
         request: undefined,
@@ -954,6 +970,7 @@ export const paths = { "/apis/user/v1/users/me": {
         get: operations["list_workspace_ssh_keys"],
         post: operations["create_workspace_ssh_keys"]
     }, "/apis/workspace/v1/workspaces/{workspace}/ssh_keys/{name}": {
+        get: operations["get_ssh_key"],
         delete: operations["delete_workspace_ssh_keys"]
     }, "/apis/workspace/v1/workspaces/{workspace}/members": {
         get: operations["get_workspace_members"]

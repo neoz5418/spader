@@ -40,6 +40,7 @@ export * from "./fileStorageStatusSchema.gen";
 export * from "./getCurrentUserSchema.gen";
 export * from "./getFileStorageSchema.gen";
 export * from "./getInstanceSchema.gen";
+export * from "./getSshKeySchema.gen";
 export * from "./getUserQuotaSchema.gen";
 export * from "./getUserSchema.gen";
 export * from "./getWorkspaceAccountRechargeSchema.gen";

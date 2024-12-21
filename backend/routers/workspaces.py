@@ -55,6 +55,7 @@ from services.common import (
     Pagination,
     ResourceName,
     single_column_validation_failed,
+    utcnow,
 )
 from services.lago import get_account, top_up_account
 from services.payment import alipay_recharge, check_alipay_recharge
@@ -399,45 +400,43 @@ async def get_ssh_key(
     status_code=status.HTTP_201_CREATED,
 )
 async def create_workspace_ssh_keys(
-    session: SessionDep, workspace: str, ssh_key_in: SSHKeyCreate
+    session: SessionDep, workspace: str, ssh_key_in: SSHKeyCreate, user: CurrentUserDepAnnotated
 ) -> SSHKey:
-    existing = await SSHKey.one_by_fields(
+    sshkey = await SSHKey.one_by_fields(
         session,
         {
             "name": ssh_key_in.name,
             "workspace": workspace,
         },
     )
-    if existing:
-        raise single_column_validation_failed(
-            ErrorResourceConflict(
-                type="ResourceConflict",
-                input=ssh_key_in.name,
-                location="name",
-                resource_name=ResourceName.ssh_key,
-            )
-        )
     # TODO: validate ssh key
-    to_create = SSHKey.model_validate(
-        ssh_key_in,
-        update={
-            "workspace": workspace,
-        },
-    )
-    await to_create.save(session)
+    if sshkey:
+        # update
+        sshkey.public_key = ssh_key_in.public_key
+        await sshkey.save(session)
+        action = AuditLogActionType.update
+    else:
+        sshkey = SSHKey.model_validate(
+            ssh_key_in,
+            update={
+                "workspace": workspace,
+            },
+        )
+        await sshkey.save(session)
+        action = AuditLogActionType.create
 
     await AuditLog.create(session, AuditLog(
-        action=AuditLogActionType.create,
+        action=action,
         workspace=workspace,
-        zone=zone,
+        zone="",
         create_time=utcnow(),
-        resource_id=user.uid,
+        resource_id=sshkey.uid,
         resource_type=AuditLogResourceType.ssh_key,
         user_id=user.uid,
         user_email=user.email,
-        description=f"create ssh key {to_create.name}",
+        description=f"create ssh key {sshkey.name}",
     )) 
-    return to_create
+    return sshkey
 
 
 @router.delete(

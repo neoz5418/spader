@@ -16,6 +16,7 @@ export * from "./deleteWorkspaceSshKeys";
 export * from "./getCurrentUser";
 export * from "./getFileStorage";
 export * from "./getInstance";
+export * from "./getSshKey";
 export * from "./getUser";
 export * from "./getUserQuota";
 export * from "./getWorkspace";

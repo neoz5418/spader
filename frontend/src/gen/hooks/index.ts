@@ -16,6 +16,7 @@ export * from "./useDeleteWorkspaceSshKeysHook";
 export * from "./useGetCurrentUserHook";
 export * from "./useGetFileStorageHook";
 export * from "./useGetInstanceHook";
+export * from "./useGetSshKeyHook";
 export * from "./useGetUserHook";
 export * from "./useGetUserQuotaHook";
 export * from "./useGetWorkspaceAccountHook";

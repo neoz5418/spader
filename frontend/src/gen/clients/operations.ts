@@ -99,6 +99,10 @@ export const operations = {
         "path": "/apis/workspace/v1/workspaces/:workspace/ssh_keys",
         "method": "post"
     },
+    "get_ssh_key": {
+        "path": "/apis/workspace/v1/workspaces/:workspace/ssh_keys/:name",
+        "method": "get"
+    },
     "delete_workspace_ssh_keys": {
         "path": "/apis/workspace/v1/workspaces/:workspace/ssh_keys/:name",
         "method": "delete"

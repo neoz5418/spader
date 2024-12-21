@@ -40,6 +40,7 @@ export * from "./FileStorageType";
 export * from "./GetCurrentUserType";
 export * from "./GetFileStorageType";
 export * from "./GetInstanceType";
+export * from "./GetSshKeyType";
 export * from "./GetUserQuotaType";
 export * from "./GetUserType";
 export * from "./GetWorkspaceAccountRechargeType";

@@ -5,6 +5,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from routers.types import (
     BillingPeriod,
     Currency,
+    DiskType,
     GPUType,
     Provider,
     Role,
@@ -66,7 +67,7 @@ async def init_data():
     async with AsyncSession(engine) as session:
         beijing = Zone(
             name="beijing",
-            display_name="北京区",
+            display_name="北京区【测试不可用】",
             provider=Provider.ecloud,
             provider_config={
                 "provider": "ecloud",
@@ -78,7 +79,22 @@ async def init_data():
                 "default_image_id": "e1bd4aa0-8d7e-45ec-8b82-77586cbbaf76",
             },
         )
+        guangzhou = Zone(
+            name="guangzhou",
+            display_name="广州区",
+            provider=Provider.ecloud,
+            provider_config={
+                "provider": "ecloud",
+                "region": "N020-GD-GZNJ01",
+                "pool_id": "CIDC-RP-26",
+                "network_id": "30766f53-054d-4b26-ab95-a148e8e0d1fd",
+                "security_group_id": "a90d5a36-0354-4160-88a6-ff884a429aac",
+                "default_image_name": "base-image-1",
+                "default_image_id": "e1bd4aa0-8d7e-45ec-8b82-77586cbbaf76",
+            },
+        )
         await Zone.create_or_update(session, beijing)
+        await Zone.create_or_update(session, guangzhou)
         # xiamen = Zone(name="xiamen", provider=Provider.ecloud)
         # jinan = Zone(name="jinan", provider=Provider.ecloud)
         # shanghai = Zone(name="shanghai", provider=Provider.ecloud)
@@ -87,16 +103,16 @@ async def init_data():
         # xian = Zone(name="xian", provider=Provider.ecloud)
         # hohhot = Zone(name="hohhot", provider=Provider.ecloud)
         # Suzhou = Zone(name="Suzhou", provider=Provider.ecloud)
-        beijing_v100 = GPUType(
-            name="beijing_v100",
+        v100 = GPUType(
+            name="v100",
             display_name="NVIDIA Tesla V100",
             description="",
             gpu_memory="32GB",
             memory="64GB",
             cpu=8,
             disk_size="100GB",
-            disk_type="SSD",
-            zones=["beijing"],
+            disk_type=DiskType.SSD,
+            zones=["beijing", "guangzhou"],
             price_config=[
                 {
                     "currency": Currency.CNY,
@@ -125,16 +141,16 @@ async def init_data():
                 "server_type": "VM",
             },
         )
-        beijing_cpu001 = GPUType(
-            name="beijing_cpu001",
+        cpu001 = GPUType(
+            name="cpu001",
             display_name="CPU Instance",
             description="",
             gpu_memory="0",
             memory="16GB",
             cpu=8,
             disk_size="100GB",
-            disk_type="SSD",
-            zones=["beijing"],
+            disk_type=DiskType.SSD,
+            zones=["beijing", "guangzhou"],
             price_config=[
                 {
                     "currency": Currency.CNY,
@@ -156,12 +172,12 @@ async def init_data():
                 "provider": "ecloud",
                 "boot_volume_type": "highPerformance",
                 "boot_volume_size": 50,
-                "specs_name": "c3.2xlarge.2",
+                "specs_name": "c5.large.2",
                 "vm_type": "gpu",
                 "ram": 16,
                 "cpu": 8,
                 "server_type": "VM",
             },
         )
-        await GPUType.create_or_update(session, beijing_v100)
-        await GPUType.create_or_update(session, beijing_cpu001)
+        await GPUType.create_or_update(session, v100)
+        await GPUType.create_or_update(session, cpu001)

@@ -51,12 +51,7 @@ from services.common import (
 )
 from services.lru_resource_cache import get_gpu_type_display_name, get_zone_display_name
 
-from routers.types import (
-    AuditLogActionType,
-    AuditLogResourceType,
-    AuditLog
-)
-
+from routers.types import AuditLogActionType, AuditLogResourceType, AuditLog
 
 
 router = APIRouter(
@@ -316,17 +311,20 @@ async def create_instance(
     operation = await Operation.create(session, operation_creation)
     create_instance_operation.delay(operation.uid)
 
-    await AuditLog.create(session, AuditLog(
-        action=AuditLogActionType.create,
-        workspace=workspace,
-        zone=instance_in.zone,
-        create_time=utcnow(),
-        resource_id=to_create.uid,
-        resource_type=AuditLogResourceType.instance,
-        user_id=user.uid,
-        user_email=user.email,
-        description=f"create instance {instance_in.name}",
-    )) 
+    await AuditLog.create(
+        session,
+        AuditLog(
+            action=AuditLogActionType.create,
+            workspace=workspace,
+            zone=instance_in.zone,
+            create_time=utcnow(),
+            resource_id=to_create.uid,
+            resource_type=AuditLogResourceType.instance,
+            user_id=user.uid,
+            user_email=user.email,
+            description=f"create instance {instance_in.name}",
+        ),
+    )
 
     return operation
 
@@ -358,17 +356,20 @@ async def start_instance(
     start_instance_operation.delay(operation.uid)
 
     await instance.refresh(session)
-    await AuditLog.create(session, AuditLog(
-        action=AuditLogActionType.start,
-        workspace=workspace,
-        zone=instance.zone,
-        create_time=utcnow(),
-        resource_id=instance.uid,
-        resource_type=AuditLogResourceType.instance,
-        user_id=user.uid,
-        user_email=user.email,
-        description=f"start instance {instance.name}",
-    )) 
+    await AuditLog.create(
+        session,
+        AuditLog(
+            action=AuditLogActionType.start,
+            workspace=workspace,
+            zone=instance.zone,
+            create_time=utcnow(),
+            resource_id=instance.uid,
+            resource_type=AuditLogResourceType.instance,
+            user_id=user.uid,
+            user_email=user.email,
+            description=f"start instance {instance.name}",
+        ),
+    )
 
     return operation
 
@@ -383,7 +384,7 @@ async def stop_instance(
     workspace: str,
     user: CurrentUserDepAnnotated,
 ) -> Operation:
-    operation_creation = Operation(
+    operation = Operation(
         type=OperationType.stop_instance,
         workspace=workspace,
         zone=instance.zone,
@@ -393,21 +394,24 @@ async def stop_instance(
         status=OperationStatus.pending,
         progress=0,
     )
-    operation = await Operation.create(session, operation_creation)
+    operation = await Operation.create(session, operation)
     stop_instance_operation.delay(operation.uid)
 
     await instance.refresh(session)
-    await AuditLog.create(session, AuditLog(
-        action=AuditLogActionType.stop,
-        workspace=workspace,
-        zone=instance.zone,
-        create_time=utcnow(),
-        resource_id=instance.uid,
-        resource_type=AuditLogResourceType.instance,
-        user_id=user.uid,
-        user_email=user.email,
-        description=f"stop instance {instance.name}",
-    )) 
+    await AuditLog.create(
+        session,
+        AuditLog(
+            action=AuditLogActionType.stop,
+            workspace=workspace,
+            zone=instance.zone,
+            create_time=utcnow(),
+            resource_id=instance.uid,
+            resource_type=AuditLogResourceType.instance,
+            user_id=user.uid,
+            user_email=user.email,
+            description=f"stop instance {instance.name}",
+        ),
+    )
 
     return operation
 
@@ -423,7 +427,6 @@ def create_instance_port_forward(
     name: str,
     port_forward: PortForward,
 ) -> PortForward:
-    
     return
 
 
@@ -438,7 +441,6 @@ def delete_instance_port_forward(
     name: str,
     port_forward_name: str,
 ):
-    
     return
 
 
@@ -476,19 +478,22 @@ async def delete_instance(
     )
     operation = await Operation.create(session, operation_creation)
     delete_instance_operation.delay(operation.uid)
-    
+
     await instance.refresh(session)
-    await AuditLog.create(session, AuditLog(
-        action=AuditLogActionType.delete,
-        workspace=workspace,
-        zone=instance.zone,
-        create_time=utcnow(),
-        resource_id=instance.uid,
-        resource_type=AuditLogResourceType.instance,
-        user_id=user.uid,
-        user_email=user.email,
-        description=f"delete instance {instance.name}",
-    )) 
+    await AuditLog.create(
+        session,
+        AuditLog(
+            action=AuditLogActionType.delete,
+            workspace=workspace,
+            zone=instance.zone,
+            create_time=utcnow(),
+            resource_id=instance.uid,
+            resource_type=AuditLogResourceType.instance,
+            user_id=user.uid,
+            user_email=user.email,
+            description=f"delete instance {instance.name}",
+        ),
+    )
 
     return operation
 
@@ -527,7 +532,6 @@ def create_file_storage(
     zone: str,
     file_storage: CreateFileStorageRequest,
 ) -> Operation:
-
     return
 
 
@@ -578,8 +582,6 @@ def delete_file_storage(
     zone: str,
     name: str,
 ) -> Operation:
-    
-
     return
 
 
@@ -603,8 +605,6 @@ def update_image(
     zone: str,
     name: str,
 ) -> Image:
-    
-
     return
 
 

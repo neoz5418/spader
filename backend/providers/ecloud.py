@@ -138,8 +138,10 @@ def generate_cloud_init(jupyter_password: str, public_key: str) -> str:
     return """docker run -d --restart unless-stopped --net=host --gpus all --name default_runner \
       -e PUBLIC_KEY="%s" \
       -e JUPYTER_PASSWORD=%s \
-      runpod/pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04
-    """ % (public_key, jupyter_password)
+      runpod/pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04""" % (
+        public_key,
+        jupyter_password,
+    )
 
 
 async def get_public_key(session: SessionDep, workspace: str):
@@ -152,7 +154,7 @@ async def get_public_key(session: SessionDep, workspace: str):
 
 class ProviderEcloud(ProviderInterface):
     @staticmethod
-    async def update_vm_name(client, server_id: str, name: str):
+    async def update_vm_name(client, server_id: str, name: str, ignore: bool = False):
         # TODO: 移动云不支持关机状态下修改名称，需要手动增加 API 来支持只修改名字，不修改 hostname
         body = VmUpdateNameBody(name=name, server_id=server_id)
         request = VmUpdateNameRequest(body)
@@ -162,7 +164,8 @@ class ProviderEcloud(ProviderInterface):
             and resp.error_code
             != "CSLOPENSTACK_COMPUTE_SERVER_STATUS_ERROR_CANNOT_DO_THIS_OPERATION"
         ):
-            raise Exception("update vm name failed")
+            if not ignore:
+                raise Exception("update vm name failed")
 
     async def delete_instance(
         self, session: SessionDep, operation: Operation, instance: Instance
@@ -176,7 +179,10 @@ class ProviderEcloud(ProviderInterface):
         server_id = instance.target_id
         logger.info("rename server [%s] ...", server_id)
         await self.update_vm_name(
-            client, server_id=server_id, name=PENDING_PREFIX + str(instance.uid)
+            client,
+            server_id=server_id,
+            name=PENDING_PREFIX + str(instance.uid),
+            ignore=True,
         )
         logger.info("stop server [%s] ...", server_id)
         request = VmStopRequest(
@@ -196,6 +202,8 @@ class ProviderEcloud(ProviderInterface):
             )
             request = VmListServeRequest(vm_list_serve_query=query)
             resp: VmListServeResponse = client.vm_list_serve(request)
+            if len(resp.body.content) == 0:
+                break
             vm = resp.body.content[0]
             status = vm.ec_status
             if status == STOP_STATUS:
@@ -203,11 +211,11 @@ class ProviderEcloud(ProviderInterface):
                 break
             else:
                 await operation.refresh(session)
-                instance.status = InstanceStatus.terminated
-                session.add(instance)
                 await self.set_operation_running(session, operation, progress=60)
                 time.sleep(5)
         await operation.refresh(session)
+        instance.status = InstanceStatus.terminated
+        session.add(instance)
         return await self.set_operation_done(session, operation)
 
     async def start_instance(
@@ -359,9 +367,6 @@ class ProviderEcloud(ProviderInterface):
                     break
             if status == RUNNING_STATUS:
                 logger.info("server [%s] rebuild done", server_id)
-                break
-            else:
-                await operation.refresh(session)
                 instance.status = InstanceStatus.running
                 services = {
                     "jupyter-lab": "%s:8888" % ip,
@@ -371,6 +376,9 @@ class ProviderEcloud(ProviderInterface):
                 instance.services = services
                 instance.target_id = server_id
                 session.add(instance)
+                break
+            else:
+                await operation.refresh(session)
                 await self.set_operation_running(session, operation, progress=60)
                 time.sleep(5)
         await operation.refresh(session)

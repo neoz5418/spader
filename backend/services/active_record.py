@@ -109,6 +109,7 @@ class ActiveRecordMixin:
         session: AsyncSession,
         fields: Optional[dict] = None,
         fuzzy_fields: Optional[dict] = None,
+        fields_in: Optional[dict] = None,
         offset: int = 0,
         limit: int = 100,
         order_by: (Enum, Enum) = None,
@@ -134,6 +135,13 @@ class ActiveRecordMixin:
             ]
             statement = statement.where(or_(*fuzzy_conditions))
             count_statement = count_statement.where(or_(*fuzzy_conditions))
+
+        if fields_in:
+            in_conditions = [
+                col(getattr(cls, key)).in_(value) for key, value in fields_in.items()
+            ]
+            statement = statement.where(and_(*in_conditions))
+            count_statement = count_statement.where(and_(*in_conditions))
 
         if offset is not None and limit is not None:
             statement = statement.offset(offset).limit(limit)
@@ -252,6 +260,7 @@ class ActiveRecordMixin:
             self.delete_time = datetime.now(timezone.utc)
             await self.save(session)
             await self._publish_event(EventType.MODIFIED, self)
+            return
 
         await session.delete(self)
         await session.commit()

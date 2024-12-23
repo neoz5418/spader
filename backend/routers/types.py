@@ -397,7 +397,7 @@ class Operation(SQLModel, ActiveRecordMixin, table=True):
 OperationList = PaginatedList[Operation]
 
 
-class InstanceStatus(Enum):
+class InstanceStatus(str, Enum):
     """
     An instance can be in one of the following states:
 
@@ -413,6 +413,10 @@ class InstanceStatus(Enum):
     running = "running"
     stopping = "stopping"
     terminated = "terminated"
+
+    @classmethod
+    def defaults(cls) -> str:
+        return ",".join([s for s in cls if s != cls.terminated])
 
 
 class InstanceBase(SQLModel, BaseModelMixin):
@@ -577,7 +581,6 @@ class RechargeWorkspaceAccount(BaseModel):
     callback_url: str
 
 
-
 class AuditLogActionType(str, Enum):
     create = "create"
     update = "update"
@@ -596,6 +599,7 @@ class AuditLogResourceType(str, Enum):
     ssh_key = "ssh_key"
     api_key = "api_key"
 
+
 class AuditLog(SQLModel, ActiveRecordMixin, table=True):
     uid: UUID = UID
     user_id: UUID
@@ -605,7 +609,9 @@ class AuditLog(SQLModel, ActiveRecordMixin, table=True):
     action: AuditLogActionType
     create_time: datetime
     description: Optional[str] = None
-    workspace: Optional[str] = None  # empty string if the action is not related to a workspace
+    workspace: Optional[
+        str
+    ] = None  # empty string if the action is not related to a workspace
     zone: Optional[str] = None  # empty string if the action is not related to a zone
 
 

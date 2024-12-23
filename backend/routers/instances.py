@@ -357,7 +357,7 @@ async def start_instance(
     operation = await Operation.create(session, operation_creation)
     start_instance_operation.delay(operation.uid)
 
-    AuditLog.create(session, AuditLog(
+    await AuditLog.create(session, AuditLog(
         action=AuditLogActionType.start,
         workspace=workspace,
         zone=instance.zone,
@@ -395,7 +395,7 @@ async def stop_instance(
     operation = await Operation.create(session, operation_creation)
     stop_instance_operation.delay(operation.uid)
 
-    AuditLog.create(session, AuditLog(
+    await AuditLog.create(session, AuditLog(
         action=AuditLogActionType.stop,
         workspace=workspace,
         zone=instance.zone,

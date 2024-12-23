@@ -197,7 +197,7 @@ async def list_workspace_instances(
     workspace: str,
     zone: str = None,
     search: str = None,
-    status: str = None,
+    status: str = InstanceStatus.defaults(),
     sort: ListInstancesSortOptions = ListInstancesSortOptions.create_time,
     sort_order: SortOrder = SortOrder.DESC,
 ) -> InstancePublicList:
@@ -206,8 +206,8 @@ async def list_workspace_instances(
         fields["workspace"] = workspace
     if zone:
         fields["zone"] = zone
-    if status:
-        fields["status"] = status
+
+    fields_in = {"status": status.split(",")}
     fuzzy_fields = {}
     if search:
         fuzzy_fields = {"name": search, "display_name": search}
@@ -216,6 +216,7 @@ async def list_workspace_instances(
         session=session,
         fields=fields,
         fuzzy_fields=fuzzy_fields,
+        fields_in=fields_in,
         offset=params.offset,
         limit=params.limit,
         order_by=(sort, sort_order),

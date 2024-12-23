@@ -134,11 +134,15 @@ async def _create_instance(
     )
 
 
-def generate_cloud_init(jupyter_password: str, public_key: str) -> str:
-    return """docker run -d --restart unless-stopped --net=host --gpus all --name default_runner \
+def generate_cloud_init(
+    jupyter_password: str, public_key: str, is_cpu_instance: bool = False
+) -> str:
+    gpu_flags = "" if is_cpu_instance else "--gpus all"
+    return """docker run -d --restart unless-stopped --net=host %s --name default_runner \
       -e PUBLIC_KEY="%s" \
       -e JUPYTER_PASSWORD=%s \
       runpod/pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04""" % (
+        gpu_flags,
         public_key,
         jupyter_password,
     )
@@ -341,6 +345,7 @@ class ProviderEcloud(ProviderInterface):
                     public_key=await get_public_key(
                         session, workspace=instance.workspace
                     ),
+                    is_cpu_instance=gpu_type.is_cpu_instance,
                 ),
             )
         )

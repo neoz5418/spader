@@ -315,6 +315,10 @@ class GPUType(GPUTypeBase, BaseModelMixin, table=True):
     def ecloud(self, value):
         self.provider_config = value
 
+    @property
+    def is_cpu_instance(self) -> bool:
+        return self.name.startswith("cpu")
+
 
 GPUTypeList = PaginatedList[GPUType]
 GPUTypePublicList = PaginatedList[GPUTypePublic]

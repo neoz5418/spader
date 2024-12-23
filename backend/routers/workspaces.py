@@ -425,6 +425,7 @@ async def create_workspace_ssh_keys(
         await sshkey.save(session)
         action = AuditLogActionType.create
 
+    await sshkey.refresh(session)
     await AuditLog.create(session, AuditLog(
         action=action,
         workspace=workspace,
@@ -456,6 +457,7 @@ async def delete_workspace_ssh_keys(session: SessionDep, workspace: str, name: s
         session.delete(ssh_key)
         await session.commit()
 
+        await ssh_key.refresh(session)
         await AuditLog.create(session, AuditLog(
             action=AuditLogActionType.delete,
             workspace=workspace,
@@ -465,7 +467,7 @@ async def delete_workspace_ssh_keys(session: SessionDep, workspace: str, name: s
             resource_type=AuditLogResourceType.ssh_key,
             user_id=user.uid,
             user_email=user.email,
-        description=f"delete ssh key {name}",
+            description=f"delete ssh key {name}",
         )) 
         
     return

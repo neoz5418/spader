@@ -357,6 +357,7 @@ async def start_instance(
     operation = await Operation.create(session, operation_creation)
     start_instance_operation.delay(operation.uid)
 
+    await instance.refresh(session)
     await AuditLog.create(session, AuditLog(
         action=AuditLogActionType.start,
         workspace=workspace,
@@ -395,6 +396,7 @@ async def stop_instance(
     operation = await Operation.create(session, operation_creation)
     stop_instance_operation.delay(operation.uid)
 
+    await instance.refresh(session)
     await AuditLog.create(session, AuditLog(
         action=AuditLogActionType.stop,
         workspace=workspace,
@@ -475,6 +477,7 @@ async def delete_instance(
     operation = await Operation.create(session, operation_creation)
     delete_instance_operation.delay(operation.uid)
     
+    await instance.refresh(session)
     await AuditLog.create(session, AuditLog(
         action=AuditLogActionType.delete,
         workspace=workspace,

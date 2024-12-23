@@ -90,7 +90,7 @@ async def init_data():
                 "network_id": "30766f53-054d-4b26-ab95-a148e8e0d1fd",
                 "security_group_id": "a90d5a36-0354-4160-88a6-ff884a429aac",
                 "default_image_name": "base-image-1",
-                "default_image_id": "e1bd4aa0-8d7e-45ec-8b82-77586cbbaf76",
+                "default_image_id": "0a2784dd-4854-486b-b4aa-6fd0fd13a47d",
             },
         )
         await Zone.create_or_update(session, beijing)

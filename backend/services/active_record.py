@@ -6,6 +6,7 @@ from typing import Any, Optional, Type, TypeVar, Union
 from sqlalchemy import func, text
 from sqlalchemy.exc import IntegrityError, OperationalError
 from sqlalchemy.orm.exc import FlushError
+from sqlalchemy.sql.operators import is_
 from sqlmodel import and_, col, or_, select, SQLModel
 from sqlmodel.ext.asyncio.session import AsyncSession
 
@@ -113,6 +114,7 @@ class ActiveRecordMixin:
         offset: int = 0,
         limit: int = 100,
         order_by: (Enum, Enum) = None,
+        include_deleted: bool = False,
     ) -> PaginatedList[T]:
         """
         Return a paginated list of objects match the given fields and values.
@@ -121,6 +123,12 @@ class ActiveRecordMixin:
 
         statement = select(cls)
         count_statement = select(func.count("*"))
+        if not include_deleted and hasattr(cls, "delete_time"):
+            statement = statement.where(is_(col(getattr(cls, "delete_time")), None))
+            count_statement = count_statement.where(
+                is_(col(getattr(cls, "delete_time")), None)
+            )
+
         if fields:
             conditions = [
                 col(getattr(cls, key)) == value for key, value in fields.items()

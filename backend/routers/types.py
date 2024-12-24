@@ -418,10 +418,6 @@ class InstanceStatus(str, Enum):
     stopping = "stopping"
     terminated = "terminated"
 
-    @classmethod
-    def defaults(cls) -> str:
-        return ",".join([s for s in cls if s != cls.terminated])
-
 
 class InstanceBase(SQLModel, BaseModelMixin):
     name: Name

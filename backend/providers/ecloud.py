@@ -4,6 +4,17 @@ from datetime import datetime, timezone
 
 import uuid
 
+from ecloudsdkcore.param.api_params import ApiParams
+from ecloudsdkecs.v1 import (
+    VmListServeResponseContent,
+    VmlistServerRespQuery,
+    VmlistServerRespRequest,
+    VmlistServerRespResponse,
+    VmlistServerRespResponseBody,
+    VmUpdateNameResponse,
+)
+from pydantic import BaseModel
+
 from dependencies import SessionDep
 from providers.interface import ProviderInterface
 from routers.types import (
@@ -22,10 +33,6 @@ from ecloudsdkecs.v1.model import (
     VmCreateBody,
     VmCreateRequestNetworks,
     VmCreateRequestBootVolume,
-    VmlistServerRespQuery,
-    VmlistServerRespRequest,
-    VmlistServerRespResponse,
-    VmlistServerRespResponseBody,
     VmListServeQuery,
     VmListServeRequest,
     VmListServeResponse,
@@ -39,6 +46,7 @@ from ecloudsdkecs.v1.model import (
     VmStartRequest,
 )
 
+from services.common import utcnow
 from settings import get_settings
 
 logger = logging.getLogger(__name__)
@@ -58,6 +66,7 @@ PENDING_PREFIX = "pending-"
 RUNNING_PREFIX = "running-"
 STOP_STATUS = "shutoff"
 RUNNING_STATUS = "active"
+OK_STATE = "OK"
 
 
 async def _create_instance(
@@ -156,235 +165,221 @@ async def get_public_key(session: SessionDep, workspace: str):
     return "\n".join(public_key)
 
 
-class ProviderEcloud(ProviderInterface):
-    @staticmethod
-    async def update_vm_name(client, server_id: str, name: str, ignore: bool = False):
-        # TODO: 移动云不支持关机状态下修改名称，需要手动增加 API 来支持只修改名字，不修改 hostname
-        body = VmUpdateNameBody(name=name, server_id=server_id)
-        request = VmUpdateNameRequest(body)
-        resp = client.vm_update_name(request)
-        if (
-            resp.state != "OK"
-            and resp.error_code
-            != "CSLOPENSTACK_COMPUTE_SERVER_STATUS_ERROR_CANNOT_DO_THIS_OPERATION"
-        ):
-            if not ignore:
-                raise Exception("update vm name failed")
+class EcloudServer(BaseModel):
+    server_id: str
+    status: str
+    services: dict = {}
 
-    async def delete_instance(
-        self, session: SessionDep, operation: Operation, instance: Instance
-    ):
-        # TODO: rebuild this instance to default instance
-        zone = await Zone.one_by_field(session, "name", instance.zone)
-        gpu_type = await GPUType.one_by_field(session, "name", instance.gpu_type)
-        if not zone or not gpu_type:
-            return await self.set_operation_failed(session, operation)
-        client = get_client(zone)
-        server_id = instance.target_id
-        logger.info("rename server [%s] ...", server_id)
-        await self.update_vm_name(
-            client,
-            server_id=server_id,
-            name=PENDING_PREFIX + str(instance.uid),
-            ignore=True,
+
+class EcloudInstance(object):
+    wait_time = 2
+
+    def __init__(self, session: SessionDep, instance: Instance):
+        self.session = session
+        self.instance = instance
+        self.zone = None
+        self.gpu_type = None
+        self.client = None
+
+    async def init(self):
+        self.zone = await Zone.one_by_field(self.session, "name", self.instance.zone)
+        self.gpu_type = await GPUType.one_by_field(
+            self.session, "name", self.instance.gpu_type
         )
-        logger.info("stop server [%s] ...", server_id)
+        if not self.zone:
+            raise Exception("cannot find zone [%s]" % self.instance.zone)
+        if not self.gpu_type:
+            raise Exception("cannot find gpu_type [%s]" % self.instance.gpu_type)
+        self.client = get_client(self.zone)
+
+    async def get_vm_info(self, server_id: str = "") -> VmListServeResponseContent:
+        query = VmListServeQuery(
+            server_types=[self.gpu_type.ecloud.server_type],
+            product_types=["NORMAL"],
+            visible=True,
+            server_id=server_id,
+            specs_name=self.gpu_type.ecloud.specs_name,
+        )
+        request = VmListServeRequest(vm_list_serve_query=query)
+        resp: VmListServeResponse = self.client.vm_list_serve(request)
+        vm = resp.body.content[0]
+        return vm
+
+    async def wait_vm_status(
+        self, server_id: str = "", except_status: str = ""
+    ) -> VmListServeResponseContent:
+        while True:
+            logger.info("wait vm [%s] status to be [%s]", server_id, except_status)
+            vm = await self.get_vm_info(server_id)
+            status = vm.ec_status
+            if status == except_status:
+                logger.info(
+                    "wait vm [%s] status to be [%s] done", server_id, except_status
+                )
+                return vm
+            else:
+                time.sleep(self.wait_time)
+
+    async def start_vm(self, server_id: str = ""):
+        vm = await self.get_vm_info(server_id)
+        status = vm.ec_status
+        if status == RUNNING_STATUS:
+            logger.info("vm [%s] is already running", server_id)
+            return
+        logger.info("start vm [%s] ...", server_id)
+        request = VmStartRequest(
+            vm_start_path=VmStartPath(server_id=server_id),
+        )
+        response = self.client.vm_start(request)
+        if response.state != OK_STATE:
+            raise Exception("start vm [%s] failed: %s" % (server_id, response))
+        await self.wait_vm_status(server_id, RUNNING_STATUS)
+
+    async def stop_vm(self, server_id: str = ""):
+        vm = await self.get_vm_info(server_id)
+        status = vm.ec_status
+        if status == STOP_STATUS:
+            logger.info("vm [%s] is already shutoff", server_id)
+            return
+        logger.info("stop vm [%s] ...", server_id)
         request = VmStopRequest(
             vm_stop_query=VmStopPath(server_id=server_id),
         )
-        client.vm_stop(request)
-        await self.set_operation_running(session, operation, progress=20)
-        while True:
-            logger.info("wait server [%s] stop", server_id)
-            await gpu_type.refresh(session)
-            query = VmListServeQuery(
-                server_types=[gpu_type.ecloud.server_type],
-                product_types=["NORMAL"],
-                visible=True,
-                server_id=server_id,
-                specs_name=gpu_type.ecloud.specs_name,
+        response = self.client.vm_stop(request)
+        if response.state != OK_STATE:
+            raise Exception("stop vm [%s] failed: %s" % (server_id, response))
+        await self.wait_vm_status(server_id, STOP_STATUS)
+
+    async def update_vm_name(self, server_id: str, name: str, ignore: bool = False):
+        logger.info("rename server [%s] to [%s] ...", server_id, name)
+        # 移动云不支持关机状态下修改名称，需要手动增加 API 来支持只修改名字，不修改 hostname
+        body = VmUpdateNameBody(name=name, server_id=server_id)
+        request = VmUpdateNameRequest(body)
+        params = ApiParams(
+            action="vmUpdateNameAndDescriptionWithoutHostName",
+            uri="/acl/v3/server/nameAndDescriptionWithoutHostName",
+            gateway_uri="/api/openapi-ecs/acl/v3/server/nameAndDescriptionWithoutHostName",
+            protocol="https",
+            content_type="application/json",
+            method="PUT",
+            request=request,
+        )
+        resp = self.client.api_client.excute(params, None, VmUpdateNameResponse)
+        if ignore:
+            return
+        if resp.state != OK_STATE:
+            raise Exception("update vm name failed: %s" % resp)
+
+    async def place_vm(self) -> EcloudServer:
+        query = VmlistServerRespQuery(
+            server_types=[self.gpu_type.ecloud.server_type],
+            product_types=["NORMAL"],
+            visible=True,
+            query_word_name=PENDING_PREFIX,
+            specs_name=self.gpu_type.ecloud.specs_name,
+        )
+        request = VmlistServerRespRequest(vmlist_server_resp_query=query)
+        resp: VmlistServerRespResponse = self.client.vmlist_server_resp(request)
+        body: VmlistServerRespResponseBody = resp.body
+        if resp.body.total == 0:
+            # TODO: create instance and wait for it to be ready
+            raise Exception(
+                "cannot find available server with name prefix [%s]" % PENDING_PREFIX
             )
-            request = VmListServeRequest(vm_list_serve_query=query)
-            resp: VmListServeResponse = client.vm_list_serve(request)
-            if len(resp.body.content) == 0:
+        vm = body.content[0]
+        server_id = vm.id
+        logger.info("start rename server [%s] ...", server_id)
+        await self.update_vm_name(
+            server_id=server_id, name=RUNNING_PREFIX + str(self.instance.uid)
+        )
+        return EcloudServer(server_id=server_id, status=vm.ec_status)
+
+    async def release_vm(self, server_id):
+        # TODO: rebuild this instance to default instance
+        await self.update_vm_name(
+            server_id=server_id, name=PENDING_PREFIX + str(self.instance.uid)
+        )
+        await self.stop_vm(server_id)
+
+    async def rebuild_vm(self, server_id) -> EcloudServer:
+        logger.info("start rebuild server [%s] ...", server_id)
+        jupyter_password = str(uuid.uuid4())
+        request = VmRebuildRequest(
+            vm_rebuild_body=VmRebuildBody(
+                server_id=server_id,
+                image_id=self.zone.ecloud.default_image_id,
+                user_data=generate_cloud_init(
+                    jupyter_password=jupyter_password,
+                    public_key=await get_public_key(
+                        self.session, workspace=self.instance.workspace
+                    ),
+                    is_cpu_instance=self.gpu_type.is_cpu_instance,
+                ),
+            )
+        )
+        resp = self.client.vm_rebuild(request)
+        if resp.state != "OK":
+            raise Exception("rebuild server [%s] failed: %s" % (server_id, resp))
+
+        vm = await self.wait_vm_status(server_id, RUNNING_STATUS)
+        ip = ""
+        for port in vm.port_detail:
+            if port.fip_address:
+                ip = port.fip_address
                 break
-            vm = resp.body.content[0]
-            status = vm.ec_status
-            if status == STOP_STATUS:
-                logger.info("stop server [%s] done", server_id)
-                break
-            else:
-                await operation.refresh(session)
-                await self.set_operation_running(session, operation, progress=60)
-                time.sleep(5)
-        await operation.refresh(session)
+        services = {
+            "jupyter-lab": "%s:8888" % ip,
+            "ssh": "%s:22" % ip,
+            "jupyter-password": jupyter_password,
+        }
+        return EcloudServer(server_id=server_id, status=vm.ec_status, services=services)
+
+
+class ProviderEcloud(ProviderInterface):
+    async def delete_instance(
+        self, session: SessionDep, operation: Operation, instance: Instance
+    ):
+        ei = EcloudInstance(session, instance)
+        await ei.init()
+        if instance.target_id:
+            await ei.release_vm(instance.target_id)
         instance.status = InstanceStatus.terminated
+        instance.delete_time = utcnow()
         session.add(instance)
         return await self.set_operation_done(session, operation)
 
     async def start_instance(
         self, session: SessionDep, operation: Operation, instance: Instance
     ):
-        zone = await Zone.one_by_field(session, "name", instance.zone)
-        gpu_type = await GPUType.one_by_field(session, "name", instance.gpu_type)
-        if not zone or not gpu_type:
-            return await self.set_operation_failed(session, operation)
-        client = get_client(zone)
-        server_id = instance.target_id
-        logger.info("start server [%s] ...", server_id)
-        request = VmStartRequest(
-            vm_start_path=VmStartPath(server_id=server_id),
-        )
-        client.vm_start(request)
-        await self.set_operation_running(session, operation, progress=20)
-        while True:
-            logger.info("wait server [%s] active", server_id)
-            await gpu_type.refresh(session)
-            query = VmListServeQuery(
-                server_types=[gpu_type.ecloud.server_type],
-                product_types=["NORMAL"],
-                visible=True,
-                server_id=server_id,
-                specs_name=gpu_type.ecloud.specs_name,
-            )
-            request = VmListServeRequest(vm_list_serve_query=query)
-            resp: VmListServeResponse = client.vm_list_serve(request)
-            vm = resp.body.content[0]
-            status = vm.ec_status
-            if status == RUNNING_STATUS:
-                logger.info("start server [%s] done", server_id)
-                break
-            else:
-                await operation.refresh(session)
-                instance.status = InstanceStatus.terminated
-                session.add(instance)
-                await self.set_operation_running(session, operation, progress=60)
-                time.sleep(5)
-        await operation.refresh(session)
+        ei = EcloudInstance(session, instance)
+        await ei.init()
+        await ei.start_vm(instance.target_id)
+        instance.status = InstanceStatus.running
+        session.add(instance)
         return await self.set_operation_done(session, operation)
 
     async def stop_instance(
         self, session: SessionDep, operation: Operation, instance: Instance
     ):
-        zone = await Zone.one_by_field(session, "name", instance.zone)
-        gpu_type = await GPUType.one_by_field(session, "name", instance.gpu_type)
-        if not zone or not gpu_type:
-            return await self.set_operation_failed(session, operation)
-        client = get_client(zone)
-        server_id = instance.target_id
-        logger.info("stop server [%s] ...", server_id)
-        request = VmStopRequest(
-            vm_stop_query=VmStopPath(server_id=server_id),
-        )
-        client.vm_stop(request)
-        await self.set_operation_running(session, operation, progress=20)
-        while True:
-            logger.info("wait server [%s] stop", server_id)
-            await gpu_type.refresh(session)
-            query = VmListServeQuery(
-                server_types=[gpu_type.ecloud.server_type],
-                product_types=["NORMAL"],
-                visible=True,
-                server_id=server_id,
-                specs_name=gpu_type.ecloud.specs_name,
-            )
-            request = VmListServeRequest(vm_list_serve_query=query)
-            resp: VmListServeResponse = client.vm_list_serve(request)
-            vm = resp.body.content[0]
-            status = vm.ec_status
-            if status == STOP_STATUS:
-                logger.info("stop server [%s] done", server_id)
-                break
-            else:
-                await operation.refresh(session)
-                instance.status = InstanceStatus.terminated
-                session.add(instance)
-                await self.set_operation_running(session, operation, progress=60)
-                time.sleep(5)
-        await operation.refresh(session)
+        ei = EcloudInstance(session, instance)
+        await ei.init()
+        await ei.start_vm(instance.target_id)
+        instance.status = InstanceStatus.terminated
+        session.add(instance)
         return await self.set_operation_done(session, operation)
 
-    # TODO: use vmRebuild to rebuild instance
     async def create_instance(
         self, session: SessionDep, operation: Operation, instance: Instance
     ):
-        zone = await Zone.one_by_field(session, "name", instance.zone)
-        gpu_type = await GPUType.one_by_field(session, "name", instance.gpu_type)
-        if not zone or not gpu_type:
-            return await self.set_operation_failed(session, operation)
-        client = get_client(zone)
-        query = VmlistServerRespQuery(
-            server_types=[gpu_type.ecloud.server_type],
-            product_types=["NORMAL"],
-            visible=True,
-            query_word_name=PENDING_PREFIX,
-            specs_name=gpu_type.ecloud.specs_name,
-        )
-        request = VmlistServerRespRequest(vmlist_server_resp_query=query)
-        resp: VmlistServerRespResponse = client.vmlist_server_resp(request)
-        body: VmlistServerRespResponseBody = resp.body
-        if resp.body.total == 0:
-            # TODO: create instance and wait for it to be ready
-            logger.error(
-                "cannot find available server with name prefix [%s] ...", PENDING_PREFIX
-            )
-            return await self.set_operation_failed(session, operation)
-        server_id = body.content[0].id
-        logger.info("rename server [%s] ...", server_id)
-        await self.update_vm_name(
-            client, server_id=server_id, name=RUNNING_PREFIX + str(instance.uid)
-        )
-        logger.info("rebuild server [%s] ...", server_id)
-        jupyter_password = str(uuid.uuid4())
-        request = VmRebuildRequest(
-            vm_rebuild_body=VmRebuildBody(
-                server_id=server_id,
-                image_id=zone.ecloud.default_image_id,
-                user_data=generate_cloud_init(
-                    jupyter_password=jupyter_password,
-                    public_key=await get_public_key(
-                        session, workspace=instance.workspace
-                    ),
-                    is_cpu_instance=gpu_type.is_cpu_instance,
-                ),
-            )
-        )
-        client.vm_rebuild(request)
-        await self.set_operation_running(session, operation, progress=20)
-        while True:
-            logger.info("wait server [%s] rebuild", server_id)
-            await gpu_type.refresh(session)
-            query = VmListServeQuery(
-                server_types=[gpu_type.ecloud.server_type],
-                product_types=["NORMAL"],
-                visible=True,
-                server_id=server_id,
-                specs_name=gpu_type.ecloud.specs_name,
-            )
-            request = VmListServeRequest(vm_list_serve_query=query)
-            resp: VmListServeResponse = client.vm_list_serve(request)
-            vm = resp.body.content[0]
-            status = vm.ec_status
-            ip = ""
-            for port in vm.port_detail:
-                if port.fip_address:
-                    ip = port.fip_address
-                    break
-            if status == RUNNING_STATUS:
-                logger.info("server [%s] rebuild done", server_id)
-                instance.status = InstanceStatus.running
-                services = {
-                    "jupyter-lab": "%s:8888" % ip,
-                    "ssh": "%s:22" % ip,
-                    "jupyter-password": jupyter_password,
-                }
-                instance.services = services
-                instance.target_id = server_id
-                session.add(instance)
-                break
-            else:
-                await operation.refresh(session)
-                await self.set_operation_running(session, operation, progress=60)
-                time.sleep(5)
-        await operation.refresh(session)
+        ei = EcloudInstance(session, instance)
+        await ei.init()
+        server = await ei.place_vm()
+        server_id = server.server_id
+        await ei.start_vm(server_id)
+        server = await ei.rebuild_vm(server_id)
+
+        instance.status = InstanceStatus.running
+        instance.target_id = server.server_id
+        instance.services = server.services
+        session.add(instance)
         return await self.set_operation_done(session, operation)

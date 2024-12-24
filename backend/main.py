@@ -27,6 +27,7 @@ from services.db import get_session, create_db_and_tables, init_admin_user, init
 import logging
 
 setup_logging()
+# setup_logging(True)
 
 logger = logging.getLogger(__name__)
 

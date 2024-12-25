@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from datetime import datetime, timezone
 from enum import Enum
@@ -293,13 +294,15 @@ class ActiveRecordMixin:
     async def _publish_event(cls, event_type: EventType, data: Any):
         if hasattr(data, "workspace"):
             redis = get_redis()
-            await redis.publish(
-                "workspace:" + data.workspace,
-                WatchEvent(
-                    type=event_type,
-                    resource_type=cls.__name__,
-                    resource=data,
-                ).model_dump_json(),
+            asyncio.create_task(
+                redis.publish(
+                    "workspace:" + data.workspace,
+                    WatchEvent(
+                        type=event_type,
+                        resource_type=cls.__name__,
+                        resource=data,
+                    ).model_dump_json(),
+                )
             )
 
     #

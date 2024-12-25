@@ -250,7 +250,7 @@ class EcloudInstance(object):
             raise Exception("stop vm [%s] failed: %s" % (server_id, response))
         await self.wait_vm_status(server_id, STOP_STATUS)
 
-    async def update_vm_name(self, server_id: str, name: str, ignore: bool = False):
+    async def update_vm_name(self, server_id: str, name: str):
         logger.info("rename server [%s] to [%s] ...", server_id, name)
         # 移动云不支持关机状态下修改名称，需要手动增加 API 来支持只修改名字，不修改 hostname
         body = VmUpdateNameBody(name=name, server_id=server_id)
@@ -265,8 +265,6 @@ class EcloudInstance(object):
             request=request,
         )
         resp = self.client.api_client.excute(params, None, VmUpdateNameResponse)
-        if ignore:
-            return
         if resp.state != OK_STATE:
             raise Exception("update vm name failed: %s" % resp)
 
@@ -363,7 +361,7 @@ class ProviderEcloud(ProviderInterface):
     ):
         ei = EcloudInstance(session, instance)
         await ei.init()
-        await ei.start_vm(instance.target_id)
+        await ei.stop_vm(instance.target_id)
         instance.status = InstanceStatus.terminated
         await instance.update(session)
         return await self.set_operation_done(session, operation)

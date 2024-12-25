@@ -345,7 +345,7 @@ class ProviderEcloud(ProviderInterface):
             await ei.release_vm(instance.target_id)
         instance.status = InstanceStatus.terminated
         instance.delete_time = utcnow()
-        session.add(instance)
+        await instance.update(session)
         return await self.set_operation_done(session, operation)
 
     async def start_instance(
@@ -355,7 +355,7 @@ class ProviderEcloud(ProviderInterface):
         await ei.init()
         await ei.start_vm(instance.target_id)
         instance.status = InstanceStatus.running
-        session.add(instance)
+        await instance.update(session)
         return await self.set_operation_done(session, operation)
 
     async def stop_instance(
@@ -365,7 +365,7 @@ class ProviderEcloud(ProviderInterface):
         await ei.init()
         await ei.start_vm(instance.target_id)
         instance.status = InstanceStatus.terminated
-        session.add(instance)
+        await instance.update(session)
         return await self.set_operation_done(session, operation)
 
     async def create_instance(
@@ -381,5 +381,5 @@ class ProviderEcloud(ProviderInterface):
         instance.status = InstanceStatus.running
         instance.target_id = server.server_id
         instance.services = server.services
-        session.add(instance)
+        await instance.update(session)
         return await self.set_operation_done(session, operation)

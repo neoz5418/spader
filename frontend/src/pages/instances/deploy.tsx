@@ -20,7 +20,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { useListWorkspaceZonesHook } from "@/gen";
+import { createInstance, useListWorkspaceZonesHook } from "@/gen";
 import { useCreateInstanceHook } from "@/gen/hooks/useCreateInstanceHook";
 import { useListWorkspaceGpuTypesHook } from "@/gen/hooks/useListWorkspaceGpuTypesHook";
 import {
@@ -30,15 +30,23 @@ import {
 import { useAuth } from "@/hooks/use-auth";
 import { useCurrentWorkspace } from "@/hooks/use-setting.ts";
 import { toast } from "@/hooks/use-toast.ts";
+import { ApiError } from "@/utils/api-error";
+import { handleFormError } from "@/utils/zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { useForm, useFormState } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 
 export default function DeployForm() {
 	const { currentWorkspace } = useCurrentWorkspace();
 	const { workspace } = useParams();
 	const navigate = useNavigate();
+	const {
+		mutateAsync: createInstanceAsync,
+		isPending: isCreateInstancePending,
+		error: createInstanceError,
+	  } = useCreateInstanceHook(currentWorkspace?.name || "")
+
 	const {
 		data: { items: gpuTypes = [] } = {},
 	} = useListWorkspaceGpuTypesHook(
@@ -68,14 +76,26 @@ export default function DeployForm() {
 
 	const { user: currentUser } = useAuth();
 
-	const {
-		mutate: createInstance,
-		error,
-		data,
-	} = useCreateInstanceHook(currentUser?.name || "");
+	// const {
+	// 	mutate: createInstance,
+	// 	error,
+	// 	data,
+	// } = useCreateInstanceHook(currentUser?.name || "");
 
 	function onSubmit(data: CreateInstanceRequestSchema) {
-		createInstance(data);
+		if (!currentWorkspace) {
+			return
+		}
+		createInstanceAsync(data).then(() => {
+			toast({
+				title: "创建成功",
+				description: JSON.stringify(data),
+			});
+			navigate(`/workspaces/${workspace}/instances`);
+		}).catch((e) => {
+			console.log(e)
+			handleFormError(e, form)
+		})
 	}
 
 	function onSubmitError(error: any) {
@@ -85,16 +105,6 @@ export default function DeployForm() {
 			description: error.message,
 		});
 	}
-
-	useEffect(() => {
-		if (data) {
-			toast({
-				title: "创建成功",
-				description: JSON.stringify(data),
-			});
-			navigate(`/workspaces/${workspace}/instances`);
-		}
-	}, [data, navigate, workspace]);
 
 	return (
 		<Layout>
@@ -248,7 +258,11 @@ export default function DeployForm() {
 									</FormItem>
 								)}
 							/>
-							{error && <p className="text-red-500">{error.message}</p>}
+							{form.formState.errors.root && (
+								<div className="text-[0.8rem] font-medium text-destructive">
+								{form.formState.errors.root.message}
+								</div>
+							)}
 							<Button variant="outline" type="submit">
 								创建
 							</Button>

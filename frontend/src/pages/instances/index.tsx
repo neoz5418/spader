@@ -1,13 +1,15 @@
 import { Layout } from '@/components/custom/layout'
 
 import { useEvents } from '@/hooks/use-watch'
-import { useListWorkspaceInstancesHook } from '@/gen'
+import { listWorkspaceInstances, ListWorkspaceInstancesQueryResponseType, useListWorkspaceInstancesHook } from '@/gen'
 import { PaginationState, Updater } from '@tanstack/react-table'
 import { DataTable } from '@/components/custom/data-table'
 import Loader from '@/components/loader'
 import { useCurrentWorkspace } from '@/hooks/use-setting'
 import { useSearchParams } from 'react-router-dom'
-import { InstancesColumns } from '@/pages/instances/columns.tsx'
+import { getInstancesColumns, InstancesColumns } from '@/pages/instances/columns.tsx'
+import { useQuery } from '@tanstack/react-query'
+import { isLoggedIn } from '@/hooks/use-auth'
 
 
 export default function Instances() {
@@ -18,6 +20,18 @@ export default function Instances() {
     pageIndex: parseInt(searchParams.get('pageIndex') || '0'),
     pageSize: parseInt(searchParams.get('pageSize') || '10'),
   }
+
+  const { data: result, isLoading: isInstancesLoading, refetch } = useQuery<ListWorkspaceInstancesQueryResponseType | null, Error>({
+    queryKey: ["instances"],
+    queryFn: () => listWorkspaceInstances(currentWorkspace?.name || '', {
+      offset: pagination.pageIndex * pagination.pageSize,
+      limit: pagination.pageSize,
+    }),
+    enabled: !!currentWorkspace,
+  })
+
+  const instances = result?.items || []
+  const total = result?.pagination?.total || 0
 
   function setPagination(updater: Updater<PaginationState>) {
     let state: PaginationState
@@ -32,17 +46,6 @@ export default function Instances() {
     setSearchParams(searchParams)
   }
 
-  const {
-    isLoading: isInstancesLoading,
-    data: { items: instances = [], pagination: { total = 1 } = {} } = {},
-  } = useListWorkspaceInstancesHook(currentWorkspace?.name || '', {
-    offset: pagination.pageIndex * pagination.pageSize,
-    limit: pagination.pageSize,
-  }, {
-    query: {
-      enabled: !!currentWorkspace,
-    },
-  })
   if (isWorkspaceLoading || isInstancesLoading) {
     return <Loader />
   }
@@ -56,7 +59,8 @@ export default function Instances() {
       }
     })
     return instance
-  })
+  }).filter((instance) => instance.delete_time === null)
+  const columns = getInstancesColumns(refetch)
 
   return (
     <Layout>
@@ -64,13 +68,10 @@ export default function Instances() {
         <div className="mb-2 flex items-center justify-between space-y-2">
           <div>
             <h2 className="text-2xl font-bold tracking-tight">算力容器列表</h2>
-            <p className="text-muted-foreground">
-
-            </p>
           </div>
         </div>
         <div className="-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0">
-          <DataTable columns={InstancesColumns} data={lastInstances}
+          <DataTable columns={columns} data={lastInstances}
                      createLink={`/workspaces/${currentWorkspace?.name}/instances/deploy`}
                      rowCount={total}
                      pagination={pagination} setPagination={setPagination} />

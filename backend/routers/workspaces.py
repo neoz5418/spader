@@ -38,8 +38,6 @@ from routers.types import (
     WorkspaceMember,
     WorkspaceMemberList,
     WorkspaceQuota,
-    Operation,
-    OperationList,
     AuditLog,
     AuditLogList,
     AuditLogResourceType,
@@ -57,7 +55,7 @@ from services.common import (
     single_column_validation_failed,
     utcnow,
 )
-from services.lago import get_account, top_up_account
+from services.billing import get_account, top_up_account
 from services.payment import alipay_recharge, check_alipay_recharge
 
 logger = logging.getLogger(__name__)
@@ -220,7 +218,7 @@ async def get_workspace_account(
     workspace: str,
 ) -> WorkspaceAccount:
     db_workspace = await Workspace.one_by_field(session, "name", workspace)
-    return get_account(db_workspace)
+    return await get_account(session, db_workspace)
 
 
 @router.post(
@@ -326,7 +324,7 @@ async def check_workspace_account_recharge(
             db_workspace = await Workspace.one_by_field(
                 session, "name", db_recharge.workspace
             )
-            top_up_account(db_workspace, db_recharge.amount, False)
+            await top_up_account(session, db_workspace, db_recharge.amount, False)
             db_recharge.status = RechargeStatus.succeeded
             await db_recharge.save(session)
         return db_recharge
@@ -400,7 +398,10 @@ async def get_ssh_key(
     status_code=status.HTTP_201_CREATED,
 )
 async def create_workspace_ssh_keys(
-    session: SessionDep, workspace: str, ssh_key_in: SSHKeyCreate, user: CurrentUserDepAnnotated
+    session: SessionDep,
+    workspace: str,
+    ssh_key_in: SSHKeyCreate,
+    user: CurrentUserDepAnnotated,
 ) -> SSHKey:
     sshkey = await SSHKey.one_by_fields(
         session,
@@ -426,17 +427,20 @@ async def create_workspace_ssh_keys(
         action = AuditLogActionType.create
 
     await sshkey.refresh(session)
-    await AuditLog.create(session, AuditLog(
-        action=action,
-        workspace=workspace,
-        zone="",
-        create_time=utcnow(),
-        resource_id=sshkey.uid,
-        resource_type=AuditLogResourceType.ssh_key,
-        user_id=user.uid,
-        user_email=user.email,
-        description=f"create ssh key {sshkey.name}",
-    )) 
+    await AuditLog.create(
+        session,
+        AuditLog(
+            action=action,
+            workspace=workspace,
+            zone="",
+            create_time=utcnow(),
+            resource_id=sshkey.uid,
+            resource_type=AuditLogResourceType.ssh_key,
+            user_id=user.uid,
+            user_email=user.email,
+            description=f"create ssh key {sshkey.name}",
+        ),
+    )
     return sshkey
 
 
@@ -445,7 +449,9 @@ async def create_workspace_ssh_keys(
     dependencies=[CurrentUserDep],
     status_code=status.HTTP_204_NO_CONTENT,
 )
-async def delete_workspace_ssh_keys(session: SessionDep, workspace: str, name: str, user: CurrentUserDepAnnotated):
+async def delete_workspace_ssh_keys(
+    session: SessionDep, workspace: str, name: str, user: CurrentUserDepAnnotated
+):
     ssh_key = SSHKey.one_by_fields(
         session,
         {
@@ -458,18 +464,20 @@ async def delete_workspace_ssh_keys(session: SessionDep, workspace: str, name: s
         await session.commit()
 
         await ssh_key.refresh(session)
-        await AuditLog.create(session, AuditLog(
-            action=AuditLogActionType.delete,
-            workspace=workspace,
-            zone=zone,
-            create_time=utcnow(),
-            resource_id=user.uid,
-            resource_type=AuditLogResourceType.ssh_key,
-            user_id=user.uid,
-            user_email=user.email,
-            description=f"delete ssh key {name}",
-        )) 
-        
+        await AuditLog.create(
+            session,
+            AuditLog(
+                action=AuditLogActionType.delete,
+                workspace=workspace,
+                create_time=utcnow(),
+                resource_id=user.uid,
+                resource_type=AuditLogResourceType.ssh_key,
+                user_id=user.uid,
+                user_email=user.email,
+                description=f"delete ssh key {name}",
+            ),
+        )
+
     return
 
 
@@ -560,7 +568,7 @@ async def get_workspace_audit_logs(
     fuzzy_fields = {}
     if search:
         fuzzy_fields = {"description": search}
-    
+
     audit_log_list = await AuditLog.paginated_by_query(
         session=session,
         fields=fields,
@@ -570,4 +578,3 @@ async def get_workspace_audit_logs(
         order_by=(sort, sort_order),
     )
     return audit_log_list
-

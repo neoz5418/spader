@@ -201,9 +201,11 @@ class Currency(str, Enum):
     USD = "USD"
 
 
-class WorkspaceAccount(SQLModel, ActiveRecordMixin, table=True):
-    workspace: str = Field(primary_key=True, nullable=False)
+class WorkspaceAccount(BaseModel):
+    workspace: str
     balance: int
+    total_top_up: int
+    rate_per_hour: int
     currency: Currency
 
     def check_balance(self, price_pre_hour: int, hours: int = 1) -> bool:
@@ -627,3 +629,77 @@ class AuditLog(SQLModel, ActiveRecordMixin, table=True):
 
 
 AuditLogList = PaginatedList[AuditLog]
+
+
+# 定义计费记录类型（充值或扣款）
+class BillingRecordType(str, Enum):
+    deduction = "deduction"  # 扣款
+    top_up = "top_up"  # 充值
+
+
+# 定义计费记录表
+class BillingRecord(SQLModel, ActiveRecordMixin, table=True):
+    uid: UUID = UID  # 记录唯一标识
+    type: BillingRecordType = Field(index=True)  # 记录类型（扣款或充值）
+    resource_usage_id: Optional[UUID]  # 关联的资源使用记录（如有）
+    amount: int  # 交易金额（分，正数表示充值，负数表示扣款）
+    billing_time: datetime = Field(
+        sa_type=DateTime(timezone=True), index=True
+    )  # 记录时间
+    balance_before: int  # 交易前余额
+    balance_after: int  # 交易后余额
+    account: UUID  # 关联账户
+    coupon: Optional[UUID] = None  # 关联的优惠券（如使用优惠券）
+    meta_data: Optional[dict] = Field(
+        default_factory=dict, sa_column=Column(JSON)
+    )  # 额外信息（如备注）
+
+
+# 定义实时计费记录表
+class BillingRealTimeRecord(SQLModel, ActiveRecordMixin, table=True):
+    uid: UUID = UID  # 记录唯一标识
+    account: UUID = Field(index=True)  # 关联账户
+    start_time: datetime = Field(
+        sa_type=DateTime(timezone=True), index=True
+    )  # 计费开始时间
+    end_time: datetime = Field(
+        sa_type=DateTime(timezone=True), index=True
+    )  # 计费结束时间，如果为 datetime.min，则计费未结束
+    rate_per_hour: int  # 每小时价格（分）
+    resource_usage_type: ResourceUsageType
+    resource_id: UUID = Field(index=True)
+    coupon: Optional[UUID] = None  # 关联的优惠券（如使用优惠券）
+    meta_data: Optional[dict] = Field(
+        default_factory=dict, sa_column=Column(JSON)
+    )  # 额外信息，折扣等
+
+
+# 定义账户表
+class BillingAccount(SQLModel, ActiveRecordMixin, table=True):
+    uid: UUID = UID  # 账户唯一标识
+    balance: int  # 当前账户余额（分）
+    total_top_up: int = 0  # 累计充值金额（分）
+    meta_data: Optional[dict] = Field(
+        default_factory=dict, sa_column=Column(JSON)
+    )  # 额外信息
+
+
+# 定义优惠券类型
+class CouponType(str, Enum):
+    fixed_amount = "fixed_amount"  # 固定金额优惠券
+    resource_hours = "resource_hours"  # 资源时长优惠券
+
+
+# 定义优惠券表
+class Coupon(SQLModel, ActiveRecordMixin, table=True):
+    uid: UUID = Field(default_factory=UUID, primary_key=True)  # 优惠券唯一标识
+    account: UUID = Field(index=True)  # 关联账户
+    type: CouponType = Field(index=True)  # 优惠券类型（金额或资源时长）
+    value: int  # 优惠券剩余值（金额单位: 分，时长单位: 分钟）
+    resource_type: Optional[str] = None  # 资源类型（仅限资源时长优惠券）
+    valid_from: datetime  # 优惠券有效期开始时间
+    valid_to: datetime  # 优惠券有效期结束时间
+    used: bool = False  # 是否已使用（对于部分使用的金额/时长券，标记为未用完）
+    meta_data: Optional[dict] = Field(
+        default_factory=dict, sa_column=Column(JSON)
+    )  # 额外信息

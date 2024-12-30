@@ -140,6 +140,12 @@ class ErrorRefreshTokenInvalid(ErrorBase):
     type: Literal["RefreshTokenInvalid"]
 
 
+@http_exception(402)
+class ErrorInsufficientBalance(ErrorBase):
+    type: Literal["InsufficientBalance"]
+    balance: int
+
+
 class ResourceName(str, Enum):
     user = "user"
     workspace = "workspace"

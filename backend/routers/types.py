@@ -206,6 +206,11 @@ class WorkspaceAccount(SQLModel, ActiveRecordMixin, table=True):
     balance: int
     currency: Currency
 
+    def check_balance(self, price_pre_hour: int, hours: int = 1) -> bool:
+        if price_pre_hour * hours > self.balance:
+            return False
+        return True
+
 
 class WorkspaceZoneQuota(SQLModel, table=True):
     uid: UUID = UID
@@ -299,13 +304,23 @@ class GPUTypePublic(GPUTypeBase):
     prices: list[Price]
 
 
+class GPUTypePriceList(list[Price]):
+    @property
+    def one_hour_price(self) -> Price | None:
+        for price in self:
+            p = Price.model_validate(price)
+            if p.period == BillingPeriod.one_hour:
+                return p
+        return None
+
+
 class GPUType(GPUTypeBase, BaseModelMixin, table=True):
     provider_config: dict = Field(sa_column=Column(JSON))
     price_config: list = Field(sa_column=Column(JSON))
 
     @property
-    def prices(self) -> list[Price]:
-        return self.price_config
+    def prices(self) -> GPUTypePriceList:
+        return GPUTypePriceList(self.price_config)
 
     @property
     def ecloud(self) -> GPUProviderConfigEcloud:

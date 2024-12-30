@@ -41,11 +41,9 @@ export default function DeployForm() {
 	const { currentWorkspace } = useCurrentWorkspace();
 	const { workspace } = useParams();
 	const navigate = useNavigate();
-	const {
-		mutateAsync: createInstanceAsync,
-		isPending: isCreateInstancePending,
-		error: createInstanceError,
-	} = useCreateInstanceHook(currentWorkspace?.name || "");
+	const { mutateAsync: createInstanceAsync } = useCreateInstanceHook(
+		currentWorkspace?.name || "",
+	);
 
 	const {
 		data: { items: gpuTypes = [] } = {},
@@ -73,14 +71,6 @@ export default function DeployForm() {
 	const form = useForm<CreateInstanceRequestSchema>({
 		resolver: zodResolver(createInstanceRequestSchema),
 	});
-
-	const { user: currentUser } = useAuth();
-
-	// const {
-	// 	mutate: createInstance,
-	// 	error,
-	// 	data,
-	// } = useCreateInstanceHook(currentUser?.name || "");
 
 	function onSubmit(data: CreateInstanceRequestSchema) {
 		if (!currentWorkspace) {
@@ -244,7 +234,7 @@ export default function DeployForm() {
 												</SelectTrigger>
 											</FormControl>
 											<SelectContent>
-												<SelectItem value="runpod/pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04">
+												<SelectItem value="pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04">
 													pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04
 												</SelectItem>
 											</SelectContent>

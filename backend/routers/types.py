@@ -558,10 +558,6 @@ class Image(SQLModel, table=True):
     visibility: ImageVisibility
     workspace: str = ""
 
-    create_time: datetime
-    update_time: Optional[datetime] = None
-    delete_time: Optional[datetime] = None
-
 
 ImageList = PaginatedList[Image]
 

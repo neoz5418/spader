@@ -89,8 +89,8 @@ async def init_data():
                 "pool_id": "CIDC-RP-26",
                 "network_id": "30766f53-054d-4b26-ab95-a148e8e0d1fd",
                 "security_group_id": "a90d5a36-0354-4160-88a6-ff884a429aac",
-                "default_image_name": "base-image-4",
-                "default_image_id": "4105fb9b-4cfa-444d-bc69-01b94dda1829",
+                "default_image_name": "base-image-5",
+                "default_image_id": "bf79e733-5b70-494e-bb17-01ccf9cc9518",
             },
         )
         await Zone.create_or_update(session, beijing)

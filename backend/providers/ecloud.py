@@ -144,16 +144,17 @@ async def _create_instance(
 
 
 def generate_cloud_init(
-    jupyter_password: str, public_key: str, is_cpu_instance: bool = False
+    jupyter_password: str, public_key: str, image: str, is_cpu_instance: bool = False
 ) -> str:
     gpu_flags = "" if is_cpu_instance else "--gpus all"
     return """docker run -d --restart unless-stopped --net=host %s --name default_runner \
       -e PUBLIC_KEY="%s" \
       -e JUPYTER_PASSWORD=%s \
-      runpod/pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04""" % (
+      %s""" % (
         gpu_flags,
         public_key,
         jupyter_password,
+        image,
     )
 
 
@@ -302,15 +303,17 @@ class EcloudInstance(object):
     async def rebuild_vm(self, server_id) -> EcloudServer:
         logger.info("start rebuild server [%s] ...", server_id)
         jupyter_password = str(uuid.uuid4())
+        public_key = await get_public_key(
+            self.session, workspace=self.instance.workspace
+        )
         request = VmRebuildRequest(
             vm_rebuild_body=VmRebuildBody(
                 server_id=server_id,
                 image_id=self.zone.ecloud.default_image_id,
                 user_data=generate_cloud_init(
                     jupyter_password=jupyter_password,
-                    public_key=await get_public_key(
-                        self.session, workspace=self.instance.workspace
-                    ),
+                    public_key=public_key,
+                    image=self.instance.image,
                     is_cpu_instance=self.gpu_type.is_cpu_instance,
                 ),
             )
@@ -327,9 +330,10 @@ class EcloudInstance(object):
                 break
         services = {
             "jupyter-lab": "%s:8888" % ip,
-            "ssh": "%s:22" % ip,
             "jupyter-password": jupyter_password,
         }
+        if public_key:
+            services["ssh"] = "ssh -p 22 root@%s" % ip
         return EcloudServer(server_id=server_id, status=vm.ec_status, services=services)
 
 

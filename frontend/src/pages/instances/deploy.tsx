@@ -45,7 +45,7 @@ export default function DeployForm() {
 		mutateAsync: createInstanceAsync,
 		isPending: isCreateInstancePending,
 		error: createInstanceError,
-	  } = useCreateInstanceHook(currentWorkspace?.name || "")
+	} = useCreateInstanceHook(currentWorkspace?.name || "");
 
 	const {
 		data: { items: gpuTypes = [] } = {},
@@ -84,18 +84,20 @@ export default function DeployForm() {
 
 	function onSubmit(data: CreateInstanceRequestSchema) {
 		if (!currentWorkspace) {
-			return
+			return;
 		}
-		createInstanceAsync(data).then(() => {
-			toast({
-				title: "创建成功",
-				description: JSON.stringify(data),
+		createInstanceAsync(data)
+			.then(() => {
+				toast({
+					title: "创建成功",
+					description: JSON.stringify(data),
+				});
+				navigate(`/workspaces/${workspace}/instances`);
+			})
+			.catch((e) => {
+				console.log(e);
+				handleFormError(e, form);
 			});
-			navigate(`/workspaces/${workspace}/instances`);
-		}).catch((e) => {
-			console.log(e)
-			handleFormError(e, form)
-		})
 	}
 
 	function onSubmitError(error: any) {
@@ -216,9 +218,9 @@ export default function DeployForm() {
 											</FormControl>
 											<SelectContent>
 												<SelectItem value="1">1</SelectItem>
-												<SelectItem value="2">2</SelectItem>
-												<SelectItem value="4">4</SelectItem>
-												<SelectItem value="8">8</SelectItem>
+												{/*<SelectItem value="2">2</SelectItem>*/}
+												{/*<SelectItem value="4">4</SelectItem>*/}
+												{/*<SelectItem value="8">8</SelectItem>*/}
 											</SelectContent>
 										</Select>
 										<FormDescription>选择一个 GPU 数量</FormDescription>
@@ -242,14 +244,8 @@ export default function DeployForm() {
 												</SelectTrigger>
 											</FormControl>
 											<SelectContent>
-												<SelectItem value="pytorch:2.0.1-py3.10-rocm5.7-ubuntu18.04">
-													pytorch:2.0.1-py3.10-rocm5.7-ubuntu18.04
-												</SelectItem>
-												<SelectItem value="pytorch:2.0.1-py3.10-rocm5.7-ubuntu20.04">
-													pytorch:2.0.1-py3.10-rocm5.7-ubuntu20.04
-												</SelectItem>
-												<SelectItem value="pytorch:2.0.1-py3.10-rocm5.7-ubuntu22.04">
-													pytorch:2.0.1-py3.10-rocm5.7-ubuntu22.04
+												<SelectItem value="runpod/pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04">
+													pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04
 												</SelectItem>
 											</SelectContent>
 										</Select>
@@ -260,7 +256,7 @@ export default function DeployForm() {
 							/>
 							{form.formState.errors.root && (
 								<div className="text-[0.8rem] font-medium text-destructive">
-								{form.formState.errors.root.message}
+									{form.formState.errors.root.message}
 								</div>
 							)}
 							<Button variant="outline" type="submit">

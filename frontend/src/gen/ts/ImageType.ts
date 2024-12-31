@@ -30,10 +30,4 @@ import type { ImageVisibilityType } from "./ImageVisibilityType";
      * @type string | undefined
     */
     workspace?: string;
-    /**
-     * @type string, date-time
-    */
-    create_time: string;
-    update_time?: (string | null);
-    delete_time?: (string | null);
 };

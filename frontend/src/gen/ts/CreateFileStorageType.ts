@@ -4,6 +4,7 @@ import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
 import type { ErrorRefreshTokenCannotBeEmptyType } from "./ErrorRefreshTokenCannotBeEmptyType";
 import type { ErrorRefreshTokenExpiredType } from "./ErrorRefreshTokenExpiredType";
 import type { ErrorRefreshTokenInvalidType } from "./ErrorRefreshTokenInvalidType";
+import type { ErrorInsufficientBalanceType } from "./ErrorInsufficientBalanceType";
 import type { ErrorForbiddenType } from "./ErrorForbiddenType";
 import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
 import type { ErrorUsernameOrEmailCannotBeEmptyType } from "./ErrorUsernameOrEmailCannotBeEmptyType";
@@ -27,7 +28,7 @@ export type CreateFileStorage201Type = OperationType;
 /**
  * @description Unprocessable Entity
 */
-export type CreateFileStorage422Type = (ErrorInternalType | ErrorInvalidArgumentType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorForbiddenType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
+export type CreateFileStorage422Type = (ErrorInternalType | ErrorInvalidArgumentType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorInsufficientBalanceType | ErrorForbiddenType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
 export type CreateFileStorageMutationRequestType = CreateFileStorageRequestType;
 /**
  * @description Successful Response

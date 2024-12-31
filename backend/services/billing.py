@@ -16,6 +16,7 @@ from routers.types import (
 )
 from services.cache import get_redis
 from services.common import utcnow
+from services.utils import subtract_datetimes
 
 
 async def get_account(session: SessionDep, workspace: Workspace) -> WorkspaceAccount:
@@ -39,7 +40,7 @@ async def get_account(session: SessionDep, workspace: Workspace) -> WorkspaceAcc
         end_time = utcnow()
         rate_per_hour = 0
         for r in real_time_records:
-            balance -= r.rate_per_hour * (end_time - r.start_time)
+            balance -= int(r.rate_per_hour * subtract_datetimes(end_time, r.start_time))
             rate_per_hour += r.rate_per_hour
         return WorkspaceAccount(
             workspace=workspace.name,
@@ -110,8 +111,9 @@ async def end_resource_billing_record(
     )
     account = await BillingAccount.one_by_field(session, "uid", workspace.uid)
     real_time_record.end_time = end_time
-    amount = -real_time_record.rate_per_hour * int(
-        (end_time - real_time_record.start_time).total_seconds() / 3600
+    amount = -int(
+        real_time_record.rate_per_hour
+        * subtract_datetimes(end_time, real_time_record.start_time)
     )
     balance_before = account.balance
     balance_after = account.balance + amount
@@ -175,8 +177,9 @@ async def process_periodic_billing(session: SessionDep):
         account = await BillingAccount.one_by_field(session, "uid", workspace)
         for real_time_record in real_time_records:
             real_time_record.end_time = end_time
-            amount = -real_time_record.rate_per_hour * int(
-                (end_time - real_time_record.start_time).total_seconds() / 3600
+            amount = -int(
+                real_time_record.rate_per_hour
+                * subtract_datetimes(end_time, real_time_record.start_time)
             )
             balance_before = account.balance
             balance_after = account.balance + amount

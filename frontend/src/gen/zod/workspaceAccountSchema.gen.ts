@@ -2,5 +2,5 @@ import { currencySchema } from "./currencySchema.gen";
 import { z } from "@/utils/zod.ts";
 
 
-export const workspaceAccountSchema = z.object({ "workspace": z.string(), "balance": z.number().int(), "currency": z.lazy(() => currencySchema) });
+export const workspaceAccountSchema = z.object({ "workspace": z.string(), "balance": z.number().int(), "total_top_up": z.number().int(), "rate_per_hour": z.number().int(), "currency": z.lazy(() => currencySchema) });
 export type WorkspaceAccountSchema = z.infer<typeof workspaceAccountSchema>;

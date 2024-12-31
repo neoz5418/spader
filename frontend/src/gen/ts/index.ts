@@ -26,6 +26,7 @@ export * from "./DeleteWorkspaceType";
 export * from "./DirectionType";
 export * from "./DiskTypeType";
 export * from "./ErrorForbiddenType";
+export * from "./ErrorInsufficientBalanceType";
 export * from "./ErrorInternalType";
 export * from "./ErrorInvalidArgumentType";
 export * from "./ErrorRefreshTokenCannotBeEmptyType";

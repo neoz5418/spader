@@ -18,10 +18,10 @@ from services.billing import (
     end_resource_billing_record,
     process_periodic_billing,
     start_resource_billing_record,
+    get_account,
 )
 from services.common import utcnow
 from services.db import get_session
-from services.lago import get_account
 
 # TODO: use redis as broker
 celery = Celery(
@@ -105,6 +105,7 @@ async def delete_instance_operation(operation_id: UUID):
         await provider.delete_instance(session, operation, instance)
         await instance.refresh(session)
         await instance.delete(session)
+        await workspace.refresh(session)
 
         await end_resource_billing_record(
             session, workspace=workspace, resource_id=instance.uid, end_time=utcnow()
@@ -118,7 +119,7 @@ async def check_all_user_balances():
     async for session in get_session():
         workspaces = await Workspace.all(session)
         for workspace in workspaces:
-            account = get_account(workspace)
+            account = await get_account(session, workspace)
             if account.balance <= 0:
                 logger.info("workspace %s balance is lower than 0", workspace.name)
                 # TODO: stop all resource

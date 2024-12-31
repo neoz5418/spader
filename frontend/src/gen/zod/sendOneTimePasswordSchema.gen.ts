@@ -5,6 +5,7 @@ import { errorInvalidArgumentSchema } from "./errorInvalidArgumentSchema.gen";
 import { errorRefreshTokenCannotBeEmptySchema } from "./errorRefreshTokenCannotBeEmptySchema.gen";
 import { errorRefreshTokenExpiredSchema } from "./errorRefreshTokenExpiredSchema.gen";
 import { errorRefreshTokenInvalidSchema } from "./errorRefreshTokenInvalidSchema.gen";
+import { errorInsufficientBalanceSchema } from "./errorInsufficientBalanceSchema.gen";
 import { errorForbiddenSchema } from "./errorForbiddenSchema.gen";
 import { errorUnauthorizedSchema } from "./errorUnauthorizedSchema.gen";
 import { errorUsernameOrEmailCannotBeEmptySchema } from "./errorUsernameOrEmailCannotBeEmptySchema.gen";
@@ -19,7 +20,7 @@ export type SendOneTimePassword201Schema = z.infer<typeof sendOneTimePassword201
 /**
  * @description Unprocessable Entity
  */
-export const sendOneTimePassword422Schema = z.union([z.lazy(() => errorInternalSchema), z.lazy(() => errorInvalidArgumentSchema), z.lazy(() => errorRefreshTokenCannotBeEmptySchema), z.lazy(() => errorRefreshTokenExpiredSchema), z.lazy(() => errorRefreshTokenInvalidSchema), z.lazy(() => errorForbiddenSchema), z.lazy(() => errorUnauthorizedSchema), z.lazy(() => errorUsernameOrEmailCannotBeEmptySchema), z.lazy(() => errorValidationFailedSchema)]);
+export const sendOneTimePassword422Schema = z.union([z.lazy(() => errorInternalSchema), z.lazy(() => errorInvalidArgumentSchema), z.lazy(() => errorRefreshTokenCannotBeEmptySchema), z.lazy(() => errorRefreshTokenExpiredSchema), z.lazy(() => errorRefreshTokenInvalidSchema), z.lazy(() => errorInsufficientBalanceSchema), z.lazy(() => errorForbiddenSchema), z.lazy(() => errorUnauthorizedSchema), z.lazy(() => errorUsernameOrEmailCannotBeEmptySchema), z.lazy(() => errorValidationFailedSchema)]);
 export type SendOneTimePassword422Schema = z.infer<typeof sendOneTimePassword422Schema>;
 
  export const sendOneTimePasswordMutationRequestSchema = z.lazy(() => sendOneTimePasswordRequestSchema);

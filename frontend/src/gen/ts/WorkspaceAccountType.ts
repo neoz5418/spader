@@ -10,6 +10,14 @@ import type { CurrencyType } from "./CurrencyType";
     */
     balance: number;
     /**
+     * @type integer
+    */
+    total_top_up: number;
+    /**
+     * @type integer
+    */
+    rate_per_hour: number;
+    /**
      * @type string
     */
     currency: CurrencyType;

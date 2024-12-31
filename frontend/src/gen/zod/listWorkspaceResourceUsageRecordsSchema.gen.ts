@@ -5,6 +5,7 @@ import { errorInvalidArgumentSchema } from "./errorInvalidArgumentSchema.gen";
 import { errorRefreshTokenCannotBeEmptySchema } from "./errorRefreshTokenCannotBeEmptySchema.gen";
 import { errorRefreshTokenExpiredSchema } from "./errorRefreshTokenExpiredSchema.gen";
 import { errorRefreshTokenInvalidSchema } from "./errorRefreshTokenInvalidSchema.gen";
+import { errorInsufficientBalanceSchema } from "./errorInsufficientBalanceSchema.gen";
 import { errorForbiddenSchema } from "./errorForbiddenSchema.gen";
 import { errorUnauthorizedSchema } from "./errorUnauthorizedSchema.gen";
 import { errorUsernameOrEmailCannotBeEmptySchema } from "./errorUsernameOrEmailCannotBeEmptySchema.gen";
@@ -24,7 +25,7 @@ export type ListWorkspaceResourceUsageRecords200Schema = z.infer<typeof listWork
 /**
  * @description Unprocessable Entity
  */
-export const listWorkspaceResourceUsageRecords422Schema = z.union([z.lazy(() => errorInternalSchema), z.lazy(() => errorInvalidArgumentSchema), z.lazy(() => errorRefreshTokenCannotBeEmptySchema), z.lazy(() => errorRefreshTokenExpiredSchema), z.lazy(() => errorRefreshTokenInvalidSchema), z.lazy(() => errorForbiddenSchema), z.lazy(() => errorUnauthorizedSchema), z.lazy(() => errorUsernameOrEmailCannotBeEmptySchema), z.lazy(() => errorValidationFailedSchema)]);
+export const listWorkspaceResourceUsageRecords422Schema = z.union([z.lazy(() => errorInternalSchema), z.lazy(() => errorInvalidArgumentSchema), z.lazy(() => errorRefreshTokenCannotBeEmptySchema), z.lazy(() => errorRefreshTokenExpiredSchema), z.lazy(() => errorRefreshTokenInvalidSchema), z.lazy(() => errorInsufficientBalanceSchema), z.lazy(() => errorForbiddenSchema), z.lazy(() => errorUnauthorizedSchema), z.lazy(() => errorUsernameOrEmailCannotBeEmptySchema), z.lazy(() => errorValidationFailedSchema)]);
 export type ListWorkspaceResourceUsageRecords422Schema = z.infer<typeof listWorkspaceResourceUsageRecords422Schema>;
 /**
  * @description Successful Response

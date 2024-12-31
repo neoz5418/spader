@@ -37,6 +37,7 @@ from routers.types import (
     ZoneBase,
     ZoneList,
 )
+from services.billing import get_account
 from services.celery import (
     create_instance_operation,
     delete_instance_operation,
@@ -51,7 +52,6 @@ from services.common import (
     single_column_validation_failed,
     utcnow,
 )
-from services.lago import get_account
 from services.lru_resource_cache import get_gpu_type_display_name, get_zone_display_name
 
 from routers.types import AuditLogActionType, AuditLogResourceType, AuditLog
@@ -297,7 +297,7 @@ async def create_instance(
             )
         )
     db_workspace = await Workspace.one_by_field(session, "name", workspace)
-    workspace_account = get_account(db_workspace)
+    workspace_account = await get_account(session, db_workspace)
     gpu_type = await GPUType.one_by_field(session, "name", instance_in.gpu_type)
     price_pre_hour = gpu_type.prices.one_hour_price.price * instance_in.gpu_count
     if not workspace_account.check_balance(price_pre_hour):

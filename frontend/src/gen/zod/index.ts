@@ -26,6 +26,7 @@ export * from "./deleteWorkspaceSshKeysSchema.gen";
 export * from "./directionSchema.gen";
 export * from "./diskTypeSchema.gen";
 export * from "./errorForbiddenSchema.gen";
+export * from "./errorInsufficientBalanceSchema.gen";
 export * from "./errorInternalSchema.gen";
 export * from "./errorInvalidArgumentSchema.gen";
 export * from "./errorRefreshTokenCannotBeEmptySchema.gen";

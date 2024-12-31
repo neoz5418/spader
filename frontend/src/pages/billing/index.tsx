@@ -29,6 +29,7 @@ export default function BillingDashboard() {
 		useWorkspaceAccount();
 	const balance = workspacesAccount?.balance || 0;
 	const currency = workspacesAccount?.currency || "CNY";
+	const rate_per_hour = workspacesAccount?.rate_per_hour || 0;
 	const [searchParams, setSearchParams] = useSearchParams();
 	const pagination = {
 		pageIndex: Number.parseInt(searchParams.get("pageIndex") || "0"),
@@ -87,7 +88,7 @@ export default function BillingDashboard() {
 					<CardContent>
 						<div className="text-sm text-muted-foreground">
 							<p>消费限额: 无限额</p>
-							<p>当前消费: {formatCurrency(0, currency)} / 小时</p>
+							<p>当前消费: {formatCurrency(rate_per_hour, currency)} / 小时</p>
 						</div>
 					</CardContent>
 				</Card>

@@ -34,6 +34,8 @@ i18next.use(initReactI18next).init({
         InvalidArgument: "无效的参数",
         PasswordMismatch: "密码错误",
         ResourceNotFound: "{{resource}} 不存在",
+        ResourceConflict: "{{resource}} 已存在",
+        InsufficientBalance: "余额不足",
       }    
     }
   },

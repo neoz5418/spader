@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
 	Select,
@@ -20,7 +21,8 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { createInstance, useListWorkspaceZonesHook } from "@/gen";
+import { Table, TableBody, TableCell, TableHeader, TableHead, TableRow } from "@/components/ui/table";
+import { createInstance, useListWorkspaceZonesHook, ZoneType } from "@/gen";
 import { useCreateInstanceHook } from "@/gen/hooks/useCreateInstanceHook";
 import { useListWorkspaceGpuTypesHook } from "@/gen/hooks/useListWorkspaceGpuTypesHook";
 import {
@@ -33,12 +35,14 @@ import { toast } from "@/hooks/use-toast.ts";
 import { ApiError } from "@/utils/api-error";
 import { handleFormError } from "@/utils/zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 
 export default function DeployForm() {
 	const { currentWorkspace } = useCurrentWorkspace();
+	const [currentGpuType, setCurrentGpuType] = useState<string | null>(null);
+	const [gpuCount, setGpuCount] = useState<number>(0);
 	const { workspace } = useParams();
 	const navigate = useNavigate();
 	const { mutateAsync: createInstanceAsync } = useCreateInstanceHook(
@@ -90,7 +94,15 @@ export default function DeployForm() {
 			});
 	}
 
+	const availableZones = useMemo(() => {
+		const gpuType = gpuTypes.find((gpuType) => gpuType.name === currentGpuType);
+		return zones.filter((zone) => 
+			gpuType?.zones.includes(zone.name)
+		);
+	}, [currentGpuType, gpuTypes, zones]);
+
 	function onSubmitError(error: any) {
+		console.log(error)
 		toast({
 			variant: "destructive",
 			title: "创建失败",
@@ -126,42 +138,106 @@ export default function DeployForm() {
 								name="gpu_type"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>GPU类型</FormLabel>
+										<FormLabel>实例类型</FormLabel>
 										<FormControl>
-											<RadioGroup
-												onValueChange={field.onChange}
-												defaultValue={field.value}
+										<RadioGroup
+												onValueChange={(value) => {
+													setCurrentGpuType(value)
+													field.onChange(value)
+													setGpuCount(1) //@TODO: 需要根据实例类型设置GPU数量
+													console.log(value)
+												}}
+												value={field.value || ""}
 												className="flex flex-col space-y-1"
-											>
-												{gpuTypes.map((gpuType) => (
-													<FormItem
-														className="flex items-center space-x-3 space-y-0"
-														key={gpuType.name}
-													>
-														<FormControl>
-															<RadioGroupItem value={gpuType.name} />
-														</FormControl>
-														<FormLabel className="w-full flex justify-between ">
-															<div>{gpuType.display_name}</div>
-															<div>
-																<span className="font-extrabold">
-																	¥
-																	{gpuType.prices.filter(
+												>
+											<Tabs defaultValue="gpu" className="w-full" onValueChange={() => {
+														form.setValue("gpu_type", '')
+														form.setValue("zone", '')
+														setCurrentGpuType(null) 
+													}}>
+												<TabsList className="grid w-full grid-cols-2">
+													<TabsTrigger value="gpu">GPU 实例</TabsTrigger>
+													<TabsTrigger value="cpu">CPU 实例</TabsTrigger>
+												</TabsList>
+												
+												<TabsContent value="gpu">
+													<Table>
+														<TableHeader>
+															<TableRow>
+																<TableHead className="w-12"></TableHead>
+																<TableHead>GPU</TableHead>
+																<TableHead>CPUs</TableHead>
+																<TableHead>Memory</TableHead>
+																<TableHead>Disk</TableHead>
+																<TableHead className="text-right">Price</TableHead>
+															</TableRow>
+														</TableHeader>
+														<TableBody>
+															{gpuTypes.filter(type => type.gpu_memory > 0).map((gpuType) => (
+																<TableRow key={gpuType.name}>
+																	<TableCell>
+																		<FormItem className="flex items-center space-x-3 space-y-0">
+																			<FormControl>
+																				<RadioGroupItem value={gpuType.name} />
+																			</FormControl>
+																		</FormItem>
+																	</TableCell>
+																	<TableCell>{gpuType.display_name} {(gpuType.gpu_memory / 1000 / 1000 / 1000).toFixed(0)} GB * 1 块</TableCell>
+																	<TableCell>{gpuType.cpu} 核</TableCell>
+																	<TableCell>{(gpuType.memory / 1000 / 1000 / 1000).toFixed(0)} GB</TableCell>
+																	<TableCell>{gpuType.disk_type} {(gpuType.disk_size / 1000 / 1000 / 1000).toFixed(0)} GB</TableCell>
+																	<TableCell></TableCell>
+																	<TableCell className="text-right text-primary">
+																	¥{gpuType.prices.filter(
 																		(price) => price.period === "one_hour",
 																	)[0].price / 100}
-																</span>
-																/时
-															</div>
-														</FormLabel>
-													</FormItem>
-												))}
+																	</TableCell>
+																</TableRow>
+															))}
+														</TableBody>
+													</Table>
+												</TabsContent>
+												
+												<TabsContent value="cpu">
+													<Table>
+														<TableHeader>
+															<TableRow>
+																<TableHead className="w-12"></TableHead>
+																<TableHead>CPUs</TableHead>
+																<TableHead>Memory</TableHead>
+																<TableHead>Disk</TableHead>
+																<TableHead className="text-right">Price</TableHead>
+															</TableRow>
+														</TableHeader>
+														<TableBody>
+															{gpuTypes.filter(type => type.gpu_memory === 0).map((gpuType) => (
+																<TableRow key={gpuType.name}>
+																	<TableCell>
+																		<FormItem className="flex items-center space-x-3 space-y-0">
+																			<FormControl>
+																				<RadioGroupItem value={gpuType.name} />
+																			</FormControl>
+																		</FormItem>
+																	</TableCell>
+																	<TableCell>{gpuType.cpu} 核</TableCell>
+																	<TableCell>{(gpuType.memory / 1024 / 1024 / 1024).toFixed(1)} GB</TableCell>
+																	<TableCell>{gpuType.disk_type} {(gpuType.disk_size / 1024 / 1024 / 1024).toFixed(0)} GB</TableCell>
+																	<TableCell className="text-right text-primary">
+																	¥{gpuType.prices.filter(price => price.period === "one_hour")[0].price / 100}
+																	</TableCell>
+																</TableRow>
+															))}
+														</TableBody>
+													</Table>
+												</TabsContent>
+											</Tabs>
 											</RadioGroup>
 										</FormControl>
 										<FormMessage />
 									</FormItem>
 								)}
 							/>
-							<FormField
+							{availableZones.length > 0 && <FormField
 								name="zone"
 								control={form.control}
 								render={({ field }) => (
@@ -177,7 +253,7 @@ export default function DeployForm() {
 												</SelectTrigger>
 											</FormControl>
 											<SelectContent>
-												{zones.map((zone) => (
+												{availableZones.map((zone) => (
 													<SelectItem value={zone.name} key={zone.name}>
 														{zone.display_name}
 													</SelectItem>
@@ -188,36 +264,10 @@ export default function DeployForm() {
 										<FormMessage />
 									</FormItem>
 								)}
-							/>
-							<FormField
-								control={form.control}
-								name="gpu_count"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>数量</FormLabel>
-										<Select
-											onValueChange={(value) =>
-												field.onChange(Number.parseInt(value))
-											}
-											defaultValue={field.value?.toString()}
-										>
-											<FormControl>
-												<SelectTrigger>
-													<SelectValue placeholder="选择 GPU 数量" />
-												</SelectTrigger>
-											</FormControl>
-											<SelectContent>
-												<SelectItem value="1">1</SelectItem>
-												{/*<SelectItem value="2">2</SelectItem>*/}
-												{/*<SelectItem value="4">4</SelectItem>*/}
-												{/*<SelectItem value="8">8</SelectItem>*/}
-											</SelectContent>
-										</Select>
-										<FormDescription>选择一个 GPU 数量</FormDescription>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
+							/>}
+
+							<input value={gpuCount || 0} type="hidden" {...form.register('gpu_count', { valueAsNumber: true })} />
+							
 							<FormField
 								control={form.control}
 								name="image"
@@ -259,3 +309,4 @@ export default function DeployForm() {
 		</Layout>
 	);
 }
+

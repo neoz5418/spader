@@ -42,7 +42,6 @@ import { useNavigate, useParams } from "react-router-dom";
 export default function DeployForm() {
 	const { currentWorkspace } = useCurrentWorkspace();
 	const [currentGpuType, setCurrentGpuType] = useState<string | null>(null);
-	const [gpuCount, setGpuCount] = useState<number>(0);
 	const { workspace } = useParams();
 	const navigate = useNavigate();
 	const { mutateAsync: createInstanceAsync } = useCreateInstanceHook(
@@ -144,8 +143,7 @@ export default function DeployForm() {
 												onValueChange={(value) => {
 													setCurrentGpuType(value)
 													field.onChange(value)
-													setGpuCount(1) //@TODO: 需要根据实例类型设置GPU数量
-													console.log(value)
+													form.setValue('gpu_count', 1) //@TODO: 需要根据实例类型设置GPU数量													
 												}}
 												value={field.value || ""}
 												className="flex flex-col space-y-1"
@@ -266,7 +264,7 @@ export default function DeployForm() {
 								)}
 							/>}
 
-							<input value={gpuCount || 0} type="hidden" {...form.register('gpu_count', { valueAsNumber: true })} />
+							<input {...form.register('gpu_count', { valueAsNumber: true })} />
 							
 							<FormField
 								control={form.control}

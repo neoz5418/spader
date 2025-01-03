@@ -674,6 +674,46 @@ class BillingRealTimeRecord(SQLModel, ActiveRecordMixin, table=True):
     )  # 额外信息，折扣等
 
 
+class LeaseType(str, Enum):
+    hourly = "hourly"  # 按小时租赁
+    daily = "daily"  # 按天租赁
+    weekly = "weekly"  # 按周租赁
+    monthly = "monthly"  # 按月租赁
+    real_time = "real_time"  # 实时计费
+
+
+class LeaseStatus(str, Enum):
+    active = "active"  # 活跃状态
+    in_debt = "in_debt"  # 已欠费
+    expired = "expired"  # 已过期
+    deleted = "deleted"  # 已删除
+
+
+class AutoRenewType(str, Enum):
+    hourly = "hourly"  # 自动按小时续租
+    daily = "daily"  # 自动按天续租
+    weekly = "weekly"  # 自动按周续租
+    monthly = "monthly"  # 自动按月续租
+    none = "none"  # 不自动续租
+
+
+class BillingLease(SQLModel, table=True):
+    uid: UUID = Field(default_factory=UUID, primary_key=True)  # 租约唯一标识
+    account: UUID = Field(index=True)  # 关联的用户账户
+    resource_id: UUID = Field(index=True)  # 关联的资源 ID
+    resource_type: str = Field(index=True)  # 资源类型（如 "A100", "H100" 等）
+    lease_type: LeaseType = Field(index=True)  # 租约类型
+    auto_renew_type: AutoRenewType = Field(
+        default=AutoRenewType.none, index=True
+    )  # 自动续租类型
+    status: LeaseStatus = Field(default=LeaseStatus.active, index=True)  # 租约状态
+    start_time: datetime = Field(sa_type=DateTime(timezone=True))  # 租约开始时间
+    end_time: datetime = Field(
+        sa_type=DateTime(timezone=True), index=True
+    )  # 租约到期时间
+    meta_data: Optional[dict] = Field(default_factory=dict)  # 扩展字段
+
+
 # 定义账户表
 class BillingAccount(SQLModel, ActiveRecordMixin, table=True):
     uid: UUID = UID  # 账户唯一标识

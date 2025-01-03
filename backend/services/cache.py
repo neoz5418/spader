@@ -1,9 +1,17 @@
-from functools import lru_cache
-import redis.asyncio as redis
+from redis.asyncio import ConnectionPool, Redis
 from settings import get_settings
 
+redis_pool: ConnectionPool
 
-@lru_cache
-def get_redis() -> redis.Redis:
+
+def init_redis():
     redis_host = get_settings().redis_host
-    return redis.from_url(f"redis://{redis_host}:6379?decode_responses=True")
+    global redis_pool
+    redis_pool = ConnectionPool.from_url(
+        f"redis://{redis_host}:6379?decode_responses=True"
+    )
+
+
+def get_redis() -> Redis:
+    global redis_pool
+    return Redis.from_pool(connection_pool=redis_pool)

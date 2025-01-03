@@ -18,6 +18,7 @@ from fastapi.encoders import jsonable_encoder
 from starlette.background import BackgroundTask
 from dependencies import active_connections_set
 from routers import workspaces, users, instances, oidc
+from services.cache import init_redis
 from services.common import (
     error_from_exception,
     Errors,
@@ -27,6 +28,7 @@ from services.db import get_session, create_db_and_tables, init_admin_user, init
 import logging
 
 setup_logging()
+init_redis()
 # setup_logging(True)
 
 logger = logging.getLogger(__name__)

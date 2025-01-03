@@ -100,7 +100,7 @@ async def end_resource_billing_record(
     workspace: Workspace,
     resource_id: UUID,
     end_time: datetime,
-) -> BillingRealTimeRecord:
+) -> BillingRealTimeRecord | None:
     real_time_record = await BillingRealTimeRecord.one_by_fields(
         session,
         {
@@ -109,6 +109,8 @@ async def end_resource_billing_record(
             "account": workspace.uid,
         },
     )
+    if not real_time_record:
+        return
     account = await BillingAccount.one_by_field(session, "uid", workspace.uid)
     real_time_record.end_time = end_time
     amount = -int(
@@ -137,10 +139,12 @@ async def renew_resource_billing_record(
     workspace: Workspace,
     resource_id: UUID,
     end_time: datetime,
-) -> BillingRealTimeRecord:
+) -> BillingRealTimeRecord | None:
     real_time_record = await end_resource_billing_record(
         session, workspace=workspace, resource_id=resource_id, end_time=end_time
     )
+    if not real_time_record:
+        return
     # TODO: load rate_per_hour from resource
     return await start_resource_billing_record(
         session,
@@ -166,7 +170,6 @@ async def process_periodic_billing(session: SessionDep):
     workspaces = await get_workspaces_with_active_billing(session)
     end_time = utcnow()
     for workspace in workspaces:
-        workspace = UUID(workspace)
         real_time_records = await BillingRealTimeRecord.all_by_fields(
             session,
             {
@@ -200,7 +203,7 @@ async def process_periodic_billing(session: SessionDep):
                 start_time=end_time,
                 end_time=datetime.min,
                 rate_per_hour=real_time_record.rate_per_hour,
-                resource_usage_type=real_time_record.resource_type,
+                resource_usage_type=real_time_record.resource_usage_type,
                 resource_id=real_time_record.resource_id,
             )
             session.add(new_real_time_record)

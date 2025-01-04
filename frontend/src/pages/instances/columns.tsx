@@ -20,6 +20,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { useState } from 'react'
+import { Input } from "@/components/ui/input"
 
 function Copyable({ text }: { text: string }) {
   return (
@@ -137,14 +138,35 @@ export const getInstancesColumns = (refetch: () => void) => {
       header: '操作',
       cell: ({ row }) => {
         const instance = row.original
+        const [showStopDialog, setShowStopDialog] = useState(false)
         const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+        const [confirmName, setConfirmName] = useState("")
+
+        const handleStop = () => {
+          if (confirmName !== instance.name) {
+            showToast("实例名称不匹配")
+            return
+          }
+          stopInstance(instance.workspace, instance.name)
+            .then(() => {
+              setShowStopDialog(false)
+              setConfirmName("")
+              showToast(`实例 ${instance.name} 停止成功`)
+            })
+            .catch((error) => {
+              console.log('stop instance error', error)
+            })
+        }
 
         const handleDelete = () => {
-          // TODO: 实现删除逻辑
-          console.log('deleting', instance.name)
+          if (confirmName !== instance.name) {
+            showToast("实例名称不匹配")
+            return
+          }
           deleteInstance(instance.workspace, instance.name)
-            .then(() => { 
+            .then(() => {
               setShowDeleteDialog(false)
+              setConfirmName("")
               showToast(`实例 ${instance.name} 删除成功`)
             })
             .catch((error) => {
@@ -156,42 +178,21 @@ export const getInstancesColumns = (refetch: () => void) => {
           <>
             <div className='flex items-center gap-2'>
               <Button
-                disabled={
-                  instance.status !== 'running' &&
-                  instance.status !== 'terminated'
-                }
+                disabled={instance.status !== 'running' && instance.status !== 'terminated'}
                 variant='ghost'
                 size='icon'
                 onClick={() => {
-                  console.log('instance', instance.status)
-                  // TODO: 实现启动/停止逻辑
                   if (instance.status === 'running') {
-                    stopInstance(instance.workspace, instance.name)
-                      .then((ret) => {
-                        showToast(`实例 ${instance.name} 停止成功`)
-                        // row.original.status = 'stopping'
-                      })
-                      .catch((error) => {
-                        console.log('stop instance error', error)
-                      })
+                    setShowStopDialog(true)
                   }
                   if (instance.status === 'terminated') {
                     startInstance(instance.workspace, instance.name)
-                      .then((ret) => {
-                        showToast(`实例 ${instance.name} 启动成功`)
-                        // row.original.status = 'running'
-                      })
-                      .catch((error) => {
-                        console.log('start instance error', error)
-                      })
+                      .then(() => showToast(`实例 ${instance.name} 启动成功`))
+                      .catch((error) => console.log('start instance error', error))
                   }
                 }}
               >
-                {instance.status === 'running' ? (
-                  <Square className='h-4 w-4' />
-                ) : (
-                  <Play className='h-4 w-4' />
-                )}
+                {instance.status === 'running' ? <Square className='h-4 w-4' /> : <Play className='h-4 w-4' />}
               </Button>
 
               <Button
@@ -204,19 +205,51 @@ export const getInstancesColumns = (refetch: () => void) => {
               </Button>
             </div>
 
+            <Dialog open={showStopDialog} onOpenChange={setShowStopDialog}>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>确认停止实例</DialogTitle>
+                  <DialogDescription>
+                    请输入实例名称 "{instance.name}" 以确认停止操作。
+                  </DialogDescription>
+                </DialogHeader>
+                <Input
+                  value={confirmName}
+                  onChange={(e) => setConfirmName(e.target.value)}
+                  placeholder="输入实例名称"
+                />
+                <DialogFooter>
+                  <Button variant='outline' onClick={() => {
+                    setShowStopDialog(false)
+                    setConfirmName("")
+                  }}>
+                    取消
+                  </Button>
+                  <Button variant='destructive' onClick={handleStop}>
+                    停止
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+
             <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
               <DialogContent>
                 <DialogHeader>
                   <DialogTitle>确认删除实例</DialogTitle>
                   <DialogDescription>
-                    您确定要删除实例 "{instance.name}" 吗？此操作不可恢复。
+                    请输入实例名称 "{instance.name}" 以确认删除操作。此操作不可恢复。
                   </DialogDescription>
                 </DialogHeader>
+                <Input
+                  value={confirmName}
+                  onChange={(e) => setConfirmName(e.target.value)}
+                  placeholder="输入实例名称"
+                />
                 <DialogFooter>
-                  <Button
-                    variant='outline'
-                    onClick={() => setShowDeleteDialog(false)}
-                  >
+                  <Button variant='outline' onClick={() => {
+                    setShowDeleteDialog(false)
+                    setConfirmName("")
+                  }}>
                     取消
                   </Button>
                   <Button variant='destructive' onClick={handleDelete}>

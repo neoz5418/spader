@@ -225,7 +225,12 @@ export function SignUpForm({ className, ...props }: { className?: string }) {
                         <FormControl>
                           <Input placeholder="输入您的用户名" {...field} />
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage /> 
+                        {registerForm.formState.errors.name && 
+                        <div className={cn('text-[0.8rem] font-medium text-destructive')}>
+                          用户名只能包含小写字母、数字和连字符，且必须以字母或数字开头和结尾
+                        </div>}
+                        
                       </FormItem>
                     )}
                   />

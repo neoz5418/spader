@@ -27,7 +27,6 @@ async def get_account(session: SessionDep, workspace: Workspace) -> WorkspaceAcc
             account = BillingAccount(
                 uid=workspace.uid, balance=0, total_top_up=0, meta_data={}
             )
-            session.add(account)
             await account.save(session)
             await workspace.refresh(session)
 

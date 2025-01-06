@@ -694,11 +694,12 @@ class AutoRenewType(str, Enum):
     daily = "daily"  # 自动按天续租
     weekly = "weekly"  # 自动按周续租
     monthly = "monthly"  # 自动按月续租
+    real_time = "real_time"  # 自动按实时计费续租
     none = "none"  # 不自动续租
 
 
-class BillingLease(SQLModel, table=True):
-    uid: UUID = Field(default_factory=UUID, primary_key=True)  # 租约唯一标识
+class BillingLease(SQLModel, ActiveRecordMixin, table=True):
+    uid: UUID = UID
     account: UUID = Field(index=True)  # 关联的用户账户
     resource_id: UUID = Field(index=True)  # 关联的资源 ID
     resource_type: str = Field(index=True)  # 资源类型（如 "A100", "H100" 等）
@@ -707,39 +708,48 @@ class BillingLease(SQLModel, table=True):
         default=AutoRenewType.none, index=True
     )  # 自动续租类型
     status: LeaseStatus = Field(default=LeaseStatus.active, index=True)  # 租约状态
-    start_time: datetime = Field(sa_type=DateTime(timezone=True))  # 租约开始时间
+    start_time: datetime = Field(
+        sa_type=DateTime(timezone=True), index=True
+    )  # 租约开始时间
     end_time: datetime = Field(
         sa_type=DateTime(timezone=True), index=True
     )  # 租约到期时间
-    meta_data: Optional[dict] = Field(default_factory=dict)  # 扩展字段
+    meta_data: Optional[dict] = Field(
+        default_factory=dict, sa_column=Column(JSON)
+    )  # 扩展字段
+
+
+class BillingBalance(BaseModel):
+    balance: int  # 当前余额（分）
 
 
 # 定义账户表
-class BillingAccount(SQLModel, ActiveRecordMixin, table=True):
+class BillingAccount(SQLModel, ActiveRecordMixin, BillingBalance, table=True):
     uid: UUID = UID  # 账户唯一标识
-    balance: int  # 当前账户余额（分）
-    total_top_up: int = 0  # 累计充值金额（分）
     meta_data: Optional[dict] = Field(
         default_factory=dict, sa_column=Column(JSON)
     )  # 额外信息
 
 
-# 定义优惠券类型
 class CouponType(str, Enum):
-    fixed_amount = "fixed_amount"  # 固定金额优惠券
-    resource_hours = "resource_hours"  # 资源时长优惠券
+    discount = "discount"  # 满减券
+    cash = "cash"  # 代金券
 
 
-# 定义优惠券表
-class Coupon(SQLModel, ActiveRecordMixin, table=True):
-    uid: UUID = Field(default_factory=UUID, primary_key=True)  # 优惠券唯一标识
+class BillingCoupon(SQLModel, ActiveRecordMixin, BillingBalance, table=True):
+    uid: UUID = UID  # 优惠券唯一标识
     account: UUID = Field(index=True)  # 关联账户
-    type: CouponType = Field(index=True)  # 优惠券类型（金额或资源时长）
-    value: int  # 优惠券剩余值（金额单位: 分，时长单位: 分钟）
-    resource_type: Optional[str] = None  # 资源类型（仅限资源时长优惠券）
-    valid_from: datetime  # 优惠券有效期开始时间
-    valid_to: datetime  # 优惠券有效期结束时间
-    used: bool = False  # 是否已使用（对于部分使用的金额/时长券，标记为未用完）
+    type: CouponType = Field(index=True)  # 优惠券类型
+    max_discount_value: int = Field(default=0)  # 最大抵扣金额（分，满减卷有效）
+    min_purchase: int = Field(default=0)  # 生效门槛（分，满减券有效）
+    applicable_resource_type: str = Field(default="")  # 适用资源类型（支持通配符*）
+    valid_from: datetime = Field(
+        sa_type=DateTime(timezone=True), index=True
+    )  # 优惠券有效期开始时间
+    valid_to: datetime = Field(
+        sa_type=DateTime(timezone=True), index=True
+    )  # 优惠券有效期结束时间
+    used: bool = Field(default=False, index=True)  # 是否已使用
     meta_data: Optional[dict] = Field(
         default_factory=dict, sa_column=Column(JSON)
-    )  # 额外信息
+    )  # 扩展字段

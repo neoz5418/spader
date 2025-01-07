@@ -1,5 +1,6 @@
 import sys
 from datetime import datetime
+from typing import Optional
 from uuid import UUID
 
 from sqlalchemy import select
@@ -7,6 +8,7 @@ from sqlalchemy import select
 from dependencies import SessionDep
 from routers.types import (
     BillingAccount,
+    BillingCoupon,
     BillingLease,
     BillingPeriod,
     BillingPrice,
@@ -22,7 +24,12 @@ from routers.types import (
     WorkspaceAccount,
 )
 from services.cache import get_redis
-from services.common import ErrorInsufficientBalance, utcnow
+from services.common import (
+    ErrorInsufficientBalance,
+    ErrorInvalidArgument,
+    single_column_validation_failed,
+    utcnow,
+)
 from services.utils import subtract_datetimes
 
 
@@ -224,7 +231,78 @@ async def process_periodic_billing(session: SessionDep):
 async def get_price(
     session: SessionDep, priced_resource: PricedResourceMixin
 ) -> BillingPrice:
-    return await BillingPrice.one_by_field(session, "name", priced_resource.price_name)
+    price = await BillingPrice.one_by_field(session, "name", priced_resource.price_name)
+    if not price:
+        raise single_column_validation_failed(
+            ErrorInvalidArgument(
+                type="InvalidArgument",
+                location="price",
+                input=priced_resource.price_name,
+            )
+        )
+    return price
+
+
+async def find_available_coupon(
+    session: SessionDep, account: UUID
+) -> Optional[BillingCoupon]:
+    # TODO: find available coupon
+    return None
+
+
+async def calculate_discounted_price(
+    session: SessionDep,
+    priced_resource: PricedResourceMixin,
+    lease_base: LeaseBase,
+    workspace: Workspace,
+) -> (int, Optional[BillingCoupon]):
+    coupon = await get_coupon(session, lease_base=lease_base, workspace=workspace)
+    expected_total_price = sys.maxsize
+    resource_price = await get_price(session, priced_resource)
+    if lease_base.lease_period == BillingPeriod.real_time:
+        expected_total_price = resource_price.real_time
+        # TODO: only cash coupon support real time period
+    else:
+        if lease_base.lease_period == BillingPeriod.one_hour:
+            expected_total_price = resource_price.one_hour
+        elif lease_base.lease_period == BillingPeriod.one_day:
+            expected_total_price = resource_price.one_day
+        elif lease_base.lease_period == BillingPeriod.one_week:
+            expected_total_price = resource_price.one_week
+        elif lease_base.lease_period == BillingPeriod.one_month:
+            expected_total_price = resource_price.one_month
+        if coupon:
+            # TODO: only support discount coupon
+            expected_total_price = coupon.calculate_discounted_price(
+                expected_total_price
+            )
+    return expected_total_price, coupon
+
+
+async def get_coupon(
+    session: SessionDep,
+    lease_base: LeaseBase,
+    workspace: Workspace,
+) -> Optional[BillingCoupon]:
+    if lease_base.coupon:
+        coupon = await BillingCoupon.one_by_fields(
+            session,
+            {
+                "uid": lease_base.coupon,
+                "account": workspace.uid,
+            },
+        )
+        if not coupon:
+            raise single_column_validation_failed(
+                ErrorInvalidArgument(
+                    type="InvalidArgument",
+                    location="coupon",
+                    input=lease_base.coupon,
+                )
+            )
+    else:
+        coupon = await find_available_coupon(session, account=workspace.uid)
+    return coupon
 
 
 async def create_lease(
@@ -236,20 +314,14 @@ async def create_lease(
     lease_base: LeaseBase,
 ):
     db_workspace = await Workspace.one_by_field(session, "name", workspace)
+    expected_total_price, coupon = await calculate_discounted_price(
+        session,
+        priced_resource=priced_resource,
+        lease_base=lease_base,
+        workspace=db_workspace,
+    )
     workspace_account = await get_account(session, db_workspace)
-    except_price = sys.maxsize
-    resource_price = await get_price(session, priced_resource)
-    if lease_base.lease_period == BillingPeriod.real_time:
-        except_price = resource_price.real_time
-    elif lease_base.lease_period == BillingPeriod.one_hour:
-        except_price = resource_price.one_hour
-    elif lease_base.lease_period == BillingPeriod.one_day:
-        except_price = resource_price.one_day
-    elif lease_base.lease_period == BillingPeriod.one_week:
-        except_price = resource_price.one_week
-    elif lease_base.lease_period == BillingPeriod.one_month:
-        except_price = resource_price.one_month
-    if not workspace_account.check_balance(except_price):
+    if not workspace_account.check_balance(expected_total_price):
         raise ErrorInsufficientBalance(
             type="InsufficientBalance", balance=workspace_account.balance
         ).to_exception()
@@ -264,6 +336,7 @@ async def create_lease(
         end_time=end_time,
         lease_period=lease_base.lease_period,
         auto_renew_period=lease_base.auto_renew_period,
+        coupon=coupon,
         lease_price=priced_resource.price_name,
     )
     session.add(lease)

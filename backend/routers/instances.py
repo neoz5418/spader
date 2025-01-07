@@ -1,7 +1,8 @@
 from enum import Enum
 from typing import Annotated, Optional
-from fastapi import APIRouter, Depends
 from uuid import UUID
+
+from fastapi import APIRouter, Depends
 
 from dependencies import (
     CurrentAdminUserDep,
@@ -11,6 +12,9 @@ from dependencies import (
     SessionDep,
 )
 from routers.types import (
+    AuditLog,
+    AuditLogActionType,
+    AuditLogResourceType,
     CreateFileStorageRequest,
     CreateInstanceRequest,
     FileList,
@@ -22,6 +26,7 @@ from routers.types import (
     Image,
     ImageList,
     Instance,
+    InstanceCost,
     InstancePublic,
     InstancePublicList,
     InstanceStatus,
@@ -32,12 +37,17 @@ from routers.types import (
     PortForward,
     ResourceType,
     SortOrder,
+    Workspace,
     WorkspaceZoneQuota,
     Zone,
     ZoneBase,
     ZoneList,
 )
-from services.billing import create_lease, get_price
+from services.billing import (
+    calculate_discounted_price,
+    create_lease,
+    get_price,
+)
 from services.celery import (
     create_instance_operation,
     delete_instance_operation,
@@ -45,6 +55,7 @@ from services.celery import (
     stop_instance_operation,
 )
 from services.common import (
+    ErrorInvalidArgument,
     ErrorResourceConflict,
     ErrorResourceNotFound,
     ResourceName,
@@ -52,9 +63,6 @@ from services.common import (
     utcnow,
 )
 from services.lru_resource_cache import get_gpu_type_display_name, get_zone_display_name
-
-from routers.types import AuditLogActionType, AuditLogResourceType, AuditLog
-
 
 router = APIRouter(
     prefix="/apis/compute/v1",
@@ -316,6 +324,14 @@ async def create_instance(
             "name": to_create.gpu_type,
         },
     )
+    if not gpu_type:
+        raise single_column_validation_failed(
+            ErrorInvalidArgument(
+                type="InvalidArgument",
+                location="gpu_type",
+                input=to_create.gpu_type,
+            )
+        )
     await create_lease(
         session,
         workspace=workspace,
@@ -645,3 +661,33 @@ def list_workspace_images(
     params: ListParamsDep,
 ) -> ImageList:
     return
+
+
+@router.post(
+    "/workspaces/{workspace}/instances/calculate-cost",
+    dependencies=[CurrentUserDep],
+)
+async def calculate_instance_cost(
+    session: SessionDep,
+    workspace: str,
+    instance_in: CreateInstanceRequest,
+) -> InstanceCost:
+    # Get GPU type
+    gpu_type = await GPUType.one_by_field(session, "name", instance_in.gpu_type)
+    if not gpu_type:
+        raise single_column_validation_failed(
+            ErrorInvalidArgument(
+                type="InvalidArgument",
+                location="gpu_type",
+                input=instance_in.gpu_type,
+            )
+        )
+    db_workspace = await Workspace.one_by_field(session, "name", workspace)
+
+    discounted_price, coupon = await calculate_discounted_price(
+        session,
+        priced_resource=gpu_type,
+        lease_base=instance_in,
+        workspace=db_workspace,
+    )
+    return InstanceCost(discounted_price=discounted_price, coupon=coupon)

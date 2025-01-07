@@ -136,8 +136,8 @@ async def measure_usage():
 
 
 celery.add_periodic_task(
-    # crontab(minute="0", hour="*"),
-    crontab(minute="*", hour="*"),
+    crontab(minute="0", hour="*"),
+    # crontab(minute="*", hour="*"),
     measure_usage.s(),
     name="send all resource event to billing",
 )

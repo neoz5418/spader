@@ -381,6 +381,7 @@ class LeaseBase(BaseModel):
     auto_renew_period: AutoRenewPeriod = Field(
         default=AutoRenewPeriod.none, index=True
     )  # 自动续租类型
+    coupon: Optional[UUID] = Field(default=None, index=True)
 
     def calculate_end_time(self, start_time: datetime) -> datetime:
         end_time = datetime.max
@@ -432,12 +433,12 @@ class CouponType(str, Enum):
     cash = "cash"  # 代金券
 
 
-class BillingCoupon(SQLModel, ActiveRecordMixin, BillingBalance, table=True):
-    uid: UUID = UID  # 优惠券唯一标识
+class BillingCouponBase(BillingBalance):
     account: UUID = Field(index=True)  # 关联账户
     type: CouponType = Field(index=True)  # 优惠券类型
     max_discount_value: int = Field(default=0)  # 最大抵扣金额（分，满减卷有效）
     min_purchase: int = Field(default=0)  # 生效门槛（分，满减券有效）
+    discount_rate: int = Field(default=100)  # 折扣比例（0-100，例如80表示八折）
     applicable_resource_type: str = Field(default="")  # 适用资源类型（支持通配符*）
     valid_from: datetime = Field(
         sa_type=DateTime(timezone=True), index=True
@@ -445,10 +446,61 @@ class BillingCoupon(SQLModel, ActiveRecordMixin, BillingBalance, table=True):
     valid_to: datetime = Field(
         sa_type=DateTime(timezone=True), index=True
     )  # 优惠券有效期结束时间
+
+    def calculate_discounted_price(self, total_amount: int) -> int:
+        """
+        计算优惠后的金额
+        :param total_amount: 总金额（分）
+        :return: 优惠后的金额（分）
+        """
+        # 如果不满足生效门槛，返回原始金额
+        if total_amount < self.min_purchase:
+            return total_amount
+
+        # 如果是全额折扣（0折），直接优惠到最大折扣金额
+        if self.discount_rate == 0:
+            if self.max_discount_value > 0:
+                return max(total_amount - self.max_discount_value, 0)
+            else:
+                return 0
+
+        # 如果是不打折（100%），直接返回原始金额
+        if self.discount_rate == 100:
+            return total_amount
+
+        # 计算优惠金额（原价 * 优惠比例）
+        discount_by_rate = int(total_amount * (100 - self.discount_rate) / 100)
+
+        # 如果有最大折扣限制，则优惠金额不能超过最大抵扣金额
+        if self.max_discount_value > 0:
+            discount = min(discount_by_rate, self.max_discount_value)
+        else:
+            discount = discount_by_rate
+
+        # 应用优惠，返回优惠后的金额
+        return max(total_amount - discount, 0)
+
+
+class BillingCoupon(SQLModel, ActiveRecordMixin, BillingCouponBase, table=True):
+    uid: UUID = UID  # 优惠券唯一标识
+    name: str
+    account: UUID = Field(index=True)  # 关联账户
     used: bool = Field(default=False, index=True)  # 是否已使用
-    meta_data: Optional[dict] = Field(
-        default_factory=dict, sa_column=Column(JSON)
-    )  # 扩展字段
+    meta_data: dict = Field(default_factory=dict, sa_column=Column(JSON))  # 扩展字段
+
+
+class BillingCouponClass(SQLModel, ActiveRecordMixin, BillingCouponBase, table=True):
+    name: str = Field(primary_key=True)
+    meta_data: dict = Field(default_factory=dict, sa_column=Column(JSON))  # 扩展字段
+
+    def assign_coupon(self, account: UUID) -> BillingCoupon:
+        return BillingCoupon.model_validate(
+            self,
+            update={
+                "account": account,
+                "used": False,
+            },
+        )
 
 
 class GPUProviderConfigEcloud(SQLModel):
@@ -624,6 +676,11 @@ class InstancePublic(InstanceBase):
     zone_display_name: str
 
 
+class InstanceCost(BaseModel):
+    discounted_price: int
+    coupon: Optional[BillingCoupon]
+
+
 class PortForwardProtocol(Enum):
     TCP = "TCP"
     UDP = "UDP"
@@ -647,7 +704,6 @@ class CreateInstanceRequest(LeaseBase):
     display_name: DisplayName
 
     zone: str
-    gpu_count: int
     gpu_type: str
 
     file_storages: list[str] = []

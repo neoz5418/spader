@@ -30,12 +30,14 @@ from routers.types import (
     OperationStatus,
     OperationType,
     PortForward,
+    ResourceType,
     SortOrder,
     WorkspaceZoneQuota,
     Zone,
     ZoneBase,
     ZoneList,
 )
+from services.billing import create_lease, get_price
 from services.celery import (
     create_instance_operation,
     delete_instance_operation,
@@ -143,10 +145,11 @@ async def list_workspace_gpu_types(
     )
     public_list = GPUTypePublicList(pagination=gpu_type_list.pagination, items=[])
     for gpu_type in gpu_type_list.items:
+        price = await get_price(session, gpu_type)
         g = GPUTypePublic.model_validate(
             gpu_type,
             update={
-                "prices": gpu_type.price.to_price_list(),
+                "prices": price.to_price_list(),
             },
         )
         public_list.items.append(g)
@@ -306,6 +309,20 @@ async def create_instance(
             "zone": instance_in.zone,
             "status": InstanceStatus.provisioning,
         },
+    )
+    gpu_type = await GPUType.one_by_fields(
+        session,
+        fields={
+            "name": to_create.gpu_type,
+        },
+    )
+    await create_lease(
+        session,
+        workspace=workspace,
+        resource_id=to_create.uid,
+        resource_type=ResourceType.instance,
+        priced_resource=gpu_type,
+        lease_base=instance_in,
     )
     operation_creation = Operation(
         type=OperationType.create_instance,

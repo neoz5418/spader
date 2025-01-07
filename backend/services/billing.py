@@ -1,3 +1,4 @@
+import sys
 from datetime import datetime
 from uuid import UUID
 
@@ -6,16 +7,22 @@ from sqlalchemy import select
 from dependencies import SessionDep
 from routers.types import (
     BillingAccount,
+    BillingLease,
+    BillingPeriod,
+    BillingPrice,
     BillingRealTimeRecord,
     BillingRecord,
     BillingRecordType,
     Currency,
+    LeaseBase,
+    LeaseStatus,
+    PricedResourceMixin,
     ResourceType,
     Workspace,
     WorkspaceAccount,
 )
 from services.cache import get_redis
-from services.common import utcnow
+from services.common import ErrorInsufficientBalance, utcnow
 from services.utils import subtract_datetimes
 
 
@@ -48,7 +55,7 @@ async def get_account(session: SessionDep, workspace: Workspace) -> WorkspaceAcc
             balance=balance,
             currency=Currency.CNY,
             rate_per_hour=rate_per_hour,
-            total_top_up=account.total_top_up,
+            # total_top_up=account.total_top_up,
         )
 
 
@@ -61,8 +68,8 @@ async def top_up_account(
         balance_before = account.balance
         account.balance += amount
         balance_after = account.balance
-        if not free:
-            account.total_top_up += amount
+        # if not free:
+        #     account.total_top_up += amount
         record = BillingRecord(
             type=BillingRecordType.top_up,
             amount=amount,
@@ -82,14 +89,15 @@ async def start_resource_billing_record(
     resource_id: UUID,
     resource_type: ResourceType,
     start_time: datetime,
-    rate_per_hour: int,
+    priced_resource: PricedResourceMixin,
 ) -> BillingRealTimeRecord:
+    price = await get_price(session, priced_resource)
     real_time_record = BillingRealTimeRecord(
         account=workspace.uid,
         start_time=start_time,
         end_time=datetime.min,
-        rate_per_hour=rate_per_hour,
-        resource_usage_type=resource_type,
+        rate_per_hour=price.real_time,
+        resource_type=resource_type,
         resource_id=resource_id,
     )
     session.add(real_time_record)
@@ -152,7 +160,7 @@ async def renew_resource_billing_record(
         workspace=workspace,
         resource_id=resource_id,
         start_time=end_time,
-        resource_type=real_time_record.resource_usage_type,
+        resource_type=real_time_record.resource_type,
         rate_per_hour=real_time_record.rate_per_hour,
     )
 
@@ -194,17 +202,17 @@ async def process_periodic_billing(session: SessionDep):
                 billing_time=end_time,
                 balance_before=balance_before,
                 balance_after=balance_after,
-                account=workspace,
+                account=account.uid,
             )
             session.add(real_time_record)
             session.add(billing_record)
             # TODO: load rate_per_hour from resource
             new_real_time_record = BillingRealTimeRecord(
-                account=workspace,
+                account=account.uid,
                 start_time=end_time,
                 end_time=datetime.min,
                 rate_per_hour=real_time_record.rate_per_hour,
-                resource_usage_type=real_time_record.resource_usage_type,
+                resource_type=real_time_record.resource_type,
                 resource_id=real_time_record.resource_id,
             )
             session.add(new_real_time_record)
@@ -213,20 +221,50 @@ async def process_periodic_billing(session: SessionDep):
     await session.commit()
 
 
+async def get_price(
+    session: SessionDep, priced_resource: PricedResourceMixin
+) -> BillingPrice:
+    return await BillingPrice.one_by_field(session, "name", priced_resource.price_name)
+
+
 async def create_lease(
     session: SessionDep,
     workspace: str,
     resource_id: UUID,
     resource_type: ResourceType,
-    price_name: str,
+    priced_resource: PricedResourceMixin,
+    lease_base: LeaseBase,
 ):
-    pass
-    # db_workspace = await Workspace.one_by_field(session, "name", workspace)
-    # workspace_account = await get_account(session, db_workspace)
-    # gpu_type = await GPUType.one_by_field(session, "name", instance_in.gpu_type)
-    # price_pre_hour = gpu_type.prices.one_hour_price.price * instance_in.gpu_count
-    # if not workspace_account.check_balance(price_pre_hour):
-    #     raise ErrorInsufficientBalance(
-    #         type="InsufficientBalance", balance=workspace_account.balance
-    #     ).to_exception()
-    # return
+    db_workspace = await Workspace.one_by_field(session, "name", workspace)
+    workspace_account = await get_account(session, db_workspace)
+    except_price = sys.maxsize
+    resource_price = await get_price(session, priced_resource)
+    if lease_base.lease_period == BillingPeriod.real_time:
+        except_price = resource_price.real_time
+    elif lease_base.lease_period == BillingPeriod.one_hour:
+        except_price = resource_price.one_hour
+    elif lease_base.lease_period == BillingPeriod.one_day:
+        except_price = resource_price.one_day
+    elif lease_base.lease_period == BillingPeriod.one_week:
+        except_price = resource_price.one_week
+    elif lease_base.lease_period == BillingPeriod.one_month:
+        except_price = resource_price.one_month
+    if not workspace_account.check_balance(except_price):
+        raise ErrorInsufficientBalance(
+            type="InsufficientBalance", balance=workspace_account.balance
+        ).to_exception()
+    start_time = utcnow()
+    end_time = lease_base.calculate_end_time(start_time)
+    lease = BillingLease(
+        account=db_workspace.uid,
+        resource_id=resource_id,
+        resource_type=resource_type,
+        status=LeaseStatus.active,
+        start_time=start_time,
+        end_time=end_time,
+        lease_period=lease_base.lease_period,
+        auto_renew_period=lease_base.auto_renew_period,
+        lease_price=priced_resource.price_name,
+    )
+    session.add(lease)
+    return

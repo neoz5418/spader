@@ -63,7 +63,7 @@ async def create_instance_operation(operation_id: UUID):
             resource_id=instance.uid,
             resource_type=ResourceType.instance,
             start_time=utcnow(),
-            rate_per_hour=gpu_type.price.one_hour,
+            priced_resource=gpu_type,
         )
 
         await session.commit()
@@ -136,8 +136,8 @@ async def measure_usage():
 
 
 celery.add_periodic_task(
-    crontab(minute="0", hour="*"),
-    # crontab(minute="*", hour="*"),
+    # crontab(minute="0", hour="*"),
+    crontab(minute="*", hour="*"),
     measure_usage.s(),
-    name="send all resource event to lago",
+    name="send all resource event to billing",
 )

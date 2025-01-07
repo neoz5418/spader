@@ -123,8 +123,8 @@ async def init_data():
             one_month=2160000,
             one_week=-1,
         )
-        v100_price = await BillingPrice.create_or_update(session, v100_price)
-        cpu001_price = await BillingPrice.create_or_update(session, cpu001_price)
+        await BillingPrice.create_or_update(session, v100_price)
+        await BillingPrice.create_or_update(session, cpu001_price)
         v100 = GPUType(
             name="v100",
             display_name="NVIDIA Tesla V100",
@@ -136,7 +136,6 @@ async def init_data():
             disk_type=DiskType.SSD,
             zones=["beijing", "guangzhou"],
             price_name=v100_price_name,
-            price=v100_price,
             provider_config={
                 "provider": "ecloud",
                 "boot_volume_type": "highPerformance",
@@ -159,7 +158,6 @@ async def init_data():
             disk_type=DiskType.SSD,
             zones=["beijing", "guangzhou"],
             price_name=cpu001_price_name,
-            price=cpu001_price,
             provider_config={
                 "provider": "ecloud",
                 "boot_volume_type": "highPerformance",

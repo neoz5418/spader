@@ -1,5 +1,5 @@
 import re
-from datetime import datetime
+from datetime import datetime, timedelta
 from enum import auto, Enum
 from typing import Annotated, Literal, Optional
 from pydantic import (
@@ -10,7 +10,7 @@ from pydantic import (
 )
 from pydantic_extra_types.phone_numbers import PhoneNumber
 from sqlalchemy import Column, DateTime, JSON
-from sqlmodel import Field, Relationship
+from sqlmodel import Field
 from sqlmodel import SQLModel
 from uuid import UUID
 
@@ -204,7 +204,7 @@ class Currency(str, Enum):
 class WorkspaceAccount(BaseModel):
     workspace: str
     balance: int
-    total_top_up: int
+    # total_top_up: int
     rate_per_hour: int
     currency: Currency
 
@@ -375,11 +375,26 @@ class AutoRenewPeriod(str, Enum):
 
 
 class LeaseBase(BaseModel):
-    lease_price: str = Field(index=True)  # 租约价格
-    lease_period: BillingPeriod = Field(index=True)  # 租约类型
+    lease_period: BillingPeriod = Field(
+        index=True, default=BillingPeriod.real_time
+    )  # 租约类型
     auto_renew_period: AutoRenewPeriod = Field(
         default=AutoRenewPeriod.none, index=True
     )  # 自动续租类型
+
+    def calculate_end_time(self, start_time: datetime) -> datetime:
+        end_time = datetime.max
+        if self.auto_renew_period == AutoRenewPeriod.none:
+            match self.lease_period:
+                case BillingPeriod.one_hour:
+                    end_time += start_time + timedelta(hours=1)
+                case BillingPeriod.one_day:
+                    end_time += start_time + timedelta(days=1)
+                case BillingPeriod.one_week:
+                    end_time += start_time + timedelta(weeks=1)
+                case BillingPeriod.one_month:
+                    end_time += start_time + timedelta(days=30)
+        return end_time
 
 
 class BillingLease(SQLModel, LeaseBase, ActiveRecordMixin, table=True):
@@ -388,6 +403,7 @@ class BillingLease(SQLModel, LeaseBase, ActiveRecordMixin, table=True):
     resource_id: UUID = Field(index=True)  # 关联的资源 ID
     resource_type: ResourceType = Field(index=True)  # 资源类型
     status: LeaseStatus = Field(default=LeaseStatus.active, index=True)  # 租约状态
+    lease_price: str = Field(index=True)  # 租约价格
     start_time: datetime = Field(
         sa_type=DateTime(timezone=True), index=True
     )  # 租约开始时间
@@ -462,10 +478,12 @@ class GPUTypePublic(GPUTypeBase):
     prices: list[Price]
 
 
-class GPUType(GPUTypeBase, BaseModelMixin, table=True):
+class PricedResourceMixin(BaseModel):
+    price_name: str
+
+
+class GPUType(GPUTypeBase, BaseModelMixin, PricedResourceMixin, table=True):
     provider_config: dict = Field(sa_column=Column(JSON))
-    price_name: str = Field(foreign_key="billingprice.name")
-    price: BillingPrice = Relationship()
 
     @property
     def ecloud(self) -> GPUProviderConfigEcloud:

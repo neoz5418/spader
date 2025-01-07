@@ -11,7 +11,7 @@ from routers.types import (
     GPUType,
     Instance,
     Operation,
-    ResourceUsageType,
+    ResourceType,
     Workspace,
 )
 from services.billing import (
@@ -61,9 +61,9 @@ async def create_instance_operation(operation_id: UUID):
             session,
             workspace=workspace,
             resource_id=instance.uid,
-            resource_type=ResourceUsageType.instance,
+            resource_type=ResourceType.instance,
             start_time=utcnow(),
-            rate_per_hour=gpu_type.prices.one_hour_price.price,
+            rate_per_hour=gpu_type.price.one_hour,
         )
 
         await session.commit()

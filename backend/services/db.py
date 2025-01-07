@@ -3,7 +3,7 @@ from sqlmodel import select, SQLModel
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from routers.types import (
-    BillingPeriod,
+    BillingPrice,
     Currency,
     DiskType,
     GPUType,
@@ -103,6 +103,28 @@ async def init_data():
         # xian = Zone(name="xian", provider=Provider.ecloud)
         # hohhot = Zone(name="hohhot", provider=Provider.ecloud)
         # Suzhou = Zone(name="Suzhou", provider=Provider.ecloud)
+        v100_price_name = "v100-cny"
+        v100_price = BillingPrice(
+            name=v100_price_name,
+            currency=Currency.CNY,
+            real_time=10000,
+            one_hour=10000,
+            one_day=240000,
+            one_month=7200000,
+            one_week=-1,
+        )
+        cpu001_price_name = "cpu001-cny"
+        cpu001_price = BillingPrice(
+            name=cpu001_price_name,
+            currency=Currency.CNY,
+            real_time=3000,
+            one_hour=3000,
+            one_day=72000,
+            one_month=2160000,
+            one_week=-1,
+        )
+        v100_price = await BillingPrice.create_or_update(session, v100_price)
+        cpu001_price = await BillingPrice.create_or_update(session, cpu001_price)
         v100 = GPUType(
             name="v100",
             display_name="NVIDIA Tesla V100",
@@ -113,23 +135,8 @@ async def init_data():
             disk_size="100GB",
             disk_type=DiskType.SSD,
             zones=["beijing", "guangzhou"],
-            price_config=[
-                {
-                    "currency": Currency.CNY,
-                    "price": 10000,
-                    "period": BillingPeriod.one_hour,
-                },
-                {
-                    "currency": Currency.CNY,
-                    "price": 240000,
-                    "period": BillingPeriod.one_day,
-                },
-                {
-                    "currency": Currency.CNY,
-                    "price": 7200000,
-                    "period": BillingPeriod.one_month,
-                },
-            ],
+            price_name=v100_price_name,
+            price=v100_price,
             provider_config={
                 "provider": "ecloud",
                 "boot_volume_type": "highPerformance",
@@ -151,23 +158,8 @@ async def init_data():
             disk_size="100GB",
             disk_type=DiskType.SSD,
             zones=["beijing", "guangzhou"],
-            price_config=[
-                {
-                    "currency": Currency.CNY,
-                    "price": 3000,
-                    "period": BillingPeriod.one_hour,
-                },
-                {
-                    "currency": Currency.CNY,
-                    "price": 72000,
-                    "period": BillingPeriod.one_day,
-                },
-                {
-                    "currency": Currency.CNY,
-                    "price": 2160000,
-                    "period": BillingPeriod.one_month,
-                },
-            ],
+            price_name=cpu001_price_name,
+            price=cpu001_price,
             provider_config={
                 "provider": "ecloud",
                 "boot_volume_type": "highPerformance",

@@ -31,13 +31,11 @@ from routers.types import (
     OperationType,
     PortForward,
     SortOrder,
-    Workspace,
     WorkspaceZoneQuota,
     Zone,
     ZoneBase,
     ZoneList,
 )
-from services.billing import get_account
 from services.celery import (
     create_instance_operation,
     delete_instance_operation,
@@ -45,7 +43,6 @@ from services.celery import (
     stop_instance_operation,
 )
 from services.common import (
-    ErrorInsufficientBalance,
     ErrorResourceConflict,
     ErrorResourceNotFound,
     ResourceName,
@@ -146,7 +143,12 @@ async def list_workspace_gpu_types(
     )
     public_list = GPUTypePublicList(pagination=gpu_type_list.pagination, items=[])
     for gpu_type in gpu_type_list.items:
-        g = GPUTypePublic.model_validate(gpu_type)
+        g = GPUTypePublic.model_validate(
+            gpu_type,
+            update={
+                "prices": gpu_type.price.to_price_list(),
+            },
+        )
         public_list.items.append(g)
     return public_list
 
@@ -296,14 +298,6 @@ async def create_instance(
                 resource_name=ResourceName.instance,
             )
         )
-    db_workspace = await Workspace.one_by_field(session, "name", workspace)
-    workspace_account = await get_account(session, db_workspace)
-    gpu_type = await GPUType.one_by_field(session, "name", instance_in.gpu_type)
-    price_pre_hour = gpu_type.prices.one_hour_price.price * instance_in.gpu_count
-    if not workspace_account.check_balance(price_pre_hour):
-        raise ErrorInsufficientBalance(
-            type="InsufficientBalance", balance=workspace_account.balance
-        ).to_exception()
 
     to_create = Instance.model_validate(
         instance_in,

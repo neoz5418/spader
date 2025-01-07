@@ -24,7 +24,7 @@ class ActiveRecordMixin:
     __config__ = None
 
     @property
-    def primary_key(self):
+    def primary_key(self: Type[T]):
         """Return the primary key of the object."""
 
         return self.__mapper__.primary_key_from_instance(self)
@@ -172,8 +172,8 @@ class ActiveRecordMixin:
 
     @classmethod
     def convert_without_saving(
-        cls, source: Union[dict, SQLModel], update: Optional[dict] = None
-    ) -> Optional[SQLModel]:
+        cls: Type[T], source: Union[dict, SQLModel], update: Optional[dict] = None
+    ) -> Optional[T]:
         """
         Convert the source to the model without saving to the database.
         Return None if failed.
@@ -204,11 +204,11 @@ class ActiveRecordMixin:
 
     @classmethod
     async def create_or_update(
-        cls,
+        cls: Type[T],
         session: AsyncSession,
-        source: Union[dict, SQLModel],
+        source: Union[dict, T],
         update: Optional[dict] = None,
-    ) -> Optional[SQLModel]:
+    ) -> Optional[T]:
         """Create or update a record for the model."""
 
         obj = cls.convert_without_saving(source, update)
@@ -266,7 +266,7 @@ class ActiveRecordMixin:
         """Delete the object from the database."""
 
         if hasattr(self, "delete_time"):
-            self.delete_time = datetime.now(timezone.utc)
+            setattr(self, "delete_time", datetime.now(timezone.utc))
             await self.save(session)
             await self._publish_event(EventType.MODIFIED, self)
             return

@@ -10,7 +10,7 @@ from routers.types import (
     BillingRecord,
     BillingRecordType,
     Currency,
-    ResourceUsageType,
+    ResourceType,
     Workspace,
     WorkspaceAccount,
 )
@@ -80,7 +80,7 @@ async def start_resource_billing_record(
     session: SessionDep,
     workspace: Workspace,
     resource_id: UUID,
-    resource_type: ResourceUsageType,
+    resource_type: ResourceType,
     start_time: datetime,
     rate_per_hour: int,
 ) -> BillingRealTimeRecord:
@@ -211,3 +211,22 @@ async def process_periodic_billing(session: SessionDep):
         session.add(account)
 
     await session.commit()
+
+
+async def create_lease(
+    session: SessionDep,
+    workspace: str,
+    resource_id: UUID,
+    resource_type: ResourceType,
+    price_name: str,
+):
+    pass
+    # db_workspace = await Workspace.one_by_field(session, "name", workspace)
+    # workspace_account = await get_account(session, db_workspace)
+    # gpu_type = await GPUType.one_by_field(session, "name", instance_in.gpu_type)
+    # price_pre_hour = gpu_type.prices.one_hour_price.price * instance_in.gpu_count
+    # if not workspace_account.check_balance(price_pre_hour):
+    #     raise ErrorInsufficientBalance(
+    #         type="InsufficientBalance", balance=workspace_account.balance
+    #     ).to_exception()
+    # return

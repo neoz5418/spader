@@ -19,6 +19,8 @@ from routers.types import (
     BillingRecord,
     BillingRecordType,
     Currency,
+    GPUType,
+    Instance,
     LeaseBase,
     LeaseStatus,
     PricedResourceMixin,
@@ -140,6 +142,18 @@ async def top_up_account(
         await session.commit()
 
 
+async def get_active_leases(session: SessionDep) -> list[BillingLease]:
+    now = utcnow()
+    statement = (
+        select(BillingLease)
+        .where(BillingLease.start_time <= now)
+        .where(BillingLease.end_time >= now)
+        .where(BillingLease.status == LeaseStatus.active)
+    )
+
+    return (await session.exec(statement)).all()
+
+
 async def get_active_lease(
     session: SessionDep, resource_id: UUID
 ) -> Optional[BillingLease]:
@@ -157,7 +171,7 @@ async def get_active_lease(
 
 async def start_resource_billing_record(
     session: SessionDep,
-    workspace: Workspace,
+    account_id: UUID,
     resource_id: UUID,
     resource_type: ResourceType,
     start_time: datetime,
@@ -172,7 +186,7 @@ async def start_resource_billing_record(
         return
     price = await get_price(session, priced_resource)
     real_time_record = BillingRealTimeRecord(
-        account=workspace.uid,
+        account=account_id,
         start_time=start_time,
         end_time=datetime.min,
         rate_per_hour=price.real_time,
@@ -184,7 +198,7 @@ async def start_resource_billing_record(
 
 async def end_resource_billing_record(
     session: SessionDep,
-    workspace: Workspace,
+    account_id: UUID,
     resource_id: UUID,
     end_time: datetime,
 ) -> BillingRealTimeRecord | None:
@@ -193,12 +207,12 @@ async def end_resource_billing_record(
         {
             "end_time": datetime.min,
             "resource_id": resource_id,
-            "account": workspace.uid,
+            "account": account_id,
         },
     )
     if not real_time_record:
         return
-    account = await BillingAccount.one_by_field(session, "uid", workspace.uid)
+    account = await BillingAccount.one_by_field(session, "uid", account_id)
     real_time_record.end_time = end_time
     amount = -int(
         real_time_record.rate_per_hour
@@ -213,7 +227,9 @@ async def end_resource_billing_record(
         billing_time=end_time,
         balance_before=balance_before,
         balance_after=balance_after,
-        account=workspace.uid,
+        resource_id=resource_id,
+        resource_type=real_time_record.resource_type,
+        account=account_id,
     )
     session.add(real_time_record)
     session.add(billing_record)
@@ -221,26 +237,26 @@ async def end_resource_billing_record(
     return real_time_record
 
 
-# async def renew_resource_billing_record(
-#     session: SessionDep,
-#     workspace: Workspace,
-#     resource_id: UUID,
-#     end_time: datetime,
-# ) -> BillingRealTimeRecord | None:
-#     real_time_record = await end_resource_billing_record(
-#         session, workspace=workspace, resource_id=resource_id, end_time=end_time
-#     )
-#     if not real_time_record:
-#         return
-#     # TODO: load rate_per_hour from resource
-#     return await start_resource_billing_record(
-#         session,
-#         workspace=workspace,
-#         resource_id=resource_id,
-#         start_time=end_time,
-#         resource_type=real_time_record.resource_type,
-#         rate_per_hour=real_time_record.rate_per_hour,
-#     )
+async def renew_resource_billing_record(
+    session: SessionDep,
+    account_id: UUID,
+    resource_id: UUID,
+    end_time: datetime,
+    priced_resource: PricedResourceMixin,
+) -> BillingRealTimeRecord | None:
+    real_time_record = await end_resource_billing_record(
+        session, account_id=account_id, resource_id=resource_id, end_time=end_time
+    )
+    if not real_time_record:
+        return
+    return await start_resource_billing_record(
+        session,
+        account_id=account_id,
+        resource_id=resource_id,
+        start_time=end_time,
+        resource_type=real_time_record.resource_type,
+        priced_resource=priced_resource,
+    )
 
 
 async def get_workspaces_with_active_billing(session: SessionDep) -> list[str]:
@@ -254,47 +270,19 @@ async def get_workspaces_with_active_billing(session: SessionDep) -> list[str]:
 
 
 async def process_periodic_billing(session: SessionDep):
-    workspaces = await get_workspaces_with_active_billing(session)
+    leases = await get_active_leases(session)
     end_time = utcnow()
-    for workspace in workspaces:
-        real_time_records = await BillingRealTimeRecord.all_by_fields(
-            session,
-            {
-                "end_time": datetime.min,
-                "account": workspace,
-            },
-        )
-        account = await BillingAccount.one_by_field(session, "uid", workspace)
-        for real_time_record in real_time_records:
-            real_time_record.end_time = end_time
-            amount = -int(
-                real_time_record.rate_per_hour
-                * subtract_datetimes(end_time, real_time_record.start_time)
+    for lease in leases:
+        if lease.lease_period == BillingPeriod.real_time:
+            instance = await Instance.one_by_field(session, "uid", lease.resource_id)
+            gpu_type = await GPUType.one_by_field(session, "name", instance.gpu_type)
+            await renew_resource_billing_record(
+                session,
+                account_id=lease.account,
+                resource_id=lease.resource_id,
+                priced_resource=gpu_type,
+                end_time=end_time,
             )
-            balance_before = account.balance
-            balance_after = account.balance + amount
-            account.balance = balance_after
-            billing_record = BillingRecord(
-                type=BillingRecordType.deduction,
-                amount=amount,
-                billing_time=end_time,
-                balance_before=balance_before,
-                balance_after=balance_after,
-                account=account.uid,
-            )
-            session.add(real_time_record)
-            session.add(billing_record)
-            # TODO: load rate_per_hour from resource
-            new_real_time_record = BillingRealTimeRecord(
-                account=account.uid,
-                start_time=end_time,
-                end_time=datetime.min,
-                rate_per_hour=real_time_record.rate_per_hour,
-                resource_type=real_time_record.resource_type,
-                resource_id=real_time_record.resource_id,
-            )
-            session.add(new_real_time_record)
-        session.add(account)
 
     await session.commit()
 

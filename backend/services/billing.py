@@ -19,6 +19,7 @@ from routers.types import (
     LeaseBase,
     LeaseStatus,
     PricedResourceMixin,
+    PricingDetails,
     ResourceType,
     Workspace,
     WorkspaceAccount,
@@ -250,33 +251,39 @@ async def find_available_coupon(
     return None
 
 
-async def calculate_discounted_price(
+async def calculate_pricing_details(
     session: SessionDep,
     priced_resource: PricedResourceMixin,
     lease_base: LeaseBase,
     workspace: Workspace,
-) -> (int, Optional[BillingCoupon]):
+) -> (PricingDetails, Optional[BillingCoupon]):
     coupon = await get_coupon(session, lease_base=lease_base, workspace=workspace)
-    expected_total_price = sys.maxsize
+    original_price = sys.maxsize
     resource_price = await get_price(session, priced_resource)
     if lease_base.lease_period == BillingPeriod.real_time:
-        expected_total_price = resource_price.real_time
+        original_price = resource_price.real_time
         # TODO: only cash coupon support real time period
     else:
         if lease_base.lease_period == BillingPeriod.one_hour:
-            expected_total_price = resource_price.one_hour
+            original_price = resource_price.one_hour
         elif lease_base.lease_period == BillingPeriod.one_day:
-            expected_total_price = resource_price.one_day
+            original_price = resource_price.one_day
         elif lease_base.lease_period == BillingPeriod.one_week:
-            expected_total_price = resource_price.one_week
+            original_price = resource_price.one_week
         elif lease_base.lease_period == BillingPeriod.one_month:
-            expected_total_price = resource_price.one_month
-        if coupon:
-            # TODO: only support discount coupon
-            expected_total_price = coupon.calculate_discounted_price(
-                expected_total_price
-            )
-    return expected_total_price, coupon
+            original_price = resource_price.one_month
+
+    if (lease_base.lease_period != BillingPeriod.real_time) and coupon:
+        # TODO: only support discount type coupon
+        final_price = coupon.calculate_final_price(original_price)
+    else:
+        final_price = original_price
+
+    return PricingDetails(
+        original_price=original_price,
+        final_price=final_price,
+        discount_amount=original_price - final_price,
+    ), coupon
 
 
 async def get_coupon(
@@ -314,14 +321,14 @@ async def create_lease(
     lease_base: LeaseBase,
 ):
     db_workspace = await Workspace.one_by_field(session, "name", workspace)
-    expected_total_price, coupon = await calculate_discounted_price(
+    pricing_details, coupon = await calculate_pricing_details(
         session,
         priced_resource=priced_resource,
         lease_base=lease_base,
         workspace=db_workspace,
     )
     workspace_account = await get_account(session, db_workspace)
-    if not workspace_account.check_balance(expected_total_price):
+    if not workspace_account.check_balance(pricing_details.final_price):
         raise ErrorInsufficientBalance(
             type="InsufficientBalance", balance=workspace_account.balance
         ).to_exception()

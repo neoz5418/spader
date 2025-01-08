@@ -433,6 +433,12 @@ class CouponType(str, Enum):
     cash = "cash"  # 代金券
 
 
+class PricingDetails(BaseModel):
+    original_price: int  # 原价（分）
+    discount_amount: int  # 优惠金额（分）
+    final_price: int  # 最终价格（分）
+
+
 class BillingCouponBase(BillingBalance):
     account: UUID = Field(index=True)  # 关联账户
     type: CouponType = Field(index=True)  # 优惠券类型
@@ -447,38 +453,38 @@ class BillingCouponBase(BillingBalance):
         sa_type=DateTime(timezone=True), index=True
     )  # 优惠券有效期结束时间
 
-    def calculate_discounted_price(self, total_amount: int) -> int:
+    def calculate_final_price(self, original_price: int) -> int:
         """
         计算优惠后的金额
-        :param total_amount: 总金额（分）
+        :param original_price: 总金额（分）
         :return: 优惠后的金额（分）
         """
         # 如果不满足生效门槛，返回原始金额
-        if total_amount < self.min_purchase:
-            return total_amount
+        if original_price < self.min_purchase:
+            return original_price
 
         # 如果是全额折扣（0折），直接优惠到最大折扣金额
         if self.discount_rate == 0:
             if self.max_discount_value > 0:
-                return max(total_amount - self.max_discount_value, 0)
+                return max(original_price - self.max_discount_value, 0)
             else:
                 return 0
 
         # 如果是不打折（100%），直接返回原始金额
         if self.discount_rate == 100:
-            return total_amount
+            return original_price
 
         # 计算优惠金额（原价 * 优惠比例）
-        discount_by_rate = int(total_amount * (100 - self.discount_rate) / 100)
+        discount_by_rate = int(original_price * (100 - self.discount_rate) / 100)
 
         # 如果有最大折扣限制，则优惠金额不能超过最大抵扣金额
         if self.max_discount_value > 0:
-            discount = min(discount_by_rate, self.max_discount_value)
+            discount_amount = min(discount_by_rate, self.max_discount_value)
         else:
-            discount = discount_by_rate
+            discount_amount = discount_by_rate
 
         # 应用优惠，返回优惠后的金额
-        return max(total_amount - discount, 0)
+        return max(original_price - discount_amount, 0)
 
 
 class BillingCoupon(SQLModel, ActiveRecordMixin, BillingCouponBase, table=True):
@@ -487,6 +493,9 @@ class BillingCoupon(SQLModel, ActiveRecordMixin, BillingCouponBase, table=True):
     account: UUID = Field(index=True)  # 关联账户
     used: bool = Field(default=False, index=True)  # 是否已使用
     meta_data: dict = Field(default_factory=dict, sa_column=Column(JSON))  # 扩展字段
+
+
+BillingCouponList = PaginatedList[BillingCoupon]
 
 
 class BillingCouponClass(SQLModel, ActiveRecordMixin, BillingCouponBase, table=True):
@@ -676,8 +685,7 @@ class InstancePublic(InstanceBase):
     zone_display_name: str
 
 
-class InstanceCost(BaseModel):
-    discounted_price: int
+class InstanceCost(PricingDetails):
     coupon: Optional[BillingCoupon]
 
 

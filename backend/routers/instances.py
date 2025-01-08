@@ -44,7 +44,7 @@ from routers.types import (
     ZoneList,
 )
 from services.billing import (
-    calculate_discounted_price,
+    calculate_pricing_details,
     create_lease,
     get_price,
 )
@@ -684,10 +684,10 @@ async def calculate_instance_cost(
         )
     db_workspace = await Workspace.one_by_field(session, "name", workspace)
 
-    discounted_price, coupon = await calculate_discounted_price(
+    pricing_details, coupon = await calculate_pricing_details(
         session,
         priced_resource=gpu_type,
         lease_base=instance_in,
         workspace=db_workspace,
     )
-    return InstanceCost(discounted_price=discounted_price, coupon=coupon)
+    return InstanceCost(coupon=coupon, **pricing_details.model_dump())

@@ -106,6 +106,11 @@ class ErrorInvalidArgument(ErrorBase):
 
 
 @http_exception(422)
+class ErrorCouponAlreadyUsed(ErrorInvalidArgument):
+    type: Literal["CouponAlreadyUsed"]
+
+
+@http_exception(422)
 class ErrorEmailAndUsernameCannotBeProvidedAtTheSameTime(ErrorInvalidArgument):
     type: Literal["EmailAndUsernameCannotBeProvidedAtTheSameTime"]
 

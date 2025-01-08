@@ -3,12 +3,15 @@ from datetime import datetime
 from typing import Optional
 from uuid import UUID
 
-from sqlalchemy import select
+from sqlmodel import select
 
 from dependencies import SessionDep
 from routers.types import (
     BillingAccount,
     BillingCoupon,
+    BillingCouponClaimLimit,
+    BillingCouponClass,
+    BillingCouponDistributionRule,
     BillingLease,
     BillingPeriod,
     BillingPrice,
@@ -26,6 +29,7 @@ from routers.types import (
 )
 from services.cache import get_redis
 from services.common import (
+    ErrorCouponAlreadyUsed,
     ErrorInsufficientBalance,
     ErrorInvalidArgument,
     single_column_validation_failed,
@@ -34,14 +38,59 @@ from services.common import (
 from services.utils import subtract_datetimes
 
 
+async def get_claimable_coupons(
+    session: SessionDep,
+    account: UUID,
+) -> list[BillingCouponClass]:
+    now = utcnow()
+    statement = (
+        select(BillingCouponClass)
+        .where(BillingCouponClass.valid_from <= now)
+        .where(BillingCouponClass.valid_to >= now)
+        .where(
+            BillingCouponClass.distribution_rule
+            == BillingCouponDistributionRule.auto_registered
+        )
+    )
+
+    all_coupon_classes = await session.exec(statement)
+    claimable_coupon_classes = []
+
+    for coupon_class in all_coupon_classes:
+        if coupon_class.claim_limit == BillingCouponClaimLimit.unlimited:
+            # 可多次领取，无需过滤
+            claimable_coupon_classes.append(coupon_class)
+            continue
+        # 检查领取限制
+        if coupon_class.claim_limit == BillingCouponClaimLimit.once_per_account:
+            # 查询当前账户已领取的同类优惠券
+            statement = (
+                select(BillingCoupon)
+                .where(BillingCoupon.account == account)
+                .where(BillingCoupon.name == coupon_class.name)
+            )
+            claimed_coupon = (await session.exec(statement)).first()
+            if claimed_coupon:
+                continue
+            # 每个账户仅能领取一次
+            claimable_coupon_classes.append(coupon_class)
+    return claimable_coupon_classes
+
+
+async def claim_new_account_coupon(session: SessionDep, account: UUID):
+    claimable_coupon_classes = await get_claimable_coupons(session, account)
+    for coupon_class in claimable_coupon_classes:
+        coupon = coupon_class.assign_coupon(account=account)
+        session.add(coupon)
+
+
 async def get_account(session: SessionDep, workspace: Workspace) -> WorkspaceAccount:
     cache = get_redis()
     async with cache.lock("lock:" + str(workspace.uid)):
         account = await BillingAccount.one_by_field(session, "uid", workspace.uid)
         if not account:
-            account = BillingAccount(
-                uid=workspace.uid, balance=0, total_top_up=0, meta_data={}
-            )
+            account = BillingAccount(uid=workspace.uid, balance=0, meta_data={})
+            await claim_new_account_coupon(session, account=workspace.uid)
             await account.save(session)
             await workspace.refresh(session)
 
@@ -279,6 +328,15 @@ async def calculate_pricing_details(
     else:
         final_price = original_price
 
+    if original_price == -1:
+        raise single_column_validation_failed(
+            ErrorInvalidArgument(
+                type="InvalidArgument",
+                location="lease_period",
+                input=lease_base.lease_period,
+            )
+        )
+
     return PricingDetails(
         original_price=original_price,
         final_price=final_price,
@@ -334,6 +392,19 @@ async def create_lease(
         ).to_exception()
     start_time = utcnow()
     end_time = lease_base.calculate_end_time(start_time)
+    coupon_id = None
+    if coupon:
+        if coupon.used:
+            raise single_column_validation_failed(
+                ErrorCouponAlreadyUsed(
+                    type="CouponAlreadyUsed",
+                    location="coupon",
+                    input=lease_base.coupon,
+                )
+            )
+        coupon_id = coupon.uid
+        coupon.used = True
+        session.add(coupon)
     lease = BillingLease(
         account=db_workspace.uid,
         resource_id=resource_id,
@@ -343,8 +414,27 @@ async def create_lease(
         end_time=end_time,
         lease_period=lease_base.lease_period,
         auto_renew_period=lease_base.auto_renew_period,
-        coupon=coupon,
+        coupon=coupon_id,
         lease_price=priced_resource.price_name,
     )
+    if lease_base.lease_period != BillingPeriod.real_time:
+        account = await BillingAccount.one_by_field(session, "uid", db_workspace.uid)
+        amount = pricing_details.final_price
+        balance_before = account.balance
+        balance_after = account.balance - amount
+        account.balance = balance_after
+        billing_record = BillingRecord(
+            type=BillingRecordType.deduction,
+            amount=-amount,
+            billing_time=start_time,
+            balance_before=balance_before,
+            balance_after=balance_after,
+            account=account.uid,
+            coupon=coupon_id,
+            resource_id=resource_id,
+            resource_type=resource_type,
+        )
+        session.add(account)
+        session.add(billing_record)
     session.add(lease)
     return

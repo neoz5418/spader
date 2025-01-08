@@ -21,6 +21,7 @@ from services.common import (
     PaginatedList,
     TimestampsMixin,
     UID,
+    utcnow,
 )
 
 
@@ -388,13 +389,13 @@ class LeaseBase(BaseModel):
         if self.auto_renew_period == AutoRenewPeriod.none:
             match self.lease_period:
                 case BillingPeriod.one_hour:
-                    end_time += start_time + timedelta(hours=1)
+                    end_time = start_time + timedelta(hours=1)
                 case BillingPeriod.one_day:
-                    end_time += start_time + timedelta(days=1)
+                    end_time = start_time + timedelta(days=1)
                 case BillingPeriod.one_week:
-                    end_time += start_time + timedelta(weeks=1)
+                    end_time = start_time + timedelta(weeks=1)
                 case BillingPeriod.one_month:
-                    end_time += start_time + timedelta(days=30)
+                    end_time = start_time + timedelta(days=30)
         return end_time
 
 
@@ -417,7 +418,7 @@ class BillingLease(SQLModel, LeaseBase, ActiveRecordMixin, table=True):
 
 
 class BillingBalance(BaseModel):
-    balance: int  # 当前余额（分）
+    balance: int = Field(default=0)  # 当前余额（分）
 
 
 # 定义账户表
@@ -440,7 +441,7 @@ class PricingDetails(BaseModel):
 
 
 class BillingCouponBase(BillingBalance):
-    account: UUID = Field(index=True)  # 关联账户
+    display_name: DisplayName
     type: CouponType = Field(index=True)  # 优惠券类型
     max_discount_value: int = Field(default=0)  # 最大抵扣金额（分，满减卷有效）
     min_purchase: int = Field(default=0)  # 生效门槛（分，满减券有效）
@@ -493,14 +494,32 @@ class BillingCoupon(SQLModel, ActiveRecordMixin, BillingCouponBase, table=True):
     account: UUID = Field(index=True)  # 关联账户
     used: bool = Field(default=False, index=True)  # 是否已使用
     meta_data: dict = Field(default_factory=dict, sa_column=Column(JSON))  # 扩展字段
+    claim_time: datetime = Field(sa_type=DateTime(timezone=True), index=True)
 
 
 BillingCouponList = PaginatedList[BillingCoupon]
 
 
+# 分配规则枚举
+class BillingCouponDistributionRule(str, Enum):
+    manual = "manual"  # 手动分配
+    auto_registered = "auto_registered"  # 自动分配给已注册用户
+    user_claim = "user_claim"  # 用户自行领取
+    magic_link = "magic_link"  # 通过特殊链接领取
+
+
+# 领取次数限制枚举
+class BillingCouponClaimLimit(str, Enum):
+    unlimited = "unlimited"  # 可多次领取
+    once_per_account = "once_per_account"  # 每个账户仅领取一次
+    # once_per_month = "once_per_month"  # 每个账户每月领取一次
+
+
 class BillingCouponClass(SQLModel, ActiveRecordMixin, BillingCouponBase, table=True):
     name: str = Field(primary_key=True)
     meta_data: dict = Field(default_factory=dict, sa_column=Column(JSON))  # 扩展字段
+    distribution_rule: BillingCouponDistributionRule  # 分配规则
+    claim_limit: BillingCouponClaimLimit  # 领取次数限制
 
     def assign_coupon(self, account: UUID) -> BillingCoupon:
         return BillingCoupon.model_validate(
@@ -508,6 +527,7 @@ class BillingCouponClass(SQLModel, ActiveRecordMixin, BillingCouponBase, table=T
             update={
                 "account": account,
                 "used": False,
+                "claim_time": utcnow(),
             },
         )
 
@@ -666,7 +686,6 @@ class InstanceBase(SQLModel, BaseModelMixin):
     zone: str
     workspace: str
 
-    gpu_count: int
     gpu_type: str
 
     image: str

@@ -140,6 +140,21 @@ async def top_up_account(
         await session.commit()
 
 
+async def get_active_lease(
+    session: SessionDep, resource_id: UUID
+) -> Optional[BillingLease]:
+    now = utcnow()
+    statement = (
+        select(BillingLease)
+        .where(BillingLease.resource_id == resource_id)
+        .where(BillingLease.start_time <= now)
+        .where(BillingLease.end_time >= now)
+        .where(BillingLease.status == LeaseStatus.active)
+    )
+
+    return (await session.exec(statement)).first()
+
+
 async def start_resource_billing_record(
     session: SessionDep,
     workspace: Workspace,
@@ -147,7 +162,14 @@ async def start_resource_billing_record(
     resource_type: ResourceType,
     start_time: datetime,
     priced_resource: PricedResourceMixin,
-) -> BillingRealTimeRecord:
+):
+    lease = await get_active_lease(session, resource_id=resource_id)
+    if not lease:
+        raise Exception(
+            "resource %s [%s] cannot find lease", (resource_type, resource_id)
+        )
+    if lease.lease_period != BillingPeriod.real_time:
+        return
     price = await get_price(session, priced_resource)
     real_time_record = BillingRealTimeRecord(
         account=workspace.uid,
@@ -158,7 +180,6 @@ async def start_resource_billing_record(
         resource_id=resource_id,
     )
     session.add(real_time_record)
-    return real_time_record
 
 
 async def end_resource_billing_record(
@@ -200,26 +221,26 @@ async def end_resource_billing_record(
     return real_time_record
 
 
-async def renew_resource_billing_record(
-    session: SessionDep,
-    workspace: Workspace,
-    resource_id: UUID,
-    end_time: datetime,
-) -> BillingRealTimeRecord | None:
-    real_time_record = await end_resource_billing_record(
-        session, workspace=workspace, resource_id=resource_id, end_time=end_time
-    )
-    if not real_time_record:
-        return
-    # TODO: load rate_per_hour from resource
-    return await start_resource_billing_record(
-        session,
-        workspace=workspace,
-        resource_id=resource_id,
-        start_time=end_time,
-        resource_type=real_time_record.resource_type,
-        rate_per_hour=real_time_record.rate_per_hour,
-    )
+# async def renew_resource_billing_record(
+#     session: SessionDep,
+#     workspace: Workspace,
+#     resource_id: UUID,
+#     end_time: datetime,
+# ) -> BillingRealTimeRecord | None:
+#     real_time_record = await end_resource_billing_record(
+#         session, workspace=workspace, resource_id=resource_id, end_time=end_time
+#     )
+#     if not real_time_record:
+#         return
+#     # TODO: load rate_per_hour from resource
+#     return await start_resource_billing_record(
+#         session,
+#         workspace=workspace,
+#         resource_id=resource_id,
+#         start_time=end_time,
+#         resource_type=real_time_record.resource_type,
+#         rate_per_hour=real_time_record.rate_per_hour,
+#     )
 
 
 async def get_workspaces_with_active_billing(session: SessionDep) -> list[str]:

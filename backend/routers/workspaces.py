@@ -1,6 +1,7 @@
 import asyncio
 import logging
 from enum import Enum
+from typing import Optional
 
 from fastapi import APIRouter, status, WebSocket
 from sqlmodel import and_, select
@@ -19,11 +20,12 @@ from dependencies import (
     SessionDep,
 )
 from routers.types import (
+    BillingCoupon,
+    BillingCouponList,
+    BillingRecordList,
     RechargeStatus,
     RechargeType,
     RechargeWorkspaceAccount,
-    ResourceUsageRecord,
-    ResourceUsageRecordList,
     SortOrder,
     SSHKey,
     SSHKeyCreate,
@@ -331,25 +333,28 @@ async def check_workspace_account_recharge(
 
 
 @router.get(
-    "/workspaces/{workspace}/resource_usage_record",
+    "/workspaces/{workspace}/billing_records",
     dependencies=[CurrentUserDep],
 )
-async def list_workspace_resource_usage_records(
+async def list_workspace_billing_records(
     session: SessionDep,
     workspace: str,
-    target_id: UUID,
     params: ListParamsDep,
-) -> ResourceUsageRecordList:
-    resource_usage_records = await ResourceUsageRecord.paginated_by_query(
+    resource_id: Optional[UUID] = None,
+) -> BillingRecordList:
+    fields = {}
+    if resource_id:
+        fields["resource_id"] = resource_id
+    if workspace:
+        db_workspace = await get_workspace(workspace)
+        fields["account"] = db_workspace.uid
+    billing_records = await BillingRecordList.paginated_by_query(
         session,
-        fields={
-            "workspace": workspace,
-            "target_id": target_id,
-        },
+        fields=fields,
         offset=params.offset,
         limit=params.limit,
     )
-    return resource_usage_records
+    return billing_records
 
 
 @router.get(
@@ -578,3 +583,24 @@ async def get_workspace_audit_logs(
         order_by=(sort, sort_order),
     )
     return audit_log_list
+
+
+@router.get(
+    "/workspaces/{workspace}/coupons",
+    dependencies=[CurrentUserDep],
+)
+async def list_workspace_coupons(
+    session: SessionDep,
+    workspace: str,
+    params: ListParamsDep,
+) -> BillingCouponList:
+    db_workspace = await get_workspace(session, workspace)
+    fields = {
+        "account": db_workspace.uid,
+    }
+    return await BillingCoupon.paginated_by_query(
+        session=session,
+        fields=fields,
+        offset=params.offset,
+        limit=params.limit,
+    )

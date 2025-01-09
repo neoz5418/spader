@@ -1,9 +1,15 @@
+from datetime import datetime
+
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlmodel import select, SQLModel
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from routers.types import (
-    BillingPeriod,
+    BillingCouponClaimLimit,
+    BillingCouponClass,
+    BillingCouponDistributionRule,
+    BillingPrice,
+    CouponType,
     Currency,
     DiskType,
     GPUType,
@@ -103,6 +109,28 @@ async def init_data():
         # xian = Zone(name="xian", provider=Provider.ecloud)
         # hohhot = Zone(name="hohhot", provider=Provider.ecloud)
         # Suzhou = Zone(name="Suzhou", provider=Provider.ecloud)
+        v100_price_name = "v100-cny"
+        v100_price = BillingPrice(
+            name=v100_price_name,
+            currency=Currency.CNY,
+            real_time=10000,
+            one_hour=10000,
+            one_day=240000,
+            one_month=7200000,
+            one_week=1680000,
+        )
+        cpu001_price_name = "cpu001-cny"
+        cpu001_price = BillingPrice(
+            name=cpu001_price_name,
+            currency=Currency.CNY,
+            real_time=3000,
+            one_hour=3000,
+            one_day=72000,
+            one_month=2160000,
+            one_week=504000,
+        )
+        await BillingPrice.create_or_update(session, v100_price)
+        await BillingPrice.create_or_update(session, cpu001_price)
         v100 = GPUType(
             name="v100",
             display_name="NVIDIA Tesla V100",
@@ -113,23 +141,7 @@ async def init_data():
             disk_size="100GB",
             disk_type=DiskType.SSD,
             zones=["beijing", "guangzhou"],
-            price_config=[
-                {
-                    "currency": Currency.CNY,
-                    "price": 10000,
-                    "period": BillingPeriod.one_hour,
-                },
-                {
-                    "currency": Currency.CNY,
-                    "price": 240000,
-                    "period": BillingPeriod.one_day,
-                },
-                {
-                    "currency": Currency.CNY,
-                    "price": 7200000,
-                    "period": BillingPeriod.one_month,
-                },
-            ],
+            price_name=v100_price_name,
             provider_config={
                 "provider": "ecloud",
                 "boot_volume_type": "highPerformance",
@@ -151,23 +163,7 @@ async def init_data():
             disk_size="100GB",
             disk_type=DiskType.SSD,
             zones=["beijing", "guangzhou"],
-            price_config=[
-                {
-                    "currency": Currency.CNY,
-                    "price": 3000,
-                    "period": BillingPeriod.one_hour,
-                },
-                {
-                    "currency": Currency.CNY,
-                    "price": 72000,
-                    "period": BillingPeriod.one_day,
-                },
-                {
-                    "currency": Currency.CNY,
-                    "price": 2160000,
-                    "period": BillingPeriod.one_month,
-                },
-            ],
+            price_name=cpu001_price_name,
             provider_config={
                 "provider": "ecloud",
                 "boot_volume_type": "highPerformance",
@@ -181,3 +177,16 @@ async def init_data():
         )
         await GPUType.create_or_update(session, v100)
         await GPUType.create_or_update(session, cpu001)
+        coupon_class001 = BillingCouponClass(
+            name="new_user_50_percent_off",
+            display_name="新人福利5折优惠券",
+            type=CouponType.discount,
+            valid_from=datetime(year=2025, month=1, day=1),
+            valid_to=datetime(year=2026, month=1, day=1),
+            max_discount_value=200000,
+            min_purchase=30000,
+            discount_rate=50,
+            distribution_rule=BillingCouponDistributionRule.auto_registered,
+            claim_limit=BillingCouponClaimLimit.once_per_account,
+        )
+        await BillingCouponClass.create_or_update(session, coupon_class001)

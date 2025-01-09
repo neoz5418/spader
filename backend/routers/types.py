@@ -1,6 +1,6 @@
 import re
-from datetime import datetime
-from enum import auto, Enum, StrEnum
+from datetime import datetime, timedelta
+from enum import auto, Enum
 from typing import Annotated, Literal, Optional
 from pydantic import (
     BaseModel,
@@ -21,6 +21,7 @@ from services.common import (
     PaginatedList,
     TimestampsMixin,
     UID,
+    utcnow,
 )
 
 
@@ -204,7 +205,7 @@ class Currency(str, Enum):
 class WorkspaceAccount(BaseModel):
     workspace: str
     balance: int
-    total_top_up: int
+    # total_top_up: int
     rate_per_hour: int
     currency: Currency
 
@@ -232,18 +233,17 @@ class Node(BaseModel):
     delete_time: Optional[datetime] = None
 
 
-class DiskType(Enum):
+class DiskType(str, Enum):
     SSD = "SSD"
     HDD = "HDD"
 
 
-class BillingPeriod(StrEnum):
+class BillingPeriod(str, Enum):
     one_hour = "one_hour"
     one_day = "one_day"
     one_week = "one_week"
-    two_week = "two_week"
     one_month = "one_month"
-    three_month = "three_month"
+    real_time = "real_time"
 
 
 class Price(BaseModel):
@@ -252,31 +252,284 @@ class Price(BaseModel):
     period: BillingPeriod
 
 
-class ResourceUsageType(Enum):
+class BillingPrice(SQLModel, ActiveRecordMixin, table=True):
+    name: str = Field(primary_key=True)
+    real_time: int
+    one_hour: int
+    one_day: int
+    one_week: int
+    one_month: int
+    currency: Currency
+
+    def to_price_list(self) -> list[Price]:
+        price_list = []
+        if self.real_time >= 0:
+            price_list.append(
+                Price(
+                    currency=self.currency,
+                    price=self.real_time,
+                    period=BillingPeriod.real_time,
+                )
+            )
+        if self.one_hour >= 0:
+            price_list.append(
+                Price(
+                    currency=self.currency,
+                    price=self.one_hour,
+                    period=BillingPeriod.one_hour,
+                )
+            )
+        if self.one_day >= 0:
+            price_list.append(
+                Price(
+                    currency=self.currency,
+                    price=self.one_day,
+                    period=BillingPeriod.one_day,
+                )
+            )
+        if self.one_week >= 0:
+            price_list.append(
+                Price(
+                    currency=self.currency,
+                    price=self.one_week,
+                    period=BillingPeriod.one_week,
+                )
+            )
+        if self.one_month >= 0:
+            price_list.append(
+                Price(
+                    currency=self.currency,
+                    price=self.one_month,
+                    period=BillingPeriod.one_month,
+                )
+            )
+        return price_list
+
+
+class ResourceType(str, Enum):
     instance = "instance"
     volume = "volume"
     snapshot = "snapshot"
 
 
-class ResourceUsageRecord(SQLModel, ActiveRecordMixin, table=True):
-    uid: UUID = UID
-    billing_cycle_group: UUID
-    workspace: str
-    zone: str
+# 定义计费记录类型（充值或扣款）
+class BillingRecordType(str, Enum):
+    deduction = "deduction"  # 扣款
+    top_up = "top_up"  # 充值
+
+
+# 定义计费记录表
+class BillingRecord(SQLModel, ActiveRecordMixin, table=True):
+    uid: UUID = UID  # 记录唯一标识
+    type: BillingRecordType = Field(index=True)  # 记录类型（扣款或充值）
+    resource_type: Optional[ResourceType]  # 资源类型（如充值，则无）
+    resource_id: Optional[UUID] = Field(index=True)  # 资源 ID（如充值，则无）
+    amount: int  # 交易金额（分，正数表示充值，负数表示扣款）
+    billing_time: datetime = Field(
+        sa_type=DateTime(timezone=True), index=True
+    )  # 记录时间
+    balance_before: int  # 交易前余额
+    balance_after: int  # 交易后余额
+    account: UUID  # 关联账户
+    coupon: Optional[UUID] = None  # 关联的优惠券（如使用优惠券）
+    meta_data: Optional[dict] = Field(
+        default_factory=dict, sa_column=Column(JSON)
+    )  # 额外信息（如备注，折扣）
+
+
+BillingRecordList = PaginatedList[BillingRecord]
+
+
+# 定义实时计费记录表
+class BillingRealTimeRecord(SQLModel, ActiveRecordMixin, table=True):
+    uid: UUID = UID  # 记录唯一标识
+    account: UUID = Field(index=True)  # 关联账户
     start_time: datetime = Field(
-        sa_type=DateTime(timezone=True),
-        index=True,
-    )
+        sa_type=DateTime(timezone=True), index=True
+    )  # 计费开始时间
     end_time: datetime = Field(
-        sa_type=DateTime(timezone=True),
-        index=True,
-    )
-    target_id: UUID
-    target_resource_type: ResourceUsageType
+        sa_type=DateTime(timezone=True), index=True
+    )  # 计费结束时间，如果为 datetime.min，则计费未结束
+    rate_per_hour: int  # 每小时价格（分）
+    resource_type: ResourceType
+    resource_id: UUID = Field(index=True)
+    coupon: Optional[UUID] = None  # 关联的优惠券（如使用优惠券来抵扣）
+    meta_data: Optional[dict] = Field(
+        default_factory=dict, sa_column=Column(JSON)
+    )  # 额外信息，折扣等
 
 
-# TODO: change to cursor list
-ResourceUsageRecordList = PaginatedList[ResourceUsageRecord]
+class LeaseStatus(str, Enum):
+    active = "active"  # 活跃状态
+    in_debt = "in_debt"  # 已欠费
+    expired = "expired"  # 已过期
+    deleted = "deleted"  # 已删除
+
+
+class AutoRenewPeriod(str, Enum):
+    none = "none"  # 不自动续租
+    one_hour = BillingPeriod.one_hour.value
+    one_day = BillingPeriod.one_day.value
+    one_week = BillingPeriod.one_week.value
+    one_month = BillingPeriod.one_month.value
+    real_time = BillingPeriod.real_time.value
+
+
+class LeaseBase(BaseModel):
+    lease_period: BillingPeriod = Field(
+        index=True, default=BillingPeriod.real_time
+    )  # 租约类型
+    auto_renew_period: AutoRenewPeriod = Field(
+        default=AutoRenewPeriod.none, index=True
+    )  # 自动续租类型
+    coupon: Optional[UUID] = Field(default=None, index=True)
+
+    def calculate_end_time(self, start_time: datetime) -> datetime:
+        end_time = datetime.max
+        if self.auto_renew_period == AutoRenewPeriod.none:
+            match self.lease_period:
+                case BillingPeriod.one_hour:
+                    end_time = start_time + timedelta(hours=1)
+                case BillingPeriod.one_day:
+                    end_time = start_time + timedelta(days=1)
+                case BillingPeriod.one_week:
+                    end_time = start_time + timedelta(weeks=1)
+                case BillingPeriod.one_month:
+                    end_time = start_time + timedelta(days=30)
+        return end_time
+
+
+class BillingLease(SQLModel, LeaseBase, ActiveRecordMixin, table=True):
+    uid: UUID = UID
+    account: UUID = Field(index=True)  # 关联的用户账户
+    resource_id: UUID = Field(index=True)  # 关联的资源 ID
+    resource_type: ResourceType = Field(index=True)  # 资源类型
+    status: LeaseStatus = Field(default=LeaseStatus.active, index=True)  # 租约状态
+    lease_price: str = Field(index=True)  # 租约价格
+    start_time: datetime = Field(
+        sa_type=DateTime(timezone=True), index=True
+    )  # 租约开始时间
+    end_time: datetime = Field(
+        sa_type=DateTime(timezone=True), index=True
+    )  # 租约到期时间
+    meta_data: Optional[dict] = Field(
+        default_factory=dict, sa_column=Column(JSON)
+    )  # 扩展字段
+
+
+class BillingBalance(BaseModel):
+    balance: int = Field(default=0)  # 当前余额（分）
+
+
+# 定义账户表
+class BillingAccount(SQLModel, ActiveRecordMixin, BillingBalance, table=True):
+    uid: UUID = UID  # 账户唯一标识
+    meta_data: Optional[dict] = Field(
+        default_factory=dict, sa_column=Column(JSON)
+    )  # 额外信息
+
+
+class CouponType(str, Enum):
+    discount = "discount"  # 满减券
+    cash = "cash"  # 代金券
+
+
+class PricingDetails(BaseModel):
+    original_price: int  # 原价（分）
+    discount_amount: int  # 优惠金额（分）
+    final_price: int  # 最终价格（分）
+
+
+class BillingCouponBase(BillingBalance):
+    display_name: DisplayName
+    type: CouponType = Field(index=True)  # 优惠券类型
+    max_discount_value: int = Field(default=0)  # 最大抵扣金额（分，满减卷有效）
+    min_purchase: int = Field(default=0)  # 生效门槛（分，满减券有效）
+    discount_rate: int = Field(default=100)  # 折扣比例（0-100，例如80表示八折）
+    applicable_resource_type: str = Field(default="")  # 适用资源类型（支持通配符*）
+    valid_from: datetime = Field(
+        sa_type=DateTime(timezone=True), index=True
+    )  # 优惠券有效期开始时间
+    valid_to: datetime = Field(
+        sa_type=DateTime(timezone=True), index=True
+    )  # 优惠券有效期结束时间
+
+    def calculate_final_price(self, original_price: int) -> int:
+        """
+        计算优惠后的金额
+        :param original_price: 总金额（分）
+        :return: 优惠后的金额（分）
+        """
+        # 如果不满足生效门槛，返回原始金额
+        if original_price < self.min_purchase:
+            return original_price
+
+        # 如果是全额折扣（0折），直接优惠到最大折扣金额
+        if self.discount_rate == 0:
+            if self.max_discount_value > 0:
+                return max(original_price - self.max_discount_value, 0)
+            else:
+                return 0
+
+        # 如果是不打折（100%），直接返回原始金额
+        if self.discount_rate == 100:
+            return original_price
+
+        # 计算优惠金额（原价 * 优惠比例）
+        discount_by_rate = int(original_price * (100 - self.discount_rate) / 100)
+
+        # 如果有最大折扣限制，则优惠金额不能超过最大抵扣金额
+        if self.max_discount_value > 0:
+            discount_amount = min(discount_by_rate, self.max_discount_value)
+        else:
+            discount_amount = discount_by_rate
+
+        # 应用优惠，返回优惠后的金额
+        return max(original_price - discount_amount, 0)
+
+
+class BillingCoupon(SQLModel, ActiveRecordMixin, BillingCouponBase, table=True):
+    uid: UUID = UID  # 优惠券唯一标识
+    name: str
+    account: UUID = Field(index=True)  # 关联账户
+    used: bool = Field(default=False, index=True)  # 是否已使用
+    meta_data: dict = Field(default_factory=dict, sa_column=Column(JSON))  # 扩展字段
+    claim_time: datetime = Field(sa_type=DateTime(timezone=True), index=True)
+
+
+BillingCouponList = PaginatedList[BillingCoupon]
+
+
+# 分配规则枚举
+class BillingCouponDistributionRule(str, Enum):
+    manual = "manual"  # 手动分配
+    auto_registered = "auto_registered"  # 自动分配给已注册用户
+    user_claim = "user_claim"  # 用户自行领取
+    magic_link = "magic_link"  # 通过特殊链接领取
+
+
+# 领取次数限制枚举
+class BillingCouponClaimLimit(str, Enum):
+    unlimited = "unlimited"  # 可多次领取
+    once_per_account = "once_per_account"  # 每个账户仅领取一次
+    # once_per_month = "once_per_month"  # 每个账户每月领取一次
+
+
+class BillingCouponClass(SQLModel, ActiveRecordMixin, BillingCouponBase, table=True):
+    name: str = Field(primary_key=True)
+    meta_data: dict = Field(default_factory=dict, sa_column=Column(JSON))  # 扩展字段
+    distribution_rule: BillingCouponDistributionRule  # 分配规则
+    claim_limit: BillingCouponClaimLimit  # 领取次数限制
+
+    def assign_coupon(self, account: UUID) -> BillingCoupon:
+        return BillingCoupon.model_validate(
+            self,
+            update={
+                "account": account,
+                "used": False,
+                "claim_time": utcnow(),
+            },
+        )
 
 
 class GPUProviderConfigEcloud(SQLModel):
@@ -306,23 +559,12 @@ class GPUTypePublic(GPUTypeBase):
     prices: list[Price]
 
 
-class GPUTypePriceList(list[Price]):
-    @property
-    def one_hour_price(self) -> Price | None:
-        for price in self:
-            p = Price.model_validate(price)
-            if p.period == BillingPeriod.one_hour:
-                return p
-        return None
+class PricedResourceMixin(BaseModel):
+    price_name: str
 
 
-class GPUType(GPUTypeBase, BaseModelMixin, table=True):
+class GPUType(GPUTypeBase, BaseModelMixin, PricedResourceMixin, table=True):
     provider_config: dict = Field(sa_column=Column(JSON))
-    price_config: list = Field(sa_column=Column(JSON))
-
-    @property
-    def prices(self) -> GPUTypePriceList:
-        return GPUTypePriceList(self.price_config)
 
     @property
     def ecloud(self) -> GPUProviderConfigEcloud:
@@ -444,7 +686,6 @@ class InstanceBase(SQLModel, BaseModelMixin):
     zone: str
     workspace: str
 
-    gpu_count: int
     gpu_type: str
 
     image: str
@@ -461,6 +702,10 @@ class Instance(InstanceBase, table=True):
 class InstancePublic(InstanceBase):
     gpu_display_name: str
     zone_display_name: str
+
+
+class InstanceCost(PricingDetails):
+    coupon: Optional[BillingCoupon]
 
 
 class PortForwardProtocol(Enum):
@@ -481,12 +726,11 @@ InstanceList = PaginatedList[Instance]
 InstancePublicList = PaginatedList[InstancePublic]
 
 
-class CreateInstanceRequest(BaseModel):
+class CreateInstanceRequest(LeaseBase):
     name: Name
     display_name: DisplayName
 
     zone: str
-    gpu_count: int
     gpu_type: str
 
     file_storages: list[str] = []
@@ -629,77 +873,3 @@ class AuditLog(SQLModel, ActiveRecordMixin, table=True):
 
 
 AuditLogList = PaginatedList[AuditLog]
-
-
-# 定义计费记录类型（充值或扣款）
-class BillingRecordType(str, Enum):
-    deduction = "deduction"  # 扣款
-    top_up = "top_up"  # 充值
-
-
-# 定义计费记录表
-class BillingRecord(SQLModel, ActiveRecordMixin, table=True):
-    uid: UUID = UID  # 记录唯一标识
-    type: BillingRecordType = Field(index=True)  # 记录类型（扣款或充值）
-    resource_usage_id: Optional[UUID]  # 关联的资源使用记录（如有）
-    amount: int  # 交易金额（分，正数表示充值，负数表示扣款）
-    billing_time: datetime = Field(
-        sa_type=DateTime(timezone=True), index=True
-    )  # 记录时间
-    balance_before: int  # 交易前余额
-    balance_after: int  # 交易后余额
-    account: UUID  # 关联账户
-    coupon: Optional[UUID] = None  # 关联的优惠券（如使用优惠券）
-    meta_data: Optional[dict] = Field(
-        default_factory=dict, sa_column=Column(JSON)
-    )  # 额外信息（如备注）
-
-
-# 定义实时计费记录表
-class BillingRealTimeRecord(SQLModel, ActiveRecordMixin, table=True):
-    uid: UUID = UID  # 记录唯一标识
-    account: UUID = Field(index=True)  # 关联账户
-    start_time: datetime = Field(
-        sa_type=DateTime(timezone=True), index=True
-    )  # 计费开始时间
-    end_time: datetime = Field(
-        sa_type=DateTime(timezone=True), index=True
-    )  # 计费结束时间，如果为 datetime.min，则计费未结束
-    rate_per_hour: int  # 每小时价格（分）
-    resource_usage_type: ResourceUsageType
-    resource_id: UUID = Field(index=True)
-    coupon: Optional[UUID] = None  # 关联的优惠券（如使用优惠券）
-    meta_data: Optional[dict] = Field(
-        default_factory=dict, sa_column=Column(JSON)
-    )  # 额外信息，折扣等
-
-
-# 定义账户表
-class BillingAccount(SQLModel, ActiveRecordMixin, table=True):
-    uid: UUID = UID  # 账户唯一标识
-    balance: int  # 当前账户余额（分）
-    total_top_up: int = 0  # 累计充值金额（分）
-    meta_data: Optional[dict] = Field(
-        default_factory=dict, sa_column=Column(JSON)
-    )  # 额外信息
-
-
-# 定义优惠券类型
-class CouponType(str, Enum):
-    fixed_amount = "fixed_amount"  # 固定金额优惠券
-    resource_hours = "resource_hours"  # 资源时长优惠券
-
-
-# 定义优惠券表
-class Coupon(SQLModel, ActiveRecordMixin, table=True):
-    uid: UUID = Field(default_factory=UUID, primary_key=True)  # 优惠券唯一标识
-    account: UUID = Field(index=True)  # 关联账户
-    type: CouponType = Field(index=True)  # 优惠券类型（金额或资源时长）
-    value: int  # 优惠券剩余值（金额单位: 分，时长单位: 分钟）
-    resource_type: Optional[str] = None  # 资源类型（仅限资源时长优惠券）
-    valid_from: datetime  # 优惠券有效期开始时间
-    valid_to: datetime  # 优惠券有效期结束时间
-    used: bool = False  # 是否已使用（对于部分使用的金额/时长券，标记为未用完）
-    meta_data: Optional[dict] = Field(
-        default_factory=dict, sa_column=Column(JSON)
-    )  # 额外信息

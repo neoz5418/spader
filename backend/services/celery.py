@@ -11,14 +11,13 @@ from routers.types import (
     GPUType,
     Instance,
     Operation,
-    ResourceUsageType,
+    ResourceType,
     Workspace,
 )
 from services.billing import (
     end_resource_billing_record,
     process_periodic_billing,
     start_resource_billing_record,
-    get_account,
 )
 from services.common import utcnow
 from services.db import get_session
@@ -59,11 +58,11 @@ async def create_instance_operation(operation_id: UUID):
 
         await start_resource_billing_record(
             session,
-            workspace=workspace,
+            account_id=workspace.uid,
             resource_id=instance.uid,
-            resource_type=ResourceUsageType.instance,
+            resource_type=ResourceType.instance,
             start_time=utcnow(),
-            rate_per_hour=gpu_type.prices.one_hour_price.price,
+            priced_resource=gpu_type,
         )
 
         await session.commit()
@@ -108,7 +107,10 @@ async def delete_instance_operation(operation_id: UUID):
         await workspace.refresh(session)
 
         await end_resource_billing_record(
-            session, workspace=workspace, resource_id=instance.uid, end_time=utcnow()
+            session,
+            account_id=workspace.uid,
+            resource_id=instance.uid,
+            end_time=utcnow(),
         )
         await session.commit()
 
@@ -116,13 +118,14 @@ async def delete_instance_operation(operation_id: UUID):
 @celery.task
 @sync
 async def check_all_user_balances():
-    async for session in get_session():
-        workspaces = await Workspace.all(session)
-        for workspace in workspaces:
-            account = await get_account(session, workspace)
-            if account.balance <= 0:
-                logger.info("workspace %s balance is lower than 0", workspace.name)
-                # TODO: stop all resource
+    pass
+    # async for session in get_session():
+    #     workspaces = await Workspace.all(session)
+    #     for workspace in workspaces:
+    #         account = await get_account(session, workspace)
+    #         if account.balance <= 0:
+    #             logger.info("workspace %s balance is lower than 0", workspace.name)
+    #             # TODO: stop all resource
 
 
 @celery.task
@@ -139,5 +142,5 @@ celery.add_periodic_task(
     crontab(minute="0", hour="*"),
     # crontab(minute="*", hour="*"),
     measure_usage.s(),
-    name="send all resource event to lago",
+    name="send all resource event to billing",
 )

@@ -12,10 +12,6 @@ import type { CurrencyType } from "./CurrencyType";
     /**
      * @type integer
     */
-    total_top_up: number;
-    /**
-     * @type integer
-    */
     rate_per_hour: number;
     /**
      * @type string

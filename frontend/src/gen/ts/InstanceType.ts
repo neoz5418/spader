@@ -30,10 +30,6 @@ import type { InstanceStatusType } from "./InstanceStatusType";
     */
     workspace: string;
     /**
-     * @type integer
-    */
-    gpu_count: number;
-    /**
      * @type string
     */
     gpu_type: string;

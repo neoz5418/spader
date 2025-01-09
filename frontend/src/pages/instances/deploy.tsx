@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
 	Select,
@@ -21,8 +20,16 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { Table, TableBody, TableCell, TableHeader, TableHead, TableRow } from "@/components/ui/table";
-import { createInstance, useListWorkspaceZonesHook, ZoneType } from "@/gen";
+import {
+	Table,
+	TableBody,
+	TableCell,
+	TableHead,
+	TableHeader,
+	TableRow,
+} from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ZoneType, createInstance, useListWorkspaceZonesHook } from "@/gen";
 import { useCreateInstanceHook } from "@/gen/hooks/useCreateInstanceHook";
 import { useListWorkspaceGpuTypesHook } from "@/gen/hooks/useListWorkspaceGpuTypesHook";
 import {
@@ -35,7 +42,7 @@ import { toast } from "@/hooks/use-toast.ts";
 import { ApiError } from "@/utils/api-error";
 import { handleFormError } from "@/utils/zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -95,13 +102,11 @@ export default function DeployForm() {
 
 	const availableZones = useMemo(() => {
 		const gpuType = gpuTypes.find((gpuType) => gpuType.name === currentGpuType);
-		return zones.filter((zone) => 
-			gpuType?.zones.includes(zone.name)
-		);
+		return zones.filter((zone) => gpuType?.zones.includes(zone.name));
 	}, [currentGpuType, gpuTypes, zones]);
 
 	function onSubmitError(error: any) {
-		console.log(error)
+		console.log(error);
 		toast({
 			variant: "destructive",
 			title: "创建失败",
@@ -139,133 +144,196 @@ export default function DeployForm() {
 									<FormItem>
 										<FormLabel>实例类型</FormLabel>
 										<FormControl>
-										<RadioGroup
+											<RadioGroup
 												onValueChange={(value) => {
-													setCurrentGpuType(value)
-													field.onChange(value)
-													form.setValue('gpu_count', 1) //@TODO: 需要根据实例类型设置GPU数量													
+													setCurrentGpuType(value);
+													field.onChange(value);
+													form.setValue("gpu_count", 1); //@TODO: 需要根据实例类型设置GPU数量
 												}}
 												value={field.value || ""}
 												className="flex flex-col space-y-1"
+											>
+												<Tabs
+													defaultValue="gpu"
+													className="w-full"
+													onValueChange={() => {
+														form.setValue("gpu_type", "");
+														form.setValue("zone", "");
+														setCurrentGpuType(null);
+													}}
 												>
-											<Tabs defaultValue="gpu" className="w-full" onValueChange={() => {
-														form.setValue("gpu_type", '')
-														form.setValue("zone", '')
-														setCurrentGpuType(null) 
-													}}>
-												<TabsList className="grid w-full grid-cols-2">
-													<TabsTrigger value="gpu">GPU 实例</TabsTrigger>
-													<TabsTrigger value="cpu">CPU 实例</TabsTrigger>
-												</TabsList>
-												
-												<TabsContent value="gpu">
-													<Table>
-														<TableHeader>
-															<TableRow>
-																<TableHead className="w-12"></TableHead>
-																<TableHead>GPU</TableHead>
-																<TableHead>CPUs</TableHead>
-																<TableHead>Memory</TableHead>
-																<TableHead>Disk</TableHead>
-																<TableHead className="text-right">Price</TableHead>
-															</TableRow>
-														</TableHeader>
-														<TableBody>
-															{gpuTypes.filter(type => type.gpu_memory > 0).map((gpuType) => (
-																<TableRow key={gpuType.name}>
-																	<TableCell>
-																		<FormItem className="flex items-center space-x-3 space-y-0">
-																			<FormControl>
-																				<RadioGroupItem value={gpuType.name} />
-																			</FormControl>
-																		</FormItem>
-																	</TableCell>
-																	<TableCell>{gpuType.display_name} {(gpuType.gpu_memory / 1000 / 1000 / 1000).toFixed(0)} GB * 1 块</TableCell>
-																	<TableCell>{gpuType.cpu} 核</TableCell>
-																	<TableCell>{(gpuType.memory / 1000 / 1000 / 1000).toFixed(0)} GB</TableCell>
-																	<TableCell>{gpuType.disk_type} {(gpuType.disk_size / 1000 / 1000 / 1000).toFixed(0)} GB</TableCell>
-																	<TableCell></TableCell>
-																	<TableCell className="text-right text-primary">
-																	¥{gpuType.prices.filter(
-																		(price) => price.period === "one_hour",
-																	)[0].price / 100}
-																	</TableCell>
+													<TabsList className="grid w-full grid-cols-2">
+														<TabsTrigger value="gpu">GPU 实例</TabsTrigger>
+														<TabsTrigger value="cpu">CPU 实例</TabsTrigger>
+													</TabsList>
+
+													<TabsContent value="gpu">
+														<Table>
+															<TableHeader>
+																<TableRow>
+																	<TableHead className="w-12"></TableHead>
+																	<TableHead>GPU</TableHead>
+																	<TableHead>CPUs</TableHead>
+																	<TableHead>Memory</TableHead>
+																	<TableHead>Disk</TableHead>
+																	<TableHead className="text-right">
+																		Price
+																	</TableHead>
 																</TableRow>
-															))}
-														</TableBody>
-													</Table>
-												</TabsContent>
-												
-												<TabsContent value="cpu">
-													<Table>
-														<TableHeader>
-															<TableRow>
-																<TableHead className="w-12"></TableHead>
-																<TableHead>CPUs</TableHead>
-																<TableHead>Memory</TableHead>
-																<TableHead>Disk</TableHead>
-																<TableHead className="text-right">Price</TableHead>
-															</TableRow>
-														</TableHeader>
-														<TableBody>
-															{gpuTypes.filter(type => type.gpu_memory === 0).map((gpuType) => (
-																<TableRow key={gpuType.name}>
-																	<TableCell>
-																		<FormItem className="flex items-center space-x-3 space-y-0">
-																			<FormControl>
-																				<RadioGroupItem value={gpuType.name} />
-																			</FormControl>
-																		</FormItem>
-																	</TableCell>
-																	<TableCell>{gpuType.cpu} 核</TableCell>
-																	<TableCell>{(gpuType.memory / 1024 / 1024 / 1024).toFixed(1)} GB</TableCell>
-																	<TableCell>{gpuType.disk_type} {(gpuType.disk_size / 1024 / 1024 / 1024).toFixed(0)} GB</TableCell>
-																	<TableCell className="text-right text-primary">
-																	¥{gpuType.prices.filter(price => price.period === "one_hour")[0].price / 100}
-																	</TableCell>
+															</TableHeader>
+															<TableBody>
+																{gpuTypes
+																	.filter((type) => type.gpu_memory > 0)
+																	.map((gpuType) => (
+																		<TableRow key={gpuType.name}>
+																			<TableCell>
+																				<FormItem className="flex items-center space-x-3 space-y-0">
+																					<FormControl>
+																						<RadioGroupItem
+																							value={gpuType.name}
+																						/>
+																					</FormControl>
+																				</FormItem>
+																			</TableCell>
+																			<TableCell>
+																				{gpuType.display_name}{" "}
+																				{(
+																					gpuType.gpu_memory /
+																					1000 /
+																					1000 /
+																					1000
+																				).toFixed(0)}{" "}
+																				GB * 1 块
+																			</TableCell>
+																			<TableCell>{gpuType.cpu} 核</TableCell>
+																			<TableCell>
+																				{(
+																					gpuType.memory /
+																					1000 /
+																					1000 /
+																					1000
+																				).toFixed(0)}{" "}
+																				GB
+																			</TableCell>
+																			<TableCell>
+																				{gpuType.disk_type}{" "}
+																				{(
+																					gpuType.disk_size /
+																					1000 /
+																					1000 /
+																					1000
+																				).toFixed(0)}{" "}
+																				GB
+																			</TableCell>
+																			<TableCell className="text-right text-primary">
+																				¥
+																				{gpuType.prices.filter(
+																					(price) =>
+																						price.period === "one_hour",
+																				)[0].price / 100}
+																			</TableCell>
+																		</TableRow>
+																	))}
+															</TableBody>
+														</Table>
+													</TabsContent>
+
+													<TabsContent value="cpu">
+														<Table>
+															<TableHeader>
+																<TableRow>
+																	<TableHead className="w-12"></TableHead>
+																	<TableHead>CPUs</TableHead>
+																	<TableHead>Memory</TableHead>
+																	<TableHead>Disk</TableHead>
+																	<TableHead className="text-right">
+																		Price
+																	</TableHead>
 																</TableRow>
-															))}
-														</TableBody>
-													</Table>
-												</TabsContent>
-											</Tabs>
+															</TableHeader>
+															<TableBody>
+																{gpuTypes
+																	.filter((type) => type.gpu_memory === 0)
+																	.map((gpuType) => (
+																		<TableRow key={gpuType.name}>
+																			<TableCell>
+																				<FormItem className="flex items-center space-x-3 space-y-0">
+																					<FormControl>
+																						<RadioGroupItem
+																							value={gpuType.name}
+																						/>
+																					</FormControl>
+																				</FormItem>
+																			</TableCell>
+																			<TableCell>{gpuType.cpu} 核</TableCell>
+																			<TableCell>
+																				{(
+																					gpuType.memory /
+																					1024 /
+																					1024 /
+																					1024
+																				).toFixed(1)}{" "}
+																				GB
+																			</TableCell>
+																			<TableCell>
+																				{gpuType.disk_type}{" "}
+																				{(
+																					gpuType.disk_size /
+																					1024 /
+																					1024 /
+																					1024
+																				).toFixed(0)}{" "}
+																				GB
+																			</TableCell>
+																			<TableCell className="text-right text-primary">
+																				¥
+																				{gpuType.prices.filter(
+																					(price) =>
+																						price.period === "one_hour",
+																				)[0].price / 100}
+																			</TableCell>
+																		</TableRow>
+																	))}
+															</TableBody>
+														</Table>
+													</TabsContent>
+												</Tabs>
 											</RadioGroup>
 										</FormControl>
 										<FormMessage />
 									</FormItem>
 								)}
 							/>
-							{availableZones.length > 0 && <FormField
-								name="zone"
-								control={form.control}
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>区域</FormLabel>
-										<Select
-											onValueChange={field.onChange}
-											defaultValue={field.value}
-										>
-											<FormControl>
-												<SelectTrigger>
-													<SelectValue placeholder="选择主机部署的区域" />
-												</SelectTrigger>
-											</FormControl>
-											<SelectContent>
-												{availableZones.map((zone) => (
-													<SelectItem value={zone.name} key={zone.name}>
-														{zone.display_name}
-													</SelectItem>
-												))}
-											</SelectContent>
-										</Select>
-										<FormDescription>选择主机部署的区域</FormDescription>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>}
-
-							<input {...form.register('gpu_count', { valueAsNumber: true })} />
-							
+							{availableZones.length > 0 && (
+								<FormField
+									name="zone"
+									control={form.control}
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>区域</FormLabel>
+											<Select
+												onValueChange={field.onChange}
+												defaultValue={field.value}
+											>
+												<FormControl>
+													<SelectTrigger>
+														<SelectValue placeholder="选择主机部署的区域" />
+													</SelectTrigger>
+												</FormControl>
+												<SelectContent>
+													{availableZones.map((zone) => (
+														<SelectItem value={zone.name} key={zone.name}>
+															{zone.display_name}
+														</SelectItem>
+													))}
+												</SelectContent>
+											</Select>
+											<FormDescription>选择主机部署的区域</FormDescription>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+							)}
 							<FormField
 								control={form.control}
 								name="image"
@@ -307,4 +375,3 @@ export default function DeployForm() {
 		</Layout>
 	);
 }
-

@@ -20,7 +20,7 @@ import { rechargeWorkspaceAccountMutationRequestSchema, rechargeWorkspaceAccount
 import { listWorkspaceAccountRechargesQueryResponseSchema, listWorkspaceAccountRecharges422Schema, listWorkspaceAccountRechargesPathParamsSchema, listWorkspaceAccountRechargesQueryParamsSchema } from "./listWorkspaceAccountRechargesSchema.gen";
 import { getWorkspaceAccountRechargeQueryResponseSchema, getWorkspaceAccountRecharge422Schema, getWorkspaceAccountRechargePathParamsSchema } from "./getWorkspaceAccountRechargeSchema.gen";
 import { checkWorkspaceAccountRechargeMutationResponseSchema, checkWorkspaceAccountRecharge422Schema, checkWorkspaceAccountRechargePathParamsSchema } from "./checkWorkspaceAccountRechargeSchema.gen";
-import { listWorkspaceResourceUsageRecordsQueryResponseSchema, listWorkspaceResourceUsageRecords422Schema, listWorkspaceResourceUsageRecordsPathParamsSchema, listWorkspaceResourceUsageRecordsQueryParamsSchema } from "./listWorkspaceResourceUsageRecordsSchema.gen";
+import { listWorkspaceBillingRecordsQueryResponseSchema, listWorkspaceBillingRecords422Schema, listWorkspaceBillingRecordsPathParamsSchema, listWorkspaceBillingRecordsQueryParamsSchema } from "./listWorkspaceBillingRecordsSchema.gen";
 import { listWorkspaceSshKeysQueryResponseSchema, listWorkspaceSshKeys422Schema, listWorkspaceSshKeysPathParamsSchema } from "./listWorkspaceSshKeysSchema.gen";
 import { createWorkspaceSshKeysMutationRequestSchema, createWorkspaceSshKeysMutationResponseSchema, createWorkspaceSshKeys422Schema, createWorkspaceSshKeysPathParamsSchema } from "./createWorkspaceSshKeysSchema.gen";
 import { getSshKeyQueryResponseSchema, getSshKey422Schema, getSshKeyPathParamsSchema } from "./getSshKeySchema.gen";
@@ -28,6 +28,7 @@ import { deleteWorkspaceSshKeysMutationResponseSchema, deleteWorkspaceSshKeys422
 import { getWorkspaceMembersQueryResponseSchema, getWorkspaceMembers422Schema, getWorkspaceMembersPathParamsSchema } from "./getWorkspaceMembersSchema.gen";
 import { getWorkspaceInvitationsQueryResponseSchema, getWorkspaceInvitations422Schema, getWorkspaceInvitationsPathParamsSchema } from "./getWorkspaceInvitationsSchema.gen";
 import { getWorkspaceAuditLogsQueryResponseSchema, getWorkspaceAuditLogs422Schema, getWorkspaceAuditLogsPathParamsSchema, getWorkspaceAuditLogsQueryParamsSchema } from "./getWorkspaceAuditLogsSchema.gen";
+import { listWorkspaceCouponsQueryResponseSchema, listWorkspaceCoupons422Schema, listWorkspaceCouponsPathParamsSchema, listWorkspaceCouponsQueryParamsSchema } from "./listWorkspaceCouponsSchema.gen";
 import { createZoneMutationRequestSchema, createZoneMutationResponseSchema, createZone422Schema } from "./createZoneSchema.gen";
 import { listZonesQueryResponseSchema, listZones422Schema, listZonesQueryParamsSchema } from "./listZonesSchema.gen";
 import { listGpuTypesQueryResponseSchema, listGpuTypes422Schema, listGpuTypesQueryParamsSchema } from "./listGpuTypesSchema.gen";
@@ -54,6 +55,7 @@ import { listFilesInFileStorageQueryResponseSchema, listFilesInFileStorage422Sch
 import { createImageMutationRequestSchema, createImageMutationResponseSchema, createImage422Schema, createImagePathParamsSchema } from "./createImageSchema.gen";
 import { updateImageMutationResponseSchema, updateImage422Schema, updateImagePathParamsSchema } from "./updateImageSchema.gen";
 import { listWorkspaceImagesQueryResponseSchema, listWorkspaceImages422Schema, listWorkspaceImagesPathParamsSchema, listWorkspaceImagesQueryParamsSchema } from "./listWorkspaceImagesSchema.gen";
+import { calculateInstanceCostMutationRequestSchema, calculateInstanceCostMutationResponseSchema, calculateInstanceCost422Schema, calculateInstanceCostPathParamsSchema } from "./calculateInstanceCostSchema.gen";
 import { authMutationRequestSchema, authMutationResponseSchema, auth422Schema } from "./authSchema.gen";
 import { tokenMutationRequestSchema, tokenMutationResponseSchema, token422Schema } from "./tokenSchema.gen";
 
@@ -387,20 +389,20 @@ import { tokenMutationRequestSchema, tokenMutationResponseSchema, token422Schema
         errors: {
             422: checkWorkspaceAccountRecharge422Schema
         }
-    }, "list_workspace_resource_usage_records": {
+    }, "list_workspace_billing_records": {
         request: undefined,
         parameters: {
-            path: listWorkspaceResourceUsageRecordsPathParamsSchema,
-            query: listWorkspaceResourceUsageRecordsQueryParamsSchema,
+            path: listWorkspaceBillingRecordsPathParamsSchema,
+            query: listWorkspaceBillingRecordsQueryParamsSchema,
             header: undefined
         },
         responses: {
-            200: listWorkspaceResourceUsageRecordsQueryResponseSchema,
-            422: listWorkspaceResourceUsageRecords422Schema,
-            default: listWorkspaceResourceUsageRecordsQueryResponseSchema
+            200: listWorkspaceBillingRecordsQueryResponseSchema,
+            422: listWorkspaceBillingRecords422Schema,
+            default: listWorkspaceBillingRecordsQueryResponseSchema
         },
         errors: {
-            422: listWorkspaceResourceUsageRecords422Schema
+            422: listWorkspaceBillingRecords422Schema
         }
     }, "list_workspace_ssh_keys": {
         request: undefined,
@@ -506,6 +508,21 @@ import { tokenMutationRequestSchema, tokenMutationResponseSchema, token422Schema
         },
         errors: {
             422: getWorkspaceAuditLogs422Schema
+        }
+    }, "list_workspace_coupons": {
+        request: undefined,
+        parameters: {
+            path: listWorkspaceCouponsPathParamsSchema,
+            query: listWorkspaceCouponsQueryParamsSchema,
+            header: undefined
+        },
+        responses: {
+            200: listWorkspaceCouponsQueryResponseSchema,
+            422: listWorkspaceCoupons422Schema,
+            default: listWorkspaceCouponsQueryResponseSchema
+        },
+        errors: {
+            422: listWorkspaceCoupons422Schema
         }
     }, "create_zone": {
         request: createZoneMutationRequestSchema,
@@ -897,6 +914,21 @@ import { tokenMutationRequestSchema, tokenMutationResponseSchema, token422Schema
         errors: {
             422: listWorkspaceImages422Schema
         }
+    }, "calculate_instance_cost": {
+        request: calculateInstanceCostMutationRequestSchema,
+        parameters: {
+            path: calculateInstanceCostPathParamsSchema,
+            query: undefined,
+            header: undefined
+        },
+        responses: {
+            200: calculateInstanceCostMutationResponseSchema,
+            422: calculateInstanceCost422Schema,
+            default: calculateInstanceCostMutationResponseSchema
+        },
+        errors: {
+            422: calculateInstanceCost422Schema
+        }
     }, "auth": {
         request: authMutationRequestSchema,
         parameters: {
@@ -964,8 +996,8 @@ export const paths = { "/apis/user/v1/users/me": {
         get: operations["get_workspace_account_recharge"]
     }, "/apis/workspace/v1/recharges/{recharge_id}/check": {
         post: operations["check_workspace_account_recharge"]
-    }, "/apis/workspace/v1/workspaces/{workspace}/resource_usage_record": {
-        get: operations["list_workspace_resource_usage_records"]
+    }, "/apis/workspace/v1/workspaces/{workspace}/billing_records": {
+        get: operations["list_workspace_billing_records"]
     }, "/apis/workspace/v1/workspaces/{workspace}/ssh_keys": {
         get: operations["list_workspace_ssh_keys"],
         post: operations["create_workspace_ssh_keys"]
@@ -978,6 +1010,8 @@ export const paths = { "/apis/user/v1/users/me": {
         get: operations["get_workspace_invitations"]
     }, "/apis/workspace/v1/workspaces/{workspace}/audit_logs": {
         get: operations["get_workspace_audit_logs"]
+    }, "/apis/workspace/v1/workspaces/{workspace}/coupons": {
+        get: operations["list_workspace_coupons"]
     }, "/apis/compute/v1/zones/": {
         post: operations["create_zone"]
     }, "/apis/compute/v1/zones": {
@@ -1027,6 +1061,8 @@ export const paths = { "/apis/user/v1/users/me": {
         patch: operations["update_image"]
     }, "/apis/compute/v1/workspaces/{workspace}/zones/{zone}/images": {
         get: operations["list_workspace_images"]
+    }, "/apis/compute/v1/workspaces/{workspace}/instances/calculate-cost": {
+        post: operations["calculate_instance_cost"]
     }, "/apis/oidc/v1/auth": {
         post: operations["auth"]
     }, "/apis/oidc/v1/token": {

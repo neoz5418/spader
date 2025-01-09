@@ -2269,13 +2269,13 @@
         }
       }
     },
-    "/apis/workspace/v1/workspaces/{workspace}/resource_usage_record": {
+    "/apis/workspace/v1/workspaces/{workspace}/billing_records": {
       "get": {
         "tags": [
           "workspace"
         ],
-        "summary": "List Workspace Resource Usage Records",
-        "operationId": "list_workspace_resource_usage_records",
+        "summary": "List Workspace Billing Records",
+        "operationId": "list_workspace_billing_records",
         "security": [
           {
             "OAuth2PasswordBearer": [
@@ -2294,13 +2294,20 @@
             }
           },
           {
-            "name": "target_id",
+            "name": "resource_id",
             "in": "query",
-            "required": true,
+            "required": false,
             "schema": {
-              "type": "string",
-              "format": "uuid",
-              "title": "Target Id"
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Resource Id"
             }
           },
           {
@@ -2333,7 +2340,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaginatedList_ResourceUsageRecord_"
+                  "$ref": "#/components/schemas/PaginatedList_BillingRecord_"
                 }
               }
             }
@@ -2389,7 +2396,7 @@
                       "ValidationFailed": "#/components/schemas/ErrorValidationFailed"
                     }
                   },
-                  "title": "Response 422 List Workspace Resource Usage Records Apis Workspace V1 Workspaces  Workspace  Resource Usage Record Get"
+                  "title": "Response 422 List Workspace Billing Records Apis Workspace V1 Workspaces  Workspace  Billing Records Get"
                 }
               }
             },
@@ -3129,6 +3136,125 @@
                     }
                   },
                   "title": "Response 422 Get Workspace Audit Logs Apis Workspace V1 Workspaces  Workspace  Audit Logs Get"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          }
+        }
+      }
+    },
+    "/apis/workspace/v1/workspaces/{workspace}/coupons": {
+      "get": {
+        "tags": [
+          "workspace"
+        ],
+        "summary": "List Workspace Coupons",
+        "operationId": "list_workspace_coupons",
+        "security": [
+          {
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Workspace"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedList_BillingCoupon_"
+                }
+              }
+            }
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ErrorInternal"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorInvalidArgument"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorRefreshTokenCannotBeEmpty"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorRefreshTokenExpired"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorRefreshTokenInvalid"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorInsufficientBalance"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorForbidden"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorUnauthorized"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorUsernameOrEmailCannotBeEmpty"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorValidationFailed"
+                    }
+                  ],
+                  "discriminator": {
+                    "propertyName": "type",
+                    "mapping": {
+                      "Internal": "#/components/schemas/ErrorInternal",
+                      "InvalidArgument": "#/components/schemas/ErrorInvalidArgument",
+                      "RefreshTokenCannotBeEmpty": "#/components/schemas/ErrorRefreshTokenCannotBeEmpty",
+                      "RefreshTokenExpired": "#/components/schemas/ErrorRefreshTokenExpired",
+                      "RefreshTokenInvalid": "#/components/schemas/ErrorRefreshTokenInvalid",
+                      "InsufficientBalance": "#/components/schemas/ErrorInsufficientBalance",
+                      "Forbidden": "#/components/schemas/ErrorForbidden",
+                      "Unauthorized": "#/components/schemas/ErrorUnauthorized",
+                      "UsernameOrEmailCannotBeEmpty": "#/components/schemas/ErrorUsernameOrEmailCannotBeEmpty",
+                      "ValidationFailed": "#/components/schemas/ErrorValidationFailed"
+                    }
+                  },
+                  "title": "Response 422 List Workspace Coupons Apis Workspace V1 Workspaces  Workspace  Coupons Get"
                 }
               }
             },
@@ -6200,6 +6326,112 @@
         }
       }
     },
+    "/apis/compute/v1/workspaces/{workspace}/instances/calculate-cost": {
+      "post": {
+        "tags": [
+          "compute"
+        ],
+        "summary": "Calculate Instance Cost",
+        "operationId": "calculate_instance_cost",
+        "security": [
+          {
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Workspace"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateInstanceRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InstanceCost"
+                }
+              }
+            }
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ErrorInternal"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorInvalidArgument"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorRefreshTokenCannotBeEmpty"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorRefreshTokenExpired"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorRefreshTokenInvalid"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorInsufficientBalance"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorForbidden"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorUnauthorized"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorUsernameOrEmailCannotBeEmpty"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorValidationFailed"
+                    }
+                  ],
+                  "discriminator": {
+                    "propertyName": "type",
+                    "mapping": {
+                      "Internal": "#/components/schemas/ErrorInternal",
+                      "InvalidArgument": "#/components/schemas/ErrorInvalidArgument",
+                      "RefreshTokenCannotBeEmpty": "#/components/schemas/ErrorRefreshTokenCannotBeEmpty",
+                      "RefreshTokenExpired": "#/components/schemas/ErrorRefreshTokenExpired",
+                      "RefreshTokenInvalid": "#/components/schemas/ErrorRefreshTokenInvalid",
+                      "InsufficientBalance": "#/components/schemas/ErrorInsufficientBalance",
+                      "Forbidden": "#/components/schemas/ErrorForbidden",
+                      "Unauthorized": "#/components/schemas/ErrorUnauthorized",
+                      "UsernameOrEmailCannotBeEmpty": "#/components/schemas/ErrorUsernameOrEmailCannotBeEmpty",
+                      "ValidationFailed": "#/components/schemas/ErrorValidationFailed"
+                    }
+                  },
+                  "title": "Response 422 Calculate Instance Cost Apis Compute V1 Workspaces  Workspace  Instances Calculate Cost Post"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          }
+        }
+      }
+    },
     "/apis/oidc/v1/auth": {
       "post": {
         "tags": [
@@ -6495,17 +6727,220 @@
         ],
         "title": "AuditLogResourceType"
       },
+      "AutoRenewPeriod": {
+        "type": "string",
+        "enum": [
+          "none",
+          "one_hour",
+          "one_day",
+          "one_week",
+          "one_month",
+          "real_time"
+        ],
+        "title": "AutoRenewPeriod"
+      },
+      "BillingCoupon": {
+        "properties": {
+          "balance": {
+            "type": "integer",
+            "title": "Balance",
+            "default": 0
+          },
+          "display_name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 64,
+                "minLength": 0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Display Name"
+          },
+          "type": {
+            "$ref": "#/components/schemas/CouponType"
+          },
+          "max_discount_value": {
+            "type": "integer",
+            "title": "Max Discount Value",
+            "default": 0
+          },
+          "min_purchase": {
+            "type": "integer",
+            "title": "Min Purchase",
+            "default": 0
+          },
+          "discount_rate": {
+            "type": "integer",
+            "title": "Discount Rate",
+            "default": 100
+          },
+          "applicable_resource_type": {
+            "type": "string",
+            "title": "Applicable Resource Type",
+            "default": ""
+          },
+          "valid_from": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Valid From"
+          },
+          "valid_to": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Valid To"
+          },
+          "uid": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Uid"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "account": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Account"
+          },
+          "used": {
+            "type": "boolean",
+            "title": "Used",
+            "default": false
+          },
+          "meta_data": {
+            "type": "object",
+            "title": "Meta Data"
+          },
+          "claim_time": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Claim Time"
+          }
+        },
+        "type": "object",
+        "required": [
+          "type",
+          "valid_from",
+          "valid_to",
+          "name",
+          "account",
+          "claim_time"
+        ],
+        "title": "BillingCoupon"
+      },
       "BillingPeriod": {
         "type": "string",
         "enum": [
           "one_hour",
           "one_day",
           "one_week",
-          "two_week",
           "one_month",
-          "three_month"
+          "real_time"
         ],
         "title": "BillingPeriod"
+      },
+      "BillingRecord": {
+        "properties": {
+          "uid": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Uid"
+          },
+          "type": {
+            "$ref": "#/components/schemas/BillingRecordType"
+          },
+          "resource_type": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ResourceType"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "resource_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Resource Id"
+          },
+          "amount": {
+            "type": "integer",
+            "title": "Amount"
+          },
+          "billing_time": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Billing Time"
+          },
+          "balance_before": {
+            "type": "integer",
+            "title": "Balance Before"
+          },
+          "balance_after": {
+            "type": "integer",
+            "title": "Balance After"
+          },
+          "account": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Account"
+          },
+          "coupon": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Coupon"
+          },
+          "meta_data": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Meta Data"
+          }
+        },
+        "type": "object",
+        "required": [
+          "type",
+          "resource_type",
+          "resource_id",
+          "amount",
+          "billing_time",
+          "balance_before",
+          "balance_after",
+          "account"
+        ],
+        "title": "BillingRecord"
+      },
+      "BillingRecordType": {
+        "type": "string",
+        "enum": [
+          "deduction",
+          "top_up"
+        ],
+        "title": "BillingRecordType"
       },
       "Body_auth_apis_oidc_v1_auth_post": {
         "properties": {
@@ -6616,6 +7051,14 @@
         ],
         "title": "Body_token_apis_oidc_v1_token_post"
       },
+      "CouponType": {
+        "type": "string",
+        "enum": [
+          "discount",
+          "cash"
+        ],
+        "title": "CouponType"
+      },
       "CreateFileStorageRequest": {
         "properties": {
           "name": {
@@ -6662,6 +7105,26 @@
       },
       "CreateInstanceRequest": {
         "properties": {
+          "lease_period": {
+            "$ref": "#/components/schemas/BillingPeriod",
+            "default": "real_time"
+          },
+          "auto_renew_period": {
+            "$ref": "#/components/schemas/AutoRenewPeriod",
+            "default": "none"
+          },
+          "coupon": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Coupon"
+          },
           "name": {
             "type": "string",
             "maxLength": 32,
@@ -6687,10 +7150,6 @@
             "type": "string",
             "title": "Zone"
           },
-          "gpu_count": {
-            "type": "integer",
-            "title": "Gpu Count"
-          },
           "gpu_type": {
             "type": "string",
             "title": "Gpu Type"
@@ -6712,7 +7171,6 @@
         "required": [
           "name",
           "zone",
-          "gpu_count",
           "gpu_type",
           "image"
         ],
@@ -7291,10 +7749,6 @@
             "type": "string",
             "title": "Workspace"
           },
-          "gpu_count": {
-            "type": "integer",
-            "title": "Gpu Count"
-          },
           "gpu_type": {
             "type": "string",
             "title": "Gpu Type"
@@ -7320,11 +7774,44 @@
           "status",
           "zone",
           "workspace",
-          "gpu_count",
           "gpu_type",
           "image"
         ],
         "title": "Instance"
+      },
+      "InstanceCost": {
+        "properties": {
+          "original_price": {
+            "type": "integer",
+            "title": "Original Price"
+          },
+          "discount_amount": {
+            "type": "integer",
+            "title": "Discount Amount"
+          },
+          "final_price": {
+            "type": "integer",
+            "title": "Final Price"
+          },
+          "coupon": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BillingCoupon"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "original_price",
+          "discount_amount",
+          "final_price",
+          "coupon"
+        ],
+        "title": "InstanceCost"
       },
       "InstancePublic": {
         "properties": {
@@ -7394,10 +7881,6 @@
             "type": "string",
             "title": "Workspace"
           },
-          "gpu_count": {
-            "type": "integer",
-            "title": "Gpu Count"
-          },
           "gpu_type": {
             "type": "string",
             "title": "Gpu Type"
@@ -7431,7 +7914,6 @@
           "status",
           "zone",
           "workspace",
-          "gpu_count",
           "gpu_type",
           "image",
           "gpu_display_name",
@@ -7645,6 +8127,46 @@
         ],
         "title": "PaginatedList[AuditLog]"
       },
+      "PaginatedList_BillingCoupon_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/BillingCoupon"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "pagination"
+        ],
+        "title": "PaginatedList[BillingCoupon]"
+      },
+      "PaginatedList_BillingRecord_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/BillingRecord"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "pagination"
+        ],
+        "title": "PaginatedList[BillingRecord]"
+      },
       "PaginatedList_FileInfo_": {
         "properties": {
           "items": {
@@ -7764,26 +8286,6 @@
           "pagination"
         ],
         "title": "PaginatedList[Operation]"
-      },
-      "PaginatedList_ResourceUsageRecord_": {
-        "properties": {
-          "items": {
-            "items": {
-              "$ref": "#/components/schemas/ResourceUsageRecord"
-            },
-            "type": "array",
-            "title": "Items"
-          },
-          "pagination": {
-            "$ref": "#/components/schemas/Pagination"
-          }
-        },
-        "type": "object",
-        "required": [
-          "items",
-          "pagination"
-        ],
-        "title": "PaginatedList[ResourceUsageRecord]"
       },
       "PaginatedList_SSHKey_": {
         "properties": {
@@ -8129,65 +8631,14 @@
         ],
         "title": "RegisterUserRequest"
       },
-      "ResourceUsageRecord": {
-        "properties": {
-          "uid": {
-            "type": "string",
-            "format": "uuid",
-            "title": "Uid"
-          },
-          "billing_cycle_group": {
-            "type": "string",
-            "format": "uuid",
-            "title": "Billing Cycle Group"
-          },
-          "workspace": {
-            "type": "string",
-            "title": "Workspace"
-          },
-          "zone": {
-            "type": "string",
-            "title": "Zone"
-          },
-          "start_time": {
-            "type": "string",
-            "format": "date-time",
-            "title": "Start Time"
-          },
-          "end_time": {
-            "type": "string",
-            "format": "date-time",
-            "title": "End Time"
-          },
-          "target_id": {
-            "type": "string",
-            "format": "uuid",
-            "title": "Target Id"
-          },
-          "target_resource_type": {
-            "$ref": "#/components/schemas/ResourceUsageType"
-          }
-        },
-        "type": "object",
-        "required": [
-          "billing_cycle_group",
-          "workspace",
-          "zone",
-          "start_time",
-          "end_time",
-          "target_id",
-          "target_resource_type"
-        ],
-        "title": "ResourceUsageRecord"
-      },
-      "ResourceUsageType": {
+      "ResourceType": {
         "type": "string",
         "enum": [
           "instance",
           "volume",
           "snapshot"
         ],
-        "title": "ResourceUsageType"
+        "title": "ResourceType"
       },
       "Role": {
         "type": "string",
@@ -8615,10 +9066,6 @@
             "type": "integer",
             "title": "Balance"
           },
-          "total_top_up": {
-            "type": "integer",
-            "title": "Total Top Up"
-          },
           "rate_per_hour": {
             "type": "integer",
             "title": "Rate Per Hour"
@@ -8631,7 +9078,6 @@
         "required": [
           "workspace",
           "balance",
-          "total_top_up",
           "rate_per_hour",
           "currency"
         ],

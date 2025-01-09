@@ -1,4 +1,4 @@
-import type { PaginatedListResourceUsageRecordType } from "./PaginatedListResourceUsageRecordType";
+import type { PaginatedListBillingCouponType } from "./PaginatedListBillingCouponType";
 import type { ErrorInternalType } from "./ErrorInternalType";
 import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
 import type { ErrorRefreshTokenCannotBeEmptyType } from "./ErrorRefreshTokenCannotBeEmptyType";
@@ -10,17 +10,13 @@ import type { ErrorUnauthorizedType } from "./ErrorUnauthorizedType";
 import type { ErrorUsernameOrEmailCannotBeEmptyType } from "./ErrorUsernameOrEmailCannotBeEmptyType";
 import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 
- export type ListWorkspaceResourceUsageRecordsPathParamsType = {
+ export type ListWorkspaceCouponsPathParamsType = {
     /**
      * @type string
     */
     workspace: string;
 };
-export type ListWorkspaceResourceUsageRecordsQueryParamsType = {
-    /**
-     * @type string, uuid
-    */
-    target_id: string;
+export type ListWorkspaceCouponsQueryParamsType = {
     /**
      * @default 0
      * @type integer | undefined
@@ -35,18 +31,18 @@ export type ListWorkspaceResourceUsageRecordsQueryParamsType = {
 /**
  * @description Successful Response
 */
-export type ListWorkspaceResourceUsageRecords200Type = PaginatedListResourceUsageRecordType;
+export type ListWorkspaceCoupons200Type = PaginatedListBillingCouponType;
 /**
  * @description Unprocessable Entity
 */
-export type ListWorkspaceResourceUsageRecords422Type = (ErrorInternalType | ErrorInvalidArgumentType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorInsufficientBalanceType | ErrorForbiddenType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
+export type ListWorkspaceCoupons422Type = (ErrorInternalType | ErrorInvalidArgumentType | ErrorRefreshTokenCannotBeEmptyType | ErrorRefreshTokenExpiredType | ErrorRefreshTokenInvalidType | ErrorInsufficientBalanceType | ErrorForbiddenType | ErrorUnauthorizedType | ErrorUsernameOrEmailCannotBeEmptyType | ErrorValidationFailedType);
 /**
  * @description Successful Response
 */
-export type ListWorkspaceResourceUsageRecordsQueryResponseType = PaginatedListResourceUsageRecordType;
-export type ListWorkspaceResourceUsageRecordsTypeQuery = {
-    Response: ListWorkspaceResourceUsageRecordsQueryResponseType;
-    PathParams: ListWorkspaceResourceUsageRecordsPathParamsType;
-    QueryParams: ListWorkspaceResourceUsageRecordsQueryParamsType;
-    Errors: ListWorkspaceResourceUsageRecords422Type;
+export type ListWorkspaceCouponsQueryResponseType = PaginatedListBillingCouponType;
+export type ListWorkspaceCouponsTypeQuery = {
+    Response: ListWorkspaceCouponsQueryResponseType;
+    PathParams: ListWorkspaceCouponsPathParamsType;
+    QueryParams: ListWorkspaceCouponsQueryParamsType;
+    Errors: ListWorkspaceCoupons422Type;
 };

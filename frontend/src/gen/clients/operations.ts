@@ -87,8 +87,8 @@ export const operations = {
         "path": "/apis/workspace/v1/recharges/:recharge_id/check",
         "method": "post"
     },
-    "list_workspace_resource_usage_records": {
-        "path": "/apis/workspace/v1/workspaces/:workspace/resource_usage_record",
+    "list_workspace_billing_records": {
+        "path": "/apis/workspace/v1/workspaces/:workspace/billing_records",
         "method": "get"
     },
     "list_workspace_ssh_keys": {
@@ -117,6 +117,10 @@ export const operations = {
     },
     "get_workspace_audit_logs": {
         "path": "/apis/workspace/v1/workspaces/:workspace/audit_logs",
+        "method": "get"
+    },
+    "list_workspace_coupons": {
+        "path": "/apis/workspace/v1/workspaces/:workspace/coupons",
         "method": "get"
     },
     "create_zone": {
@@ -222,6 +226,10 @@ export const operations = {
     "list_workspace_images": {
         "path": "/apis/compute/v1/workspaces/:workspace/zones/:zone/images",
         "method": "get"
+    },
+    "calculate_instance_cost": {
+        "path": "/apis/compute/v1/workspaces/:workspace/instances/calculate-cost",
+        "method": "post"
     },
     "auth": {
         "path": "/apis/oidc/v1/auth",

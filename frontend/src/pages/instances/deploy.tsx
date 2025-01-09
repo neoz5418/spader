@@ -29,7 +29,14 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ZoneType, createInstance, useListWorkspaceZonesHook } from "@/gen";
+import {
+	type BillingPeriodType,
+	ZoneType,
+	createInstance,
+	useCalculateInstanceCostHook,
+	useListWorkspaceCouponsHook,
+	useListWorkspaceZonesHook,
+} from "@/gen";
 import { useCreateInstanceHook } from "@/gen/hooks/useCreateInstanceHook";
 import { useListWorkspaceGpuTypesHook } from "@/gen/hooks/useListWorkspaceGpuTypesHook";
 import {
@@ -78,9 +85,36 @@ export default function DeployForm() {
 		},
 	);
 
+	const {
+		data: { items: coupons = [] } = {},
+	} = useListWorkspaceCouponsHook(
+		currentWorkspace?.name || "",
+		{},
+		{
+			query: {
+				enabled: !!currentWorkspace,
+			},
+		},
+	);
+
+	const { mutate, data: costResult } = useCalculateInstanceCostHook(
+		currentWorkspace?.name || "",
+	);
+
 	const form = useForm<CreateInstanceRequestSchema>({
 		resolver: zodResolver(createInstanceRequestSchema),
+		mode: "onChange",
+		criteriaMode: "all",
 	});
+
+	const cost = costResult?.final_price && (
+		<div>
+			配置费用：
+			{form.getValues("lease_period") === "real_time" ? "后付费" : "预付费"}{" "}
+			{(costResult?.final_price || 0) / 100} 元
+			{form.getValues("lease_period") === "real_time" ? " / 小时" : ""}
+		</div>
+	);
 
 	function onSubmit(data: CreateInstanceRequestSchema) {
 		if (!currentWorkspace) {
@@ -113,6 +147,14 @@ export default function DeployForm() {
 			description: error.message,
 		});
 	}
+	useEffect(() => {
+		const subscription = form.watch((values) => {
+			if (form.formState.isValid) {
+				mutate(values);
+			}
+		});
+		return () => subscription.unsubscribe();
+	}, [form.watch]);
 
 	return (
 		<Layout>
@@ -148,7 +190,6 @@ export default function DeployForm() {
 												onValueChange={(value) => {
 													setCurrentGpuType(value);
 													field.onChange(value);
-													form.setValue("gpu_count", 1); //@TODO: 需要根据实例类型设置GPU数量
 												}}
 												value={field.value || ""}
 												className="flex flex-col space-y-1"
@@ -171,13 +212,13 @@ export default function DeployForm() {
 														<Table>
 															<TableHeader>
 																<TableRow>
-																	<TableHead className="w-12"></TableHead>
+																	<TableHead className="w-12" />
 																	<TableHead>GPU</TableHead>
-																	<TableHead>CPUs</TableHead>
-																	<TableHead>Memory</TableHead>
-																	<TableHead>Disk</TableHead>
+																	<TableHead>CPU</TableHead>
+																	<TableHead>内存</TableHead>
+																	<TableHead>系统盘</TableHead>
 																	<TableHead className="text-right">
-																		Price
+																		价格
 																	</TableHead>
 																</TableRow>
 															</TableHeader>
@@ -231,6 +272,7 @@ export default function DeployForm() {
 																					(price) =>
 																						price.period === "one_hour",
 																				)[0].price / 100}
+																				{" / 小时"}
 																			</TableCell>
 																		</TableRow>
 																	))}
@@ -242,7 +284,7 @@ export default function DeployForm() {
 														<Table>
 															<TableHeader>
 																<TableRow>
-																	<TableHead className="w-12"></TableHead>
+																	<TableHead className="w-12" />
 																	<TableHead>CPUs</TableHead>
 																	<TableHead>Memory</TableHead>
 																	<TableHead>Disk</TableHead>
@@ -360,11 +402,122 @@ export default function DeployForm() {
 									</FormItem>
 								)}
 							/>
+							<FormField
+								name="lease_period"
+								control={form.control}
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>计费方式</FormLabel>
+										<FormControl>
+											<RadioGroup
+												defaultValue="one_hour"
+												onValueChange={field.onChange}
+											>
+												<div className="flex items-center space-x-2">
+													<RadioGroupItem value="one_hour" id="one_hour" />
+													<Label htmlFor="one_hour">租 1 小时</Label>
+												</div>
+												<div className="flex items-center space-x-2">
+													<RadioGroupItem value="one_day" id="one_day" />
+													<Label htmlFor="one_day">租 1 天</Label>
+												</div>
+												<div className="flex items-center space-x-2">
+													<RadioGroupItem value="one_week" id="one_week" />
+													<Label htmlFor="one_week">租 1 周</Label>
+												</div>
+												<div className="flex items-center space-x-2">
+													<RadioGroupItem value="one_month" id="one_month" />
+													<Label htmlFor="one_month">租 1 月</Label>
+												</div>
+												<div className="flex items-center space-x-2">
+													<RadioGroupItem value="real_time" id="real_time" />
+													<Label htmlFor="real_time">实时计费</Label>
+												</div>
+											</RadioGroup>
+										</FormControl>
+										<FormDescription />
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								name="auto_renew_period"
+								control={form.control}
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>自动续租</FormLabel>
+										<FormControl>
+											<RadioGroup
+												defaultValue="real_time"
+												onValueChange={field.onChange}
+											>
+												<div className="flex items-center space-x-2">
+													<RadioGroupItem value="none" id="none" />
+													<Label htmlFor="none">关闭</Label>
+												</div>
+												<div className="flex items-center space-x-2">
+													<RadioGroupItem value="one_hour" id="one_hour" />
+													<Label htmlFor="one_hour">按小时续租</Label>
+												</div>
+												<div className="flex items-center space-x-2">
+													<RadioGroupItem value="one_day" id="one_day" />
+													<Label htmlFor="one_day">按天续租</Label>
+												</div>
+												<div className="flex items-center space-x-2">
+													<RadioGroupItem value="one_week" id="one_week" />
+													<Label htmlFor="one_week">按周续租</Label>
+												</div>
+												<div className="flex items-center space-x-2">
+													<RadioGroupItem value="one_month" id="one_month" />
+													<Label htmlFor="one_month">按月续租</Label>
+												</div>
+												<div className="flex items-center space-x-2">
+													<RadioGroupItem value="real_time" id="real_time" />
+													<Label htmlFor="real_time">实时计费</Label>
+												</div>
+											</RadioGroup>
+										</FormControl>
+										<FormDescription />
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								name="coupon"
+								control={form.control}
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>优惠卷</FormLabel>
+										<Select onValueChange={field.onChange} defaultValue={""}>
+											<FormControl>
+												<SelectTrigger>
+													<SelectValue placeholder="" />
+												</SelectTrigger>
+											</FormControl>
+											<SelectContent>
+												{coupons.map((coupon) => (
+													<SelectItem
+														value={coupon.uid || ""}
+														key={coupon.uid}
+														disabled={coupon.used}
+													>
+														{coupon.display_name}
+														{coupon.used && "【已使用】"}
+													</SelectItem>
+												))}
+											</SelectContent>
+										</Select>
+										<FormDescription>选择想要使用的优惠劵</FormDescription>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
 							{form.formState.errors.root && (
 								<div className="text-[0.8rem] font-medium text-destructive">
 									{form.formState.errors.root.message}
 								</div>
 							)}
+							{cost}
 							<Button variant="outline" type="submit">
 								创建
 							</Button>

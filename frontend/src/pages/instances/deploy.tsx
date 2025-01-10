@@ -103,6 +103,10 @@ export default function DeployForm() {
 
 	const form = useForm<CreateInstanceRequestSchema>({
 		resolver: zodResolver(createInstanceRequestSchema),
+		defaultValues: {
+			lease_period: "real_time",
+			auto_renew_period: "none",
+		},
 		mode: "onChange",
 		criteriaMode: "all",
 	});
@@ -410,7 +414,7 @@ export default function DeployForm() {
 										<FormLabel>计费方式</FormLabel>
 										<FormControl>
 											<RadioGroup
-												defaultValue="one_hour"
+												value={field.value}
 												onValueChange={field.onChange}
 											>
 												<div className="flex items-center space-x-2">
@@ -448,7 +452,7 @@ export default function DeployForm() {
 										<FormLabel>自动续租</FormLabel>
 										<FormControl>
 											<RadioGroup
-												defaultValue="real_time"
+												value={field.value}
 												onValueChange={field.onChange}
 											>
 												<div className="flex items-center space-x-2">

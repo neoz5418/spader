@@ -332,6 +332,15 @@ async def create_instance(
                 input=to_create.gpu_type,
             )
         )
+    zone = await Zone.one_by_field(session, "name", instance_in.zone)
+    if not zone:
+        raise single_column_validation_failed(
+            ErrorInvalidArgument(
+                type="InvalidArgument",
+                location="zone",
+                input=instance_in.zone,
+            )
+        )
     await create_lease(
         session,
         workspace=workspace,

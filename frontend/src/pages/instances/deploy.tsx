@@ -101,11 +101,13 @@ export default function DeployForm() {
 		currentWorkspace?.name || "",
 	);
 
+	const emptyValue = "none";
 	const form = useForm<CreateInstanceRequestSchema>({
 		resolver: zodResolver(createInstanceRequestSchema),
 		defaultValues: {
 			lease_period: "real_time",
 			auto_renew_period: "none",
+			coupon: emptyValue,
 		},
 		mode: "onChange",
 		criteriaMode: "all",
@@ -119,10 +121,12 @@ export default function DeployForm() {
 			{form.getValues("lease_period") === "real_time" ? " / 小时" : ""}
 		</div>
 	);
-
 	function onSubmit(data: CreateInstanceRequestSchema) {
 		if (!currentWorkspace) {
 			return;
+		}
+		if (data.coupon === emptyValue) {
+			data.coupon = null;
 		}
 		createInstanceAsync(data)
 			.then(() => {
@@ -154,6 +158,9 @@ export default function DeployForm() {
 	useEffect(() => {
 		const subscription = form.watch((values) => {
 			if (form.formState.isValid) {
+				if (values.coupon === emptyValue) {
+					values.coupon = null;
+				}
 				mutate(values);
 			}
 		});
@@ -492,13 +499,17 @@ export default function DeployForm() {
 								render={({ field }) => (
 									<FormItem>
 										<FormLabel>优惠卷</FormLabel>
-										<Select onValueChange={field.onChange} defaultValue={""}>
+										<Select
+											onValueChange={field.onChange}
+											value={field.value || ""}
+										>
 											<FormControl>
 												<SelectTrigger>
 													<SelectValue placeholder="" />
 												</SelectTrigger>
 											</FormControl>
 											<SelectContent>
+												<SelectItem value={emptyValue}>不使用优惠卷</SelectItem>
 												{coupons.map((coupon) => (
 													<SelectItem
 														value={coupon.uid || ""}

@@ -18,6 +18,7 @@ from routers.types import (
     BillingRealTimeRecord,
     BillingRecord,
     BillingRecordType,
+    CouponType,
     Currency,
     GPUType,
     Instance,
@@ -32,6 +33,8 @@ from routers.types import (
 from services.cache import get_redis
 from services.common import (
     ErrorCouponAlreadyUsed,
+    ErrorCouponMinAmountNotMet,
+    ErrorCouponNotApplicableToRealTimeBilling,
     ErrorInsufficientBalance,
     ErrorInvalidArgument,
     single_column_validation_failed,
@@ -330,10 +333,30 @@ async def calculate_pricing_details(
             original_price = resource_price.one_week
         elif lease_base.lease_period == BillingPeriod.one_month:
             original_price = resource_price.one_month
+    if (
+        lease_base.lease_period == BillingPeriod.real_time
+        and coupon
+        and coupon.type == CouponType.discount
+    ):
+        raise single_column_validation_failed(
+            ErrorCouponNotApplicableToRealTimeBilling(
+                type="CouponNotApplicableToRealTimeBilling",
+                location="coupon",
+                input=lease_base.coupon,
+            )
+        )
 
     if (lease_base.lease_period != BillingPeriod.real_time) and coupon:
         # TODO: only support discount type coupon
         final_price = coupon.calculate_final_price(original_price)
+        if final_price == original_price:
+            raise single_column_validation_failed(
+                ErrorCouponMinAmountNotMet(
+                    type="CouponMinAmountNotMet",
+                    location="coupon",
+                    input=lease_base.coupon,
+                )
+            )
     else:
         final_price = original_price
 

@@ -111,6 +111,16 @@ class ErrorCouponAlreadyUsed(ErrorInvalidArgument):
 
 
 @http_exception(422)
+class ErrorCouponNotApplicableToRealTimeBilling(ErrorInvalidArgument):
+    type: Literal["CouponNotApplicableToRealTimeBilling"]
+
+
+@http_exception(422)
+class ErrorCouponMinAmountNotMet(ErrorInvalidArgument):
+    type: Literal["CouponMinAmountNotMet"]
+
+
+@http_exception(422)
 class ErrorEmailAndUsernameCannotBeProvidedAtTheSameTime(ErrorInvalidArgument):
     type: Literal["EmailAndUsernameCannotBeProvidedAtTheSameTime"]
 

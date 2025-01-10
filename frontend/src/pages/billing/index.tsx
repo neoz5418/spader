@@ -10,6 +10,7 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useListWorkspaceBillingRecordsHook } from "@/gen";
 import { useListWorkspaceResourceUsageRecordsHook } from "@/gen/hooks/useListWorkspaceResourceUsageRecordsHook";
 import { useCurrentWorkspace, useWorkspaceAccount } from "@/hooks/use-setting";
 import type { PaginationState, Updater } from "@tanstack/react-table";
@@ -55,12 +56,11 @@ export default function BillingDashboard() {
 			items: records = [],
 			pagination: { total = 0 } = {},
 		} = {},
-	} = useListWorkspaceResourceUsageRecordsHook(
+	} = useListWorkspaceBillingRecordsHook(
 		currentWorkspace?.name || "",
 		{
 			offset: pagination.pageIndex * pagination.pageSize,
 			limit: pagination.pageSize,
-			target_id: currentWorkspace?.name || "",
 		},
 		{
 			query: {

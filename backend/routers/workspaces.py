@@ -351,7 +351,7 @@ async def list_workspace_billing_records(
     if resource_id:
         fields["resource_id"] = resource_id
     if workspace:
-        db_workspace = await get_workspace(workspace)
+        db_workspace = await get_workspace(session, workspace)
         fields["account"] = db_workspace.uid
     billing_records = await BillingRecordList.paginated_by_query(
         session,

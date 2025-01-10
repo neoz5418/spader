@@ -24,6 +24,7 @@ from dependencies import (
 from routers.types import (
     BillingCoupon,
     BillingCouponList,
+    BillingRecord,
     BillingRecordList,
     ExpensesResponse,
     ListExpensesResponse,
@@ -353,7 +354,7 @@ async def list_workspace_billing_records(
     if workspace:
         db_workspace = await get_workspace(session, workspace)
         fields["account"] = db_workspace.uid
-    billing_records = await BillingRecordList.paginated_by_query(
+    billing_records = await BillingRecord.paginated_by_query(
         session,
         fields=fields,
         offset=params.offset,

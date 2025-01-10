@@ -97,7 +97,7 @@ export default function DeployForm() {
 		},
 	);
 
-	const { mutate, data: costResult } = useCalculateInstanceCostHook(
+	const { mutateAsync, data: costResult } = useCalculateInstanceCostHook(
 		currentWorkspace?.name || "",
 	);
 
@@ -161,7 +161,9 @@ export default function DeployForm() {
 				if (values.coupon === emptyValue) {
 					values.coupon = null;
 				}
-				mutate(values);
+				mutateAsync(values).catch((e) => {
+					handleFormError(e, form);
+				});
 			}
 		});
 		return () => subscription.unsubscribe();

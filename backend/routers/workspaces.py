@@ -1,11 +1,13 @@
 import asyncio
 import logging
+from datetime import datetime
 from enum import Enum
 from typing import Optional
-
-from fastapi import APIRouter, status, WebSocket
-from sqlmodel import and_, select
 from uuid import UUID
+
+from fastapi import APIRouter, Query, WebSocket, status
+from sqlmodel import and_, select, text
+from pydantic_extra_types.timezone_name import TimeZoneName
 
 from starlette.websockets import WebSocketDisconnect
 
@@ -23,9 +25,12 @@ from routers.types import (
     BillingCoupon,
     BillingCouponList,
     BillingRecordList,
+    ExpensesResponse,
+    ListExpensesResponse,
     RechargeStatus,
     RechargeType,
     RechargeWorkspaceAccount,
+    ResourceType,
     SortOrder,
     SSHKey,
     SSHKeyCreate,
@@ -355,6 +360,65 @@ async def list_workspace_billing_records(
         limit=params.limit,
     )
     return billing_records
+
+
+@router.get(
+    "/workspaces/{workspace}/expenses",
+    dependencies=[CurrentUserDep],
+)
+async def list_workspace_expenses(
+    session: SessionDep,
+    workspace: str,
+    start_date: datetime = Query(),
+    end_date: datetime = Query(),
+    timezone: TimeZoneName = Query(),
+) -> ListExpensesResponse:
+    db_workspace = await Workspace.one_by_field(session, "name", workspace)
+    sql_query = """
+        SELECT
+            DATE(billingrecord.billing_time) AS date,
+            SUM(billingrecord.amount) AS total_expense,
+            SUM(CASE WHEN billingrecord.resource_type = 'instance' THEN billingrecord.amount ELSE 0 END) AS "instance",
+            SUM(CASE WHEN billingrecord.resource_type = 'volume' THEN billingrecord.amount ELSE 0 END) AS volume,
+            SUM(CASE WHEN billingrecord.resource_type = 'snapshot' THEN billingrecord.amount ELSE 0 END) AS snapshot
+        FROM
+            billingrecord
+        WHERE
+            billingrecord.billing_time >= :start_date
+            AND billingrecord.billing_time < :end_date
+            AND billingrecord.type = 'deduction'
+            AND billingrecord.account = :workspace
+        GROUP BY
+            DATE(billingrecord.billing_time)
+        ORDER BY
+            DATE(billingrecord.billing_time) DESC;
+        """
+
+    results = await session.exec(
+        text(sql_query).bindparams(
+            start_date=start_date,
+            end_date=end_date,
+            workspace=db_workspace.uid,
+        )
+    )
+    results = results.all()
+    expense_detail = []
+    for result in results:
+        expense_detail.append(
+            ExpensesResponse(
+                date=result[0],
+                total=result[1],
+                expense_detail={
+                    "instance": result[2],
+                    "volume": result[3],
+                    "snapshot": result[4],
+                },
+            )
+        )
+    return ListExpensesResponse(
+        expense_types=[t for t in ResourceType],
+        expenses=expense_detail,
+    )
 
 
 @router.get(

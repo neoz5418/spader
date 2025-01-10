@@ -2,6 +2,7 @@ import re
 from datetime import datetime, timedelta
 from enum import auto, Enum
 from typing import Annotated, Literal, Optional
+
 from pydantic import (
     BaseModel,
     ByteSize,
@@ -530,6 +531,17 @@ class BillingCouponClass(SQLModel, ActiveRecordMixin, BillingCouponBase, table=T
                 "claim_time": utcnow(),
             },
         )
+
+
+class ExpensesResponse(SQLModel):
+    date: datetime
+    total: int
+    expense_detail: dict[str, int]
+
+
+class ListExpensesResponse(SQLModel):
+    expense_types: list[str]
+    expenses: list[ExpensesResponse]
 
 
 class GPUProviderConfigEcloud(SQLModel):

@@ -177,9 +177,11 @@ async def init_data():
         )
         await GPUType.create_or_update(session, v100)
         await GPUType.create_or_update(session, cpu001)
-        coupon_class001 = BillingCouponClass(
-            name="new_user_50_percent_off",
-            display_name="新人福利5折优惠券",
+        coupon_class_50_name = "new_user_50_percent_off"
+        coupon_class_10_name = "new_user_10_percent_off"
+        coupon_class_50 = BillingCouponClass(
+            name=coupon_class_50_name,
+            display_name="【新人福利】5 折优惠券",
             type=CouponType.discount,
             valid_from=datetime(year=2025, month=1, day=1),
             valid_to=datetime(year=2026, month=1, day=1),
@@ -189,4 +191,20 @@ async def init_data():
             distribution_rule=BillingCouponDistributionRule.auto_registered,
             claim_limit=BillingCouponClaimLimit.once_per_account,
         )
-        await BillingCouponClass.create_or_update(session, coupon_class001)
+        coupon_class_10 = BillingCouponClass(
+            name=coupon_class_10_name,
+            display_name="【新人福利】1 折优惠券",
+            type=CouponType.discount,
+            valid_from=datetime(year=2025, month=1, day=1),
+            valid_to=datetime(year=2026, month=1, day=1),
+            max_discount_value=2000,
+            min_purchase=500,
+            discount_rate=10,
+            distribution_rule=BillingCouponDistributionRule.auto_registered,
+            claim_limit=BillingCouponClaimLimit.once_per_account,
+        )
+        for i in range(1, 5):
+            coupon_class_50.name = coupon_class_50_name + "00" + str(i)
+            coupon_class_10.name = coupon_class_10_name + "00" + str(i)
+            await BillingCouponClass.create_or_update(session, coupon_class_50)
+            await BillingCouponClass.create_or_update(session, coupon_class_10)

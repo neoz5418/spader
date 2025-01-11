@@ -1,4 +1,5 @@
 import { Badge } from "@/components/ui/badge";
+import { Link } from 'react-router-dom'
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -19,8 +20,11 @@ import {
 } from "@/gen";
 import { toast } from "@/hooks/use-toast.ts";
 import { ColumnDef } from "@tanstack/react-table";
-import { Play, Square, Trash2 } from "lucide-react";
+import { ArrowUpRight, ChevronRight, Play, Copy, Square, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { Text } from '@chakra-ui/react';
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 function Copyable({ text }: { text: string }) {
 	return (
@@ -90,40 +94,53 @@ export const getInstancesColumns = (refetch: () => void) => {
 			header: "镜像",
 		},
 		{
+			accessorKey: "ssh",
+			header: "SSH 登录",
+		},
+		{
+			accessorKey: "services",
+			header: "快捷工具",
 			cell: ({ row }) => {
 				const services = [];
 				if (row.original.services) {
-					if (row.original.services["jupyter-lab"]) {
-						services.push(
-							<div>
-								Jupyter 地址:{" "}
-								<Copyable
-									text={row.original.services["jupyter-lab"] as string}
-								/>
-							</div>,
-						);
+					let jupyterLabUrl = ""
+					let jupyterLabHost = row.original.services["jupyter-lab"]
+					let jupyterLabToken = row.original.services["jupyter-password"]
+					if (jupyterLabHost) {
+						jupyterLabUrl = `http://${jupyterLabHost}`
 					}
-					if (row.original.services["jupyter-password"]) {
-						services.push(
-							<div>
-								Jupyter 密码:{" "}
-								<Copyable
-									text={row.original.services["jupyter-password"] as string}
-								/>
-							</div>,
-						);
+					if  (jupyterLabToken) {
+						jupyterLabUrl += `?password=${jupyterLabToken}`
 					}
-					if (row.original.services["ssh"]) {
-						services.push(
-							<div>
-								SSH 地址: <Copyable text={row.original.services["ssh"]} />
-							</div>,
-						);
-					}
+
+					services.push(
+						<div>
+							<TooltipProvider>
+							<Tooltip>
+								<TooltipTrigger asChild>
+								<Link to={jupyterLabUrl} target="_blank" className="text-sky-400 hover:text-sky-500 underline decoration-sky-500">
+								JupyterLab 
+								</Link>
+								</TooltipTrigger>
+								<TooltipContent>
+									<p>JupyterLab 地址: {jupyterLabHost}</p>
+									<p>JupyterLab 密码: {jupyterLabToken}</p>
+								</TooltipContent>
+							</Tooltip>
+							</TooltipProvider>
+							<Button className="text-blue-600 hover:bg-blue-100 hover:text-blue-700" variant="ghost" size="icon" onClick={() => {
+								navigator.clipboard.writeText(jupyterLabUrl)
+								toast({
+									description: "已复制到剪贴板",
+								});
+							}}>
+								<Copy />
+							</Button>
+						</div>,
+					);
 					return <div>{services}</div>;
 				}
 			},
-			header: "服务",
 		},
 		{
 			accessorFn: (row) => {

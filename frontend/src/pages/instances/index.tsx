@@ -10,6 +10,7 @@ import { useSearchParams } from 'react-router-dom'
 import { getInstancesColumns, InstancesColumns } from '@/pages/instances/columns.tsx'
 import { useQuery } from '@tanstack/react-query'
 import { isLoggedIn } from '@/hooks/use-auth'
+import { useMemo } from 'react'
 
 
 export default function Instances() {
@@ -30,7 +31,7 @@ export default function Instances() {
     enabled: !!currentWorkspace,
   })
 
-  const instances = result?.items || []
+  const items = result?.items || []
   const total = result?.pagination?.total || 0
 
   function setPagination(updater: Updater<PaginationState>) {
@@ -46,11 +47,7 @@ export default function Instances() {
     setSearchParams(searchParams)
   }
 
-  if (isWorkspaceLoading || isInstancesLoading) {
-    return <Loader />
-  }
-
-  const lastInstances = instances.map((instance) => {
+  const updatedItems = items.map((instance) => {
     events.map((event) => {
       if (event.resource.uid === instance.uid) {
         instance = {
@@ -60,23 +57,45 @@ export default function Instances() {
     })
     return instance
   }).filter((instance) => instance.delete_time === null)
+  
+  const instances = useMemo(
+    () =>
+      (updatedItems ?? []).map((item) => {
+        console.log("updatedItems", item)
+        const ret = {
+          id: item.uid,
+          name: item.name,
+          display_name: item.display_name,
+          status: item.status,
+          image: item.image,
+          ssh: item.services?.ssh || "",
+          services: item.services,
+        }
+        return ret
+    }),
+    [updatedItems]
+  );
+
+  if (isWorkspaceLoading || isInstancesLoading) {
+    return <Loader />
+  }
+
+  
   const columns = getInstancesColumns(refetch)
 
   return (
-    <Layout>
-      <Layout.Body>
+    <div className="w-full max-w-screen-2xl mx-auto p-4">
         <div className="mb-2 flex items-center justify-between space-y-2">
           <div>
             <h2 className="text-2xl font-bold tracking-tight">算力容器列表</h2>
           </div>
         </div>
         <div className="-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0">
-          <DataTable columns={columns} data={lastInstances}
+          <DataTable columns={columns} data={instances}
                      createLink={`/workspaces/${currentWorkspace?.name}/instances/deploy`}
                      rowCount={total}
                      pagination={pagination} setPagination={setPagination} />
         </div>
-      </Layout.Body>
-    </Layout>
+    </div>
   )
 }

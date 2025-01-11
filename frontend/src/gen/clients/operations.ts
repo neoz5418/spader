@@ -91,6 +91,10 @@ export const operations = {
         "path": "/apis/workspace/v1/workspaces/:workspace/billing_records",
         "method": "get"
     },
+    "list_workspace_expenses": {
+        "path": "/apis/workspace/v1/workspaces/:workspace/expenses",
+        "method": "get"
+    },
     "list_workspace_ssh_keys": {
         "path": "/apis/workspace/v1/workspaces/:workspace/ssh_keys",
         "method": "get"

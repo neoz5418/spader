@@ -10,10 +10,11 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useListWorkspaceBillingRecordsHook } from "@/gen";
+import { listWorkspaceExpenses, listWorkspaceExpensesQueryOptions, ListWorkspaceExpensesQueryResponseType, useListWorkspaceBillingRecordsHook, useListWorkspaceExpensesHook } from "@/gen";
 import { useListWorkspaceResourceUsageRecordsHook } from "@/gen/hooks/useListWorkspaceResourceUsageRecordsHook";
 import { useCurrentWorkspace, useWorkspaceAccount } from "@/hooks/use-setting";
 import type { PaginationState, Updater } from "@tanstack/react-table";
+import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 function formatCurrency(amount: number, currency: string) {
@@ -32,47 +33,30 @@ export default function BillingDashboard() {
 	const currency = workspacesAccount?.currency || "CNY";
 	const rate_per_hour = workspacesAccount?.rate_per_hour || 0;
 	const [searchParams, setSearchParams] = useSearchParams();
-	const pagination = {
-		pageIndex: Number.parseInt(searchParams.get("pageIndex") || "0"),
-		pageSize: Number.parseInt(searchParams.get("pageSize") || "10"),
-	};
+	const [expenses, setExpenses] = useState<ListWorkspaceExpensesQueryResponseType | null>(null);
 
-	function setPagination(updater: Updater<PaginationState>) {
-		let state: PaginationState;
-		if (typeof updater === "function") {
-			state = updater(pagination);
-		} else {
-			state = updater;
-		}
 
-		searchParams.set("pageIndex", state.pageIndex.toString());
-		searchParams.set("pageSize", state.pageSize.toString());
-		setSearchParams(searchParams);
-	}
+	const today = new Date();
+	const tomorrow = new Date(today);
+	tomorrow.setDate(today.getDate() + 1);
+	const endDate = tomorrow;  // set next day
+	const startDate = new Date(tomorrow);
+	startDate.setMonth(startDate.getMonth() - 2);  // show last 2 months
+	listWorkspaceExpenses(currentWorkspace?.name || "", {
+		start_date: startDate.toISOString(),
+		end_date: endDate.toISOString(),
+		timezone: "UTC",
+	}).then((res) => {
+		console.log("expenses", res);
+		setExpenses(res);
+	}).catch((error) => {
+		console.error("error", error);
+	});
 
-	const {
-		isLoading,
-		data: {
-			items: records = [],
-			pagination: { total = 0 } = {},
-		} = {},
-	} = useListWorkspaceBillingRecordsHook(
-		currentWorkspace?.name || "",
-		{
-			offset: pagination.pageIndex * pagination.pageSize,
-			limit: pagination.pageSize,
-		},
-		{
-			query: {
-				enabled: !!currentWorkspace,
-			},
-		},
-	);
-	console.log(records);
-	if (isLoading) {
+
+	if (expenses === null) {
 		return <Loader />;
 	}
-
 	return (
 		<div className="max-w-[1200px] mx-auto p-6 space-y-8">
 			<div className="grid gap-4 md:grid-cols-2">
@@ -102,70 +86,30 @@ export default function BillingDashboard() {
 					</div>
 				</CardHeader>
 				<CardContent>
-					<Tabs defaultValue="summary">
-						<TabsList className="grid w-full grid-cols-7 mb-4">
-							<TabsTrigger value="summary">总消费</TabsTrigger>
-							<TabsTrigger value="gpu">GPU 实例</TabsTrigger>
-						</TabsList>
-						<TabsContent value="summary">
-							<Table>
-								<TableHeader>
-									<TableRow>
-										<TableHead>日期</TableHead>
-										<TableHead>总消费</TableHead>
-										<TableHead>GPU 实例</TableHead>
-										<TableHead>CPU 实例</TableHead>
-										<TableHead>带宽</TableHead>
-										<TableHead>存储</TableHead>
-									</TableRow>
-								</TableHeader>
-								<TableBody>
-									<TableRow>
-										<TableCell>2024年11月29日</TableCell>
-										<TableCell>$0.001</TableCell>
-										<TableCell>$0</TableCell>
-										<TableCell>$0.001</TableCell>
-										<TableCell>$0</TableCell>
-										<TableCell>$0</TableCell>
-									</TableRow>
-									<TableRow>
-										<TableCell>2024年11月28日</TableCell>
-										<TableCell>$1.915</TableCell>
-										<TableCell>$1.91</TableCell>
-										<TableCell>$0</TableCell>
-										<TableCell>$0</TableCell>
-										<TableCell>$0.005</TableCell>
-									</TableRow>
-								</TableBody>
-							</Table>
-						</TabsContent>
-						<TabsContent value="gpu">
-							<Table>
-								<TableHeader>
-									<TableRow>
-										<TableHead>日期</TableHead>
-										<TableHead>GPU 实例</TableHead>
-										<TableHead>RTX 3060</TableHead>
-										<TableHead>A100</TableHead>
-									</TableRow>
-								</TableHeader>
-								<TableBody>
-									<TableRow>
-										<TableCell>2024年11月29日</TableCell>
-										<TableCell>$0.001</TableCell>
-										<TableCell>$0</TableCell>
-										<TableCell>$0</TableCell>
-									</TableRow>
-									<TableRow>
-										<TableCell>2024年11月28日</TableCell>
-										<TableCell>$1.915</TableCell>
-										<TableCell>$1.91</TableCell>
-										<TableCell>$0</TableCell>
-									</TableRow>
-								</TableBody>
-							</Table>
-						</TabsContent>
-					</Tabs>
+					<Table>
+						<TableHeader>
+							<TableRow>
+								<TableHead>日期</TableHead>
+								<TableHead>总消费</TableHead>
+								<TableHead>实例</TableHead>
+								<TableHead>存储卷</TableHead>
+								<TableHead>快照</TableHead>
+							</TableRow>
+						</TableHeader>
+						<TableBody>
+							{expenses.expenses.map((expense) => (
+								<TableRow key={expense.date}>
+									<TableCell>
+										{new Date(expense.date).toLocaleDateString('zh-CN')}
+									</TableCell>
+									<TableCell>{formatCurrency(expense.total, currency)}</TableCell>
+									<TableCell>{formatCurrency(expense.expense_detail.instance, currency)}</TableCell>
+									<TableCell>{formatCurrency(expense.expense_detail.volume, currency)}</TableCell>
+									<TableCell>{formatCurrency(expense.expense_detail.snapshot, currency)}</TableCell>
+								</TableRow>
+							))}
+						</TableBody>
+					</Table>
 				</CardContent>
 			</Card>
 		</div>

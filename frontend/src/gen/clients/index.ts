@@ -38,6 +38,7 @@ export * from "./listUsers";
 export * from "./listWorkspaceAccountRecharges";
 export * from "./listWorkspaceBillingRecords";
 export * from "./listWorkspaceCoupons";
+export * from "./listWorkspaceExpenses";
 export * from "./listWorkspaceFileStorages";
 export * from "./listWorkspaceGpuTypes";
 export * from "./listWorkspaceImages";

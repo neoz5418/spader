@@ -21,6 +21,7 @@ import { listWorkspaceAccountRechargesQueryResponseSchema, listWorkspaceAccountR
 import { getWorkspaceAccountRechargeQueryResponseSchema, getWorkspaceAccountRecharge422Schema, getWorkspaceAccountRechargePathParamsSchema } from "./getWorkspaceAccountRechargeSchema.gen";
 import { checkWorkspaceAccountRechargeMutationResponseSchema, checkWorkspaceAccountRecharge422Schema, checkWorkspaceAccountRechargePathParamsSchema } from "./checkWorkspaceAccountRechargeSchema.gen";
 import { listWorkspaceBillingRecordsQueryResponseSchema, listWorkspaceBillingRecords422Schema, listWorkspaceBillingRecordsPathParamsSchema, listWorkspaceBillingRecordsQueryParamsSchema } from "./listWorkspaceBillingRecordsSchema.gen";
+import { listWorkspaceExpensesQueryResponseSchema, listWorkspaceExpenses422Schema, listWorkspaceExpensesPathParamsSchema, listWorkspaceExpensesQueryParamsSchema } from "./listWorkspaceExpensesSchema.gen";
 import { listWorkspaceSshKeysQueryResponseSchema, listWorkspaceSshKeys422Schema, listWorkspaceSshKeysPathParamsSchema } from "./listWorkspaceSshKeysSchema.gen";
 import { createWorkspaceSshKeysMutationRequestSchema, createWorkspaceSshKeysMutationResponseSchema, createWorkspaceSshKeys422Schema, createWorkspaceSshKeysPathParamsSchema } from "./createWorkspaceSshKeysSchema.gen";
 import { getSshKeyQueryResponseSchema, getSshKey422Schema, getSshKeyPathParamsSchema } from "./getSshKeySchema.gen";
@@ -403,6 +404,21 @@ import { tokenMutationRequestSchema, tokenMutationResponseSchema, token422Schema
         },
         errors: {
             422: listWorkspaceBillingRecords422Schema
+        }
+    }, "list_workspace_expenses": {
+        request: undefined,
+        parameters: {
+            path: listWorkspaceExpensesPathParamsSchema,
+            query: listWorkspaceExpensesQueryParamsSchema,
+            header: undefined
+        },
+        responses: {
+            200: listWorkspaceExpensesQueryResponseSchema,
+            422: listWorkspaceExpenses422Schema,
+            default: listWorkspaceExpensesQueryResponseSchema
+        },
+        errors: {
+            422: listWorkspaceExpenses422Schema
         }
     }, "list_workspace_ssh_keys": {
         request: undefined,
@@ -998,6 +1014,8 @@ export const paths = { "/apis/user/v1/users/me": {
         post: operations["check_workspace_account_recharge"]
     }, "/apis/workspace/v1/workspaces/{workspace}/billing_records": {
         get: operations["list_workspace_billing_records"]
+    }, "/apis/workspace/v1/workspaces/{workspace}/expenses": {
+        get: operations["list_workspace_expenses"]
     }, "/apis/workspace/v1/workspaces/{workspace}/ssh_keys": {
         get: operations["list_workspace_ssh_keys"],
         post: operations["create_workspace_ssh_keys"]

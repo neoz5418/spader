@@ -38,6 +38,7 @@ export * from "./useListUsersHook";
 export * from "./useListWorkspaceAccountRechargesHook";
 export * from "./useListWorkspaceBillingRecordsHook";
 export * from "./useListWorkspaceCouponsHook";
+export * from "./useListWorkspaceExpensesHook";
 export * from "./useListWorkspaceFileStoragesHook";
 export * from "./useListWorkspaceGpuTypesHook";
 export * from "./useListWorkspaceImagesHook";

@@ -68,6 +68,10 @@ export default function Instances() {
           display_name: item.display_name,
           status: item.status,
           image: item.image,
+          workspace: item.workspace,
+          zone: item.zone,
+          zone_display_name: item.zone_display_name,
+          gpu_type: item.gpu_type,
           ssh: item.services?.ssh || "",
           services: item.services,
         }

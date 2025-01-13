@@ -121,6 +121,11 @@ class ErrorCouponMinAmountNotMet(ErrorInvalidArgument):
 
 
 @http_exception(422)
+class ErrorOnlyRealtimeBillingResourceDeletable(ErrorInvalidArgument):
+    type: Literal["OnlyRealtimeBillingResourceDeletable"]
+
+
+@http_exception(422)
 class ErrorEmailAndUsernameCannotBeProvidedAtTheSameTime(ErrorInvalidArgument):
     type: Literal["EmailAndUsernameCannotBeProvidedAtTheSameTime"]
 
@@ -261,7 +266,7 @@ UID = Field(default_factory=uuid6.uuid7, primary_key=True, nullable=False)
 
 
 def utcnow() -> datetime:
-    return datetime.now(UTC)
+    return datetime.now(UTC).replace(tzinfo=None)
 
 
 class EventType(Enum):

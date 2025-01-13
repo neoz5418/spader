@@ -711,7 +711,7 @@ class Instance(InstanceBase, table=True):
     pass
 
 
-class InstancePublic(InstanceBase):
+class InstancePublic(InstanceBase, LeaseBase):
     gpu_display_name: str
     zone_display_name: str
 

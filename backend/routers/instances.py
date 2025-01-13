@@ -15,6 +15,7 @@ from routers.types import (
     AuditLog,
     AuditLogActionType,
     AuditLogResourceType,
+    BillingPeriod,
     CreateFileStorageRequest,
     CreateInstanceRequest,
     FileList,
@@ -56,13 +57,18 @@ from services.celery import (
 )
 from services.common import (
     ErrorInvalidArgument,
+    ErrorOnlyRealtimeBillingResourceDeletable,
     ErrorResourceConflict,
     ErrorResourceNotFound,
     ResourceName,
     single_column_validation_failed,
     utcnow,
 )
-from services.lru_resource_cache import get_gpu_type_display_name, get_zone_display_name
+from services.lru_resource_cache import (
+    get_gpu_type_display_name,
+    get_resource_lease,
+    get_zone_display_name,
+)
 
 router = APIRouter(
     prefix="/apis/compute/v1",
@@ -244,11 +250,15 @@ async def list_workspace_instances(
     for i in instance_list.items:
         zone_display_name = await get_zone_display_name(session, i.zone)
         gpu_display_name = await get_gpu_type_display_name(session, i.gpu_type)
+        lease = await get_resource_lease(session, i.uid)
         new_i = InstancePublic.model_validate(
             i,
             update={
                 "zone_display_name": zone_display_name,
                 "gpu_display_name": gpu_display_name,
+                "lease_period": lease.lease_period,
+                "auto_renew_period": lease.auto_renew_period,
+                "coupon": lease.coupon,
             },
         )
         public_list.items.append(new_i)
@@ -517,7 +527,20 @@ async def delete_instance(
     instance: InstanceDep,
     workspace: str,
     user: CurrentUserDepAnnotated,
+    force: Optional[bool] = None,
 ) -> Operation:
+    if not force:
+        lease = await get_resource_lease(session, instance.uid)
+        if lease.lease_period != BillingPeriod.real_time:
+            if lease.end_time > utcnow():
+                raise single_column_validation_failed(
+                    ErrorOnlyRealtimeBillingResourceDeletable(
+                        type="OnlyRealtimeBillingResourceDeletable",
+                        location="name",
+                        input=instance.name,
+                    )
+                )
+
     operation_creation = Operation(
         type=OperationType.delete_instance,
         workspace=workspace,

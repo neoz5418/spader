@@ -195,6 +195,9 @@ async def start_resource_billing_record(
         rate_per_hour=price.real_time,
         resource_type=resource_type,
         resource_id=resource_id,
+        meta_data={
+            "price_name": priced_resource.price_name,
+        },
     )
     session.add(real_time_record)
 
@@ -233,6 +236,7 @@ async def end_resource_billing_record(
         resource_id=resource_id,
         resource_type=real_time_record.resource_type,
         account=account_id,
+        meta_data=real_time_record.meta_data,
     )
     session.add(real_time_record)
     session.add(billing_record)
@@ -465,6 +469,9 @@ async def create_lease(
             coupon=coupon_id,
             resource_id=resource_id,
             resource_type=resource_type,
+            meta_data={
+                "price_name": priced_resource.price_name,
+            },
         )
         session.add(account)
         session.add(billing_record)

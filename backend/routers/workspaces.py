@@ -372,16 +372,20 @@ async def list_workspace_expenses(
     workspace: str,
     start_date: datetime = Query(),
     end_date: datetime = Query(),
-    timezone: TimeZoneName = Query(),
+    resource_type: ResourceType = None,
+    timezone: TimeZoneName = None,
 ) -> ListExpensesResponse:
     db_workspace = await Workspace.one_by_field(session, "name", workspace)
+    params = {
+        "start_date": start_date,
+        "end_date": end_date,
+        "workspace": db_workspace.uid,
+    }
     sql_query = """
         SELECT
             DATE(billingrecord.billing_time) AS date,
-            SUM(billingrecord.amount) AS total_expense,
-            SUM(CASE WHEN billingrecord.resource_type = 'instance' THEN billingrecord.amount ELSE 0 END) AS "instance",
-            SUM(CASE WHEN billingrecord.resource_type = 'volume' THEN billingrecord.amount ELSE 0 END) AS volume,
-            SUM(CASE WHEN billingrecord.resource_type = 'snapshot' THEN billingrecord.amount ELSE 0 END) AS snapshot
+            billingrecord.resource_type AS resource_type,
+            SUM(billingrecord.amount) AS total_amount
         FROM
             billingrecord
         WHERE
@@ -390,34 +394,64 @@ async def list_workspace_expenses(
             AND billingrecord.type = 'deduction'
             AND billingrecord.account = :workspace
         GROUP BY
-            DATE(billingrecord.billing_time)
+            DATE(billingrecord.billing_time),
+            billingrecord.resource_type
         ORDER BY
-            DATE(billingrecord.billing_time) DESC;
+            DATE(billingrecord.billing_time) DESC,
+            resource_type;
         """
 
-    results = await session.exec(
-        text(sql_query).bindparams(
-            start_date=start_date,
-            end_date=end_date,
-            workspace=db_workspace.uid,
-        )
-    )
+    if resource_type:
+        sql_query = """
+        SELECT
+            DATE(billingrecord.billing_time) AS date,
+            JSON_EXTRACT(billingrecord.meta_data, '$.price_name') AS model,
+            SUM(billingrecord.amount) AS total_amount
+        FROM
+            billingrecord
+        WHERE
+            billingrecord.billing_time >= :start_date
+            AND billingrecord.billing_time < :end_date
+            AND billingrecord.type = 'deduction'
+            AND billingrecord.account = :workspace
+            AND billingrecord.resource_type = :resource_type
+        GROUP BY
+            DATE(billingrecord.billing_time),
+            JSON_EXTRACT(billingrecord.meta_data, '$.price_name')
+        ORDER BY
+            DATE(billingrecord.billing_time) DESC,
+            model;
+        """
+        params["resource_type"] = resource_type
+    results = await session.exec(text(sql_query).bindparams(**params))
     results = results.all()
     expense_detail = []
+    expense_types = set()
+    date_expense_detail = {}
     for result in results:
+        date = result[0]
+        expense_type = result[1]
+        if not expense_type:
+            expense_type = "none"
+        total_amount = result[2]
+        if date not in date_expense_detail:
+            date_expense_detail[date] = {"total": 0}
+        date_expense_detail[date]["total"] = (
+            date_expense_detail[date]["total"] + total_amount
+        )
+        date_expense_detail[date][expense_type] = total_amount
+        expense_types.add(expense_type)
+    for d, e in date_expense_detail.items():
+        total = e.pop("total")
         expense_detail.append(
             ExpensesResponse(
-                date=result[0],
-                total=result[1],
-                expense_detail={
-                    "instance": result[2],
-                    "volume": result[3],
-                    "snapshot": result[4],
-                },
+                date=d,
+                total=total,
+                expense_detail=e,
             )
         )
     return ListExpensesResponse(
-        expense_types=[t for t in ResourceType],
+        expense_types=list(expense_types),
         expenses=expense_detail,
     )
 

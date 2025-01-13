@@ -10,15 +10,21 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { listWorkspaceExpenses, listWorkspaceExpensesQueryOptions, ListWorkspaceExpensesQueryResponseType, useListWorkspaceBillingRecordsHook, useListWorkspaceExpensesHook } from "@/gen";
+import {
+	type ListWorkspaceExpensesQueryResponseType,
+	listWorkspaceExpenses,
+	listWorkspaceExpensesQueryOptions,
+	useListWorkspaceBillingRecordsHook,
+	useListWorkspaceExpensesHook,
+} from "@/gen";
 import { useListWorkspaceResourceUsageRecordsHook } from "@/gen/hooks/useListWorkspaceResourceUsageRecordsHook";
 import { useCurrentWorkspace, useWorkspaceAccount } from "@/hooks/use-setting";
 import type { PaginationState, Updater } from "@tanstack/react-table";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 function formatCurrency(amount: number, currency: string) {
-	return (amount / 100).toLocaleString("zh-CN", {
+	return ((amount || 0) / 100).toLocaleString("zh-CN", {
 		style: "currency",
 		currency: currency,
 		minimumFractionDigits: 2,
@@ -33,26 +39,32 @@ export default function BillingDashboard() {
 	const currency = workspacesAccount?.currency || "CNY";
 	const rate_per_hour = workspacesAccount?.rate_per_hour || 0;
 	const [searchParams, setSearchParams] = useSearchParams();
-	const [expenses, setExpenses] = useState<ListWorkspaceExpensesQueryResponseType | null>(null);
-
+	const [expenses, setExpenses] =
+		useState<ListWorkspaceExpensesQueryResponseType | null>(null);
 
 	const today = new Date();
 	const tomorrow = new Date(today);
 	tomorrow.setDate(today.getDate() + 1);
-	const endDate = tomorrow;  // set next day
+	const endDate = tomorrow; // set next day
 	const startDate = new Date(tomorrow);
-	startDate.setMonth(startDate.getMonth() - 2);  // show last 2 months
-	listWorkspaceExpenses(currentWorkspace?.name || "", {
-		start_date: startDate.toISOString(),
-		end_date: endDate.toISOString(),
-		timezone: "UTC",
-	}).then((res) => {
-		console.log("expenses", res);
-		setExpenses(res);
-	}).catch((error) => {
-		console.error("error", error);
-	});
-
+	startDate.setMonth(startDate.getMonth() - 2); // show last 2 months
+	useEffect(() => {
+		if (!currentWorkspace?.name) {
+			return;
+		}
+		listWorkspaceExpenses(currentWorkspace?.name || "", {
+			start_date: startDate.toISOString(),
+			end_date: endDate.toISOString(),
+			timezone: "UTC",
+		})
+			.then((res) => {
+				console.log("expenses", res);
+				setExpenses(res);
+			})
+			.catch((error) => {
+				console.error("error", error);
+			});
+	}, [currentWorkspace?.name]);
 
 	if (expenses === null) {
 		return <Loader />;
@@ -100,12 +112,20 @@ export default function BillingDashboard() {
 							{expenses.expenses.map((expense) => (
 								<TableRow key={expense.date}>
 									<TableCell>
-										{new Date(expense.date).toLocaleDateString('zh-CN')}
+										{new Date(expense.date).toLocaleDateString("zh-CN")}
 									</TableCell>
-									<TableCell>{formatCurrency(expense.total, currency)}</TableCell>
-									<TableCell>{formatCurrency(expense.expense_detail.instance, currency)}</TableCell>
-									<TableCell>{formatCurrency(expense.expense_detail.volume, currency)}</TableCell>
-									<TableCell>{formatCurrency(expense.expense_detail.snapshot, currency)}</TableCell>
+									<TableCell>
+										{formatCurrency(expense.total, currency)}
+									</TableCell>
+									<TableCell>
+										{formatCurrency(expense.expense_detail.instance, currency)}
+									</TableCell>
+									<TableCell>
+										{formatCurrency(expense.expense_detail.volume, currency)}
+									</TableCell>
+									<TableCell>
+										{formatCurrency(expense.expense_detail.snapshot, currency)}
+									</TableCell>
 								</TableRow>
 							))}
 						</TableBody>

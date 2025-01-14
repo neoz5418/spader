@@ -76,6 +76,47 @@ router = APIRouter(
 )
 
 
+@router.get(
+    "/workspaces/{workspace}/instances/{name}",
+    dependencies=[CurrentUserDep],
+)
+async def get_instance(
+    session: SessionDep,
+    workspace: str,
+    name: str,
+) -> Instance:
+    instance = await Instance.one_by_fields(
+        session,
+        {
+            "name": name,
+            "workspace": workspace,
+        },
+    )
+    if not instance:
+        raise ErrorResourceNotFound(
+            type="ResourceNotFound",
+            location="instance",
+            input=name,
+        ).to_exception()
+    return instance
+
+
+async def get_workspace(session: SessionDep, workspace: str) -> Workspace:
+    db_workspace = await Workspace.one_by_field(session, "name", workspace)
+    if not db_workspace:
+        if not db_workspace:
+            raise ErrorResourceNotFound(
+                type="ResourceNotFound",
+                location="workspace",
+                input=workspace,
+            ).to_exception()
+    return db_workspace
+
+
+InstanceDep = Annotated[Instance, Depends(get_instance)]
+WorkspaceDep = Annotated[Workspace, Depends(get_workspace)]
+
+
 @router.post(
     "/zones/",
     dependencies=[CurrentAdminUserDep],
@@ -266,31 +307,6 @@ async def list_workspace_instances(
     return public_list
 
 
-@router.get(
-    "/workspaces/{workspace}/instances/{name}",
-    dependencies=[CurrentUserDep],
-)
-async def get_instance(
-    session: SessionDep,
-    workspace: str,
-    name: str,
-) -> Instance:
-    instance = await Instance.one_by_fields(
-        session,
-        {
-            "name": name,
-            "workspace": workspace,
-        },
-    )
-    if not instance:
-        raise ErrorResourceNotFound(
-            type="ResourceNotFound",
-            location="instance",
-            input=name,
-        ).to_exception()
-    return instance
-
-
 @router.post(
     "/workspaces/{workspace}/instances",
     dependencies=[CurrentUserDep],
@@ -300,6 +316,7 @@ async def get_instance(
 async def create_instance(
     session: SessionDep,
     workspace: str,
+    db_workspace: WorkspaceDep,
     instance_in: CreateInstanceRequest,
     user: CurrentUserDepAnnotated,
 ) -> Operation:
@@ -353,7 +370,7 @@ async def create_instance(
         )
     await create_lease(
         session,
-        workspace=workspace,
+        workspace=db_workspace,
         resource_id=to_create.uid,
         resource_type=ResourceType.instance,
         priced_resource=gpu_type,
@@ -389,9 +406,6 @@ async def create_instance(
     )
 
     return operation
-
-
-InstanceDep = Annotated[Instance, Depends(get_instance)]
 
 
 @router.post(
@@ -720,6 +734,6 @@ async def calculate_instance_cost(
         session,
         priced_resource=gpu_type,
         lease_base=instance_in,
-        workspace=db_workspace,
+        account=db_workspace.uid,
     )
     return InstanceCost(coupon=coupon, **pricing_details.model_dump())

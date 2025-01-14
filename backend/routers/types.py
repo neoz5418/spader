@@ -387,7 +387,7 @@ class LeaseBase(BaseModel):
 
     def calculate_end_time(self, start_time: datetime) -> datetime:
         end_time = datetime.max
-        if self.auto_renew_period == AutoRenewPeriod.none:
+        if self.lease_period != BillingPeriod.real_time:
             match self.lease_period:
                 case BillingPeriod.one_hour:
                     end_time = start_time + timedelta(hours=1)

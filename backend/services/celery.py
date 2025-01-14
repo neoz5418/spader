@@ -1,6 +1,7 @@
 import asyncio
 import functools
 import logging
+from datetime import timedelta
 from uuid import UUID
 
 from celery import Celery
@@ -8,15 +9,20 @@ from celery.schedules import crontab
 
 from providers.interface import ProviderInterface
 from routers.types import (
+    AutoRenewPeriod,
+    BillingLease,
     GPUType,
     Instance,
+    LeaseStatus,
     Operation,
     ResourceType,
     Workspace,
 )
 from services.billing import (
     end_resource_billing_record,
+    list_expired_unmarked_leases,
     process_periodic_billing,
+    renew_lease,
     start_resource_billing_record,
 )
 from services.common import utcnow
@@ -138,9 +144,53 @@ async def measure_usage():
     check_all_user_balances.delay()
 
 
+@celery.task
+@sync
+async def handle_expired_lease(lease_id: UUID):
+    now = utcnow()
+    async for session in get_session():
+        lease = await BillingLease.one_by_field(session, "uid", lease_id)
+        if lease.end_time > now:
+            return handle_expired_lease.apply_async(
+                args=[lease.resource_id],
+                eta=lease.end_time + timedelta(seconds=5),
+            )
+        logger.info("lease %s is expired", lease)
+        if lease.status != LeaseStatus.expired:
+            lease.status = LeaseStatus.expired
+        if lease.auto_renew_period != AutoRenewPeriod.none:
+            await renew_lease(session, lease)
+        session.add(lease)
+        await session.commit()
+
+
+@celery.task
+@sync
+async def check_leases_and_schedule_tasks():
+    now = utcnow()
+    after_10min = now + timedelta(minutes=10)
+    async for session in get_session():
+        leases = await list_expired_unmarked_leases(session, now)
+        for lease in leases:
+            handle_expired_lease.delay(lease.uid)
+        leases = await list_expired_unmarked_leases(session, after_10min)
+        for lease in leases:
+            handle_expired_lease.apply_async(
+                args=[lease.uid],
+                eta=lease.end_time,
+            )
+
+
 celery.add_periodic_task(
     crontab(minute="0", hour="*"),
     # crontab(minute="*", hour="*"),
     measure_usage.s(),
     name="send all resource event to billing",
+)
+
+celery.add_periodic_task(
+    crontab(minute="*", hour="*"),
+    # crontab(minute="*/10"),
+    check_leases_and_schedule_tasks.s(),
+    name="check leases every 10 minutes",
 )

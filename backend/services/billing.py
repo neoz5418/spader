@@ -145,7 +145,7 @@ async def top_up_account(
         await session.commit()
 
 
-async def get_active_leases(session: SessionDep) -> list[BillingLease]:
+async def list_active_leases(session: SessionDep) -> list[BillingLease]:
     now = utcnow()
     statement = (
         select(BillingLease)
@@ -277,7 +277,7 @@ async def get_workspaces_with_active_billing(session: SessionDep) -> list[str]:
 
 
 async def process_periodic_billing(session: SessionDep):
-    leases = await get_active_leases(session)
+    leases = await list_active_leases(session)
     end_time = utcnow()
     for lease in leases:
         if lease.lease_period == BillingPeriod.real_time:
@@ -320,9 +320,9 @@ async def calculate_pricing_details(
     session: SessionDep,
     priced_resource: PricedResourceMixin,
     lease_base: LeaseBase,
-    workspace: Workspace,
+    account: UUID,
 ) -> (PricingDetails, Optional[BillingCoupon]):
-    coupon = await get_coupon(session, lease_base=lease_base, workspace=workspace)
+    coupon = await get_coupon(session, lease_base=lease_base, account=account)
     original_price = sys.maxsize
     resource_price = await get_price(session, priced_resource)
     if lease_base.lease_period == BillingPeriod.real_time:
@@ -383,14 +383,14 @@ async def calculate_pricing_details(
 async def get_coupon(
     session: SessionDep,
     lease_base: LeaseBase,
-    workspace: Workspace,
+    account: UUID,
 ) -> Optional[BillingCoupon]:
     if lease_base.coupon:
         coupon = await BillingCoupon.one_by_fields(
             session,
             {
                 "uid": lease_base.coupon,
-                "account": workspace.uid,
+                "account": account,
             },
         )
         if not coupon:
@@ -402,26 +402,25 @@ async def get_coupon(
                 )
             )
     else:
-        coupon = await find_available_coupon(session, account=workspace.uid)
+        coupon = await find_available_coupon(session, account=account)
     return coupon
 
 
 async def create_lease(
     session: SessionDep,
-    workspace: str,
+    workspace: Workspace,
     resource_id: UUID,
     resource_type: ResourceType,
     priced_resource: PricedResourceMixin,
     lease_base: LeaseBase,
 ):
-    db_workspace = await Workspace.one_by_field(session, "name", workspace)
     pricing_details, coupon = await calculate_pricing_details(
         session,
         priced_resource=priced_resource,
         lease_base=lease_base,
-        workspace=db_workspace,
+        account=workspace.uid,
     )
-    workspace_account = await get_account(session, db_workspace)
+    workspace_account = await get_account(session, workspace)
     if not workspace_account.check_balance(pricing_details.final_price):
         raise ErrorInsufficientBalance(
             type="InsufficientBalance", balance=workspace_account.balance
@@ -442,7 +441,7 @@ async def create_lease(
         coupon.used = True
         session.add(coupon)
     lease = BillingLease(
-        account=db_workspace.uid,
+        account=workspace.uid,
         resource_id=resource_id,
         resource_type=resource_type,
         status=LeaseStatus.active,
@@ -454,7 +453,7 @@ async def create_lease(
         lease_price=priced_resource.price_name,
     )
     if lease_base.lease_period != BillingPeriod.real_time:
-        account = await BillingAccount.one_by_field(session, "uid", db_workspace.uid)
+        account = await BillingAccount.one_by_field(session, "uid", workspace.uid)
         amount = pricing_details.final_price
         balance_before = account.balance
         balance_after = account.balance - amount
@@ -477,3 +476,67 @@ async def create_lease(
         session.add(billing_record)
     session.add(lease)
     return
+
+
+async def renew_lease(session: SessionDep, lease: BillingLease):
+    now = utcnow()
+    end_time = lease.calculate_end_time(lease.end_time)
+    priced_resource = PricedResourceMixin(price_name=lease.lease_price)
+    lease_base = LeaseBase(
+        auto_renew_period=lease.auto_renew_period, lease_period=lease.lease_period
+    )
+    pricing_details, coupon = await calculate_pricing_details(
+        session,
+        priced_resource=priced_resource,
+        lease_base=lease_base,
+        account=lease.account,
+    )
+    coupon_id = None
+    if coupon:
+        coupon_id = coupon.uid
+    new_lease = BillingLease(
+        account=lease.account,
+        resource_id=lease.resource_id,
+        resource_type=lease.resource_type,
+        status=LeaseStatus.active,
+        start_time=lease.end_time,
+        end_time=end_time,
+        lease_period=BillingPeriod(lease.auto_renew_period),
+        auto_renew_period=lease.auto_renew_period,
+        coupon=coupon_id,
+        lease_price=lease.lease_price,
+    )
+    account = await BillingAccount.one_by_field(session, "uid", lease.account)
+    amount = pricing_details.final_price
+    balance_before = account.balance
+    balance_after = account.balance - amount
+    account.balance = balance_after
+    billing_record = BillingRecord(
+        type=BillingRecordType.deduction,
+        amount=-amount,
+        billing_time=now,
+        balance_before=balance_before,
+        balance_after=balance_after,
+        account=account.uid,
+        coupon=coupon_id,
+        resource_id=lease.resource_id,
+        resource_type=lease.resource_type,
+        meta_data={
+            "price_name": priced_resource.price_name,
+        },
+    )
+    session.add(new_lease)
+    session.add(account)
+    session.add(billing_record)
+
+
+async def list_expired_unmarked_leases(
+    session: SessionDep, end_time: datetime
+) -> list[BillingLease]:
+    statement = (
+        select(BillingLease)
+        .where(BillingLease.end_time <= end_time)
+        .where(BillingLease.status == LeaseStatus.active)
+    )
+
+    return (await session.exec(statement)).all()

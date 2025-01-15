@@ -204,7 +204,7 @@ class Currency(str, Enum):
 
 
 class WorkspaceAccount(BaseModel):
-    workspace: str
+    workspace: UUID
     balance: int
     # total_top_up: int
     rate_per_hour: int

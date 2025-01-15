@@ -63,7 +63,7 @@ from services.common import (
     single_column_validation_failed,
     utcnow,
 )
-from services.billing import get_account, top_up_account
+from services.billing import get_realtime_account, top_up_account
 from services.payment import alipay_recharge, check_alipay_recharge
 
 logger = logging.getLogger(__name__)
@@ -226,7 +226,7 @@ async def get_workspace_account(
     workspace: str,
 ) -> WorkspaceAccount:
     db_workspace = await Workspace.one_by_field(session, "name", workspace)
-    return await get_account(session, db_workspace)
+    return await get_realtime_account(session, account_id=db_workspace.uid)
 
 
 @router.post(
@@ -332,7 +332,12 @@ async def check_workspace_account_recharge(
             db_workspace = await Workspace.one_by_field(
                 session, "name", db_recharge.workspace
             )
-            await top_up_account(session, db_workspace, db_recharge.amount, False)
+            await top_up_account(
+                session,
+                account_id=db_workspace.uid,
+                amount=db_recharge.amount,
+                free=False,
+            )
             db_recharge.status = RechargeStatus.succeeded
             await db_recharge.save(session)
         return db_recharge

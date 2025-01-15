@@ -370,7 +370,7 @@ async def create_instance(
         )
     await create_lease(
         session,
-        workspace=db_workspace,
+        account_id=db_workspace.uid,
         resource_id=to_create.uid,
         resource_type=ResourceType.instance,
         priced_resource=gpu_type,

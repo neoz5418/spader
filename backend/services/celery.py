@@ -25,6 +25,7 @@ from services.billing import (
     renew_lease,
     start_resource_billing_record,
 )
+from services.cache import get_redis
 from services.common import utcnow
 from services.db import get_session
 
@@ -148,20 +149,30 @@ async def measure_usage():
 @sync
 async def handle_expired_lease(lease_id: UUID):
     now = utcnow()
+    cache = get_redis()
     async for session in get_session():
-        lease = await BillingLease.one_by_field(session, "uid", lease_id)
-        if lease.end_time > now:
-            return handle_expired_lease.apply_async(
-                args=[lease.resource_id],
-                eta=lease.end_time + timedelta(seconds=5),
-            )
-        logger.info("lease %s is expired", lease)
-        if lease.status != LeaseStatus.expired:
-            lease.status = LeaseStatus.expired
-        if lease.auto_renew_period != AutoRenewPeriod.none:
-            await renew_lease(session, lease)
-        session.add(lease)
-        await session.commit()
+        async with cache.lock("lease_lock:" + str(lease_id)):
+            lease = await BillingLease.one_by_field(session, "uid", lease_id)
+            if not lease:
+                logger.info("lease [%s] not found", lease_id)
+                return
+            if lease.status == LeaseStatus.expired:
+                logger.info("lease %s is expired", lease)
+                return
+            if lease.end_time > now:
+                return handle_expired_lease.apply_async(
+                    args=[lease.resource_id],
+                    eta=lease.end_time + timedelta(seconds=5),
+                )
+            logger.info("lease %s is expired", lease)
+            if lease.status != LeaseStatus.expired:
+                lease.status = LeaseStatus.expired
+                session.add(lease)
+                await session.commit()
+                await session.refresh(lease)
+                # TODO: check balance and stop resource
+            if lease.auto_renew_period != AutoRenewPeriod.none:
+                await renew_lease(session, lease)
 
 
 @celery.task

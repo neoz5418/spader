@@ -171,13 +171,14 @@ async def top_up_account(
         await session.commit()
 
 
-async def list_active_leases(session: SessionDep) -> list[BillingLease]:
+async def list_active_realtime_leases(session: SessionDep) -> list[BillingLease]:
     now = utcnow()
     statement = (
         select(BillingLease)
         .where(BillingLease.start_time <= now)
         .where(BillingLease.end_time >= now)
         .where(BillingLease.status == LeaseStatus.active)
+        .where(BillingLease.lease_period == BillingPeriod.real_time)
     )
 
     return (await session.exec(statement)).all()
@@ -308,20 +309,23 @@ async def renew_resource_billing_record(
     resource_id: UUID,
     end_time: datetime,
     priced_resource: PricedResourceMixin,
-) -> BillingRealTimeRecord | None:
-    real_time_record = await end_resource_billing_record(
-        session, account_id=account_id, resource_id=resource_id, end_time=end_time
-    )
-    if not real_time_record:
-        return
-    return await start_resource_billing_record(
-        session,
-        account_id=account_id,
-        resource_id=resource_id,
-        start_time=end_time,
-        resource_type=real_time_record.resource_type,
-        priced_resource=priced_resource,
-    )
+):
+    cache = get_redis()
+    async with account_lock(cache, account_id=account_id):
+        real_time_record = await end_resource_billing_record(
+            session, account_id=account_id, resource_id=resource_id, end_time=end_time
+        )
+        if not real_time_record:
+            return
+        await start_resource_billing_record(
+            session,
+            account_id=account_id,
+            resource_id=resource_id,
+            start_time=end_time,
+            resource_type=real_time_record.resource_type,
+            priced_resource=priced_resource,
+        )
+        await session.commit()
 
 
 async def get_workspaces_with_active_billing(session: SessionDep) -> list[str]:
@@ -335,21 +339,19 @@ async def get_workspaces_with_active_billing(session: SessionDep) -> list[str]:
 
 
 async def process_periodic_billing(session: SessionDep):
-    leases = await list_active_leases(session)
+    leases = await list_active_realtime_leases(session)
     end_time = utcnow()
     for lease in leases:
-        if lease.lease_period == BillingPeriod.real_time:
-            instance = await Instance.one_by_field(session, "uid", lease.resource_id)
-            gpu_type = await GPUType.one_by_field(session, "name", instance.gpu_type)
-            await renew_resource_billing_record(
-                session,
-                account_id=lease.account,
-                resource_id=lease.resource_id,
-                priced_resource=gpu_type,
-                end_time=end_time,
-            )
-
-    await session.commit()
+        await lease.refresh(session)
+        instance = await Instance.one_by_field(session, "uid", lease.resource_id)
+        gpu_type = await GPUType.one_by_field(session, "name", instance.gpu_type)
+        await renew_resource_billing_record(
+            session,
+            account_id=lease.account,
+            resource_id=lease.resource_id,
+            priced_resource=gpu_type,
+            end_time=end_time,
+        )
 
 
 async def get_price(

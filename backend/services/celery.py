@@ -137,7 +137,6 @@ async def check_all_user_balances():
 async def measure_usage():
     async for session in get_session():
         await process_periodic_billing(session)
-        await session.commit()
 
     check_all_user_balances.delay()
 
@@ -173,8 +172,8 @@ async def check_leases_and_schedule_tasks():
 
 
 celery.add_periodic_task(
-    crontab(minute="0", hour="*"),
-    # crontab(minute="*", hour="*"),
+    # crontab(minute="0", hour="*"),
+    crontab(minute="*", hour="*"),
     measure_usage.s(),
     name="send all resource event to billing",
 )

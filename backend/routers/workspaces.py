@@ -313,7 +313,7 @@ async def check_workspace_account_recharge(
     recharge_id: UUID,
 ) -> WorkspaceAccountRecharge:
     cache = get_redis()
-    async with cache.lock("lock:" + str(recharge_id)):
+    async with cache.lock("lock_recharge:" + str(recharge_id)):
         db_recharge = await WorkspaceAccountRecharge.one_by_fields(
             session,
             {

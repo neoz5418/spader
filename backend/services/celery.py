@@ -44,7 +44,8 @@ celery.conf.broker_connection_retry_on_startup = True
 def sync(f):
     @functools.wraps(f)
     def wrapper(*args, **kwargs):
-        return asyncio.run(f(*args, **kwargs))
+        loop = asyncio.get_event_loop()
+        return loop.run_until_complete(f(*args, **kwargs))
 
     return wrapper
 
@@ -151,7 +152,7 @@ async def handle_expired_lease(lease_id: UUID):
     now = utcnow()
     cache = get_redis()
     async for session in get_session():
-        async with cache.lock("lease_lock:" + str(lease_id)):
+        async with cache.lock("lock_lease:" + str(lease_id)):
             lease = await BillingLease.one_by_field(session, "uid", lease_id)
             if not lease:
                 logger.info("lease [%s] not found", lease_id)

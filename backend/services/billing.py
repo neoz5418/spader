@@ -102,7 +102,7 @@ async def account_lock(cache: Redis, account_id: UUID):
     Yields:
         Lock: The acquired lock for the account.
     """
-    lock = cache.lock(f"account_lock:{str(account_id)}")
+    lock = cache.lock(f"lock_account:{str(account_id)}")
     try:
         await lock.acquire()
         yield lock

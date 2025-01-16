@@ -66,7 +66,7 @@ from services.common import (
 )
 from services.lru_resource_cache import (
     get_gpu_type_display_name,
-    get_resource_lease,
+    get_resource_lease_from_cache,
     get_zone_display_name,
 )
 
@@ -291,7 +291,7 @@ async def list_workspace_instances(
     for i in instance_list.items:
         zone_display_name = await get_zone_display_name(session, i.zone)
         gpu_display_name = await get_gpu_type_display_name(session, i.gpu_type)
-        lease = await get_resource_lease(session, i.uid)
+        lease = await get_resource_lease_from_cache(session, i.uid)
         new_i = InstancePublic.model_validate(
             i,
             update={
@@ -544,7 +544,7 @@ async def delete_instance(
     force: Optional[bool] = None,
 ) -> Operation:
     if not force:
-        lease = await get_resource_lease(session, instance.uid)
+        lease = await get_resource_lease_from_cache(session, instance.uid)
         if lease.lease_period != BillingPeriod.real_time:
             if lease.end_time > utcnow():
                 raise single_column_validation_failed(

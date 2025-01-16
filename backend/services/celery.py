@@ -9,23 +9,20 @@ from celery.schedules import crontab
 
 from providers.interface import ProviderInterface
 from routers.types import (
-    AutoRenewPeriod,
     BillingLease,
     GPUType,
     Instance,
-    LeaseStatus,
     Operation,
     ResourceType,
     Workspace,
 )
 from services.billing import (
-    end_resource_billing_record,
+    end_lease,
     list_expired_unmarked_leases,
+    mark_expired_lease,
     process_periodic_billing,
-    renew_lease,
     start_resource_billing_record,
 )
-from services.cache import get_redis
 from services.common import utcnow
 from services.db import get_session
 
@@ -114,13 +111,12 @@ async def delete_instance_operation(operation_id: UUID):
         await instance.delete(session)
         await workspace.refresh(session)
 
-        await end_resource_billing_record(
+        await end_lease(
             session,
             account_id=workspace.uid,
             resource_id=instance.uid,
             end_time=utcnow(),
         )
-        await session.commit()
 
 
 @celery.task
@@ -149,31 +145,14 @@ async def measure_usage():
 @celery.task
 @sync
 async def handle_expired_lease(lease_id: UUID):
-    now = utcnow()
-    cache = get_redis()
+    def callback(lease: BillingLease):
+        return handle_expired_lease.apply_async(
+            args=[lease.uid],
+            eta=lease.end_time + timedelta(seconds=5),
+        )
+
     async for session in get_session():
-        async with cache.lock("lock_lease:" + str(lease_id)):
-            lease = await BillingLease.one_by_field(session, "uid", lease_id)
-            if not lease:
-                logger.info("lease [%s] not found", lease_id)
-                return
-            if lease.status == LeaseStatus.expired:
-                logger.info("lease %s is expired", lease)
-                return
-            if lease.end_time > now:
-                return handle_expired_lease.apply_async(
-                    args=[lease.resource_id],
-                    eta=lease.end_time + timedelta(seconds=5),
-                )
-            logger.info("lease %s is expired", lease)
-            if lease.status != LeaseStatus.expired:
-                lease.status = LeaseStatus.expired
-                session.add(lease)
-                await session.commit()
-                await session.refresh(lease)
-                # TODO: check balance and stop resource
-            if lease.auto_renew_period != AutoRenewPeriod.none:
-                await renew_lease(session, lease)
+        await mark_expired_lease(session, lease_id=lease_id, callback=callback)
 
 
 @celery.task

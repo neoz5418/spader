@@ -1,8 +1,9 @@
-from sqlmodel import select
 from uuid import UUID
 
 from routers.types import BillingLease, GPUType, Zone
 from async_lru import alru_cache
+
+from services.billing import get_resource_lease
 
 
 @alru_cache
@@ -18,12 +19,5 @@ async def get_gpu_type_display_name(session, gpu_type_name):
 
 
 @alru_cache
-async def get_resource_lease(session, resource_id: UUID) -> BillingLease:
-    stmt = (
-        select(BillingLease)
-        .where(BillingLease.resource_id == resource_id)
-        .order_by(BillingLease.uid.desc())
-        .limit(1)
-    )
-    result = await session.exec(stmt)
-    return result.one()
+async def get_resource_lease_from_cache(session, resource_id: UUID) -> BillingLease:
+    return await get_resource_lease(session, resource_id=resource_id)

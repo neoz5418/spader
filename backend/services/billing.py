@@ -1,4 +1,6 @@
+import logging
 import sys
+from collections.abc import Callable
 from contextlib import asynccontextmanager
 from datetime import datetime
 from typing import Optional
@@ -8,6 +10,7 @@ from sqlmodel import select
 
 from dependencies import SessionDep
 from routers.types import (
+    AutoRenewPeriod,
     BillingAccount,
     BillingCoupon,
     BillingCouponClaimLimit,
@@ -42,6 +45,8 @@ from services.common import (
     utcnow,
 )
 from services.utils import subtract_datetimes
+
+logger = logging.getLogger(__name__)
 
 
 async def get_claimable_coupons(
@@ -221,6 +226,38 @@ async def start_resource_billing_record(
         },
     )
     session.add(real_time_record)
+
+
+async def get_resource_lease(session, resource_id: UUID) -> BillingLease:
+    stmt = (
+        select(BillingLease)
+        .where(BillingLease.resource_id == resource_id)
+        .order_by(BillingLease.uid.desc())
+        .limit(1)
+    )
+    result = await session.exec(stmt)
+    return result.one()
+
+
+async def end_lease(
+    session: SessionDep,
+    account_id: UUID,
+    resource_id: UUID,
+    end_time: datetime,
+):
+    cache = get_redis()
+    async with account_lock(cache, account_id):
+        lease = await get_resource_lease(session, resource_id=resource_id)
+        lease.status = LeaseStatus.deleted
+        lease.end_time = end_time
+        session.add(lease)
+        await end_resource_billing_record(
+            session=session,
+            account_id=account_id,
+            resource_id=resource_id,
+            end_time=end_time,
+        )
+        await session.commit()
 
 
 async def end_resource_billing_record(
@@ -554,6 +591,32 @@ async def renew_lease(session: SessionDep, lease: BillingLease):
         session.add(account)
         session.add(billing_record)
         await session.commit()
+
+
+async def mark_expired_lease(
+    session: SessionDep, lease_id: UUID, callback: Callable[[BillingLease], None]
+):
+    now = utcnow()
+    cache = get_redis()
+    async with cache.lock("lock_lease:" + str(lease_id)):
+        lease = await BillingLease.one_by_field(session, "uid", lease_id)
+        if not lease:
+            logger.info("lease [%s] not found", lease_id)
+            return
+        if lease.status == LeaseStatus.expired:
+            logger.info("lease %s is expired", lease)
+            return
+        if lease.end_time > now:
+            return callback(lease)
+        logger.info("lease %s is expired", lease)
+        if lease.status != LeaseStatus.expired:
+            lease.status = LeaseStatus.expired
+            session.add(lease)
+            await session.commit()
+            await session.refresh(lease)
+            # TODO: check balance and stop resource
+        if lease.auto_renew_period != AutoRenewPeriod.none:
+            await renew_lease(session, lease)
 
 
 async def list_expired_unmarked_leases(

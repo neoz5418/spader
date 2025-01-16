@@ -210,11 +210,6 @@ class WorkspaceAccount(BaseModel):
     rate_per_hour: int
     currency: Currency
 
-    def check_balance(self, price_pre_hour: int, hours: int = 1) -> bool:
-        if price_pre_hour * hours > self.balance:
-            return False
-        return True
-
 
 class WorkspaceZoneQuota(SQLModel, table=True):
     uid: UUID = UID
@@ -420,6 +415,11 @@ class BillingLease(SQLModel, LeaseBase, ActiveRecordMixin, table=True):
 
 class BillingBalance(BaseModel):
     balance: int = Field(default=0)  # 当前余额（分）
+
+    def check_balance(self, price_pre_hour: int, hours: int = 1) -> bool:
+        if price_pre_hour * hours > self.balance:
+            return False
+        return True
 
 
 # 定义账户表

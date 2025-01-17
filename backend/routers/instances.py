@@ -300,6 +300,7 @@ async def list_workspace_instances(
                 "lease_period": lease.lease_period,
                 "auto_renew_period": lease.auto_renew_period,
                 "coupon": lease.coupon,
+                "lease_status": lease.status,
             },
         )
         public_list.items.append(new_i)

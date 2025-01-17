@@ -345,7 +345,7 @@ class ProviderEcloud(ProviderInterface):
         await ei.init()
         if instance.target_id:
             await ei.release_vm(instance.target_id)
-        instance.status = InstanceStatus.terminated
+        instance.status = InstanceStatus.deleted
         instance.delete_time = utcnow()
         await instance.update(session)
         return await self.set_operation_done(session, operation)

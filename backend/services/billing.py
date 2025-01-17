@@ -6,7 +6,8 @@ from datetime import datetime
 from typing import Optional
 from uuid import UUID
 
-from sqlmodel import select
+from fastapi import HTTPException
+from sqlmodel import or_, select
 
 from dependencies import SessionDep
 from routers.types import (
@@ -95,6 +96,30 @@ async def claim_new_account_coupon(session: SessionDep, account: UUID):
         session.add(coupon)
 
 
+async def get_lease(session: SessionDep, lease_id: UUID):
+    return await BillingLease.one_by_field(session, "uid", lease_id)
+
+
+@asynccontextmanager
+async def lease_lock(cache: Redis, lease_id: UUID):
+    """
+    A context manager for locking based on a lease ID.
+
+    Args:
+        cache (Redis): The Redis cache instance.
+        lease_id (UUID): The account ID to lock.
+
+    Yields:
+        Lock: The acquired lock for the account.
+    """
+    lock = cache.lock(f"lock_lease:{str(lease_id)}")
+    try:
+        await lock.acquire()
+        yield lock
+    finally:
+        await lock.release()
+
+
 @asynccontextmanager
 async def account_lock(cache: Redis, account_id: UUID):
     """
@@ -169,6 +194,23 @@ async def top_up_account(
         session.add(record)
         session.add(account)
         await session.commit()
+
+
+async def list_account_active_realtime_leases(
+    session: SessionDep,
+    account: UUID,
+) -> list[BillingLease]:
+    now = utcnow()
+    statement = (
+        select(BillingLease)
+        .where(BillingLease.account == account)
+        .where(BillingLease.start_time <= now)
+        .where(BillingLease.end_time >= now)
+        .where(BillingLease.status == LeaseStatus.active)
+        .where(BillingLease.lease_period == BillingPeriod.real_time)
+    )
+
+    return (await session.exec(statement)).all()
 
 
 async def list_active_realtime_leases(session: SessionDep) -> list[BillingLease]:
@@ -266,7 +308,7 @@ async def end_resource_billing_record(
     account_id: UUID,
     resource_id: UUID,
     end_time: datetime,
-) -> BillingRealTimeRecord | None:
+):
     real_time_record = await BillingRealTimeRecord.one_by_fields(
         session,
         {
@@ -300,29 +342,27 @@ async def end_resource_billing_record(
     session.add(real_time_record)
     session.add(billing_record)
     session.add(account)
-    return real_time_record
 
 
 async def renew_resource_billing_record(
     session: SessionDep,
     account_id: UUID,
     resource_id: UUID,
+    resource_type: ResourceType,
     end_time: datetime,
     priced_resource: PricedResourceMixin,
 ):
     cache = get_redis()
     async with account_lock(cache, account_id=account_id):
-        real_time_record = await end_resource_billing_record(
+        await end_resource_billing_record(
             session, account_id=account_id, resource_id=resource_id, end_time=end_time
         )
-        if not real_time_record:
-            return
         await start_resource_billing_record(
             session,
             account_id=account_id,
             resource_id=resource_id,
             start_time=end_time,
-            resource_type=real_time_record.resource_type,
+            resource_type=resource_type,
             priced_resource=priced_resource,
         )
         await session.commit()
@@ -338,17 +378,18 @@ async def get_workspaces_with_active_billing(session: SessionDep) -> list[str]:
     return [row[0] for row in result.fetchall()]
 
 
-async def process_periodic_billing(session: SessionDep):
-    leases = await list_active_realtime_leases(session)
-    end_time = utcnow()
-    for lease in leases:
-        await lease.refresh(session)
+async def renew_realtime_lease(session: SessionDep, lease_id: UUID):
+    cache = get_redis()
+    async with lease_lock(cache, lease_id):
+        end_time = utcnow()
+        lease = await get_lease(session, lease_id)
         instance = await Instance.one_by_field(session, "uid", lease.resource_id)
         gpu_type = await GPUType.one_by_field(session, "name", instance.gpu_type)
         await renew_resource_billing_record(
             session,
             account_id=lease.account,
             resource_id=lease.resource_id,
+            resource_type=lease.resource_type,
             priced_resource=gpu_type,
             end_time=end_time,
         )
@@ -571,6 +612,10 @@ async def renew_lease(session: SessionDep, lease: BillingLease):
     cache = get_redis()
     async with account_lock(cache, lease.account):
         account = await BillingAccount.one_by_field(session, "uid", lease.account)
+        if not account.check_balance(pricing_details.final_price):
+            raise ErrorInsufficientBalance(
+                type="InsufficientBalance", balance=account.balance
+            ).to_exception()
         amount = pricing_details.final_price
         balance_before = account.balance
         balance_after = account.balance - amount
@@ -595,39 +640,69 @@ async def renew_lease(session: SessionDep, lease: BillingLease):
         await session.commit()
 
 
-async def mark_expired_lease(
-    session: SessionDep, lease_id: UUID, callback: Callable[[BillingLease], None]
+async def mark_completed_lease(
+    session: SessionDep,
+    lease_id: UUID,
+    check_lease_next_time: Callable[[BillingLease], None],
+    pause_resource_due_to_expiry: Callable,
+    pause_resource_on_arrears: Callable,
 ):
     now = utcnow()
     cache = get_redis()
-    async with cache.lock("lock_lease:" + str(lease_id)):
-        lease = await BillingLease.one_by_field(session, "uid", lease_id)
+    async with lease_lock(cache, lease_id):
+        lease = await get_lease(session, lease_id)
         if not lease:
             logger.info("lease [%s] not found", lease_id)
             return
-        if lease.status == LeaseStatus.expired:
-            logger.info("lease %s is expired", lease)
+        if lease.status == LeaseStatus.completed:
+            logger.info("lease %s is completed", lease)
             return
         if lease.end_time > now:
-            return callback(lease)
-        logger.info("lease %s is expired", lease)
-        if lease.status != LeaseStatus.expired:
-            lease.status = LeaseStatus.expired
+            return check_lease_next_time(lease)
+        logger.info("lease %s is completed", lease)
+        if lease.status != LeaseStatus.completed:
+            lease.end_time = now
+            lease.status = LeaseStatus.completed
             session.add(lease)
             await session.commit()
             await session.refresh(lease)
             # TODO: check balance and stop resource
         if lease.auto_renew_period != AutoRenewPeriod.none:
-            await renew_lease(session, lease)
+            try:
+                await renew_lease(session, lease)
+            except HTTPException as e:
+                if isinstance(e.detail, ErrorInsufficientBalance):
+                    pause_resource_on_arrears(lease)
+                else:
+                    raise e
+        else:
+            pause_resource_due_to_expiry(lease)
 
 
-async def list_expired_unmarked_leases(
+async def list_completed_unmarked_leases(
     session: SessionDep, end_time: datetime
 ) -> list[BillingLease]:
     statement = (
         select(BillingLease)
         .where(BillingLease.end_time <= end_time)
         .where(BillingLease.status == LeaseStatus.active)
+    )
+
+    return (await session.exec(statement)).all()
+
+
+async def list_expired_or_in_debt_leases(
+    session: SessionDep, end_time: datetime
+) -> list[BillingLease]:
+    statement = (
+        select(BillingLease)
+        .where(BillingLease.end_time <= end_time)
+        .where(
+            or_(
+                BillingLease.status == LeaseStatus.expired,
+                BillingLease.status == LeaseStatus.in_debt,
+            )
+        )
     )
 
     return (await session.exec(statement)).all()

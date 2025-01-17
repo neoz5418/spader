@@ -360,6 +360,7 @@ class LeaseStatus(str, Enum):
     in_debt = "in_debt"  # 已欠费
     expired = "expired"  # 已过期
     deleted = "deleted"  # 已删除
+    completed = "completed"  # 已完成
 
 
 class AutoRenewPeriod(str, Enum):
@@ -393,6 +394,10 @@ class LeaseBase(BaseModel):
                 case BillingPeriod.one_month:
                     end_time = start_time + timedelta(days=30)
         return end_time
+
+
+class ResourceLeaseMixin(LeaseBase):
+    lease_status: LeaseStatus
 
 
 class BillingLease(SQLModel, LeaseBase, ActiveRecordMixin, table=True):
@@ -688,6 +693,7 @@ class InstanceStatus(str, Enum):
     running = "running"
     stopping = "stopping"
     terminated = "terminated"
+    deleted = "deleted"
 
 
 class InstanceBase(SQLModel, BaseModelMixin):
@@ -711,7 +717,7 @@ class Instance(InstanceBase, table=True):
     pass
 
 
-class InstancePublic(InstanceBase, LeaseBase):
+class InstancePublic(InstanceBase, ResourceLeaseMixin):
     gpu_display_name: str
     zone_display_name: str
 

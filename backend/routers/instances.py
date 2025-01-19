@@ -737,3 +737,34 @@ async def calculate_instance_cost(
         account=db_workspace.uid,
     )
     return InstanceCost(coupon=coupon, **pricing_details.model_dump())
+
+
+@router.get(
+    "/accelerator_types",
+    dependencies=[CurrentAdminUserDep],
+)
+async def list_accelerator_types(
+    session: SessionDep,
+    params: ListParamsDep,
+    zone: Optional[str],
+) -> GPUTypePublicList:
+    fields = {}
+    if zone:
+        fields["zone"] = zone
+    gpu_type_list = await GPUType.paginated_by_query(
+        session=session,
+        fields=fields,
+        offset=params.offset,
+        limit=params.limit,
+    )
+    public_list = GPUTypePublicList(pagination=gpu_type_list.pagination, items=[])
+    for gpu_type in gpu_type_list.items:
+        price = await get_price(session, gpu_type)
+        g = GPUTypePublic.model_validate(
+            gpu_type,
+            update={
+                "prices": price.to_price_list(),
+            },
+        )
+        public_list.items.append(g)
+    return public_list

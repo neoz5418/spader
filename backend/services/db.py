@@ -21,6 +21,7 @@ from routers.types import (
 )
 from services.security import get_secret_hash
 from settings import get_settings
+from services.db_accelerator import init_accelerator_types
 
 sqlite_file_name = "database.db"
 sqlite_url = f"sqlite+aiosqlite:///{sqlite_file_name}"
@@ -70,6 +71,9 @@ async def init_admin_user():
 
 
 async def init_data():
+    # async with engine.begin() as conn:
+    #     await conn.run_sync(SQLModel.metadata.create_all)
+
     async with AsyncSession(engine) as session:
         beijing = Zone(
             name="beijing",
@@ -152,6 +156,7 @@ async def init_data():
                 "cpu": 8,
                 "server_type": "VM",
             },
+            accelerator_type="v100_pcie",
         )
         cpu001 = GPUType(
             name="cpu001",
@@ -208,3 +213,6 @@ async def init_data():
             coupon_class_10.name = coupon_class_10_name + "00" + str(i)
             await BillingCouponClass.create_or_update(session, coupon_class_50)
             await BillingCouponClass.create_or_update(session, coupon_class_10)
+        
+        # 添加加速器类型数据
+        await init_accelerator_types(session)

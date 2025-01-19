@@ -36,10 +36,10 @@ export default function Sidebar({
       )}
     >
       {/* Overlay in mobile */}
-      <div
+      {/* <div
         onClick={() => setNavOpened(false)}
         className={`absolute inset-0 transition-[opacity] delay-100 duration-700 ${navOpened ? 'h-svh opacity-50' : 'h-0 opacity-0'} w-full bg-black md:hidden`}
-      />
+      /> */}
 
       <Layout fixed className={navOpened ? 'h-svh' : ''}>
         {/* Header */}
@@ -80,7 +80,7 @@ export default function Sidebar({
         />
 
         {/* Scrollbar width toggle button */}
-        <Button
+        {/* <Button
           onClick={() => setIsCollapsed((prev) => !prev)}
           size='icon'
           variant='outline'
@@ -90,7 +90,7 @@ export default function Sidebar({
             stroke={1.5}
             className={`h-5 w-5 ${isCollapsed ? 'rotate-180' : ''}`}
           />
-        </Button>
+        </Button> */}
       </Layout>
     </aside>
   )

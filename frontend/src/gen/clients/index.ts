@@ -29,6 +29,7 @@ export * from "./getWorkspaceMembers";
 export * from "./getWorkspaceOperation";
 export * from "./getWorkspaceQuota";
 export * from "./getWorkspaceZoneQuota";
+export * from "./listAcceleratorTypes";
 export * from "./listFilesInFileStorage";
 export * from "./listGpuTypes";
 export * from "./listInstancePortForwards";

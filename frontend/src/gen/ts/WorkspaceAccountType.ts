@@ -2,7 +2,7 @@ import type { CurrencyType } from "./CurrencyType";
 
  export type WorkspaceAccountType = {
     /**
-     * @type string
+     * @type string, uuid
     */
     workspace: string;
     /**

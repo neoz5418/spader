@@ -1,3 +1,4 @@
+import type { ResourceTypeType } from "./ResourceTypeType";
 import type { ListExpensesResponseType } from "./ListExpensesResponseType";
 import type { ErrorInternalType } from "./ErrorInternalType";
 import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
@@ -626,9 +627,13 @@ export type ListWorkspaceExpensesQueryParamsType = {
     */
     end_date: string;
     /**
-     * @type string
+     * @type string | undefined
     */
-    timezone: ListWorkspaceExpensesQueryParamsTimezoneType;
+    resource_type?: ResourceTypeType;
+    /**
+     * @type string | undefined
+    */
+    timezone?: ListWorkspaceExpensesQueryParamsTimezoneType;
 };
 /**
  * @description Successful Response

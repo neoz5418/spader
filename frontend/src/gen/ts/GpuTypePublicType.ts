@@ -32,6 +32,7 @@ import type { PriceType } from "./PriceType";
      * @type array
     */
     zones: string[];
+    accelerator_type?: (string | null);
     /**
      * @type array
     */

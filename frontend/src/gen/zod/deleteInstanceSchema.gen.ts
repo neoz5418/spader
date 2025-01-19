@@ -14,6 +14,9 @@ import { errorValidationFailedSchema } from "./errorValidationFailedSchema.gen";
 
 export const deleteInstancePathParamsSchema = z.object({ "workspace": z.string(), "name": z.string() });
 export type DeleteInstancePathParamsSchema = z.infer<typeof deleteInstancePathParamsSchema>;
+
+ export const deleteInstanceQueryParamsSchema = z.object({ "force": z.union([z.boolean(), z.null()]).optional() }).optional();
+export type DeleteInstanceQueryParamsSchema = z.infer<typeof deleteInstanceQueryParamsSchema>;
 /**
  * @description Successful Response
  */

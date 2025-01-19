@@ -1,7 +1,7 @@
 import client from "@/utils/client.ts";
 import { useMutation } from "@tanstack/react-query";
 import { useInvalidationForMutation } from "../../useInvalidationForMutation";
-import type { DeleteInstanceMutationResponseType, DeleteInstancePathParamsType, DeleteInstance422Type } from "../ts/DeleteInstanceType";
+import type { DeleteInstanceMutationResponseType, DeleteInstancePathParamsType, DeleteInstanceQueryParamsType, DeleteInstance422Type } from "../ts/DeleteInstanceType";
 import type { UseMutationOptions } from "@tanstack/react-query";
 
  type DeleteInstanceClient = typeof client<DeleteInstanceMutationResponseType, DeleteInstance422Type, never>;
@@ -10,7 +10,7 @@ type DeleteInstance = {
     error: DeleteInstance422Type;
     request: never;
     pathParams: DeleteInstancePathParamsType;
-    queryParams: never;
+    queryParams: DeleteInstanceQueryParamsType;
     headerParams: never;
     response: DeleteInstanceMutationResponseType;
     client: {
@@ -22,7 +22,7 @@ type DeleteInstance = {
  * @summary Delete Instance
  * @link /apis/compute/v1/workspaces/:workspace/instances/:name
  */
-export function useDeleteInstanceHook(workspace: DeleteInstancePathParamsType["workspace"], name: DeleteInstancePathParamsType["name"], options: {
+export function useDeleteInstanceHook(workspace: DeleteInstancePathParamsType["workspace"], name: DeleteInstancePathParamsType["name"], params?: DeleteInstance["queryParams"], options: {
     mutation?: UseMutationOptions<DeleteInstance["response"], DeleteInstance["error"], DeleteInstance["request"]>;
     client?: DeleteInstance["client"]["parameters"];
 } = {}) {
@@ -33,6 +33,7 @@ export function useDeleteInstanceHook(workspace: DeleteInstancePathParamsType["w
             const res = await client<DeleteInstance["data"], DeleteInstance["error"], DeleteInstance["request"]>({
                 method: "delete",
                 url: `/apis/compute/v1/workspaces/${workspace}/instances/${name}`,
+                params,
                 ...clientOptions
             });
             return res.data;

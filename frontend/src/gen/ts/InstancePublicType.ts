@@ -1,6 +1,17 @@
+import type { BillingPeriodType } from "./BillingPeriodType";
+import type { AutoRenewPeriodType } from "./AutoRenewPeriodType";
 import type { InstanceStatusType } from "./InstanceStatusType";
 
  export type InstancePublicType = {
+    /**
+     * @type string | undefined
+    */
+    lease_period?: BillingPeriodType;
+    /**
+     * @type string | undefined
+    */
+    auto_renew_period?: AutoRenewPeriodType;
+    coupon?: (string | null);
     /**
      * @type string | undefined, date-time
     */

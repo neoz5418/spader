@@ -127,6 +127,14 @@ export const operations = {
         "path": "/apis/workspace/v1/workspaces/:workspace/coupons",
         "method": "get"
     },
+    "get_instance": {
+        "path": "/apis/compute/v1/workspaces/:workspace/instances/:name",
+        "method": "get"
+    },
+    "delete_instance": {
+        "path": "/apis/compute/v1/workspaces/:workspace/instances/:name",
+        "method": "delete"
+    },
     "create_zone": {
         "path": "/apis/compute/v1/zones/",
         "method": "post"
@@ -162,14 +170,6 @@ export const operations = {
     "create_instance": {
         "path": "/apis/compute/v1/workspaces/:workspace/instances",
         "method": "post"
-    },
-    "get_instance": {
-        "path": "/apis/compute/v1/workspaces/:workspace/instances/:name",
-        "method": "get"
-    },
-    "delete_instance": {
-        "path": "/apis/compute/v1/workspaces/:workspace/instances/:name",
-        "method": "delete"
     },
     "start_instance": {
         "path": "/apis/compute/v1/workspaces/:workspace/instances/:name/start",
@@ -234,6 +234,10 @@ export const operations = {
     "calculate_instance_cost": {
         "path": "/apis/compute/v1/workspaces/:workspace/instances/calculate-cost",
         "method": "post"
+    },
+    "list_accelerator_types": {
+        "path": "/apis/compute/v1/accelerator_types",
+        "method": "get"
     },
     "auth": {
         "path": "/apis/oidc/v1/auth",

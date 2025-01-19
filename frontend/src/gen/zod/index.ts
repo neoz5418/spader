@@ -69,6 +69,7 @@ export * from "./instancePublicSchema.gen";
 export * from "./instanceSchema.gen";
 export * from "./instanceStatusSchema.gen";
 export * from "./invitationStatusSchema.gen";
+export * from "./listAcceleratorTypesSchema.gen";
 export * from "./listAuditLogsSortOptionsSchema.gen";
 export * from "./listExpensesResponseSchema.gen";
 export * from "./listFilesInFileStorageSchema.gen";

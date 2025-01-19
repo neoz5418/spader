@@ -69,6 +69,7 @@ export * from "./InstancePublicType";
 export * from "./InstanceStatusType";
 export * from "./InstanceType";
 export * from "./InvitationStatusType";
+export * from "./ListAcceleratorTypesType";
 export * from "./ListAuditLogsSortOptionsType";
 export * from "./ListExpensesResponseType";
 export * from "./ListFilesInFileStorageType";

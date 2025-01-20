@@ -1,5 +1,4 @@
 import { Badge } from "@/components/ui/badge";
-import { Link } from 'react-router-dom'
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -11,6 +10,12 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import {
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import {
 	InstancePublicType,
 	deleteInstance,
 	startInstance,
@@ -19,29 +24,18 @@ import {
 	useStopInstanceHook,
 } from "@/gen";
 import { toast } from "@/hooks/use-toast.ts";
+import { Text } from "@chakra-ui/react";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpRight, ChevronRight, Play, Copy, Square, Trash2 } from "lucide-react";
+import {
+	ArrowUpRight,
+	ChevronRight,
+	Copy,
+	Play,
+	Square,
+	Trash2,
+} from "lucide-react";
 import { useState } from "react";
-import { Text } from '@chakra-ui/react';
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { TooltipProvider } from "@/components/ui/tooltip";
-
-function Copyable({ text }: { text: string }) {
-	return (
-		<span
-			className={"cursor-pointer select-all"}
-			onClick={() => {
-				navigator.clipboard.writeText(text).then(() => {
-					toast({
-						description: "已复制到剪贴板",
-					});
-				});
-			}}
-		>
-			{text}
-		</span>
-	);
-}
+import { Link } from "react-router-dom";
 
 export const getInstancesColumns = (refetch: () => void) => {
 	const showToast = (message: string) => {
@@ -84,9 +78,7 @@ export const getInstancesColumns = (refetch: () => void) => {
 			header: "区域",
 		},
 		{
-			accessorFn: (row) => {
-				return `${row.gpu_display_name}`;
-			},
+			accessorKey: "gpu_display_name",
 			header: "GPU 类型",
 		},
 		{
@@ -103,37 +95,46 @@ export const getInstancesColumns = (refetch: () => void) => {
 			cell: ({ row }) => {
 				const services = [];
 				if (row.original.services) {
-					let jupyterLabUrl = ""
-					let jupyterLabHost = row.original.services["jupyter-lab"]
-					let jupyterLabToken = row.original.services["jupyter-password"]
+					let jupyterLabUrl = "";
+					const jupyterLabHost = row.original.services["jupyter-lab"];
+					const jupyterLabToken = row.original.services["jupyter-password"];
 					if (jupyterLabHost) {
-						jupyterLabUrl = `http://${jupyterLabHost}`
+						jupyterLabUrl = `http://${jupyterLabHost}`;
 					}
-					if  (jupyterLabToken) {
-						jupyterLabUrl += `?password=${jupyterLabToken}`
+					if (jupyterLabToken) {
+						jupyterLabUrl += `?password=${jupyterLabToken}`;
 					}
 
 					services.push(
 						<div>
 							<TooltipProvider>
-							<Tooltip>
-								<TooltipTrigger asChild>
-								<Link to={jupyterLabUrl} target="_blank" className="text-sky-400 hover:text-sky-500 underline decoration-sky-500">
-								JupyterLab 
-								</Link>
-								</TooltipTrigger>
-								<TooltipContent>
-									<p>JupyterLab 地址: {jupyterLabHost}</p>
-									<p>JupyterLab 密码: {jupyterLabToken}</p>
-								</TooltipContent>
-							</Tooltip>
+								<Tooltip>
+									<TooltipTrigger asChild>
+										<Link
+											to={jupyterLabUrl}
+											target="_blank"
+											className="text-sky-400 hover:text-sky-500 underline decoration-sky-500"
+										>
+											JupyterLab
+										</Link>
+									</TooltipTrigger>
+									<TooltipContent>
+										<p>JupyterLab 地址: {jupyterLabHost}</p>
+										<p>JupyterLab 密码: {jupyterLabToken}</p>
+									</TooltipContent>
+								</Tooltip>
 							</TooltipProvider>
-							<Button className="text-blue-600 hover:bg-blue-100 hover:text-blue-700" variant="ghost" size="icon" onClick={() => {
-								navigator.clipboard.writeText(jupyterLabUrl)
-								toast({
-									description: "已复制到剪贴板",
-								});
-							}}>
+							<Button
+								className="text-blue-600 hover:bg-blue-100 hover:text-blue-700"
+								variant="ghost"
+								size="icon"
+								onClick={() => {
+									navigator.clipboard.writeText(jupyterLabUrl);
+									toast({
+										description: "已复制到剪贴板",
+									});
+								}}
+							>
 								<Copy />
 							</Button>
 						</div>,

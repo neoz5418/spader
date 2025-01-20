@@ -43,6 +43,7 @@ from routers.types import (
     Zone,
     ZoneBase,
     ZoneList,
+    AcceleratorTypeList,
 )
 from services.billing import (
     calculate_pricing_details,
@@ -746,25 +747,14 @@ async def calculate_instance_cost(
 async def list_accelerator_types(
     session: SessionDep,
     params: ListParamsDep,
-    zone: Optional[str],
-) -> GPUTypePublicList:
-    fields = {}
-    if zone:
-        fields["zone"] = zone
-    gpu_type_list = await GPUType.paginated_by_query(
+) -> AcceleratorTypeList:
+    accelerator_type_list = await AcceleratorType.paginated_by_query(
         session=session,
-        fields=fields,
         offset=params.offset,
         limit=params.limit,
+        fields={"enable": True},
     )
-    public_list = GPUTypePublicList(pagination=gpu_type_list.pagination, items=[])
-    for gpu_type in gpu_type_list.items:
-        price = await get_price(session, gpu_type)
-        g = GPUTypePublic.model_validate(
-            gpu_type,
-            update={
-                "prices": price.to_price_list(),
-            },
-        )
-        public_list.items.append(g)
+    public_list = AcceleratorTypeList(pagination=accelerator_type_list.pagination, items=[])
+    for accelerator_type in accelerator_type_list.items:
+        public_list.items.append(accelerator_type)
     return public_list

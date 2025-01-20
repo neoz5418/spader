@@ -684,11 +684,11 @@ async def mark_completed_lease(
                 await renew_lease(session, lease)
             except HTTPException as e:
                 if isinstance(e.detail, ErrorInsufficientBalance):
-                    pause_resource_on_arrears(lease)
+                    pause_resource_on_arrears()
                 else:
                     raise e
         else:
-            pause_resource_due_to_expiry(lease)
+            pause_resource_due_to_expiry()
 
 
 async def list_completed_unmarked_leases(

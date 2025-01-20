@@ -43,6 +43,7 @@ from routers.types import (
     Zone,
     ZoneBase,
     ZoneList,
+    AcceleratorType,
     AcceleratorTypeList,
 )
 from services.billing import (

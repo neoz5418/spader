@@ -566,6 +566,7 @@ class GPUTypeBase(SQLModel):
     disk_type: DiskType
     zones: list[str] = Field(sa_column=Column(JSON))
     accelerator_type: Optional[str] = None
+    accelerator: Optional[int] = None
 
 
 

@@ -519,6 +519,10 @@ async def init_accelerator_types(session):
     """初始化加速卡类型数据"""
     for data in ACCELERATOR_DATA:
         try:
+            if data['name'] in ['v100_pcie', 'rtx_4090', 'ascend_910b']:
+                data['enable'] = 1
+            else:
+                data['enable'] = 0
             accelerator = AcceleratorType(**data)
             await AcceleratorType.create_or_update(session, accelerator)
         except Exception as e:

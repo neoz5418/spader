@@ -135,7 +135,31 @@ async def init_data():
         )
         await BillingPrice.create_or_update(session, v100_price)
         await BillingPrice.create_or_update(session, cpu001_price)
-        v100 = GPUType(
+        ascend_910b_1 = GPUType(
+            name="ascend_910b_1",
+            display_name="Huawei Ascend 910B",
+            description="",
+            gpu_memory="32GB",
+            memory="64GB",
+            cpu=8,
+            disk_size="100GB",
+            disk_type=DiskType.SSD,
+            zones=["beijing", "guangzhou"],
+            price_name=v100_price_name,
+            provider_config={
+                "provider": "ecloud",
+                "boot_volume_type": "highPerformance",
+                "boot_volume_size": 50,
+                "specs_name": "g4v.2xlarge.8",
+                "vm_type": "gpu",
+                "ram": 64,
+                "cpu": 8,
+                "server_type": "VM",
+            },
+            accelerator=1,
+            accelerator_type="v100_pcie",
+        )
+        v100_1 = GPUType(
             name="v100",
             display_name="NVIDIA Tesla V100",
             description="",
@@ -156,6 +180,55 @@ async def init_data():
                 "cpu": 8,
                 "server_type": "VM",
             },
+            accelerator=1,
+            accelerator_type="v100_pcie",
+        )
+        v100_2 = GPUType(
+            name="v100_2",
+            display_name="NVIDIA Tesla V100",
+            description="",
+            gpu_memory="32GB",
+            memory="64GB",
+            cpu=8,
+            disk_size="100GB",
+            disk_type=DiskType.SSD,
+            zones=["beijing", "guangzhou"],
+            price_name=v100_price_name,
+            provider_config={
+                "provider": "ecloud",
+                "boot_volume_type": "highPerformance",
+                "boot_volume_size": 50,
+                "specs_name": "g4v.2xlarge.8",
+                "vm_type": "gpu",
+                "ram": 64,
+                "cpu": 8,
+                "server_type": "VM",
+            },
+            accelerator=2,
+            accelerator_type="v100_pcie",
+        )
+        v100_8 = GPUType(
+            name="v100_8",
+            display_name="NVIDIA Tesla V100",
+            description="",
+            gpu_memory="32GB",
+            memory="64GB",
+            cpu=8,
+            disk_size="100GB",
+            disk_type=DiskType.SSD,
+            zones=["beijing", "guangzhou"],
+            price_name=v100_price_name,
+            provider_config={
+                "provider": "ecloud",
+                "boot_volume_type": "highPerformance",
+                "boot_volume_size": 50,
+                "specs_name": "g4v.2xlarge.8",
+                "vm_type": "gpu",
+                "ram": 64,
+                "cpu": 8,
+                "server_type": "VM",
+            },
+            accelerator=8,
             accelerator_type="v100_pcie",
         )
         cpu001 = GPUType(
@@ -179,8 +252,12 @@ async def init_data():
                 "cpu": 8,
                 "server_type": "VM",
             },
+            accelerator=0,
         )
-        await GPUType.create_or_update(session, v100)
+        await GPUType.create_or_update(session, ascend_910b_1)
+        await GPUType.create_or_update(session, v100_1)
+        await GPUType.create_or_update(session, v100_2)
+        await GPUType.create_or_update(session, v100_8)
         await GPUType.create_or_update(session, cpu001)
         coupon_class_50_name = "new_user_50_percent_off"
         coupon_class_10_name = "new_user_10_percent_off"

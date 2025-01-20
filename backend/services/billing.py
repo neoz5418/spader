@@ -308,7 +308,7 @@ async def end_resource_billing_record(
     account_id: UUID,
     resource_id: UUID,
     end_time: datetime,
-):
+) -> Optional[BillingRealTimeRecord]:
     real_time_record = await BillingRealTimeRecord.one_by_fields(
         session,
         {
@@ -342,6 +342,7 @@ async def end_resource_billing_record(
     session.add(real_time_record)
     session.add(billing_record)
     session.add(account)
+    return real_time_record
 
 
 async def renew_resource_billing_record(
@@ -354,9 +355,17 @@ async def renew_resource_billing_record(
 ):
     cache = get_redis()
     async with account_lock(cache, account_id=account_id):
-        await end_resource_billing_record(
+        realtime_record = await end_resource_billing_record(
             session, account_id=account_id, resource_id=resource_id, end_time=end_time
         )
+        if not realtime_record:
+            logger.info(
+                "resource [%s] account [%s] resource_type [%s] is not ready",
+                resource_id,
+                account_id,
+                resource_type,
+            )
+            return
         await start_resource_billing_record(
             session,
             account_id=account_id,

@@ -17,6 +17,7 @@ import { updateWorkspaceQuotaMutationRequestSchema, updateWorkspaceQuotaMutation
 import { replaceWorkspaceQuotaMutationRequestSchema, replaceWorkspaceQuotaMutationResponseSchema, replaceWorkspaceQuota422Schema, replaceWorkspaceQuotaPathParamsSchema } from "./replaceWorkspaceQuotaSchema.gen";
 import { getWorkspaceAccountQueryResponseSchema, getWorkspaceAccount422Schema, getWorkspaceAccountPathParamsSchema } from "./getWorkspaceAccountSchema.gen";
 import { rechargeWorkspaceAccountMutationRequestSchema, rechargeWorkspaceAccountMutationResponseSchema, rechargeWorkspaceAccount422Schema, rechargeWorkspaceAccountPathParamsSchema } from "./rechargeWorkspaceAccountSchema.gen";
+import { rechargeWorkspaceAccountByAdminMutationRequestSchema, rechargeWorkspaceAccountByAdminMutationResponseSchema, rechargeWorkspaceAccountByAdmin422Schema, rechargeWorkspaceAccountByAdminPathParamsSchema } from "./rechargeWorkspaceAccountByAdminSchema.gen";
 import { listWorkspaceAccountRechargesQueryResponseSchema, listWorkspaceAccountRecharges422Schema, listWorkspaceAccountRechargesPathParamsSchema, listWorkspaceAccountRechargesQueryParamsSchema } from "./listWorkspaceAccountRechargesSchema.gen";
 import { getWorkspaceAccountRechargeQueryResponseSchema, getWorkspaceAccountRecharge422Schema, getWorkspaceAccountRechargePathParamsSchema } from "./getWorkspaceAccountRechargeSchema.gen";
 import { checkWorkspaceAccountRechargeMutationResponseSchema, checkWorkspaceAccountRecharge422Schema, checkWorkspaceAccountRechargePathParamsSchema } from "./checkWorkspaceAccountRechargeSchema.gen";
@@ -30,6 +31,8 @@ import { getWorkspaceMembersQueryResponseSchema, getWorkspaceMembers422Schema, g
 import { getWorkspaceInvitationsQueryResponseSchema, getWorkspaceInvitations422Schema, getWorkspaceInvitationsPathParamsSchema } from "./getWorkspaceInvitationsSchema.gen";
 import { getWorkspaceAuditLogsQueryResponseSchema, getWorkspaceAuditLogs422Schema, getWorkspaceAuditLogsPathParamsSchema, getWorkspaceAuditLogsQueryParamsSchema } from "./getWorkspaceAuditLogsSchema.gen";
 import { listWorkspaceCouponsQueryResponseSchema, listWorkspaceCoupons422Schema, listWorkspaceCouponsPathParamsSchema, listWorkspaceCouponsQueryParamsSchema } from "./listWorkspaceCouponsSchema.gen";
+import { getInstanceQueryResponseSchema, getInstance422Schema, getInstancePathParamsSchema } from "./getInstanceSchema.gen";
+import { deleteInstanceMutationResponseSchema, deleteInstance422Schema, deleteInstancePathParamsSchema, deleteInstanceQueryParamsSchema } from "./deleteInstanceSchema.gen";
 import { createZoneMutationRequestSchema, createZoneMutationResponseSchema, createZone422Schema } from "./createZoneSchema.gen";
 import { listZonesQueryResponseSchema, listZones422Schema, listZonesQueryParamsSchema } from "./listZonesSchema.gen";
 import { listGpuTypesQueryResponseSchema, listGpuTypes422Schema, listGpuTypesQueryParamsSchema } from "./listGpuTypesSchema.gen";
@@ -39,8 +42,6 @@ import { getWorkspaceZoneQuotaQueryResponseSchema, getWorkspaceZoneQuota422Schem
 import { listInstancesQueryResponseSchema, listInstances422Schema, listInstancesQueryParamsSchema } from "./listInstancesSchema.gen";
 import { listWorkspaceInstancesQueryResponseSchema, listWorkspaceInstances422Schema, listWorkspaceInstancesPathParamsSchema, listWorkspaceInstancesQueryParamsSchema } from "./listWorkspaceInstancesSchema.gen";
 import { createInstanceMutationRequestSchema, createInstanceMutationResponseSchema, createInstance422Schema, createInstancePathParamsSchema } from "./createInstanceSchema.gen";
-import { getInstanceQueryResponseSchema, getInstance422Schema, getInstancePathParamsSchema } from "./getInstanceSchema.gen";
-import { deleteInstanceMutationResponseSchema, deleteInstance422Schema, deleteInstancePathParamsSchema } from "./deleteInstanceSchema.gen";
 import { startInstanceMutationResponseSchema, startInstance422Schema, startInstancePathParamsSchema } from "./startInstanceSchema.gen";
 import { stopInstanceMutationResponseSchema, stopInstance422Schema, stopInstancePathParamsSchema } from "./stopInstanceSchema.gen";
 import { createInstancePortForwardMutationRequestSchema, createInstancePortForwardMutationResponseSchema, createInstancePortForward422Schema, createInstancePortForwardPathParamsSchema } from "./createInstancePortForwardSchema.gen";
@@ -345,6 +346,21 @@ import { tokenMutationRequestSchema, tokenMutationResponseSchema, token422Schema
         errors: {
             422: rechargeWorkspaceAccount422Schema
         }
+    }, "recharge_workspace_account_by_admin": {
+        request: rechargeWorkspaceAccountByAdminMutationRequestSchema,
+        parameters: {
+            path: rechargeWorkspaceAccountByAdminPathParamsSchema,
+            query: undefined,
+            header: undefined
+        },
+        responses: {
+            201: rechargeWorkspaceAccountByAdminMutationResponseSchema,
+            422: rechargeWorkspaceAccountByAdmin422Schema,
+            default: rechargeWorkspaceAccountByAdminMutationResponseSchema
+        },
+        errors: {
+            422: rechargeWorkspaceAccountByAdmin422Schema
+        }
     }, "list_workspace_account_recharges": {
         request: undefined,
         parameters: {
@@ -540,6 +556,36 @@ import { tokenMutationRequestSchema, tokenMutationResponseSchema, token422Schema
         errors: {
             422: listWorkspaceCoupons422Schema
         }
+    }, "get_instance": {
+        request: undefined,
+        parameters: {
+            path: getInstancePathParamsSchema,
+            query: undefined,
+            header: undefined
+        },
+        responses: {
+            200: getInstanceQueryResponseSchema,
+            422: getInstance422Schema,
+            default: getInstanceQueryResponseSchema
+        },
+        errors: {
+            422: getInstance422Schema
+        }
+    }, "delete_instance": {
+        request: undefined,
+        parameters: {
+            path: deleteInstancePathParamsSchema,
+            query: deleteInstanceQueryParamsSchema,
+            header: undefined
+        },
+        responses: {
+            200: deleteInstanceMutationResponseSchema,
+            422: deleteInstance422Schema,
+            default: deleteInstanceMutationResponseSchema
+        },
+        errors: {
+            422: deleteInstance422Schema
+        }
     }, "create_zone": {
         request: createZoneMutationRequestSchema,
         parameters: {
@@ -674,36 +720,6 @@ import { tokenMutationRequestSchema, tokenMutationResponseSchema, token422Schema
         },
         errors: {
             422: createInstance422Schema
-        }
-    }, "get_instance": {
-        request: undefined,
-        parameters: {
-            path: getInstancePathParamsSchema,
-            query: undefined,
-            header: undefined
-        },
-        responses: {
-            200: getInstanceQueryResponseSchema,
-            422: getInstance422Schema,
-            default: getInstanceQueryResponseSchema
-        },
-        errors: {
-            422: getInstance422Schema
-        }
-    }, "delete_instance": {
-        request: undefined,
-        parameters: {
-            path: deleteInstancePathParamsSchema,
-            query: undefined,
-            header: undefined
-        },
-        responses: {
-            200: deleteInstanceMutationResponseSchema,
-            422: deleteInstance422Schema,
-            default: deleteInstanceMutationResponseSchema
-        },
-        errors: {
-            422: deleteInstance422Schema
         }
     }, "start_instance": {
         request: undefined,
@@ -1006,6 +1022,8 @@ export const paths = { "/apis/user/v1/users/me": {
         get: operations["get_workspace_account"]
     }, "/apis/workspace/v1/workspaces/{workspace}/account/recharge": {
         post: operations["recharge_workspace_account"]
+    }, "/apis/workspace/v1/workspaces/{workspace}/account/recharge_by_admin": {
+        post: operations["recharge_workspace_account_by_admin"]
     }, "/apis/workspace/v1/workspaces/{workspace}/account/recharges": {
         get: operations["list_workspace_account_recharges"]
     }, "/apis/workspace/v1/workspaces/{workspace}/account/recharges/{recharge_id}": {
@@ -1030,6 +1048,9 @@ export const paths = { "/apis/user/v1/users/me": {
         get: operations["get_workspace_audit_logs"]
     }, "/apis/workspace/v1/workspaces/{workspace}/coupons": {
         get: operations["list_workspace_coupons"]
+    }, "/apis/compute/v1/workspaces/{workspace}/instances/{name}": {
+        get: operations["get_instance"],
+        delete: operations["delete_instance"]
     }, "/apis/compute/v1/zones/": {
         post: operations["create_zone"]
     }, "/apis/compute/v1/zones": {
@@ -1047,9 +1068,6 @@ export const paths = { "/apis/user/v1/users/me": {
     }, "/apis/compute/v1/workspaces/{workspace}/instances": {
         get: operations["list_workspace_instances"],
         post: operations["create_instance"]
-    }, "/apis/compute/v1/workspaces/{workspace}/instances/{name}": {
-        get: operations["get_instance"],
-        delete: operations["delete_instance"]
     }, "/apis/compute/v1/workspaces/{workspace}/instances/{name}/start": {
         post: operations["start_instance"]
     }, "/apis/compute/v1/workspaces/{workspace}/instances/{name}/stop": {

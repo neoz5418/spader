@@ -48,6 +48,7 @@ export * from "./useListWorkspaceSshKeysHook";
 export * from "./useListWorkspaceZonesHook";
 export * from "./useListWorkspacesHook";
 export * from "./useListZonesHook";
+export * from "./useRechargeWorkspaceAccountByAdminHook";
 export * from "./useRechargeWorkspaceAccountHook";
 export * from "./useRegisterUserHook";
 export * from "./useReplaceUserQuotaHook";

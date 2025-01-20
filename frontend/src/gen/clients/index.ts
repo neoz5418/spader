@@ -49,6 +49,7 @@ export * from "./listWorkspaceZones";
 export * from "./listWorkspaces";
 export * from "./listZones";
 export * from "./rechargeWorkspaceAccount";
+export * from "./rechargeWorkspaceAccountByAdmin";
 export * from "./registerUser";
 export * from "./replaceUserQuota";
 export * from "./replaceWorkspaceQuota";

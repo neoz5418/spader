@@ -20,6 +20,9 @@ import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
     */
     name: string;
 };
+export type DeleteInstanceQueryParamsType = {
+    force?: (boolean | null);
+};
 /**
  * @description Successful Response
 */
@@ -35,5 +38,6 @@ export type DeleteInstanceMutationResponseType = OperationType;
 export type DeleteInstanceTypeMutation = {
     Response: DeleteInstanceMutationResponseType;
     PathParams: DeleteInstancePathParamsType;
+    QueryParams: DeleteInstanceQueryParamsType;
     Errors: DeleteInstance422Type;
 };

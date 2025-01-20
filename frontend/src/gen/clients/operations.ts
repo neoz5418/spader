@@ -75,6 +75,10 @@ export const operations = {
         "path": "/apis/workspace/v1/workspaces/:workspace/account/recharge",
         "method": "post"
     },
+    "recharge_workspace_account_by_admin": {
+        "path": "/apis/workspace/v1/workspaces/:workspace/account/recharge_by_admin",
+        "method": "post"
+    },
     "list_workspace_account_recharges": {
         "path": "/apis/workspace/v1/workspaces/:workspace/account/recharges",
         "method": "get"
@@ -127,6 +131,14 @@ export const operations = {
         "path": "/apis/workspace/v1/workspaces/:workspace/coupons",
         "method": "get"
     },
+    "get_instance": {
+        "path": "/apis/compute/v1/workspaces/:workspace/instances/:name",
+        "method": "get"
+    },
+    "delete_instance": {
+        "path": "/apis/compute/v1/workspaces/:workspace/instances/:name",
+        "method": "delete"
+    },
     "create_zone": {
         "path": "/apis/compute/v1/zones/",
         "method": "post"
@@ -162,14 +174,6 @@ export const operations = {
     "create_instance": {
         "path": "/apis/compute/v1/workspaces/:workspace/instances",
         "method": "post"
-    },
-    "get_instance": {
-        "path": "/apis/compute/v1/workspaces/:workspace/instances/:name",
-        "method": "get"
-    },
-    "delete_instance": {
-        "path": "/apis/compute/v1/workspaces/:workspace/instances/:name",
-        "method": "delete"
     },
     "start_instance": {
         "path": "/apis/compute/v1/workspaces/:workspace/instances/:name/start",

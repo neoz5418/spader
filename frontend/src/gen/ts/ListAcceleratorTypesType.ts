@@ -1,4 +1,4 @@
-import type { PaginatedListGpuTypePublicType } from "./PaginatedListGpuTypePublicType";
+import type { PaginatedListAcceleratorTypeType } from "./PaginatedListAcceleratorTypeType";
 import type { ErrorInternalType } from "./ErrorInternalType";
 import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
 import type { ErrorRefreshTokenCannotBeEmptyType } from "./ErrorRefreshTokenCannotBeEmptyType";
@@ -11,7 +11,6 @@ import type { ErrorUsernameOrEmailCannotBeEmptyType } from "./ErrorUsernameOrEma
 import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 
  export type ListAcceleratorTypesQueryParamsType = {
-    zone: (string | null);
     /**
      * @default 0
      * @type integer | undefined
@@ -26,7 +25,7 @@ import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 /**
  * @description Successful Response
 */
-export type ListAcceleratorTypes200Type = PaginatedListGpuTypePublicType;
+export type ListAcceleratorTypes200Type = PaginatedListAcceleratorTypeType;
 /**
  * @description Unprocessable Entity
 */
@@ -34,7 +33,7 @@ export type ListAcceleratorTypes422Type = (ErrorInternalType | ErrorInvalidArgum
 /**
  * @description Successful Response
 */
-export type ListAcceleratorTypesQueryResponseType = PaginatedListGpuTypePublicType;
+export type ListAcceleratorTypesQueryResponseType = PaginatedListAcceleratorTypeType;
 export type ListAcceleratorTypesTypeQuery = {
     Response: ListAcceleratorTypesQueryResponseType;
     QueryParams: ListAcceleratorTypesQueryParamsType;

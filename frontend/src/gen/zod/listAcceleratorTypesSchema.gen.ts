@@ -1,5 +1,5 @@
 import { z } from "@/utils/zod.ts";
-import { paginatedListGpuTypePublicSchema } from "./paginatedListGpuTypePublicSchema.gen";
+import { paginatedListAcceleratorTypeSchema } from "./paginatedListAcceleratorTypeSchema.gen";
 import { errorInternalSchema } from "./errorInternalSchema.gen";
 import { errorInvalidArgumentSchema } from "./errorInvalidArgumentSchema.gen";
 import { errorRefreshTokenCannotBeEmptySchema } from "./errorRefreshTokenCannotBeEmptySchema.gen";
@@ -12,12 +12,12 @@ import { errorUsernameOrEmailCannotBeEmptySchema } from "./errorUsernameOrEmailC
 import { errorValidationFailedSchema } from "./errorValidationFailedSchema.gen";
 
 
-export const listAcceleratorTypesQueryParamsSchema = z.object({ "zone": z.union([z.string(), z.null()]), "offset": z.number().int().min(0).default(0).optional(), "limit": z.number().int().min(1).max(100).default(20).optional() });
+export const listAcceleratorTypesQueryParamsSchema = z.object({ "offset": z.number().int().min(0).default(0).optional(), "limit": z.number().int().min(1).max(100).default(20).optional() }).optional();
 export type ListAcceleratorTypesQueryParamsSchema = z.infer<typeof listAcceleratorTypesQueryParamsSchema>;
 /**
  * @description Successful Response
  */
-export const listAcceleratorTypes200Schema = z.lazy(() => paginatedListGpuTypePublicSchema);
+export const listAcceleratorTypes200Schema = z.lazy(() => paginatedListAcceleratorTypeSchema);
 export type ListAcceleratorTypes200Schema = z.infer<typeof listAcceleratorTypes200Schema>;
 /**
  * @description Unprocessable Entity
@@ -27,5 +27,5 @@ export type ListAcceleratorTypes422Schema = z.infer<typeof listAcceleratorTypes4
 /**
  * @description Successful Response
  */
-export const listAcceleratorTypesQueryResponseSchema = z.lazy(() => paginatedListGpuTypePublicSchema);
+export const listAcceleratorTypesQueryResponseSchema = z.lazy(() => paginatedListAcceleratorTypeSchema);
 export type ListAcceleratorTypesQueryResponseSchema = z.infer<typeof listAcceleratorTypesQueryResponseSchema>;

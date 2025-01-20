@@ -1,3 +1,4 @@
+export * from "./AcceleratorTypeType";
 export * from "./ArchitectureType";
 export * from "./AuditLogActionTypeType";
 export * from "./AuditLogResourceTypeType";
@@ -98,6 +99,7 @@ export * from "./OneTimePasswordValidateTypeType";
 export * from "./OperationStatusType";
 export * from "./OperationType";
 export * from "./OperationTypeType";
+export * from "./PaginatedListAcceleratorTypeType";
 export * from "./PaginatedListAuditLogType";
 export * from "./PaginatedListBillingCouponType";
 export * from "./PaginatedListBillingRecordType";

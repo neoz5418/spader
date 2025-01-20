@@ -17,9 +17,9 @@ type ListAcceleratorTypes = {
         return: Awaited<ReturnType<ListAcceleratorTypesClient>>;
     };
 };
-export const listAcceleratorTypesQueryKey = (params: ListAcceleratorTypes["queryParams"]) => ["v5", { url: "/apis/compute/v1/accelerator_types" }, ...(params ? [params] : [])] as const;
+export const listAcceleratorTypesQueryKey = (params?: ListAcceleratorTypes["queryParams"]) => ["v5", { url: "/apis/compute/v1/accelerator_types" }, ...(params ? [params] : [])] as const;
 export type ListAcceleratorTypesQueryKey = ReturnType<typeof listAcceleratorTypesQueryKey>;
-export function listAcceleratorTypesQueryOptions(params: ListAcceleratorTypes["queryParams"], options: ListAcceleratorTypes["client"]["parameters"] = {}) {
+export function listAcceleratorTypesQueryOptions(params?: ListAcceleratorTypes["queryParams"], options: ListAcceleratorTypes["client"]["parameters"] = {}) {
     const queryKey = listAcceleratorTypesQueryKey(params);
     return queryOptions({
         queryKey,
@@ -38,7 +38,7 @@ export function listAcceleratorTypesQueryOptions(params: ListAcceleratorTypes["q
  * @summary List Accelerator Types
  * @link /apis/compute/v1/accelerator_types
  */
-export function useListAcceleratorTypesHook<TData = ListAcceleratorTypes["response"], TQueryData = ListAcceleratorTypes["response"], TQueryKey extends QueryKey = ListAcceleratorTypesQueryKey>(params: ListAcceleratorTypes["queryParams"], options: {
+export function useListAcceleratorTypesHook<TData = ListAcceleratorTypes["response"], TQueryData = ListAcceleratorTypes["response"], TQueryKey extends QueryKey = ListAcceleratorTypesQueryKey>(params?: ListAcceleratorTypes["queryParams"], options: {
     query?: Partial<QueryObserverOptions<ListAcceleratorTypes["response"], ListAcceleratorTypes["error"], TData, TQueryData, TQueryKey>>;
     client?: ListAcceleratorTypes["client"]["parameters"];
 } = {}): UseQueryResult<TData, ListAcceleratorTypes["error"]> & {
@@ -56,9 +56,9 @@ export function useListAcceleratorTypesHook<TData = ListAcceleratorTypes["respon
     query.queryKey = queryKey as TQueryKey;
     return query;
 }
-export const listAcceleratorTypesSuspenseQueryKey = (params: ListAcceleratorTypes["queryParams"]) => ["v5", { url: "/apis/compute/v1/accelerator_types" }, ...(params ? [params] : [])] as const;
+export const listAcceleratorTypesSuspenseQueryKey = (params?: ListAcceleratorTypes["queryParams"]) => ["v5", { url: "/apis/compute/v1/accelerator_types" }, ...(params ? [params] : [])] as const;
 export type ListAcceleratorTypesSuspenseQueryKey = ReturnType<typeof listAcceleratorTypesSuspenseQueryKey>;
-export function listAcceleratorTypesSuspenseQueryOptions(params: ListAcceleratorTypes["queryParams"], options: ListAcceleratorTypes["client"]["parameters"] = {}) {
+export function listAcceleratorTypesSuspenseQueryOptions(params?: ListAcceleratorTypes["queryParams"], options: ListAcceleratorTypes["client"]["parameters"] = {}) {
     const queryKey = listAcceleratorTypesSuspenseQueryKey(params);
     return queryOptions({
         queryKey,
@@ -77,7 +77,7 @@ export function listAcceleratorTypesSuspenseQueryOptions(params: ListAccelerator
  * @summary List Accelerator Types
  * @link /apis/compute/v1/accelerator_types
  */
-export function useListAcceleratorTypesHookSuspense<TData = ListAcceleratorTypes["response"], TQueryKey extends QueryKey = ListAcceleratorTypesSuspenseQueryKey>(params: ListAcceleratorTypes["queryParams"], options: {
+export function useListAcceleratorTypesHookSuspense<TData = ListAcceleratorTypes["response"], TQueryKey extends QueryKey = ListAcceleratorTypesSuspenseQueryKey>(params?: ListAcceleratorTypes["queryParams"], options: {
     query?: Partial<UseSuspenseQueryOptions<ListAcceleratorTypes["response"], ListAcceleratorTypes["error"], TData, TQueryKey>>;
     client?: ListAcceleratorTypes["client"]["parameters"];
 } = {}): UseSuspenseQueryResult<TData, ListAcceleratorTypes["error"]> & {

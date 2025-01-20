@@ -1,3 +1,4 @@
+export * from "./acceleratorTypeSchema.gen";
 export * from "./architectureSchema.gen";
 export * from "./auditLogActionTypeSchema.gen";
 export * from "./auditLogResourceTypeSchema.gen";
@@ -98,6 +99,7 @@ export * from "./oneTimePasswordValidateTypeSchema.gen";
 export * from "./operationSchema.gen";
 export * from "./operationStatusSchema.gen";
 export * from "./operationTypeSchema.gen";
+export * from "./paginatedListAcceleratorTypeSchema.gen";
 export * from "./paginatedListAuditLogSchema.gen";
 export * from "./paginatedListBillingCouponSchema.gen";
 export * from "./paginatedListBillingRecordSchema.gen";

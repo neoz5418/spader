@@ -273,15 +273,15 @@ async def check_leases_and_schedule_tasks():
 
 
 celery.add_periodic_task(
-    # crontab(minute="0", hour="*"),
-    crontab(minute="*", hour="*"),
+    crontab(minute="0", hour="*"),
+    # crontab(minute="*", hour="*"),
     measure_usage.s(),
     name="send all resource event to billing",
 )
 
 celery.add_periodic_task(
-    crontab(minute="*", hour="*"),
-    # crontab(minute="*/10"),
+    # crontab(minute="*", hour="*"),
+    crontab(minute="*/10"),
     check_leases_and_schedule_tasks.s(),
     name="check leases every 10 minutes",
 )

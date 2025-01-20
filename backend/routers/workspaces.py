@@ -28,6 +28,7 @@ from routers.types import (
     BillingRecordList,
     ExpensesResponse,
     ListExpensesResponse,
+    RechargeBase,
     RechargeStatus,
     RechargeType,
     RechargeWorkspaceAccount,
@@ -260,6 +261,27 @@ async def recharge_workspace_account(
     return recharge
 
 
+@router.post(
+    "/workspaces/{workspace}/account/recharge_by_admin",
+    dependencies=[CurrentAdminUserDep],
+    status_code=status.HTTP_201_CREATED,
+)
+async def recharge_workspace_account_by_admin(
+    session: SessionDep,
+    workspace: str,
+    recharge_in: RechargeBase,
+) -> WorkspaceAccount:
+    db_workspace = await get_workspace(session, workspace)
+    await top_up_account(
+        session,
+        account_id=db_workspace.uid,
+        amount=recharge_in.amount,
+        recharge_type=RechargeType.free,
+    )
+    await session.refresh(db_workspace)
+    return await get_realtime_account(session, account_id=db_workspace.uid)
+
+
 @router.get(
     "/workspaces/{workspace}/account/recharges",
     dependencies=[CurrentUserDep],
@@ -336,7 +358,7 @@ async def check_workspace_account_recharge(
                 session,
                 account_id=db_workspace.uid,
                 amount=db_recharge.amount,
-                free=False,
+                recharge_type=db_recharge.type,
             )
             db_recharge.status = RechargeStatus.succeeded
             await db_recharge.save(session)

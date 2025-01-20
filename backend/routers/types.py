@@ -826,8 +826,9 @@ class Image(SQLModel, table=True):
 ImageList = PaginatedList[Image]
 
 
-class RechargeType(Enum):
+class RechargeType(str, Enum):
     alipay = "alipay"
+    free = "free"
 
 
 class RechargeStatus(Enum):
@@ -849,9 +850,12 @@ class WorkspaceAccountRecharge(SQLModel, BaseModelMixin, table=True):
 WorkspaceAccountRechargeList = PaginatedList[WorkspaceAccountRecharge]
 
 
-class RechargeWorkspaceAccount(BaseModel):
+class RechargeBase(BaseModel):
     amount: int
     currency: Currency
+
+
+class RechargeWorkspaceAccount(RechargeBase):
     type: RechargeType
     callback_url: str
 

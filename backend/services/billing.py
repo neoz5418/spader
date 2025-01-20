@@ -31,6 +31,7 @@ from routers.types import (
     LeaseStatus,
     PricedResourceMixin,
     PricingDetails,
+    RechargeType,
     ResourceType,
     WorkspaceAccount,
 )
@@ -173,7 +174,10 @@ async def get_realtime_account(
 
 
 async def top_up_account(
-    session: SessionDep, account_id: UUID, amount: int, free: bool
+    session: SessionDep,
+    account_id: UUID,
+    amount: int,
+    recharge_type: RechargeType,
 ) -> None:
     cache = get_redis()
     async with account_lock(cache, account_id):
@@ -181,8 +185,6 @@ async def top_up_account(
         balance_before = account.balance
         account.balance += amount
         balance_after = account.balance
-        # if not free:
-        #     account.total_top_up += amount
         record = BillingRecord(
             type=BillingRecordType.top_up,
             amount=amount,
@@ -190,6 +192,7 @@ async def top_up_account(
             balance_before=balance_before,
             balance_after=balance_after,
             account=account_id,
+            meta_data={"charge_type": recharge_type},
         )
         session.add(record)
         session.add(account)

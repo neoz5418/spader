@@ -11,9 +11,9 @@ import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { Check, Circle, CheckCircle2 } from "lucide-react"
 
 interface CouponSectionProps {
-  form: FormInstance;
   selectedCoupon: BillingCouponType | null;
   setSelectedCoupon: (coupon: BillingCouponType|null) => void;
 }
@@ -32,14 +32,23 @@ export function CouponSection({ form, selectedCoupon, setSelectedCoupon }: Coupo
   })
 
   const filteredCoupons = coupons?.filter(
-    (coupon) =>
+    (coupon:BillingCouponType) =>
       coupon.display_name?.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
   const handleCouponSelect = (coupon: BillingCouponType) => {
-    setSelectedCoupon(coupon);
-    setOpen(false);
-    form.setValue("coupon", coupon.uid);
+    if (selectedCoupon?.uid === coupon.uid) {
+      // 如果点击的是已选中的优惠券，则取消选择
+      setSelectedCoupon(null);
+      form.setValue("coupon", null);
+      // 对话框保持打开
+    } else {
+      // 选择新的优惠券
+      setSelectedCoupon(coupon);
+      form.setValue("coupon", coupon.uid);
+      // 关闭对话框
+      setOpen(false);
+    }
   }
 
   return (
@@ -82,6 +91,7 @@ export function CouponSection({ form, selectedCoupon, setSelectedCoupon }: Coupo
                                     coupon={coupon}
                                     onClick={() => !coupon.used && handleCouponSelect(coupon)}
                                     isUsed={coupon.used}
+                                    isSelected={selectedCoupon?.uid === coupon.uid}
                                   />
                                 ))}
                               </div>
@@ -96,6 +106,8 @@ export function CouponSection({ form, selectedCoupon, setSelectedCoupon }: Coupo
                     <CouponCard
                       coupon={selectedCoupon}
                       onClick={() => {}}
+                      isUsed={selectedCoupon.used}
+                      isSelected={true}
                     />
                   )}
                 </div>
@@ -111,10 +123,11 @@ export function CouponSection({ form, selectedCoupon, setSelectedCoupon }: Coupo
 }
 
 
-function CouponCard({ coupon, onClick, isUsed }: { 
+function CouponCard({ coupon, onClick, isUsed, isSelected }: { 
   coupon: BillingCouponType; 
   onClick: () => void;
-  isUsed?: boolean;
+  isUsed?: boolean; 
+  isSelected?: boolean;
 }) {
   return (
     <Card 
@@ -128,13 +141,41 @@ function CouponCard({ coupon, onClick, isUsed }: {
     >
       <div className="flex">
         {/* 左侧金额部分 */}
-        <div className={cn(
-          "w-32 p-6 flex flex-col items-center justify-center text-primary-foreground",
-          isUsed ? "bg-gray-400" : "bg-orange-300 text-purple-950"
-        )}>
-          <div className="text-2xl font-bold">¥{coupon.max_discount_value}</div>
-          <div className="text-sm">满{coupon.min_purchase}可用</div>
-        </div>
+        {(() => {
+          switch(coupon.type) {  
+            case "discount":
+              return (
+                <div className={cn(
+                  "w-32 p-6 flex flex-col items-center justify-center text-primary-foreground",
+                  isUsed ? "bg-gray-400" : "bg-orange-300 text-purple-950"
+                )}>
+                  <div className="text-2xl font-bold">¥{coupon.max_discount_value}</div>
+                  <div className="text-sm">满{coupon.min_purchase}可用</div>
+                </div>
+              );
+            case "cash":
+              return (
+                <div className={cn(
+                  "w-32 p-6 flex flex-col items-center justify-center text-primary-foreground",
+                  isUsed ? "bg-gray-400" : "bg-orange-300 text-purple-950"
+                )}>
+                  <div className="text-2xl font-bold">{coupon.discount_rate/10}折</div>
+                  <div className="text-sm">满{coupon.min_purchase}可用</div>
+                </div>
+              );
+            default:
+              return (
+                <div className={cn(
+                  "w-32 p-6 flex flex-col items-center justify-center text-primary-foreground",
+                  isUsed ? "bg-gray-400" : "bg-orange-300 text-purple-950"
+                )}>
+                  <div className="text-2xl font-bold">¥{coupon.max_discount_value}</div>
+                  <div className="text-sm">满{coupon.min_purchase}可用</div>
+                </div>
+              );
+          }
+        })()}
+        
         
         {/* 右侧信息部分 */}
         <div className="flex-1 p-4">
@@ -145,10 +186,18 @@ function CouponCard({ coupon, onClick, isUsed }: {
                 {coupon.description || "优惠券编号: " + coupon.uid}
               </p>
             </div>
-            {isUsed && (
+            {isUsed ? (
               <Badge variant="secondary" className="bg-gray-200 text-gray-700">
                 已使用
               </Badge>
+            ) : (
+              <div className="text-primary">
+                {isSelected ? (
+                  <CheckCircle2 className="h-5 w-5" />
+                ) : (
+                  <Circle className="h-5 w-5" />
+                )}
+              </div>
             )}
           </div>
           

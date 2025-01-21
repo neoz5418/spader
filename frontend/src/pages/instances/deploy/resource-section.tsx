@@ -167,7 +167,7 @@ export function ResourceSection({ form, selectedMethod, selectedInstanceType, se
     setCurrentAcceleratorType([])
     setSelectedInstanceType(null)
     form.setValue("gpu_type", "")
-    form.setValue("zone", "")
+    form.setValue("zone", "auto")
   }
 
 

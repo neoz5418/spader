@@ -182,32 +182,32 @@ export default function DeployForm() {
 					<Form {...form}>
 						<form
 							onSubmit={form.handleSubmit(onSubmit, onSubmitError)}
-							className="space-y-8"
+							className="space-y-8 "
 						>
-                            {/* <FormField
+							{/* <FormField
 								name="auto_renew_period"
 								type={'hidden'}
 								control={form.control}
 								render={({ field }) => (
-                                    <input value={field.value || ""}/>
-                                )}
-                            />
-                            <FormField
-                                name="gpu_type"
+									<input value={field.value || ""}/>
+								)}
+							/>
+							<FormField
+								name="gpu_type"
 								type={'hidden'}
-                                control={form.control}
-                                render={({ field }) => (
-                                    <input value={field.value || ""}/>
-                                )}
-                            />
-                            <FormField
-                                name="zone"
+								control={form.control}
+								render={({ field }) => (
+									<input value={field.value || ""}/>
+								)}
+							/>
+							<FormField
+								name="zone"
 								type={'hidden'}
-                                control={form.control}
-                                render={({ field }) => (
-                                    <input value={field.value || ""}/>
-                                )}
-                            />
+								control={form.control}
+								render={({ field }) => (
+									<input value={field.value || ""}/>
+								)}
+							/>
 							<FormField
 								name="image"
 								control={form.control}
@@ -224,8 +224,8 @@ export default function DeployForm() {
 								)}
 							/> */}
 
-                            <div className="min-h-screen pb-20">
-                                <div className="mx-auto max-w-7xl p-6 space-y-8">
+							<div className="min-h-screen pb-20">
+								<div className="mx-auto max-w-7xl p-6 space-y-8">
 									<FormField
 										control={form.control}
 										name="name"
@@ -240,7 +240,7 @@ export default function DeployForm() {
 											</FormItem>
 										)}
 									/>
-                                    <ResourceSection 
+									<ResourceSection 
 										form={form} 
 										selectedMethod={selectedMethod}
 										selectedInstanceType={selectedInstanceType}
@@ -252,24 +252,24 @@ export default function DeployForm() {
 										form={form} 
 										selectedImage={selectedImage} 
 										setSelectedImage={setSelectedImage}
-									/>  
+									/> 
 									<BillingSection 
 										form={form}
 										selectedMethod={selectedMethod}
 										setSelectedMethod={setSelectedMethod}
-									/>
+										/>
 									<CouponSection 
 										form={form}
 										selectedCoupon={selectedCoupon}
 										setSelectedCoupon={setSelectedCoupon}
-									/>                
-                                </div>
-                                <FloatingFooter
+									/>  
+								</div>
+								<FloatingFooter
 									selectedMethod={selectedMethod}
 									selectedCoupon={selectedCoupon}
 									selectedInstanceType={selectedInstanceType}
 								/>
-                            </div>
+							</div>
 						</form>
 					</Form>
 				</ContentSection>

@@ -54,7 +54,7 @@ export function TransactionsTable({ startDate, endDate, currency }: Transactions
             <TableHead>金额</TableHead>
             <TableHead>资源类型</TableHead>
             <TableHead>资源ID</TableHead>
-            <TableHead>{page}优惠码</TableHead>
+            <TableHead>优惠码</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

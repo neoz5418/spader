@@ -77,7 +77,7 @@ export function FloatingFooter({ selectedMethod, selectedCoupon, selectedInstanc
             {/* 费用详情悬浮框 */}
             <HoverCard>
               <HoverCardTrigger asChild>
-                <Button variant="ghost" size="sm" className="h-auto p-0">
+                <Button type="button" variant="ghost" size="sm" className="h-auto p-0">
                   <InfoIcon className="h-4 w-4 text-muted-foreground" />
                 </Button>
               </HoverCardTrigger>

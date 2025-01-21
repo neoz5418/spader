@@ -315,7 +315,7 @@ class BillingRecordType(str, Enum):
 
 
 # 定义计费记录表
-class BillingRecord(SQLModel, ActiveRecordMixin, table=True):
+class BillingRecordBase(SQLModel, ActiveRecordMixin):
     uid: UUID = UID  # 记录唯一标识
     type: BillingRecordType = Field(index=True)  # 记录类型（扣款或充值）
     resource_type: Optional[ResourceType]  # 资源类型（如充值，则无）
@@ -331,6 +331,10 @@ class BillingRecord(SQLModel, ActiveRecordMixin, table=True):
     meta_data: Optional[dict] = Field(
         default_factory=dict, sa_column=Column(JSON)
     )  # 额外信息（如备注，折扣）
+
+
+class BillingRecord(BillingRecordBase, table=True):
+    pass
 
 
 BillingRecordList = PaginatedList[BillingRecord]
@@ -506,6 +510,13 @@ class BillingCoupon(SQLModel, ActiveRecordMixin, BillingCouponBase, table=True):
 BillingCouponList = PaginatedList[BillingCoupon]
 
 
+class BillingRecordPublic(BillingRecordBase):
+    coupon_detail: Optional[BillingCoupon] = None
+
+
+BillingRecordPublicList = PaginatedList[BillingRecordPublic]
+
+
 # 分配规则枚举
 class BillingCouponDistributionRule(str, Enum):
     manual = "manual"  # 手动分配
@@ -572,7 +583,6 @@ class GPUTypeBase(SQLModel):
     zones: list[str] = Field(sa_column=Column(JSON))
     accelerator_type: Optional[str] = None
     accelerator: Optional[int] = None
-
 
 
 class GPUTypePublic(GPUTypeBase):
@@ -812,7 +822,7 @@ class ImageVisibility(Enum):
     private = "private"
 
 
-class Image(SQLModel, ActiveRecordMixin,table=True):
+class Image(SQLModel, ActiveRecordMixin, table=True):
     name: Name
     uid: UUID = UID
 
@@ -824,10 +834,11 @@ class Image(SQLModel, ActiveRecordMixin,table=True):
 
     visibility: ImageVisibility
     workspace: str = ""
-    
+
     meta_data: Optional[dict] = Field(
-            default_factory=dict, sa_column=Column(JSON)
-        )  # 额外信息（如 CUDA 版本、python 版本等）
+        default_factory=dict, sa_column=Column(JSON)
+    )  # 额外信息（如 CUDA 版本、python 版本等）
+
 
 ImageList = PaginatedList[Image]
 
@@ -930,5 +941,3 @@ class AcceleratorType(AcceleratorTypeBase, BaseModelMixin, table=True):
 
 
 AcceleratorTypeList = PaginatedList[AcceleratorType]
-
-

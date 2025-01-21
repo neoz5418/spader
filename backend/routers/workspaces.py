@@ -25,7 +25,8 @@ from routers.types import (
     BillingCoupon,
     BillingCouponList,
     BillingRecord,
-    BillingRecordList,
+    BillingRecordPublic,
+    BillingRecordPublicList,
     ExpensesResponse,
     ListExpensesResponse,
     RechargeBase,
@@ -65,6 +66,7 @@ from services.common import (
     utcnow,
 )
 from services.billing import get_realtime_account, top_up_account
+from services.lru_resource_cache import get_coupon
 from services.payment import alipay_recharge, check_alipay_recharge
 
 logger = logging.getLogger(__name__)
@@ -374,7 +376,7 @@ async def list_workspace_billing_records(
     workspace: str,
     params: ListParamsDep,
     resource_id: Optional[UUID] = None,
-) -> BillingRecordList:
+) -> BillingRecordPublicList:
     fields = {}
     if resource_id:
         fields["resource_id"] = resource_id
@@ -387,7 +389,15 @@ async def list_workspace_billing_records(
         offset=params.offset,
         limit=params.limit,
     )
-    return billing_records
+    public_list = BillingRecordPublicList(
+        pagination=billing_records.pagination, items=[]
+    )
+    for record in billing_records.items:
+        public_record = BillingRecordPublic.model_validate(record)
+        public_record.coupon_detail = await get_coupon(session, public_record.coupon)
+        public_list.items.append(public_record)
+
+    return public_list
 
 
 @router.get(

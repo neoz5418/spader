@@ -239,6 +239,10 @@ export const operations = {
         "path": "/apis/compute/v1/workspaces/:workspace/instances/calculate-cost",
         "method": "post"
     },
+    "list_accelerator_types": {
+        "path": "/apis/compute/v1/accelerator_types",
+        "method": "get"
+    },
     "auth": {
         "path": "/apis/oidc/v1/auth",
         "method": "post"

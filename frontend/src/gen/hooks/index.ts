@@ -29,6 +29,7 @@ export * from "./useGetWorkspaceMembersHook";
 export * from "./useGetWorkspaceOperationHook";
 export * from "./useGetWorkspaceQuotaHook";
 export * from "./useGetWorkspaceZoneQuotaHook";
+export * from "./useListAcceleratorTypesHook";
 export * from "./useListFilesInFileStorageHook";
 export * from "./useListGpuTypesHook";
 export * from "./useListInstancePortForwardsHook";

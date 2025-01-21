@@ -165,6 +165,7 @@ export const getInstancesColumns = (refetch: () => void) => {
 						showToast("实例名称不匹配");
 						return;
 					}
+					console.log("stop instance", instance.workspace, instance.name);
 					stopInstance(instance.workspace, instance.name)
 						.then(() => {
 							setShowStopDialog(false);

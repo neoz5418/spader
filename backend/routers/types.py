@@ -570,6 +570,9 @@ class GPUTypeBase(SQLModel):
     disk_size: ByteSize
     disk_type: DiskType
     zones: list[str] = Field(sa_column=Column(JSON))
+    accelerator_type: Optional[str] = None
+    accelerator: Optional[int] = None
+
 
 
 class GPUTypePublic(GPUTypeBase):
@@ -809,7 +812,7 @@ class ImageVisibility(Enum):
     private = "private"
 
 
-class Image(SQLModel, table=True):
+class Image(SQLModel, ActiveRecordMixin,table=True):
     name: Name
     uid: UUID = UID
 
@@ -821,7 +824,10 @@ class Image(SQLModel, table=True):
 
     visibility: ImageVisibility
     workspace: str = ""
-
+    
+    meta_data: Optional[dict] = Field(
+            default_factory=dict, sa_column=Column(JSON)
+        )  # 额外信息（如 CUDA 版本、python 版本等）
 
 ImageList = PaginatedList[Image]
 
@@ -895,3 +901,34 @@ class AuditLog(SQLModel, ActiveRecordMixin, table=True):
 
 
 AuditLogList = PaginatedList[AuditLog]
+
+
+class AcceleratorTypeBase(SQLModel):
+    name: str = Field(primary_key=True, nullable=False)
+    display_name: DisplayName
+    description: Optional[str] = None
+    enable: bool = False
+    gpu_memory: ByteSize
+    memory_size: ByteSize
+    memory_type: str
+    memory_bandwidth: Optional[str] = None
+    int8_tensor_core: Optional[str] = None
+    bf16_tensor_core: Optional[str] = None
+    tf32_tensor_core: Optional[str] = None
+    fp32: Optional[str] = None
+    fp64: Optional[str] = None
+    mig: Optional[str] = None
+    l2_cache: Optional[str] = None
+    power: Optional[str] = None
+    pcie: Optional[str] = None
+    nvlink: Optional[str] = None
+    architecture: Optional[str] = None
+
+
+class AcceleratorType(AcceleratorTypeBase, BaseModelMixin, table=True):
+    pass
+
+
+AcceleratorTypeList = PaginatedList[AcceleratorType]
+
+

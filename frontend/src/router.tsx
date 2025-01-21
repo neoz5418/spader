@@ -121,7 +121,7 @@ const router = createBrowserRouter([{
           {
             path: 'instances/deploy',
             lazy: async () => ({
-              Component: (await import('@/pages/instances/deploy.tsx')).default,
+              Component: (await import('@/pages/instances/deply2.tsx')).default,
             }),
           },
           {

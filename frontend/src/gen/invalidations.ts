@@ -62,6 +62,7 @@ import type { UseMutationOptions } from "@tanstack/react-query";
     "useUpdateImageHook": UseMutationOptions<UpdateImageMutationResponseType, unknown, void>["onSuccess"];
     "useListWorkspaceImagesHook": UseMutationOptions<ListWorkspaceImagesQueryResponseType, unknown, void>["onSuccess"];
     "useCalculateInstanceCostHook": UseMutationOptions<CalculateInstanceCostMutationResponseType, unknown, CalculateInstanceCostMutationRequestType>["onSuccess"];
+    "useListAcceleratorTypesHook": UseMutationOptions<ListAcceleratorTypesQueryResponseType, unknown, void>["onSuccess"];
     "useAuthHook": UseMutationOptions<AuthMutationResponseType, unknown, AuthMutationRequestType>["onSuccess"];
     "useTokenHook": UseMutationOptions<TokenMutationResponseType, unknown, TokenMutationRequestType>["onSuccess"];
 };

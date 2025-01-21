@@ -58,6 +58,7 @@ import { createImageMutationRequestSchema, createImageMutationResponseSchema, cr
 import { updateImageMutationResponseSchema, updateImage422Schema, updateImagePathParamsSchema } from "./updateImageSchema.gen";
 import { listWorkspaceImagesQueryResponseSchema, listWorkspaceImages422Schema, listWorkspaceImagesPathParamsSchema, listWorkspaceImagesQueryParamsSchema } from "./listWorkspaceImagesSchema.gen";
 import { calculateInstanceCostMutationRequestSchema, calculateInstanceCostMutationResponseSchema, calculateInstanceCost422Schema, calculateInstanceCostPathParamsSchema } from "./calculateInstanceCostSchema.gen";
+import { listAcceleratorTypesQueryResponseSchema, listAcceleratorTypes422Schema, listAcceleratorTypesQueryParamsSchema } from "./listAcceleratorTypesSchema.gen";
 import { authMutationRequestSchema, authMutationResponseSchema, auth422Schema } from "./authSchema.gen";
 import { tokenMutationRequestSchema, tokenMutationResponseSchema, token422Schema } from "./tokenSchema.gen";
 
@@ -961,6 +962,21 @@ import { tokenMutationRequestSchema, tokenMutationResponseSchema, token422Schema
         errors: {
             422: calculateInstanceCost422Schema
         }
+    }, "list_accelerator_types": {
+        request: undefined,
+        parameters: {
+            path: undefined,
+            query: listAcceleratorTypesQueryParamsSchema,
+            header: undefined
+        },
+        responses: {
+            200: listAcceleratorTypesQueryResponseSchema,
+            422: listAcceleratorTypes422Schema,
+            default: listAcceleratorTypesQueryResponseSchema
+        },
+        errors: {
+            422: listAcceleratorTypes422Schema
+        }
     }, "auth": {
         request: authMutationRequestSchema,
         parameters: {
@@ -1099,6 +1115,8 @@ export const paths = { "/apis/user/v1/users/me": {
         get: operations["list_workspace_images"]
     }, "/apis/compute/v1/workspaces/{workspace}/instances/calculate-cost": {
         post: operations["calculate_instance_cost"]
+    }, "/apis/compute/v1/accelerator_types": {
+        get: operations["list_accelerator_types"]
     }, "/apis/oidc/v1/auth": {
         post: operations["auth"]
     }, "/apis/oidc/v1/token": {

@@ -18,15 +18,25 @@ from routers.types import (
     User,
     Workspace,
     Zone,
+    Image,
+    ImageVisibility,
+    Architecture
 )
 from services.security import get_secret_hash
 from settings import get_settings
+from services.db_accelerator import init_accelerator_types
 
 sqlite_file_name = "database.db"
 sqlite_url = f"sqlite+aiosqlite:///{sqlite_file_name}"
 
 connect_args = {"check_same_thread": False}
 engine = create_async_engine(sqlite_url, connect_args=connect_args, future=True)
+
+import logging
+logging.basicConfig()
+logger = logging.getLogger('sqlalchemy.engine')
+logger.setLevel(logging.DEBUG)
+# run sqlmodel code after this
 
 
 async def create_db_and_tables():
@@ -70,6 +80,9 @@ async def init_admin_user():
 
 
 async def init_data():
+    # async with engine.begin() as conn:
+    #     await conn.run_sync(SQLModel.metadata.create_all)
+
     async with AsyncSession(engine) as session:
         beijing = Zone(
             name="beijing",
@@ -115,9 +128,9 @@ async def init_data():
             currency=Currency.CNY,
             real_time=10000,
             one_hour=10000,
-            one_day=240000,
-            one_month=7200000,
-            one_week=1680000,
+            one_day=230000,
+            one_month=7100000,
+            one_week=1660000,
         )
         cpu001_price_name = "cpu001-cny"
         cpu001_price = BillingPrice(
@@ -131,7 +144,31 @@ async def init_data():
         )
         await BillingPrice.create_or_update(session, v100_price)
         await BillingPrice.create_or_update(session, cpu001_price)
-        v100 = GPUType(
+        ascend_910b_1 = GPUType(
+            name="ascend_910b_1",
+            display_name="Huawei Ascend 910B",
+            description="",
+            gpu_memory="32GB",
+            memory="64GB",
+            cpu=8,
+            disk_size="100GB",
+            disk_type=DiskType.SSD,
+            zones=["beijing", "guangzhou"],
+            price_name=v100_price_name,
+            provider_config={
+                "provider": "ecloud",
+                "boot_volume_type": "highPerformance",
+                "boot_volume_size": 50,
+                "specs_name": "g4v.2xlarge.8",
+                "vm_type": "gpu",
+                "ram": 64,
+                "cpu": 8,
+                "server_type": "VM",
+            },
+            accelerator=1,
+            accelerator_type="ascend_910b",
+        )
+        v100_1 = GPUType(
             name="v100",
             display_name="NVIDIA Tesla V100",
             description="",
@@ -152,6 +189,56 @@ async def init_data():
                 "cpu": 8,
                 "server_type": "VM",
             },
+            accelerator=1,
+            accelerator_type="v100_pcie",
+        )
+        v100_2 = GPUType(
+            name="v100_2",
+            display_name="NVIDIA Tesla V100",
+            description="",
+            gpu_memory="32GB",
+            memory="64GB",
+            cpu=8,
+            disk_size="100GB",
+            disk_type=DiskType.SSD,
+            zones=["beijing", "guangzhou"],
+            price_name=v100_price_name,
+            provider_config={
+                "provider": "ecloud",
+                "boot_volume_type": "highPerformance",
+                "boot_volume_size": 50,
+                "specs_name": "g4v.2xlarge.8",
+                "vm_type": "gpu",
+                "ram": 64,
+                "cpu": 8,
+                "server_type": "VM",
+            },
+            accelerator=2,
+            accelerator_type="v100_pcie",
+        )
+        v100_8 = GPUType(
+            name="v100_8",
+            display_name="NVIDIA Tesla V100",
+            description="",
+            gpu_memory="32GB",
+            memory="64GB",
+            cpu=8,
+            disk_size="100GB",
+            disk_type=DiskType.SSD,
+            zones=["beijing", "guangzhou"],
+            price_name=v100_price_name,
+            provider_config={
+                "provider": "ecloud",
+                "boot_volume_type": "highPerformance",
+                "boot_volume_size": 50,
+                "specs_name": "g4v.2xlarge.8",
+                "vm_type": "gpu",
+                "ram": 64,
+                "cpu": 8,
+                "server_type": "VM",
+            },
+            accelerator=8,
+            accelerator_type="v100_pcie",
         )
         cpu001 = GPUType(
             name="cpu001",
@@ -174,8 +261,12 @@ async def init_data():
                 "cpu": 8,
                 "server_type": "VM",
             },
+            accelerator=0,
         )
-        await GPUType.create_or_update(session, v100)
+        await GPUType.create_or_update(session, ascend_910b_1)
+        await GPUType.create_or_update(session, v100_1)
+        await GPUType.create_or_update(session, v100_2)
+        await GPUType.create_or_update(session, v100_8)
         await GPUType.create_or_update(session, cpu001)
         coupon_class_50_name = "new_user_50_percent_off"
         coupon_class_10_name = "new_user_10_percent_off"
@@ -208,3 +299,40 @@ async def init_data():
             coupon_class_10.name = coupon_class_10_name + "00" + str(i)
             await BillingCouponClass.create_or_update(session, coupon_class_50)
             await BillingCouponClass.create_or_update(session, coupon_class_10)
+        
+        image1 = Image(
+            name="image0001",
+            display_name="基础镜像（PyTorch 2.4.0）",
+            description="包含深度学习基础软件，如：深度学习框架、CUDA、PyTorch等",
+            url="pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04",
+            visibility=ImageVisibility.public,
+            workspace="default",
+            metadata={
+                "version": "2.4.0",
+                "python_version": "3.11",
+                "cuda_version": "12.4.1",
+                "os": "ubuntu22.04",
+            },
+            architecture=Architecture.amd64,
+        )
+        image2 = Image(
+            name="image0002",
+            display_name="基础镜像（PyTorch 2.5.0）",
+            description="包含深度学习基础软件，如：深度学习框架、CUDA、PyTorch等",
+            url="pytorch:2.5.0-py3.11-cuda12.4.1-devel-ubuntu22.04",
+            visibility=ImageVisibility.public,
+            workspace="default",
+            metadata={
+                "version": "2.5.0",
+                "python_version": "3.12",
+                "cuda_version": "12.4.1",
+                "os": "ubuntu22.04",
+            },
+            architecture=Architecture.amd64,
+        )
+        await Image.create_or_update(session, image1)
+        await Image.create_or_update(session, image2)
+
+        # 添加加速器类型数据
+        await init_accelerator_types(session)
+

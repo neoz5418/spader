@@ -43,6 +43,8 @@ from routers.types import (
     Zone,
     ZoneBase,
     ZoneList,
+    AcceleratorType,
+    AcceleratorTypeList,
 )
 from services.billing import (
     calculate_pricing_details,
@@ -738,3 +740,23 @@ async def calculate_instance_cost(
         account=db_workspace.uid,
     )
     return InstanceCost(coupon=coupon, **pricing_details.model_dump())
+
+
+@router.get(
+    "/accelerator_types",
+    dependencies=[CurrentAdminUserDep],
+)
+async def list_accelerator_types(
+    session: SessionDep,
+    params: ListParamsDep,
+) -> AcceleratorTypeList:
+    accelerator_type_list = await AcceleratorType.paginated_by_query(
+        session=session,
+        offset=params.offset,
+        limit=params.limit,
+        fields={"enable": True},
+    )
+    public_list = AcceleratorTypeList(pagination=accelerator_type_list.pagination, items=[])
+    for accelerator_type in accelerator_type_list.items:
+        public_list.items.append(accelerator_type)
+    return public_list

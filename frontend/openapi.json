@@ -2450,9 +2450,17 @@
             }
           },
           {
+            "name": "resource_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/ResourceType"
+            }
+          },
+          {
             "name": "timezone",
             "in": "query",
-            "required": true,
+            "required": false,
             "schema": {
               "type": "string",
               "minLength": 1,
@@ -3988,6 +3996,230 @@
         }
       }
     },
+    "/apis/compute/v1/workspaces/{workspace}/instances/{name}": {
+      "get": {
+        "tags": [
+          "compute"
+        ],
+        "summary": "Get Instance",
+        "operationId": "get_instance",
+        "security": [
+          {
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Workspace"
+            }
+          },
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Name"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Instance"
+                }
+              }
+            }
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ErrorInternal"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorInvalidArgument"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorRefreshTokenCannotBeEmpty"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorRefreshTokenExpired"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorRefreshTokenInvalid"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorInsufficientBalance"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorForbidden"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorUnauthorized"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorUsernameOrEmailCannotBeEmpty"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorValidationFailed"
+                    }
+                  ],
+                  "discriminator": {
+                    "propertyName": "type",
+                    "mapping": {
+                      "Internal": "#/components/schemas/ErrorInternal",
+                      "InvalidArgument": "#/components/schemas/ErrorInvalidArgument",
+                      "RefreshTokenCannotBeEmpty": "#/components/schemas/ErrorRefreshTokenCannotBeEmpty",
+                      "RefreshTokenExpired": "#/components/schemas/ErrorRefreshTokenExpired",
+                      "RefreshTokenInvalid": "#/components/schemas/ErrorRefreshTokenInvalid",
+                      "InsufficientBalance": "#/components/schemas/ErrorInsufficientBalance",
+                      "Forbidden": "#/components/schemas/ErrorForbidden",
+                      "Unauthorized": "#/components/schemas/ErrorUnauthorized",
+                      "UsernameOrEmailCannotBeEmpty": "#/components/schemas/ErrorUsernameOrEmailCannotBeEmpty",
+                      "ValidationFailed": "#/components/schemas/ErrorValidationFailed"
+                    }
+                  },
+                  "title": "Response 422 Get Instance Apis Compute V1 Workspaces  Workspace  Instances  Name  Get"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "compute"
+        ],
+        "summary": "Delete Instance",
+        "operationId": "delete_instance",
+        "security": [
+          {
+            "OAuth2PasswordBearer": [
+              "permission_regular_user"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Workspace"
+            }
+          },
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Name"
+            }
+          },
+          {
+            "name": "force",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Force"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Operation"
+                }
+              }
+            }
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ErrorInternal"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorInvalidArgument"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorRefreshTokenCannotBeEmpty"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorRefreshTokenExpired"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorRefreshTokenInvalid"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorInsufficientBalance"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorForbidden"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorUnauthorized"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorUsernameOrEmailCannotBeEmpty"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorValidationFailed"
+                    }
+                  ],
+                  "discriminator": {
+                    "propertyName": "type",
+                    "mapping": {
+                      "Internal": "#/components/schemas/ErrorInternal",
+                      "InvalidArgument": "#/components/schemas/ErrorInvalidArgument",
+                      "RefreshTokenCannotBeEmpty": "#/components/schemas/ErrorRefreshTokenCannotBeEmpty",
+                      "RefreshTokenExpired": "#/components/schemas/ErrorRefreshTokenExpired",
+                      "RefreshTokenInvalid": "#/components/schemas/ErrorRefreshTokenInvalid",
+                      "InsufficientBalance": "#/components/schemas/ErrorInsufficientBalance",
+                      "Forbidden": "#/components/schemas/ErrorForbidden",
+                      "Unauthorized": "#/components/schemas/ErrorUnauthorized",
+                      "UsernameOrEmailCannotBeEmpty": "#/components/schemas/ErrorUsernameOrEmailCannotBeEmpty",
+                      "ValidationFailed": "#/components/schemas/ErrorValidationFailed"
+                    }
+                  },
+                  "title": "Response 422 Delete Instance Apis Compute V1 Workspaces  Workspace  Instances  Name  Delete"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          }
+        }
+      }
+    },
     "/apis/compute/v1/zones/": {
       "post": {
         "tags": [
@@ -5091,214 +5323,6 @@
                     }
                   },
                   "title": "Response 422 Create Instance Apis Compute V1 Workspaces  Workspace  Instances Post"
-                }
-              }
-            },
-            "description": "Unprocessable Entity"
-          }
-        }
-      }
-    },
-    "/apis/compute/v1/workspaces/{workspace}/instances/{name}": {
-      "get": {
-        "tags": [
-          "compute"
-        ],
-        "summary": "Get Instance",
-        "operationId": "get_instance",
-        "security": [
-          {
-            "OAuth2PasswordBearer": [
-              "permission_regular_user"
-            ]
-          }
-        ],
-        "parameters": [
-          {
-            "name": "workspace",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "title": "Workspace"
-            }
-          },
-          {
-            "name": "name",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "title": "Name"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Instance"
-                }
-              }
-            }
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "oneOf": [
-                    {
-                      "$ref": "#/components/schemas/ErrorInternal"
-                    },
-                    {
-                      "$ref": "#/components/schemas/ErrorInvalidArgument"
-                    },
-                    {
-                      "$ref": "#/components/schemas/ErrorRefreshTokenCannotBeEmpty"
-                    },
-                    {
-                      "$ref": "#/components/schemas/ErrorRefreshTokenExpired"
-                    },
-                    {
-                      "$ref": "#/components/schemas/ErrorRefreshTokenInvalid"
-                    },
-                    {
-                      "$ref": "#/components/schemas/ErrorInsufficientBalance"
-                    },
-                    {
-                      "$ref": "#/components/schemas/ErrorForbidden"
-                    },
-                    {
-                      "$ref": "#/components/schemas/ErrorUnauthorized"
-                    },
-                    {
-                      "$ref": "#/components/schemas/ErrorUsernameOrEmailCannotBeEmpty"
-                    },
-                    {
-                      "$ref": "#/components/schemas/ErrorValidationFailed"
-                    }
-                  ],
-                  "discriminator": {
-                    "propertyName": "type",
-                    "mapping": {
-                      "Internal": "#/components/schemas/ErrorInternal",
-                      "InvalidArgument": "#/components/schemas/ErrorInvalidArgument",
-                      "RefreshTokenCannotBeEmpty": "#/components/schemas/ErrorRefreshTokenCannotBeEmpty",
-                      "RefreshTokenExpired": "#/components/schemas/ErrorRefreshTokenExpired",
-                      "RefreshTokenInvalid": "#/components/schemas/ErrorRefreshTokenInvalid",
-                      "InsufficientBalance": "#/components/schemas/ErrorInsufficientBalance",
-                      "Forbidden": "#/components/schemas/ErrorForbidden",
-                      "Unauthorized": "#/components/schemas/ErrorUnauthorized",
-                      "UsernameOrEmailCannotBeEmpty": "#/components/schemas/ErrorUsernameOrEmailCannotBeEmpty",
-                      "ValidationFailed": "#/components/schemas/ErrorValidationFailed"
-                    }
-                  },
-                  "title": "Response 422 Get Instance Apis Compute V1 Workspaces  Workspace  Instances  Name  Get"
-                }
-              }
-            },
-            "description": "Unprocessable Entity"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "compute"
-        ],
-        "summary": "Delete Instance",
-        "operationId": "delete_instance",
-        "security": [
-          {
-            "OAuth2PasswordBearer": [
-              "permission_regular_user"
-            ]
-          }
-        ],
-        "parameters": [
-          {
-            "name": "workspace",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "title": "Workspace"
-            }
-          },
-          {
-            "name": "name",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "title": "Name"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Operation"
-                }
-              }
-            }
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "oneOf": [
-                    {
-                      "$ref": "#/components/schemas/ErrorInternal"
-                    },
-                    {
-                      "$ref": "#/components/schemas/ErrorInvalidArgument"
-                    },
-                    {
-                      "$ref": "#/components/schemas/ErrorRefreshTokenCannotBeEmpty"
-                    },
-                    {
-                      "$ref": "#/components/schemas/ErrorRefreshTokenExpired"
-                    },
-                    {
-                      "$ref": "#/components/schemas/ErrorRefreshTokenInvalid"
-                    },
-                    {
-                      "$ref": "#/components/schemas/ErrorInsufficientBalance"
-                    },
-                    {
-                      "$ref": "#/components/schemas/ErrorForbidden"
-                    },
-                    {
-                      "$ref": "#/components/schemas/ErrorUnauthorized"
-                    },
-                    {
-                      "$ref": "#/components/schemas/ErrorUsernameOrEmailCannotBeEmpty"
-                    },
-                    {
-                      "$ref": "#/components/schemas/ErrorValidationFailed"
-                    }
-                  ],
-                  "discriminator": {
-                    "propertyName": "type",
-                    "mapping": {
-                      "Internal": "#/components/schemas/ErrorInternal",
-                      "InvalidArgument": "#/components/schemas/ErrorInvalidArgument",
-                      "RefreshTokenCannotBeEmpty": "#/components/schemas/ErrorRefreshTokenCannotBeEmpty",
-                      "RefreshTokenExpired": "#/components/schemas/ErrorRefreshTokenExpired",
-                      "RefreshTokenInvalid": "#/components/schemas/ErrorRefreshTokenInvalid",
-                      "InsufficientBalance": "#/components/schemas/ErrorInsufficientBalance",
-                      "Forbidden": "#/components/schemas/ErrorForbidden",
-                      "Unauthorized": "#/components/schemas/ErrorUnauthorized",
-                      "UsernameOrEmailCannotBeEmpty": "#/components/schemas/ErrorUsernameOrEmailCannotBeEmpty",
-                      "ValidationFailed": "#/components/schemas/ErrorValidationFailed"
-                    }
-                  },
-                  "title": "Response 422 Delete Instance Apis Compute V1 Workspaces  Workspace  Instances  Name  Delete"
                 }
               }
             },
@@ -7157,6 +7181,116 @@
         }
       }
     },
+    "/apis/compute/v1/accelerator_types": {
+      "get": {
+        "tags": [
+          "compute"
+        ],
+        "summary": "List Accelerator Types",
+        "operationId": "list_accelerator_types",
+        "security": [
+          {
+            "OAuth2PasswordBearer": [
+              "permission_global_admin"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedList_AcceleratorType_"
+                }
+              }
+            }
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ErrorInternal"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorInvalidArgument"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorRefreshTokenCannotBeEmpty"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorRefreshTokenExpired"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorRefreshTokenInvalid"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorInsufficientBalance"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorForbidden"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorUnauthorized"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorUsernameOrEmailCannotBeEmpty"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorValidationFailed"
+                    }
+                  ],
+                  "discriminator": {
+                    "propertyName": "type",
+                    "mapping": {
+                      "Internal": "#/components/schemas/ErrorInternal",
+                      "InvalidArgument": "#/components/schemas/ErrorInvalidArgument",
+                      "RefreshTokenCannotBeEmpty": "#/components/schemas/ErrorRefreshTokenCannotBeEmpty",
+                      "RefreshTokenExpired": "#/components/schemas/ErrorRefreshTokenExpired",
+                      "RefreshTokenInvalid": "#/components/schemas/ErrorRefreshTokenInvalid",
+                      "InsufficientBalance": "#/components/schemas/ErrorInsufficientBalance",
+                      "Forbidden": "#/components/schemas/ErrorForbidden",
+                      "Unauthorized": "#/components/schemas/ErrorUnauthorized",
+                      "UsernameOrEmailCannotBeEmpty": "#/components/schemas/ErrorUsernameOrEmailCannotBeEmpty",
+                      "ValidationFailed": "#/components/schemas/ErrorValidationFailed"
+                    }
+                  },
+                  "title": "Response 422 List Accelerator Types Apis Compute V1 Accelerator Types Get"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          }
+        }
+      }
+    },
     "/apis/oidc/v1/auth": {
       "post": {
         "tags": [
@@ -7336,6 +7470,226 @@
   },
   "components": {
     "schemas": {
+      "AcceleratorType": {
+        "properties": {
+          "create_time": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Create Time"
+          },
+          "update_time": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Update Time"
+          },
+          "delete_time": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Delete Time"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "display_name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 64,
+                "minLength": 0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Display Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "enable": {
+            "type": "boolean",
+            "title": "Enable",
+            "default": false
+          },
+          "gpu_memory": {
+            "type": "integer",
+            "minimum": 0,
+            "title": "Gpu Memory"
+          },
+          "memory_size": {
+            "type": "integer",
+            "minimum": 0,
+            "title": "Memory Size"
+          },
+          "memory_type": {
+            "type": "string",
+            "title": "Memory Type"
+          },
+          "memory_bandwidth": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Memory Bandwidth"
+          },
+          "int8_tensor_core": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Int8 Tensor Core"
+          },
+          "bf16_tensor_core": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bf16 Tensor Core"
+          },
+          "tf32_tensor_core": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tf32 Tensor Core"
+          },
+          "fp32": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fp32"
+          },
+          "fp64": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fp64"
+          },
+          "mig": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mig"
+          },
+          "l2_cache": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "L2 Cache"
+          },
+          "power": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Power"
+          },
+          "pcie": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pcie"
+          },
+          "nvlink": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nvlink"
+          },
+          "architecture": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Architecture"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "gpu_memory",
+          "memory_size",
+          "memory_type"
+        ],
+        "title": "AcceleratorType"
+      },
       "Architecture": {
         "type": "string",
         "enum": [
@@ -8332,6 +8686,28 @@
             "type": "array",
             "title": "Zones"
           },
+          "accelerator_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Accelerator Type"
+          },
+          "accelerator": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Accelerator"
+          },
           "prices": {
             "items": {
               "$ref": "#/components/schemas/Price"
@@ -8567,6 +8943,26 @@
       },
       "InstancePublic": {
         "properties": {
+          "lease_period": {
+            "$ref": "#/components/schemas/BillingPeriod",
+            "default": "real_time"
+          },
+          "auto_renew_period": {
+            "$ref": "#/components/schemas/AutoRenewPeriod",
+            "default": "none"
+          },
+          "coupon": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Coupon"
+          },
           "create_time": {
             "type": "string",
             "format": "date-time",
@@ -8882,6 +9278,26 @@
           "4"
         ],
         "title": "OperationType"
+      },
+      "PaginatedList_AcceleratorType_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AcceleratorType"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "pagination"
+        ],
+        "title": "PaginatedList[AcceleratorType]"
       },
       "PaginatedList_AuditLog_": {
         "properties": {
@@ -9836,6 +10252,7 @@
         "properties": {
           "workspace": {
             "type": "string",
+            "format": "uuid",
             "title": "Workspace"
           },
           "balance": {

@@ -18,6 +18,9 @@ from routers.types import (
     User,
     Workspace,
     Zone,
+    Image,
+    ImageVisibility,
+    Architecture
 )
 from services.security import get_secret_hash
 from settings import get_settings
@@ -28,6 +31,12 @@ sqlite_url = f"sqlite+aiosqlite:///{sqlite_file_name}"
 
 connect_args = {"check_same_thread": False}
 engine = create_async_engine(sqlite_url, connect_args=connect_args, future=True)
+
+import logging
+logging.basicConfig()
+logger = logging.getLogger('sqlalchemy.engine')
+logger.setLevel(logging.DEBUG)
+# run sqlmodel code after this
 
 
 async def create_db_and_tables():
@@ -119,9 +128,9 @@ async def init_data():
             currency=Currency.CNY,
             real_time=10000,
             one_hour=10000,
-            one_day=240000,
-            one_month=7200000,
-            one_week=1680000,
+            one_day=230000,
+            one_month=7100000,
+            one_week=1660000,
         )
         cpu001_price_name = "cpu001-cny"
         cpu001_price = BillingPrice(
@@ -157,7 +166,7 @@ async def init_data():
                 "server_type": "VM",
             },
             accelerator=1,
-            accelerator_type="v100_pcie",
+            accelerator_type="ascend_910b",
         )
         v100_1 = GPUType(
             name="v100",
@@ -291,5 +300,39 @@ async def init_data():
             await BillingCouponClass.create_or_update(session, coupon_class_50)
             await BillingCouponClass.create_or_update(session, coupon_class_10)
         
+        image1 = Image(
+            name="image0001",
+            display_name="基础镜像（PyTorch 2.4.0）",
+            description="包含深度学习基础软件，如：深度学习框架、CUDA、PyTorch等",
+            url="pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04",
+            visibility=ImageVisibility.public,
+            workspace="default",
+            metadata={
+                "version": "2.4.0",
+                "python_version": "3.11",
+                "cuda_version": "12.4.1",
+                "os": "ubuntu22.04",
+            },
+            architecture=Architecture.amd64,
+        )
+        image2 = Image(
+            name="image0002",
+            display_name="基础镜像（PyTorch 2.5.0）",
+            description="包含深度学习基础软件，如：深度学习框架、CUDA、PyTorch等",
+            url="pytorch:2.5.0-py3.11-cuda12.4.1-devel-ubuntu22.04",
+            visibility=ImageVisibility.public,
+            workspace="default",
+            metadata={
+                "version": "2.5.0",
+                "python_version": "3.12",
+                "cuda_version": "12.4.1",
+                "os": "ubuntu22.04",
+            },
+            architecture=Architecture.amd64,
+        )
+        await Image.create_or_update(session, image1)
+        await Image.create_or_update(session, image2)
+
         # 添加加速器类型数据
         await init_accelerator_types(session)
+

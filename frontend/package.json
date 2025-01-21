@@ -13,6 +13,7 @@
 		"format": "prettier --write ."
 	},
 	"dependencies": {
+		"@radix-ui/react-hover-card": "^1.1.4",
 		"@hookform/resolvers": "^3.3.4",
 		"@kubb/cli": "^2.28.3",
 		"@kubb/core": "^2.28.3",

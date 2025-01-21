@@ -806,7 +806,7 @@ class ImageVisibility(Enum):
     private = "private"
 
 
-class Image(SQLModel, table=True):
+class Image(SQLModel, ActiveRecordMixin,table=True):
     name: Name
     uid: UUID = UID
 
@@ -818,7 +818,10 @@ class Image(SQLModel, table=True):
 
     visibility: ImageVisibility
     workspace: str = ""
-
+    
+    meta_data: Optional[dict] = Field(
+            default_factory=dict, sa_column=Column(JSON)
+        )  # 额外信息（如 CUDA 版本、python 版本等）
 
 ImageList = PaginatedList[Image]
 

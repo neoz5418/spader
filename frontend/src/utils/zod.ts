@@ -70,25 +70,3 @@ export const handleFormError = (
     })
   }
 }
-
-
-// memory is Byte, convert to GB or MB
-export const Memory = (memory: number) => {
-  if (memory > 1000 * 1000 * 1000) {
-    return `${(memory / 1000 / 1000 / 1000).toFixed(0)} GB`
-  } else {
-    return `${(memory / 1000 / 1000).toFixed(0)} MB`
-  }
-}
-
-export const GPU = (gpu: string) => {
-  return `${gpu}`
-}
-
-export const CPU = (cpu: number) => {
-  return `${cpu} Core`
-}
-
-export const Price = (price: number) => {
-  return `$${price.toFixed(2)} / Hour`
-}

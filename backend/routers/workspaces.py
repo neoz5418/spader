@@ -367,6 +367,10 @@ async def check_workspace_account_recharge(
         return db_recharge
 
 
+class ListBillingRecordOptions(str, Enum):
+    uid = "uid"
+
+
 @router.get(
     "/workspaces/{workspace}/billing_records",
     dependencies=[CurrentUserDep],
@@ -376,6 +380,8 @@ async def list_workspace_billing_records(
     workspace: str,
     params: ListParamsDep,
     resource_id: Optional[UUID] = None,
+    sort: ListBillingRecordOptions = ListBillingRecordOptions.uid,
+    sort_order: SortOrder = SortOrder.DESC,
 ) -> BillingRecordPublicList:
     fields = {}
     if resource_id:
@@ -388,6 +394,7 @@ async def list_workspace_billing_records(
         fields=fields,
         offset=params.offset,
         limit=params.limit,
+        order_by=(sort, sort_order),
     )
     public_list = BillingRecordPublicList(
         pagination=billing_records.pagination, items=[]

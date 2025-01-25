@@ -59,15 +59,15 @@ export const getInstancesColumns = (refetch: () => void) => {
 			cell: ({ row }) => {
 				switch (row.original.status) {
 					case "provisioning":
+						return <Badge variant="secondary">调度中</Badge>;
+					case "staging":
 						return <Badge variant="secondary">启动中</Badge>;
 					case "running":
 						return <Badge variant="default">运行中</Badge>;
 					case "stopping":
-						return <Badge variant="destructive">运行中</Badge>;
-					case "staging":
-						return <Badge variant="secondary">启动中</Badge>;
+						return <Badge variant="destructive">关机中</Badge>;
 					case "terminated":
-						return <Badge variant="outline">已释放</Badge>;
+						return <Badge variant="outline">已关机</Badge>;
 					default:
 						return null;
 				}

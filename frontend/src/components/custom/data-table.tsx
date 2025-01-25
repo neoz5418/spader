@@ -2,10 +2,7 @@
 
 import {
 	type ColumnDef,
-	HeaderGroup,
 	type PaginationState,
-	Row,
-	type Table as TableType,
 	type Updater,
 	flexRender,
 	getCoreRowModel,
@@ -23,7 +20,6 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 
-import type { ErrorType } from "@/gen";
 import { Link, useNavigate } from "react-router-dom";
 import { Skeleton } from "../ui/skeleton";
 import { DataTablePagination } from "./data-table-pagination";
@@ -140,7 +136,7 @@ export function DataLoading() {
 	);
 }
 
-export function DataError(error: ErrorType) {
+export function DataError(error: Error) {
 	const navigate = useNavigate();
 	return (
 		<div className="h-svh">

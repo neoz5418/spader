@@ -1,6 +1,7 @@
 "use client";
 
 import { DataTable } from "@/components/custom/data-table";
+import { SimplePagination } from "@/components/custom/simple-pagination";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
@@ -141,6 +142,12 @@ export default function AuditLogs() {
 					pagination={pagination}
 					setPagination={setPagination}
 				/>
+				{/* <SimplePagination
+						page={pagination.pageIndex}
+						totalPages={total}
+						onPageChange={(page) => setPagination({ pageIndex: page })}
+						className="mt-4"
+					/> */}
 			</div>
 		</div>
 	);

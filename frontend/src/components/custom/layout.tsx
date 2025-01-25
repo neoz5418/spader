@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { cn } from '@/lib/utils'
 import {Skeleton} from '@/components/ui/skeleton'
-import useAuth from "@/hooks/use-auth"
 
 
 const LayoutContext = React.createContext<{

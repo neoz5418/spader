@@ -1,7 +1,8 @@
 import type { BillingRecordTypeType } from "./BillingRecordTypeType";
 import type { ResourceTypeType } from "./ResourceTypeType";
+import type { BillingCouponType } from "./BillingCouponType";
 
- export type BillingRecordType = {
+ export type BillingRecordPublicType = {
     /**
      * @type string | undefined, uuid
     */
@@ -34,4 +35,5 @@ import type { ResourceTypeType } from "./ResourceTypeType";
     account: string;
     coupon?: (string | null);
     meta_data?: (object | null);
+    coupon_detail?: (BillingCouponType | null);
 };

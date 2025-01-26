@@ -2,6 +2,8 @@ import type { BillingPeriodType } from "./BillingPeriodType";
 import type { AutoRenewPeriodType } from "./AutoRenewPeriodType";
 import type { LeaseStatusType } from "./LeaseStatusType";
 import type { InstanceStatusType } from "./InstanceStatusType";
+import type { DiskTypeType } from "./DiskTypeType";
+import type { BillingPriceType } from "./BillingPriceType";
 
  export type InstancePublicType = {
     /**
@@ -71,4 +73,31 @@ import type { InstanceStatusType } from "./InstanceStatusType";
      * @type string
     */
     zone_display_name: string;
+    description?: (string | null);
+    /**
+     * @type integer
+    */
+    gpu_memory: number;
+    /**
+     * @type integer
+    */
+    memory: number;
+    /**
+     * @type integer
+    */
+    cpu: number;
+    /**
+     * @type integer
+    */
+    disk_size: number;
+    /**
+     * @type string
+    */
+    disk_type: DiskTypeType;
+    accelerator_type?: (string | null);
+    accelerator?: (number | null);
+    /**
+     * @type object
+    */
+    price: BillingPriceType;
 };

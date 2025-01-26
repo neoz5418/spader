@@ -64,9 +64,9 @@ export function DataTable<TData, TValue>({
 					<Button variant="outline" asChild>
 						<Link to={createLink}>新建</Link>
 					</Button>
+					<DataTableToolbar table={table} />
 				</div>
 			) : null}
-			{createLink ? <DataTableToolbar table={table} /> : null}
 			<div className="rounded-md border">
 				<Table>
 					<TableHeader>

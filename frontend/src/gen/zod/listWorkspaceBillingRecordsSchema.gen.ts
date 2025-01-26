@@ -1,5 +1,7 @@
 import { z } from "@/utils/zod.ts";
-import { paginatedListBillingRecordSchema } from "./paginatedListBillingRecordSchema.gen";
+import { listBillingRecordOptionsSchema } from "./listBillingRecordOptionsSchema.gen";
+import { sortOrderSchema } from "./sortOrderSchema.gen";
+import { paginatedListBillingRecordPublicSchema } from "./paginatedListBillingRecordPublicSchema.gen";
 import { errorInternalSchema } from "./errorInternalSchema.gen";
 import { errorInvalidArgumentSchema } from "./errorInvalidArgumentSchema.gen";
 import { errorRefreshTokenCannotBeEmptySchema } from "./errorRefreshTokenCannotBeEmptySchema.gen";
@@ -15,12 +17,12 @@ import { errorValidationFailedSchema } from "./errorValidationFailedSchema.gen";
 export const listWorkspaceBillingRecordsPathParamsSchema = z.object({ "workspace": z.string() });
 export type ListWorkspaceBillingRecordsPathParamsSchema = z.infer<typeof listWorkspaceBillingRecordsPathParamsSchema>;
 
- export const listWorkspaceBillingRecordsQueryParamsSchema = z.object({ "resource_id": z.union([z.string(), z.null()]).optional(), "offset": z.number().int().min(0).default(0).optional(), "limit": z.number().int().min(1).max(100).default(20).optional() }).optional();
+ export const listWorkspaceBillingRecordsQueryParamsSchema = z.object({ "resource_id": z.union([z.string(), z.null()]).optional(), "sort": z.lazy(() => listBillingRecordOptionsSchema).optional(), "sort_order": z.lazy(() => sortOrderSchema).optional(), "offset": z.number().int().min(0).default(0).optional(), "limit": z.number().int().min(1).max(100).default(20).optional() }).optional();
 export type ListWorkspaceBillingRecordsQueryParamsSchema = z.infer<typeof listWorkspaceBillingRecordsQueryParamsSchema>;
 /**
  * @description Successful Response
  */
-export const listWorkspaceBillingRecords200Schema = z.lazy(() => paginatedListBillingRecordSchema);
+export const listWorkspaceBillingRecords200Schema = z.lazy(() => paginatedListBillingRecordPublicSchema);
 export type ListWorkspaceBillingRecords200Schema = z.infer<typeof listWorkspaceBillingRecords200Schema>;
 /**
  * @description Unprocessable Entity
@@ -30,5 +32,5 @@ export type ListWorkspaceBillingRecords422Schema = z.infer<typeof listWorkspaceB
 /**
  * @description Successful Response
  */
-export const listWorkspaceBillingRecordsQueryResponseSchema = z.lazy(() => paginatedListBillingRecordSchema);
+export const listWorkspaceBillingRecordsQueryResponseSchema = z.lazy(() => paginatedListBillingRecordPublicSchema);
 export type ListWorkspaceBillingRecordsQueryResponseSchema = z.infer<typeof listWorkspaceBillingRecordsQueryResponseSchema>;

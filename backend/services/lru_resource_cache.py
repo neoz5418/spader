@@ -5,6 +5,10 @@ from routers.types import BillingCoupon, BillingLease, GPUType, Zone
 from async_lru import alru_cache
 
 from services.billing import get_resource_lease
+from services.billing import (
+    get_resource_lease,
+    get_price,
+)
 
 
 @alru_cache
@@ -29,3 +33,13 @@ async def get_coupon(session, coupon_id: Optional[UUID]) -> Optional[BillingCoup
     if not coupon_id:
         return None
     return await BillingCoupon.one_by_field(session, "uid", coupon_id)
+
+
+@alru_cache
+async def get_gpu_type(session, gpu_type_name: str) -> Optional[GPUType]:
+    return await GPUType.one_by_field(session, "name", gpu_type_name)
+
+
+@alru_cache
+async def get_price_from_cache(session, lease_price: str) -> int:
+    return await get_price(session, lease_price)

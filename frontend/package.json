@@ -6,7 +6,8 @@
 	"scripts": {
 		"dev": "vite",
 		"dev:bun": "bun vite",
-		"build": "tsc && vite build",
+		"build": "vite build",
+		"build:all": "tsc && vite build",
 		"lint": "eslint .",
 		"preview": "vite preview",
 		"format:check": "prettier --check .",

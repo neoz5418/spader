@@ -259,7 +259,7 @@ async def start_resource_billing_record(
         )
     if lease.lease_period != BillingPeriod.real_time:
         return
-    price = await get_price(session, priced_resource)
+    price = await get_price(session, priced_resource.price_name)
     real_time_record = BillingRealTimeRecord(
         account=account_id,
         start_time=start_time,
@@ -408,15 +408,15 @@ async def renew_realtime_lease(session: SessionDep, lease_id: UUID):
 
 
 async def get_price(
-    session: SessionDep, priced_resource: PricedResourceMixin
+    session: SessionDep, price_name: str
 ) -> BillingPrice:
-    price = await BillingPrice.one_by_field(session, "name", priced_resource.price_name)
+    price = await BillingPrice.one_by_field(session, "name", price_name)
     if not price:
         raise single_column_validation_failed(
             ErrorInvalidArgument(
                 type="InvalidArgument",
                 location="price",
-                input=priced_resource.price_name,
+                input=price_name,
             )
         )
     return price
@@ -437,7 +437,7 @@ async def calculate_pricing_details(
 ) -> (PricingDetails, Optional[BillingCoupon]):
     coupon = await get_coupon(session, lease_base=lease_base, account=account)
     original_price = sys.maxsize
-    resource_price = await get_price(session, priced_resource)
+    resource_price = await get_price(session, priced_resource.price_name)
     if lease_base.lease_period == BillingPeriod.real_time:
         original_price = resource_price.real_time
         # TODO: only cash coupon support real time period

@@ -70,6 +70,8 @@ from services.lru_resource_cache import (
     get_gpu_type_display_name,
     get_resource_lease_from_cache,
     get_zone_display_name,
+    get_gpu_type,
+    get_price_from_cache,
 )
 
 router = APIRouter(
@@ -202,7 +204,7 @@ async def list_workspace_gpu_types(
     )
     public_list = GPUTypePublicList(pagination=gpu_type_list.pagination, items=[])
     for gpu_type in gpu_type_list.items:
-        price = await get_price(session, gpu_type)
+        price = await get_price(session, gpu_type.price_name)
         g = GPUTypePublic.model_validate(
             gpu_type,
             update={
@@ -294,8 +296,10 @@ async def list_workspace_instances(
         zone_display_name = await get_zone_display_name(session, i.zone)
         gpu_display_name = await get_gpu_type_display_name(session, i.gpu_type)
         lease = await get_resource_lease_from_cache(session, i.uid)
+        gpu_type = await get_gpu_type(session, i.gpu_type)
+        price = await get_price_from_cache(session, lease.lease_price)
         new_i = InstancePublic.model_validate(
-            i,
+            i,  
             update={
                 "zone_display_name": zone_display_name,
                 "gpu_display_name": gpu_display_name,
@@ -303,11 +307,21 @@ async def list_workspace_instances(
                 "auto_renew_period": lease.auto_renew_period,
                 "coupon": lease.coupon,
                 "lease_status": lease.status,
+                "gpu_memory": gpu_type.gpu_memory,
+                "memory": gpu_type.memory,
+                "cpu": gpu_type.cpu,
+                "disk_size": gpu_type.disk_size,
+                "disk_type": gpu_type.disk_type,
+                "zones": gpu_type.zones,
+                "accelerator_type": gpu_type.accelerator_type,
+                "accelerator": gpu_type.accelerator,
+                "price": price,
             },
         )
         public_list.items.append(new_i)
 
     return public_list
+
 
 
 @router.post(

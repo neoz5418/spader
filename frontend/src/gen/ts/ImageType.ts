@@ -30,4 +30,5 @@ import type { ImageVisibilityType } from "./ImageVisibilityType";
      * @type string | undefined
     */
     workspace?: string;
+    meta_data?: (object | null);
 };

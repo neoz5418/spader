@@ -1,124 +1,209 @@
-import { Layout } from "@/components/custom/layout";
+import { Input } from "@/components/ui/input"
+import InstanceItem from "./instance"
+import { useMemo, useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Link, useSearchParams } from "react-router-dom"
+import { SimplePagination } from "@/components/custom/simple-pagination"
+import { getInstancesColumns } from "./columns"
+import { useCurrentWorkspace } from "@/hooks/use-setting"
+import { useEvents } from "@/hooks/use-watch"
+import { ListWorkspaceInstancesQueryResponseType } from "@/gen/ts/ListWorkspaceInstancesType"
+import { Updater, useQuery } from "@tanstack/react-query"
+import { listWorkspaceInstances } from "@/gen/clients/listWorkspaceInstances"
+import { PaginationState } from "@tanstack/react-table"
+import { Loader } from "lucide-react"
+// const instances = [
+//     {
+//       title: "ComfyUI-Archi1",
+//       id: "ID: gsxgjf8xknfkif2",
+//       specs: {
+//         gpu: "1x RTX 2000 Ada",
+//         cpu: "6 vCPU",
+//         ram: "31 GB RAM",
+//       },
+//       version: "zeropi/comfy-docker:0.0.1",
+//       status: "On-Demand - Secure Cloud",
+//       volumeInfo: {
+//         disk: "70 GB Disk",
+//         podVolume: "100 GB Pod Volume",
+//         path: "Volume Path: /workspace",
+//       },
+//       networkMetrics: {
+//         io: "8320 Mbps",
+//         download: "4849 Mbps",
+//         upload: "6213 Mbps",
+//       },
+//       logs: [
+//         "10:04:02    b13aa89ca13c Downloading [==================>    ] 3.349GB/7.181GB",
+//         "10:04:02    007bf3599cc6 Extracting [=====>              ] 332MB/3.084GB",
+//         "10:04:02    7890c5d7676e Downloading [==================>    ] 3.436GB/7.85GB",
+//         "10:04:02    b13aa89ca13c Downloading [==================>    ] 3.387GB/7.181GB",
+//         "10:04:02    007bf3599cc6 Extracting [=====>              ] 339.2MB/3.084GB",
+//         "10:04:02    7890c5d7676e Downloading [==================>    ] 3.4531GB/7.85GB",
+//         "10:04:02    b13aa89ca13c Downloading [==================>    ] 3.403GB/7.181GB",
+//         "10:04:02    007bf3599cc6 Extracting [=====>              ] 345.6MB/3.084GB",
+//         "10:04:02    7890c5d7676e Downloading [==================>    ] 3.469GB/7.85GB",
+//       ],
+//       pricePerHour: "$0.28/hr",
+//     },
+//     {
+//         title: "ComfyUI-Archi2",
+//     },
+//     {
+//         title: "ComfyUI-Archi3",
+//     },
+//     {
+//         title: "ComfyUI-Archi4",
+//     },
+//     {
+//         title: "ComfyUI-Archi5",
+//     },
+//     {
+//         title: "ComfyUI-Archi6",
+//     },
+//     {
+//         title: "ComfyUI-Archi7",
+//     },
+//     {
+//         title: "ComfyUI-Archi8",
+//     },
+//     {
+//         title: "ComfyUI-Archi9",
+//     },
+//     {
+//         title: "ComfyUI-Archi10",
+//     },
+//   ]
+export default function InstanceList() {
+    const { currentWorkspace, isLoading: isWorkspaceLoading } =
+    useCurrentWorkspace();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const events = useEvents();
+    const pagination = {
+        pageIndex: Number.parseInt(searchParams.get("pageIndex") || "0"),
+        pageSize: Number.parseInt(searchParams.get("pageSize") || "10"),
+    };
 
-import { DataTable } from "@/components/custom/data-table";
-import Loader from "@/components/loader";
-import {
-	type ListWorkspaceInstancesQueryResponseType,
-	listWorkspaceInstances,
-	useListWorkspaceInstancesHook,
-} from "@/gen";
-import { isLoggedIn } from "@/hooks/use-auth";
-import { useCurrentWorkspace } from "@/hooks/use-setting";
-import { useEvents } from "@/hooks/use-watch";
-import {
-	InstancesColumns,
-	getInstancesColumns,
-} from "@/pages/instances/columns.tsx";
-import { useQuery } from "@tanstack/react-query";
-import type { PaginationState, Updater } from "@tanstack/react-table";
-import { useMemo } from "react";
-import { useSearchParams } from "react-router-dom";
+    const {
+        data: result,
+        isLoading: isInstancesLoading,
+        refetch,
+    } = useQuery<ListWorkspaceInstancesQueryResponseType | null, Error>({
+        queryKey: ["instances", pagination.pageIndex, pagination.pageSize],
+        queryFn: () =>
+            listWorkspaceInstances(currentWorkspace?.name || "", {
+                offset: pagination.pageIndex * pagination.pageSize,
+                limit: pagination.pageSize,
+            }),
+        enabled: !!currentWorkspace,
+    });
 
-export default function Instances() {
-	const { currentWorkspace, isLoading: isWorkspaceLoading } =
-		useCurrentWorkspace();
-	const [searchParams, setSearchParams] = useSearchParams();
-	const events = useEvents();
-	const pagination = {
-		pageIndex: Number.parseInt(searchParams.get("pageIndex") || "0"),
-		pageSize: Number.parseInt(searchParams.get("pageSize") || "10"),
-	};
+    const items = result?.items || [];
+    const totalPages = useMemo(() => {
+        if (!result?.pagination?.total) return 0;
+        return Math.ceil(result?.pagination?.total/pagination.pageSize) || 0;
+    }, [result?.pagination?.total, pagination.pageSize]);
 
-	const {
-		data: result,
-		isLoading: isInstancesLoading,
-		refetch,
-	} = useQuery<ListWorkspaceInstancesQueryResponseType | null, Error>({
-		queryKey: ["instances"],
-		queryFn: () =>
-			listWorkspaceInstances(currentWorkspace?.name || "", {
-				offset: pagination.pageIndex * pagination.pageSize,
-				limit: pagination.pageSize,
-			}),
-		enabled: !!currentWorkspace,
-	});
+    // function setPagination(updater: Updater<PaginationState>) {
+    //     let state: PaginationState;
+    //     if (typeof updater === "function") {
+    //         state = updater(pagination);
+    //     } else {
+    //         state = updater;
+    //     }
 
-	const items = result?.items || [];
-	const total = result?.pagination?.total || 0;
+    //     searchParams.set("pageIndex", state.pageIndex.toString());
+    //     searchParams.set("pageSize", state.pageSize.toString());
+    //     setSearchParams(searchParams);
+    // }
 
-	function setPagination(updater: Updater<PaginationState>) {
-		let state: PaginationState;
-		if (typeof updater === "function") {
-			state = updater(pagination);
-		} else {
-			state = updater;
-		}
+    const updatedItems = items
+        .map((instance) => {
+            events.map((event) => {
+                if (event.resource.uid === instance.uid) {
+                    instance = {
+                        ...instance,
+                        ...event.resource,
+                    };
+                }
+            });
+            return instance;
+        })
+        .filter((instance) => instance.delete_time === null);
 
-		searchParams.set("pageIndex", state.pageIndex.toString());
-		searchParams.set("pageSize", state.pageSize.toString());
-		setSearchParams(searchParams);
-	}
+    const instances = useMemo(
+        () =>
+            (updatedItems ?? []).map((item) => {
+                console.log("updatedItems", item);
+                const ret = {
+                    uid: item.uid,
+                    name: item.name,
+                    display_name: item.display_name,
+                    status: item.status,
+                    image: item.image,
+                    workspace: item.workspace,
+                    zone: item.zone,
+                    zone_display_name: item.zone_display_name,
+                    gpu_display_name: item.gpu_display_name,
+                    gpu_type: item.gpu_type,
+                    ssh: item.services?.ssh || "",
+                    services: item.services,
+                    lease_status: item.lease_status,
+                    gpu_memory: item.gpu_memory,
+                    memory: item.memory,
+                    cpu: item.cpu,
+                    disk_size: item.disk_size,
+                    disk_type: item.disk_type,
+                    accelerator_type: item.accelerator_type,
+                    accelerator: item.accelerator,
+                    create_time: item.create_time,
+                    price: item.price,
+                };
+                return ret;
+            }),
+        [updatedItems],
+    );
 
-	const updatedItems = items
-		.map((instance) => {
-			events.map((event) => {
-				if (event.resource.uid === instance.uid) {
-					instance = {
-						...instance,
-						...event.resource,
-					};
-				}
-			});
-			return instance;
-		})
-		.filter((instance) => instance.delete_time === null);
+    if (isWorkspaceLoading || isInstancesLoading) {
+        return <Loader />;
+    }
 
-	const instances = useMemo(
-		() =>
-			(updatedItems ?? []).map((item) => {
-				console.log("updatedItems", item);
-				const ret = {
-					id: item.uid,
-					name: item.name,
-					display_name: item.display_name,
-					status: item.status,
-					image: item.image,
-					workspace: item.workspace,
-					zone: item.zone,
-					zone_display_name: item.zone_display_name,
-					gpu_display_name: item.gpu_display_name,
-					gpu_type: item.gpu_type,
-					ssh: item.services?.ssh || "",
-					services: item.services,
-				};
-				return ret;
-			}),
-		[updatedItems],
-	);
+    const createLink = `/workspaces/${currentWorkspace?.name}/instances/deploy`
+    return (
+        <div className="space-y-4 md:px-8  p-4">
+            <div className="flex items-center justify-between">
+                <Button variant="default" asChild>
+                    <Link to={createLink}>新建</Link>
+                </Button>
+                <div className='flex items-center justify-between'>
+                    <div className='flex flex-1 flex-col-reverse items-start gap-y-2 sm:flex-row sm:items-center sm:space-x-2'>
+                        <Input
+                        placeholder='搜索资源名称'
+                        value={searchParams.get('name') || ''}
+                        onChange={(event) =>
+                            setSearchParams({ name: event.target.value })
+                        }
+                        className='h-8 w-[150px] lg:w-[250px]'
+                        />
+                    </div>
+                </div>
+            </div>
+           
+            {instances.map((instance) => (
+                <InstanceItem key={instance.id} {...instance} />
+            ))}
 
-	if (isWorkspaceLoading || isInstancesLoading) {
-		return <Loader />;
-	}
+            <p className="text-sm text-muted-foreground mt-4">
+                计费说明: 所有计费价格每小时刷新。
+            </p>
 
-	const columns = getInstancesColumns(refetch);
+            <SimplePagination
+                page={pagination.pageIndex + 1}
+                totalPages={totalPages}
+                onPageChange={(page) => setSearchParams({ pageIndex: page.toString() })}
+                className="mt-4"
+            />
+        </div>
+    )
+    }
 
-	return (
-		<div className="w-full max-w-screen-2xl mx-auto p-4">
-			<div className="mb-2 flex items-center justify-between space-y-2">
-				<div>
-					<h2 className="text-2xl font-bold tracking-tight">算力容器列表</h2>
-				</div>
-			</div>
-			<div className="-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0">
-				<DataTable
-					columns={columns}
-					data={instances}
-					createLink={`/workspaces/${currentWorkspace?.name}/instances/deploy`}
-					rowCount={total}
-					pagination={pagination}
-					setPagination={setPagination}
-				/>
-			</div>
-		</div>
-	);
-}

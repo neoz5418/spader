@@ -734,6 +734,17 @@ class InstancePublic(InstanceBase, ResourceLeaseMixin):
     gpu_display_name: str
     zone_display_name: str
 
+    display_name: DisplayName
+    description: Optional[str] = None
+    gpu_memory: ByteSize
+    memory: ByteSize
+    cpu: int
+    disk_size: ByteSize
+    disk_type: DiskType
+    accelerator_type: Optional[str] = None
+    accelerator: Optional[int] = None
+    price: BillingPrice
+
 
 class InstanceCost(PricingDetails):
     coupon: Optional[BillingCoupon]

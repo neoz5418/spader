@@ -3,9 +3,9 @@
 // memory is Byte, convert to GB or MB
 export const Memory = (memory: number) => {
     if (memory > 1000 * 1000 * 1000) {
-      return `${(memory / 1000 / 1000 / 1000).toFixed(0)} GB`
+      return `${(memory / 1000 / 1000 / 1000).toFixed(0)} GB RAM`
     } else {
-      return `${(memory / 1000 / 1000).toFixed(0)} MB`
+      return `${(memory / 1000 / 1000).toFixed(0)} MB RAM`
     }
   }
   
@@ -23,7 +23,7 @@ export const Memory = (memory: number) => {
   }
   
   export const CPU = (cpu: number) => {
-    return `${cpu} Core`
+    return `${cpu} vCPU`
   }
   
   export const Price = (price: number|undefined, period: string) => {

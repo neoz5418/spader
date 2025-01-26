@@ -1,4 +1,6 @@
-import type { PaginatedListBillingRecordType } from "./PaginatedListBillingRecordType";
+import type { ListBillingRecordOptionsType } from "./ListBillingRecordOptionsType";
+import type { SortOrderType } from "./SortOrderType";
+import type { PaginatedListBillingRecordPublicType } from "./PaginatedListBillingRecordPublicType";
 import type { ErrorInternalType } from "./ErrorInternalType";
 import type { ErrorInvalidArgumentType } from "./ErrorInvalidArgumentType";
 import type { ErrorRefreshTokenCannotBeEmptyType } from "./ErrorRefreshTokenCannotBeEmptyType";
@@ -19,6 +21,14 @@ import type { ErrorValidationFailedType } from "./ErrorValidationFailedType";
 export type ListWorkspaceBillingRecordsQueryParamsType = {
     resource_id?: (string | null);
     /**
+     * @type string | undefined
+    */
+    sort?: ListBillingRecordOptionsType;
+    /**
+     * @type string | undefined
+    */
+    sort_order?: SortOrderType;
+    /**
      * @default 0
      * @type integer | undefined
     */
@@ -32,7 +42,7 @@ export type ListWorkspaceBillingRecordsQueryParamsType = {
 /**
  * @description Successful Response
 */
-export type ListWorkspaceBillingRecords200Type = PaginatedListBillingRecordType;
+export type ListWorkspaceBillingRecords200Type = PaginatedListBillingRecordPublicType;
 /**
  * @description Unprocessable Entity
 */
@@ -40,7 +50,7 @@ export type ListWorkspaceBillingRecords422Type = (ErrorInternalType | ErrorInval
 /**
  * @description Successful Response
 */
-export type ListWorkspaceBillingRecordsQueryResponseType = PaginatedListBillingRecordType;
+export type ListWorkspaceBillingRecordsQueryResponseType = PaginatedListBillingRecordPublicType;
 export type ListWorkspaceBillingRecordsTypeQuery = {
     Response: ListWorkspaceBillingRecordsQueryResponseType;
     PathParams: ListWorkspaceBillingRecordsPathParamsType;

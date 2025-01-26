@@ -58,14 +58,48 @@ export default function InstanceItem(instance: InstancePublicType) {
   const [isExpanded, setIsExpanded] = useState(false)
   console.log('instance', instance)
 
-  const price_per_hour = useMemo(() => {
+  const billingDetail = useMemo(() => {
     console.log('selectedMethod', instance.lease_period)
     if (!instance.price) {
-      return 0
+      return {
+        billing_type: '实时计费',
+        period: 'real_time',
+        price: 0,
+      }
     }
-    const lease_type = instance.lease_period || 'real_time'
+    const lease_type = instance.auto_renew_period || 'real_time'
     const price = instance?.price[lease_type]
-    return price
+    switch(lease_type) {
+      case 'real_time':
+        return {
+            billing_type: '实时计费',
+            period: 'real_time',
+            price: price,
+          }
+      case 'one_day':
+        return {
+            billing_type: '按天计费',
+            period: 'one_day',
+            price: price,
+        }
+      case 'one_week':
+        return {
+            billing_type: '按周计费',
+            period: 'one_week',
+            price: price,
+        }
+      case 'one_month':
+        return {
+            billing_type: '按月计费',
+            period: 'one_month',
+            price: price,
+        }
+    }
+    return {
+      billing_type: '实时计费',
+      period: 'real_time',
+      price: 0,
+    }
   }, [instance])
 
   const status = useMemo(() => {
@@ -196,14 +230,6 @@ export default function InstanceItem(instance: InstancePublicType) {
 
             <div className='text-sm'>
               <p>镜像: {instance.image}</p>
-              <p className='text-muted-foreground'>
-                计费方式:{' '}
-                {instance.lease_period === 'real_time'
-                  ? '实时计费'
-                  : '固定周期'}
-                {instance.auto_renew_period &&
-                  ` • 自动续费: ${instance.auto_renew_period === 'real_time' ? '开启' : instance.auto_renew_period}`}
-              </p>
             </div>
 
             <Button
@@ -239,10 +265,7 @@ export default function InstanceItem(instance: InstancePublicType) {
             <div className='flex items-center justify-between pt-2'>
               <div className='flex items-center space-x-2'>
                 <Button size='sm' type='button' variant='secondary'>
-                  计费方式:{' '}
-                  {instance.lease_period === 'real_time'
-                    ? '实时计费'
-                    : '固定周期'}
+                  计费方式: {billingDetail.billing_type}
                 </Button>
                 <Button
                   className={cn('text-muted-foreground')}
@@ -250,7 +273,7 @@ export default function InstanceItem(instance: InstancePublicType) {
                   size='sm'
                   type='button'
                 >
-                  {Price(price_per_hour, instance.lease_period || 'real_time')}
+                  {Price(billingDetail.price, billingDetail.period)}
                 </Button>
               </div>
               <div className='flex items-center gap-2'>

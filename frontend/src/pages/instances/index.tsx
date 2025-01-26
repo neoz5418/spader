@@ -158,6 +158,7 @@ export default function InstanceList() {
                     accelerator: item.accelerator,
                     create_time: item.create_time,
                     price: item.price,
+                    auto_renew_period: item.auto_renew_period,
                 };
                 return ret;
             }),

@@ -219,14 +219,23 @@ export default function InstanceItem(instance: InstancePublicType) {
           </div>
 
           <div className='flex items-center space-x-12'>
+            {instance.gpu_memory > 0 ? (
             <div className='text-sm'>
-              <p>
-                GPU: {instance.accelerator} * {instance.gpu_display_name}
-              </p>
-              <p className='text-muted-foreground'>
-                CPU: {CPU(instance.cpu)} 内存: {Memory(instance.memory)}
-              </p>
+                    <p>
+                        GPU: {instance.accelerator} * {instance.gpu_display_name}
+                    </p>
+                    <p className='text-muted-foreground'>
+                    CPU: {CPU(instance.cpu)} 内存: {Memory(instance.memory)}
+                </p>
             </div>
+            ) : (
+            <div className='text-sm'>
+                <p>
+                    CPU: {CPU(instance.cpu)} 内存: {Memory(instance.memory)}
+                </p>
+            </div>
+            )}
+               
 
             <div className='text-sm'>
               <p>镜像: {instance.image}</p>

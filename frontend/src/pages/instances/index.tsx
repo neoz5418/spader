@@ -1,6 +1,6 @@
 import { Input } from "@/components/ui/input"
 import InstanceItem from "./instance"
-import { useMemo, useState } from "react"
+import { useMemo, useState, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Link, useSearchParams } from "react-router-dom"
 import { SimplePagination } from "@/components/custom/simple-pagination"
@@ -11,7 +11,8 @@ import { ListWorkspaceInstancesQueryResponseType } from "@/gen/ts/ListWorkspaceI
 import { Updater, useQuery } from "@tanstack/react-query"
 import { listWorkspaceInstances } from "@/gen/clients/listWorkspaceInstances"
 import { PaginationState } from "@tanstack/react-table"
-import { Loader } from "lucide-react"
+import { Loader, Search, RotateCw } from "lucide-react"
+import { debounce } from 'lodash'
 // const instances = [
 //     {
 //       title: "ComfyUI-Archi1",
@@ -74,11 +75,19 @@ import { Loader } from "lucide-react"
 //         title: "ComfyUI-Archi10",
 //     },
 //   ]
+
+interface Event {
+    resource: {
+        uid: string;
+    };
+}
+
+
 export default function InstanceList() {
     const { currentWorkspace, isLoading: isWorkspaceLoading } =
     useCurrentWorkspace();
     const [searchParams, setSearchParams] = useSearchParams();
-    const events = useEvents();
+    const events: Event[] = useEvents();
     const pagination = {
         pageIndex: Number.parseInt(searchParams.get("pageIndex") || "0"),
         pageSize: Number.parseInt(searchParams.get("pageSize") || "10"),
@@ -89,11 +98,12 @@ export default function InstanceList() {
         isLoading: isInstancesLoading,
         refetch,
     } = useQuery<ListWorkspaceInstancesQueryResponseType | null, Error>({
-        queryKey: ["instances", pagination.pageIndex, pagination.pageSize],
+        queryKey: ["instances", pagination.pageIndex, pagination.pageSize, searchParams.get('name')],
         queryFn: () =>
             listWorkspaceInstances(currentWorkspace?.name || "", {
                 offset: pagination.pageIndex * pagination.pageSize,
                 limit: pagination.pageSize,
+                search: searchParams.get('name') || '',
             }),
         enabled: !!currentWorkspace,
     });
@@ -146,7 +156,6 @@ export default function InstanceList() {
                     zone_display_name: item.zone_display_name,
                     gpu_display_name: item.gpu_display_name,
                     gpu_type: item.gpu_type,
-                    ssh: item.services?.ssh || "",
                     services: item.services,
                     lease_status: item.lease_status,
                     gpu_memory: item.gpu_memory,
@@ -165,6 +174,14 @@ export default function InstanceList() {
         [updatedItems],
     );
 
+    const debouncedSearch = useCallback(
+        debounce((value: string) => {
+            console.log("value", value);
+            setSearchParams({ name: value, pageIndex: "0", pageSize: "10" });
+        }, 500),
+        []  // Empty dependency array since we don't want to recreate the debounced function
+    );
+
     if (isWorkspaceLoading || isInstancesLoading) {
         return <Loader />;
     }
@@ -178,20 +195,31 @@ export default function InstanceList() {
                 </Button>
                 <div className='flex items-center justify-between'>
                     <div className='flex flex-1 flex-col-reverse items-start gap-y-2 sm:flex-row sm:items-center sm:space-x-2'>
-                        <Input
-                        placeholder='搜索资源名称'
-                        value={searchParams.get('name') || ''}
-                        onChange={(event) =>
-                            setSearchParams({ name: event.target.value })
-                        }
-                        className='h-8 w-[150px] lg:w-[250px]'
-                        />
+                        <div className="flex items-center gap-2">
+                            <div className="relative">
+                                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                                <Input
+                                    placeholder="搜索资源名称"
+                                    defaultValue={searchParams.get('name') || ''}
+                                    onChange={(event) => debouncedSearch(event.target.value)}
+                                    className="h-8 w-[150px] lg:w-[250px] pl-8"
+                                />
+                            </div>
+                            <Button 
+                                variant="ghost" 
+                                size="icon" 
+                                onClick={() => refetch()}
+                                className="h-8 w-8"
+                            >
+                                <RotateCw className="h-4 w-4" />
+                            </Button>
+                        </div>
                     </div>
                 </div>
             </div>
            
             {instances.map((instance) => (
-                <InstanceItem key={instance.id} {...instance} />
+                <InstanceItem key={instance.uid} {...instance} />
             ))}
 
             <p className="text-sm text-muted-foreground mt-4">
